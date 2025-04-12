@@ -1,0 +1,124 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-xl">Additional Components</h1>
+      <p class="govuk-body">This page demonstrates additional GOV.UK components not shown on other pages.</p>
+
+      <a href="/" class="govuk-back-link">Back</a>
+
+      <h2 class="govuk-heading-m">Form Components</h2>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="event-name">
+          What is the name of the event?
+        </label>
+        <div id="event-name-hint" class="govuk-hint">
+          The name you'll use on promotional material
+        </div>
+        <input class="govuk-input" id="event-name" name="event-name" type="text" aria-describedby="event-name-hint">
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="select-1">
+          Where do you live?
+        </label>
+        <select class="govuk-select" id="select-1" name="select-1">
+          <option value="england">England</option>
+          <option value="scotland">Scotland</option>
+          <option value="wales">Wales</option>
+          <option value="northern-ireland">Northern Ireland</option>
+        </select>
+      </div>
+
+      <div class="govuk-form-group">
+        <label class="govuk-label" for="more-detail">
+          Can you provide more detail?
+        </label>
+        <div id="more-detail-hint" class="govuk-hint">
+          Do not include personal or financial information, like your National Insurance number or credit card details.
+        </div>
+        <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint"></textarea>
+        <div id="more-detail-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
+          You have 500 characters remaining
+        </div>
+      </div>
+
+      <div class="govuk-form-group govuk-form-group--error">
+        <label class="govuk-label" for="full-name">
+          Full name
+        </label>
+        <div id="full-name-error" class="govuk-error-message">
+          <span class="govuk-visually-hidden">Error:</span> Enter your full name
+        </div>
+        <input class="govuk-input govuk-input--error" id="full-name" name="full-name" type="text" aria-describedby="full-name-error">
+      </div>
+
+      <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h1 class="govuk-fieldset__heading">
+            What is your address?
+          </h1>
+        </legend>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="address-line-1">
+            Address line 1
+          </label>
+          <input class="govuk-input" id="address-line-1" name="address-line-1" type="text" autocomplete="address-line1">
+        </div>
+        <div class="govuk-form-group">
+          <label class="govuk-label" for="address-line-2">
+            Address line 2 (optional)
+          </label>
+          <input class="govuk-input" id="address-line-2" name="address-line-2" type="text" autocomplete="address-line2">
+        </div>
+      </fieldset>
+
+      <h2 class="govuk-heading-m">Task List</h2>
+      <div class="govuk-task-list">
+        <h2 class="govuk-task-list__section">
+          <span class="govuk-task-list__section-number">1. </span> Check before you start
+        </h2>
+        <ul class="govuk-task-list__items">
+          <li class="govuk-task-list__item">
+            <span class="govuk-task-list__task-name">
+              <a href="#" class="govuk-link govuk-task-list__link" aria-describedby="company-information-status">
+                Company information
+              </a>
+            </span>
+            <strong class="govuk-tag govuk-task-list__tag" id="company-information-status">Completed</strong>
+          </li>
+        </ul>
+      </div>
+
+      <h2 class="govuk-heading-m">Timeline</h2>
+      <div class="govuk-timeline">
+        <div class="govuk-timeline__item">
+          <h2 class="govuk-timeline__title">
+            Application received
+          </h2>
+          <p class="govuk-timeline__date">
+            <time datetime="2024-03-20T14:27:00.000Z">20 March 2024 at 2:27pm</time>
+          </p>
+          <p class="govuk-timeline__description">
+            Application received by the department
+          </p>
+        </div>
+      </div>
+
+      <div class="govuk-pagination">
+        <div class="govuk-pagination__prev">
+          <a class="govuk-link govuk-pagination__link" href="/feedback-components" rel="prev">
+            <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+              <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+            </svg>
+            <span class="govuk-pagination__link-title">Previous</span>
+            <span class="govuk-visually-hidden">:</span>
+            <span class="govuk-pagination__link-label">Feedback components</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %} 

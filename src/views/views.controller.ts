@@ -4,55 +4,43 @@ import { Controller, Get, Render } from '@nestjs/common';
 export class ViewsController {
   @Get()
   @Render('index')
-  index() {
-    return {
-      title: 'Homepage',
-      message: 'Welcome to the GOV.UK Frontend example',
-    };
+  home() {
+    return { title: 'Home' };
   }
 
   @Get('second-page')
   @Render('second-page')
   secondPage() {
-    return {
-      title: 'Second Page',
-      message: 'This page demonstrates different GOV.UK components',
-    };
+    return { title: 'Second Page' };
   }
 
   @Get('third-page')
   @Render('third-page')
   thirdPage() {
-    return {
-      title: 'Third Page',
-      message: 'This page demonstrates more GOV.UK components',
-    };
+    return { title: 'Third Page' };
   }
 
   @Get('form-components')
   @Render('form-components')
   formComponents() {
-    return {
-      title: 'Form Components',
-      message: 'This page demonstrates GOV.UK form components',
-    };
+    return { title: 'Form Components' };
   }
 
   @Get('layout-components')
   @Render('layout-components')
   layoutComponents() {
-    return {
-      title: 'Layout Components',
-      message: 'This page demonstrates GOV.UK layout components',
-    };
+    return { title: 'Layout Components' };
   }
 
   @Get('feedback-components')
   @Render('feedback-components')
   feedbackComponents() {
-    return {
-      title: 'Feedback Components',
-      message: 'This page demonstrates GOV.UK feedback components',
-    };
+    return { title: 'Feedback Components' };
+  }
+
+  @Get('missing-components')
+  @Render('missing-components')
+  missingComponents() {
+    return { title: 'Missing Components' };
   }
 } 
