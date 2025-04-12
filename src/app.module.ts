@@ -14,6 +14,7 @@ import { CoreModule } from './core/core.module';
 import { ViewsModule } from './views/views.module';
 import { ErrorMiddleware } from './shared/middleware/error.middleware';
 import { LoggerMiddleware } from './shared/middleware/logger.middleware';
+import { ViewsController } from './views/views.controller';
 
 /**
  * Root module class that bootstraps the application.
@@ -34,7 +35,7 @@ import { LoggerMiddleware } from './shared/middleware/logger.middleware';
     CoreModule.forRoot(),
     ViewsModule.forRoot(),
   ],
-  controllers: [AppController],
+  controllers: [AppController, ViewsController],
   providers: [],
 })
 export class AppModule {
