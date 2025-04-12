@@ -19,4 +19,13 @@ export class ViewsController {
       message: 'This page demonstrates different GOV.UK components',
     };
   }
+
+  @Get('third-page')
+  @Render('third-page')
+  thirdPage() {
+    return {
+      title: 'Third Page',
+      message: 'This page demonstrates more GOV.UK components',
+    };
+  }
 } 
