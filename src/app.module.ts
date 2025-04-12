@@ -8,8 +8,12 @@
  * @requires @nestjs/common
  */
 
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { CoreModule } from './core/core.module';
+import { ViewsModule } from './views/views.module';
+import { ErrorMiddleware } from './shared/middleware/error.middleware';
+import { LoggerMiddleware } from './shared/middleware/logger.middleware';
 
 /**
  * Root module class that bootstraps the application.
@@ -26,13 +30,29 @@ import { AppController } from './app.controller';
  * const app = await NestFactory.create(AppModule);
  */
 @Module({
-  // Currently no imported modules as this is the root module
-  imports: [],
-  
-  // Register the main application controller
+  imports: [
+    CoreModule.forRoot(),
+    ViewsModule.forRoot(),
+  ],
   controllers: [AppController],
-  
-  // Currently no providers as we're using the basic setup
   providers: [],
 })
-export class AppModule {} 
+export class AppModule {
+  /**
+   * Configure middleware for the application.
+   * 
+   * @method configure
+   * @param {MiddlewareConsumer} consumer - The middleware consumer
+   */
+  configure(consumer: MiddlewareConsumer) {
+    // Apply error handling middleware to all routes
+    consumer
+      .apply(ErrorMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+
+    // Apply logging middleware to all routes
+    consumer
+      .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+} 
