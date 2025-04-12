@@ -1,23 +1,44 @@
 /**
  * Root controller of the NestJS application.
  * Handles the main routes and renders views.
+ * This controller manages the application's main routes and view rendering
+ * using the Nunjucks template engine.
  * 
  * @module AppController
+ * @requires @nestjs/common
  */
 
 import { Controller, Get, Render } from '@nestjs/common';
 
 /**
+ * Main application controller that handles HTTP requests and view rendering.
+ * This controller is decorated with @Controller() to define it as a NestJS controller
+ * and is responsible for handling the root routes of the application.
+ * 
  * @class AppController
- * @description Controller that handles the main application routes
+ * @description Controller that handles the main application routes and view rendering
+ * 
+ * @example
+ * // The controller will be automatically instantiated by NestJS
+ * // and registered in the AppModule
  */
 @Controller()
 export class AppController {
   /**
-   * Renders the index page.
+   * Handles GET requests to the root route ('/').
+   * Renders the index page using the Nunjucks template engine.
+   * The @Render decorator specifies which template to use ('index.njk').
    * 
    * @method getIndex
-   * @returns {Object} View data for the index template
+   * @returns {Object} View data to be passed to the template
+   * @property {string} title - Page title
+   * @property {string} message - Welcome message
+   * 
+   * @example
+   * // When accessing the root URL, this method will:
+   * // 1. Be called by NestJS
+   * // 2. Return the view data
+   * // 3. Render the index.njk template with the provided data
    */
   @Get()
   @Render('index')
