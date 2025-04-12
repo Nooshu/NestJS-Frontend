@@ -6,7 +6,7 @@
  */
 
 import { join } from 'path';
-import nunjucks from 'nunjucks';
+import * as nunjucks from 'nunjucks';
 
 /**
  * Creates and configures a Nunjucks template engine for NestJS.
@@ -23,7 +23,7 @@ export function createNunjucksEngine() {
   });
 
   // Return the render function that NestJS expects
-  return (filePath: string, options: any, callback: (err: any, result?: string) => void) => {
+  return (filePath: string, options: any, callback: (err: Error | null, result?: string | null) => void) => {
     env.render(filePath, options, callback);
   };
 } 
