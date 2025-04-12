@@ -28,4 +28,31 @@ export class ViewsController {
       message: 'This page demonstrates more GOV.UK components',
     };
   }
+
+  @Get('form-components')
+  @Render('form-components')
+  formComponents() {
+    return {
+      title: 'Form Components',
+      message: 'This page demonstrates GOV.UK form components',
+    };
+  }
+
+  @Get('layout-components')
+  @Render('layout-components')
+  layoutComponents() {
+    return {
+      title: 'Layout Components',
+      message: 'This page demonstrates GOV.UK layout components',
+    };
+  }
+
+  @Get('feedback-components')
+  @Render('feedback-components')
+  feedbackComponents() {
+    return {
+      title: 'Feedback Components',
+      message: 'This page demonstrates GOV.UK feedback components',
+    };
+  }
 } 
