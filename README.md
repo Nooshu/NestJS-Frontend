@@ -33,17 +33,44 @@ src/
 # Install dependencies
 npm install
 
-# Build SCSS and start development server
+# Start development server
 npm run start:dev
 ```
 
 ### Available Scripts
 
 - `npm run start:dev` - Start development server with hot reload
+  - Automatically compiles TypeScript on the fly
+  - Watches for file changes and recompiles automatically
+  - Provides hot reloading for faster development
+  - Shows detailed error messages in the console
+  - Ideal for development workflow
+
 - `npm run build` - Build the application
+  - Compiles TypeScript to JavaScript
+  - Generates type declaration files
+  - Copies static assets to dist directory
+  - Creates production-ready version in dist/
+  - Use before deployment or testing production build
+
 - `npm run start:prod` - Start production server
+  - Runs the built application from dist/
+  - Uses production optimizations
+  - No hot reloading or development features
+  - Use for testing production build locally
+
 - `npm run test` - Run tests
+  - Executes all test files
+  - Uses Jest test runner
+  - Shows test coverage
+
 - `npm run format` - Format code with Prettier
+  - Applies consistent code formatting
+  - Uses project's Prettier configuration
+
+- `npm run lint` - Run ESLint
+  - Checks code for style and potential issues
+  - Automatically fixes fixable issues
 
 ## Development Guidelines
 
@@ -71,7 +98,10 @@ npm run start:dev
 The application can be deployed using:
 
 ```bash
+# Build the application
 npm run build
+
+# Start the production server
 npm run start:prod
 ```
 
