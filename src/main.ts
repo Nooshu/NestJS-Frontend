@@ -56,13 +56,13 @@ async function bootstrap() {
 
   // Configure static asset directories
   // - Serve application public assets
-  // - Serve GOV.UK Frontend assets with specific prefixes
+  // - Serve GOV.UK Frontend assets directly from node_modules
   app.useStaticAssets(join(process.cwd(), 'src', 'public'));
-  app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'govuk', 'assets'), {
-    prefix: '/assets'  // Serve GOV.UK assets under /assets path
+  app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'), {
+    prefix: '/govuk'  // Serve GOV.UK assets under /govuk path
   });
-  app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'govuk'), {
-    prefix: '/govuk'   // Serve GOV.UK components under /govuk path
+  app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'), {
+    prefix: '/assets'  // Serve GOV.UK assets under /assets path
   });
 
   // Start the application server
