@@ -21,8 +21,12 @@ export class ViewEngineService {
   private readonly env: nunjucks.Environment;
 
   constructor() {
-    // Configure Nunjucks environment
-    this.env = nunjucks.configure(join(process.cwd(), 'src', 'views'), {
+    // Configure Nunjucks environment with multiple paths
+    this.env = nunjucks.configure([
+      join(process.cwd(), 'src', 'views'),
+      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'),
+      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'macros')
+    ], {
       autoescape: true,
       watch: true,
       noCache: true,
