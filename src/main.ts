@@ -14,9 +14,11 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import helmet from 'helmet';
+import compression from 'compression';
 import { AppModule } from './app.module';
 import { ViewEngineService } from './views/view-engine.service';
 import { securityConfig } from './shared/config/security.config';
+import { performanceConfig } from './shared/config/performance.config';
 
 /**
  * Bootstrap function that creates and configures the NestJS application.
@@ -25,6 +27,7 @@ import { securityConfig } from './shared/config/security.config';
  * - Static asset directories
  * - GOV.UK Frontend asset serving
  * - Security features (Helmet, CORS)
+ * - Performance optimizations (Compression, Caching)
  * 
  * @async
  * @function bootstrap
@@ -46,6 +49,9 @@ async function bootstrap() {
   app.use(helmet(securityConfig.helmet));
   app.enableCors(securityConfig.cors);
 
+  // Performance middleware
+  app.use(compression(performanceConfig.compression));
+
   // Get the view engine service
   const viewEngineService = app.get(ViewEngineService);
 
@@ -61,15 +67,23 @@ async function bootstrap() {
   app.setViewEngine('njk');
   app.setBaseViewsDir(join(process.cwd(), 'src', 'views'));
 
-  // Configure static asset directories
-  // - Serve application public assets
-  // - Serve GOV.UK Frontend assets directly from node_modules
-  app.useStaticAssets(join(process.cwd(), 'src', 'public'));
+  // Configure static asset directories with performance optimizations
+  const staticOptions = {
+    maxAge: performanceConfig.staticAssets.maxAge,
+    immutable: performanceConfig.staticAssets.immutable,
+    etag: performanceConfig.staticAssets.etag,
+    lastModified: performanceConfig.staticAssets.lastModified,
+    setHeaders: performanceConfig.staticAssets.setHeaders,
+  };
+
+  app.useStaticAssets(join(process.cwd(), 'src', 'public'), staticOptions);
   app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'), {
-    prefix: '/govuk'  // Serve GOV.UK assets under /govuk path
+    ...staticOptions,
+    prefix: '/govuk'
   });
   app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'), {
-    prefix: '/assets'  // Serve GOV.UK assets under /assets path
+    ...staticOptions,
+    prefix: '/assets'
   });
 
   // Start the application server
