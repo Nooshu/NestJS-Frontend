@@ -21,16 +21,28 @@ export class ViewEngineService {
   private readonly env: nunjucks.Environment;
 
   constructor() {
-    // Configure Nunjucks environment with multiple paths
-    this.env = nunjucks.configure([
-      join(process.cwd(), 'src', 'views'),
-      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'components'),
-      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'macros')
+    const viewsPath = join(process.cwd(), 'src', 'views');
+    const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist');
+
+    // Create a FileSystemLoader with the paths
+    const loader = new nunjucks.FileSystemLoader([
+      viewsPath,
+      govukPath
     ], {
-      autoescape: true,
-      watch: true,
       noCache: true,
+      watch: true,
     });
+
+    // Create and configure the environment
+    this.env = new nunjucks.Environment(loader, {
+      autoescape: true,
+      throwOnUndefined: false,
+      trimBlocks: true,
+      lstripBlocks: true,
+    });
+
+    // Add any custom filters or globals here if needed
+    this.env.addGlobal('asset_path', '/assets');
   }
 
   /**
