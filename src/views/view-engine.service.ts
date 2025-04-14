@@ -24,7 +24,7 @@ export class ViewEngineService {
     // Configure Nunjucks environment with multiple paths
     this.env = nunjucks.configure([
       join(process.cwd(), 'src', 'views'),
-      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'),
+      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'components'),
       join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'macros')
     ], {
       autoescape: true,
