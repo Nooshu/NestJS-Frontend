@@ -13,8 +13,10 @@
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import helmet from 'helmet';
 import { AppModule } from './app.module';
 import { ViewEngineService } from './views/view-engine.service';
+import { securityConfig } from './shared/config/security.config';
 
 /**
  * Bootstrap function that creates and configures the NestJS application.
@@ -22,6 +24,7 @@ import { ViewEngineService } from './views/view-engine.service';
  * - Nunjucks view engine configuration
  * - Static asset directories
  * - GOV.UK Frontend asset serving
+ * - Security features (Helmet, CORS)
  * 
  * @async
  * @function bootstrap
@@ -38,6 +41,10 @@ async function bootstrap() {
   // Create the NestJS application instance with Express platform
   // This provides access to Express-specific features like view engine configuration
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Security middleware
+  app.use(helmet(securityConfig.helmet));
+  app.enableCors(securityConfig.cors);
 
   // Get the view engine service
   const viewEngineService = app.get(ViewEngineService);

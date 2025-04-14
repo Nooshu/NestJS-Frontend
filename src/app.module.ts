@@ -12,6 +12,7 @@ import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { CoreModule } from './core/core.module';
 import { ViewsModule } from './views/views.module';
+import { SecurityModule } from './shared/security/security.module';
 import { ErrorMiddleware } from './shared/middleware/error.middleware';
 import { LoggerMiddleware } from './shared/middleware/logger.middleware';
 import { ViewsController } from './views/views.controller';
@@ -34,6 +35,7 @@ import { ViewsController } from './views/views.controller';
   imports: [
     CoreModule.forRoot(),
     ViewsModule.forRoot(),
+    SecurityModule,
   ],
   controllers: [AppController, ViewsController],
   providers: [],
