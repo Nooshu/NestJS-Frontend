@@ -9,6 +9,7 @@
 import { Injectable } from '@nestjs/common';
 import * as nunjucks from 'nunjucks';
 import { join } from 'path';
+import configuration from '../shared/config/configuration';
 
 /**
  * Service that provides Nunjucks template rendering functionality.
@@ -21,6 +22,7 @@ export class ViewEngineService {
   private readonly env: nunjucks.Environment;
 
   constructor() {
+    const config = configuration();
     const viewsPath = join(process.cwd(), 'src', 'views');
     const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist');
 
@@ -29,8 +31,8 @@ export class ViewEngineService {
       viewsPath,
       govukPath
     ], {
-      noCache: process.env.NODE_ENV !== 'production',
-      watch: process.env.NODE_ENV !== 'test',
+      noCache: config.nodeEnv !== 'production',
+      watch: config.nodeEnv !== 'test',
     });
 
     // Create and configure the environment

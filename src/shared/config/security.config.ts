@@ -1,5 +1,6 @@
 import { ThrottlerModuleOptions } from '@nestjs/throttler';
 import { HelmetOptions } from 'helmet';
+import configuration from './configuration';
 
 export const securityConfig = {
   throttler: {
@@ -75,7 +76,7 @@ export const securityConfig = {
   } as HelmetOptions,
 
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: configuration().corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],

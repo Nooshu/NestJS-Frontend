@@ -7,6 +7,7 @@
  */
 
 import { Controller, Get } from '@nestjs/common';
+import configuration from '../config/configuration';
 
 /**
  * Health check response interface.
@@ -52,10 +53,11 @@ export class HealthController {
    */
   @Get('detailed')
   detailed(): HealthCheckResponse {
+    const config = configuration();
     return {
       status: 'ok',
       timestamp: new Date().toISOString(),
-      version: process.env.npm_package_version,
+      version: config.npmPackageVersion,
       details: {
         node: process.version,
         platform: process.platform,

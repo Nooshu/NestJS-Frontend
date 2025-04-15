@@ -9,6 +9,7 @@
 
 import { Injectable, NestMiddleware, HttpException, HttpStatus } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import configuration from '../config/configuration';
 
 /**
  * Error response interface.
@@ -55,7 +56,7 @@ export class ErrorMiddleware implements NestMiddleware {
       };
 
       // Include stack trace in development
-      if (process.env.NODE_ENV === 'development') {
+      if (configuration().nodeEnv === 'development') {
         response.stack = error.stack;
       }
 

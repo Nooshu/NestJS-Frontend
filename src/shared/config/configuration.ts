@@ -14,4 +14,7 @@ export default () => ({
       origin: process.env.CORS_ORIGIN || '*',
     },
   },
+  nodeEnv: process.env.NODE_ENV || 'development',
+  corsOrigin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  npmPackageVersion: process.env.npm_package_version,
 }); 
