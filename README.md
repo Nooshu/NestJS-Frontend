@@ -87,6 +87,33 @@ npm run start:dev
 - Use Jest for testing
 - Maintain good test coverage
 
+#### Component Testing
+
+The application includes a comprehensive component testing system that verifies GOV.UK Frontend components against official test fixtures. To run component tests:
+
+1. Run all component tests:
+```bash
+npm test -- --testPathPattern=govuk-components
+```
+
+2. Run specific component tests:
+```bash
+npm test -- --testPathPattern=button.component
+```
+
+3. Generate test coverage:
+```bash
+npm run test:cov
+```
+
+Component tests automatically:
+- Compare rendered output with official GOV.UK Frontend fixtures
+- Generate detailed test reports in `test-output/govuk-components/`
+- Verify component accessibility and styling
+- Test multiple scenarios for each component
+
+For detailed information about component testing, see [Component Testing Documentation](docs/component-testing.md).
+
 ### Documentation
 
 - Document complex functions and classes
