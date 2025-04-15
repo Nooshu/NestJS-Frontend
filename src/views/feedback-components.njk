@@ -44,12 +44,16 @@
         <input class="govuk-input govuk-input--error" id="email" name="email" type="email" aria-describedby="email-error">
       </div>
 
-      <div class="govuk-success-banner" role="alert" tabindex="-1">
-        <div class="govuk-success-banner__message">
-          <h2 class="govuk-success-banner__title">
+      <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+        <div class="govuk-notification-banner__header">
+          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
             Success
           </h2>
-          <p class="govuk-body">Your application has been submitted successfully.</p>
+        </div>
+        <div class="govuk-notification-banner__content">
+          <p class="govuk-notification-banner__heading">
+            Your application has been submitted successfully.
+          </p>
         </div>
       </div>
 
