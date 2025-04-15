@@ -29,8 +29,8 @@ export class ViewEngineService {
       viewsPath,
       govukPath
     ], {
-      noCache: true,
-      watch: true,
+      noCache: process.env.NODE_ENV !== 'production',
+      watch: process.env.NODE_ENV !== 'test',
     });
 
     // Create and configure the environment
