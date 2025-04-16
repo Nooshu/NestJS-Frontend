@@ -138,4 +138,18 @@ export const securityConfig = {
     credentials: true,
     maxAge: 600,
   },
+
+  permissionsPolicy: {
+    policy: {
+      'geolocation': ['self'],
+      'camera': ['none'],
+      'microphone': ['none'],
+      'payment': ['self'],
+      'usb': ['none']
+    }
+  },
+
+  trustedTypes: {
+    policy: "'self'"
+  },
 }; 
