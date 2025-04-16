@@ -56,12 +56,12 @@ async function bootstrap() {
   const viewEngineService = app.get(ViewEngineService);
 
   // Configure Nunjucks as the view engine
-  app.engine('njk', (filePath: string, options: Record<string, unknown>, callback: (err: Error | null, html?: string) => void) => {
+  app.engine('njk', (filePath: string, options: Record<string, any>, callback: (e: any, rendered?: string) => void) => {
     try {
       const html = viewEngineService.render(filePath, options);
       callback(null, html);
     } catch (err) {
-      callback(err instanceof Error ? err : new Error(String(err)));
+      callback(err);
     }
   });
   app.setViewEngine('njk');

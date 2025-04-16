@@ -3,12 +3,10 @@ import { HelmetOptions } from 'helmet';
 import configuration from './configuration';
 
 export const securityConfig = {
-  throttler: {
-    throttlers: [{
-      ttl: 60, // Time to live in seconds
-      limit: 10, // Maximum number of requests within TTL
-    }],
-  } as ThrottlerModuleOptions,
+  throttler: [{
+    ttl: 60000,
+    limit: 10,
+  }] as ThrottlerModuleOptions,
 
   helmet: {
     // Content Security Policy
@@ -31,8 +29,8 @@ export const securityConfig = {
     },
     // Cross-Origin Policies
     crossOriginEmbedderPolicy: { policy: 'require-corp' },
-    crossOriginOpenerPolicy: { policy: 'same-origin' },
-    crossOriginResourcePolicy: { policy: 'same-origin' },
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
     
     // DNS Prefetch Control
     dnsPrefetchControl: { allow: false },
