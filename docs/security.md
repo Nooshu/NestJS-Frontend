@@ -132,6 +132,58 @@ If you encounter issues with the security configuration:
    - Adjust TTL and limit values if needed
    - Consider implementing different limits for different routes
 
+## Error Handling Security
+
+The application implements secure error handling through the `SecurityErrorFilter`:
+
+### Error Sanitization
+```typescript
+// Production vs Development error responses
+{
+  production: {
+    // Sanitized error response
+    status: httpStatus,
+    message: 'Internal server error',  // Generic message for unhandled errors
+    stack: undefined                   // No stack trace in production
+  },
+  development: {
+    status: httpStatus,
+    message: actualErrorMessage,
+    stack: errorStack                  // Stack trace available for debugging
+  }
+}
+```
+
+### Security Features
+- Sanitizes error messages in production to prevent information leakage
+- Removes stack traces in production environment
+- Maintains detailed error information for development
+- Implements secure logging that excludes sensitive data
+- Standardizes error response format across the application
+
+### Error Logging
+The application securely logs errors with the following information:
+- Request path
+- HTTP method
+- Timestamp
+- Sanitized error message
+- HTTP status code
+
+### Best Practices
+1. **Error Messages**
+   - Use generic error messages in production
+   - Avoid exposing internal system details
+   - Keep detailed logs for debugging while ensuring no sensitive data is logged
+
+2. **Stack Traces**
+   - Only exposed in development environment
+   - Completely removed in production for security
+
+3. **Error Response Structure**
+   - Consistent format across all errors
+   - Includes only necessary information
+   - Sanitized based on environment
+
 ## References
 
 - [OWASP Security Headers](https://owasp.org/www-project-secure-headers/)
