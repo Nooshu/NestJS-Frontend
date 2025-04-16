@@ -1,10 +1,10 @@
 {
   "name": "nest-frontend",
-  "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "version": "0.1.0",
+  "description": "NestJS frontend application using GOV.UK Frontend",
+  "author": "Matt Hobbs",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "SEE LICENSE IN LICENSE",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -22,7 +22,7 @@
     "test:govuk:watch": "jest --testPathPattern=govuk-components --watch",
     "test:govuk:cov": "jest --testPathPattern=govuk-components --coverage"
   },
-  "keywords": [],
+    "keywords": ["nestjs", "govuk", "frontend", "typescript", "nunjucks", "express", "gov.uk-frontend", "uk-government", "template"],
   "dependencies": {
     "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.0",
@@ -56,5 +56,8 @@
   },
   "compilerOptions": {
     "strict": true
+  },
+  "engines": {
+    "node": ">=20.0.0"
   }
 }
