@@ -2,6 +2,8 @@ import { ThrottlerModuleOptions } from '@nestjs/throttler';
 import { HelmetOptions } from 'helmet';
 import configuration from './configuration';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export const securityConfig = {
   throttler: [{
     ttl: 60000,
@@ -12,21 +14,76 @@ export const securityConfig = {
     // Content Security Policy
     contentSecurityPolicy: {
       directives: {
+        // Only allow resources from same origin by default
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'"],
-        fontSrc: ["'self'"],
+        
+        // Scripts configuration
+        scriptSrc: isProd 
+          ? ["'self'"] 
+          : ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        
+        // Styles configuration
+        styleSrc: [
+          "'self'",
+          // Allow inline styles for GOV.UK Frontend
+          "'unsafe-inline'"
+        ],
+        
+        // Images configuration
+        imgSrc: [
+          "'self'",
+          'data:',
+          'https:',
+          // Add any specific image domains you need
+        ],
+        
+        // Font configuration
+        fontSrc: [
+          "'self'",
+          'data:',
+          // Add any external font domains if needed
+        ],
+        
+        // Connect configuration (for APIs, websockets)
+        connectSrc: [
+          "'self'",
+          'https://api.your-service.com',
+          'wss://websocket.your-service.com'
+        ],
+        
+        // Disable object sources (Flash, etc)
         objectSrc: ["'none'"],
+        
+        // Media source configuration
         mediaSrc: ["'self'"],
+        
+        // Frame configuration
         frameSrc: ["'none'"],
-        baseUri: ["'self'"],
-        formAction: ["'self'"],
         frameAncestors: ["'none'"],
+        
+        // Form submission configuration
+        formAction: ["'self'"],
+        
+        // Base URI configuration
+        baseUri: ["'self'"],
+        
+        // Force HTTPS
         upgradeInsecureRequests: [],
+        
+        // Add manifest sources if you have a web manifest
+        manifestSrc: ["'self'"],
+        
+        // Worker configuration if you use web workers
+        workerSrc: ["'self'"],
+        
+        // CSP violation reporting
+        //reportUri: '/api/csp-report'
       },
+      
+      // Report violations instead of blocking if you want to monitor
+      // reportUri: '/csp-violation-report'
     },
+    
     // Cross-Origin Policies
     crossOriginEmbedderPolicy: { policy: 'require-corp' },
     crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
