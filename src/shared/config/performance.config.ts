@@ -45,4 +45,24 @@ export const performanceConfig = {
     maxAge: 31536000, // 1 year in seconds
     mustRevalidate: true,
   },
-}; 
+};
+
+export const apiPerformanceConfig = {
+  connection: {
+    keepAlive: true,
+    keepAliveMsecs: 60000,
+    maxSockets: 100,
+    maxFreeSockets: 10,
+  },
+  retry: {
+    retries: 3,
+    factor: 2,
+    minTimeout: 1000,
+    maxTimeout: 5000,
+  },
+  cache: {
+    standard: 300000, // 5 minutes
+    short: 60000,    // 1 minute
+    long: 3600000,   // 1 hour
+  }
+};

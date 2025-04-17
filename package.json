@@ -22,8 +22,20 @@
     "test:govuk:watch": "jest --testPathPattern=govuk-components --watch",
     "test:govuk:cov": "jest --testPathPattern=govuk-components --coverage"
   },
-    "keywords": ["nestjs", "govuk", "frontend", "typescript", "nunjucks", "express", "gov.uk-frontend", "uk-government", "template"],
+  "keywords": [
+    "nestjs",
+    "govuk",
+    "frontend",
+    "typescript",
+    "nunjucks",
+    "express",
+    "gov.uk-frontend",
+    "uk-government",
+    "template"
+  ],
   "dependencies": {
+    "@nestjs/axios": "^4.0.0",
+    "@nestjs/cache-manager": "^3.0.1",
     "@nestjs/cli": "^11.0.0",
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.2",
@@ -33,6 +45,8 @@
     "@nestjs/testing": "^11.0.0",
     "@nestjs/throttler": "^6.4.0",
     "@types/compression": "^1.7.5",
+    "axios": "^1.8.4",
+    "cache-manager": "^6.4.2",
     "compression": "^1.8.0",
     "govuk-frontend": "^5.9.0",
     "helmet": "^8.1.0",
