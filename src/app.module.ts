@@ -17,6 +17,7 @@ import { ErrorMiddleware } from './shared/middleware/error.middleware';
 import { LoggerMiddleware } from './shared/middleware/logger.middleware';
 import { ViewsController } from './views/views.controller';
 import { AppCacheModule } from './cache/cache.module';
+import { LoggerModule } from './logger/logger.module';
 
 /**
  * Root module class that bootstraps the application.
@@ -38,6 +39,7 @@ import { AppCacheModule } from './cache/cache.module';
     ViewsModule.forRoot(),
     SecurityModule,
     AppCacheModule,
+    LoggerModule,
   ],
   controllers: [AppController, ViewsController],
   providers: [],

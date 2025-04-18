@@ -19,9 +19,24 @@ src/
 ├── cache/          # Caching functionality
 │   ├── cache.module.ts  # Cache module configuration
 │   └── cache.service.ts # Cache service implementation
+├── logger/         # Logging functionality
+│   ├── logger.module.ts # Logger module configuration
+│   └── logger.service.ts # Logger service implementation
 ├── views/          # Nunjucks templates
 └── public/         # Static assets
 ```
+
+## Logging
+
+The application uses a robust logging system built on Winston. For detailed information about the logging system, including configuration, usage, and best practices, see the [Logging Documentation](docs/logging.md).
+
+Key features:
+- Multiple log levels (error, warn, info, debug, verbose)
+- Context-aware logging
+- Structured JSON logging for files
+- Colored console output for development
+- Separate error log file
+- Stack trace capture for errors
 
 ## API Documentation
 

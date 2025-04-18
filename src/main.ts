@@ -25,6 +25,7 @@ import { performanceConfig } from './shared/config/performance.config';
 import { SecurityErrorFilter } from './shared/filters/security-error.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { LoggerService } from './logger/logger.service';
 
 /**
  * Bootstrap function that creates and configures the NestJS application.
@@ -35,6 +36,7 @@ import { ValidationPipe } from '@nestjs/common';
  * - Security features (Helmet, CORS)
  * - Performance optimizations (Compression, Caching)
  * - Request validation using class-validator and class-transformer
+ * - Winston-based logging system
  * 
  * @async
  * @function bootstrap
@@ -49,8 +51,23 @@ import { ValidationPipe } from '@nestjs/common';
  */
 async function bootstrap() {
   // Create the NestJS application instance with Express platform
-  // This provides access to Express-specific features like view engine configuration
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  // Enable buffered logs to ensure all startup logs are captured
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    bufferLogs: true,
+  });
+
+  /**
+   * Logger Initialization
+   * 
+   * The LoggerService is marked as a transient-scoped provider, which means a new instance
+   * is created for each injection. In the bootstrap phase, we need to use app.resolve()
+   * instead of app.get() to properly instantiate the logger.
+   * 
+   * @see https://docs.nestjs.com/fundamentals/injection-scopes
+   */
+  const logger = await app.resolve(LoggerService);
+  logger.setContext('Bootstrap');
+  app.useLogger(logger);
 
   /**
    * Global Validation Pipe Configuration
@@ -93,13 +110,20 @@ async function bootstrap() {
   // Get the view engine service
   const viewEngineService = app.get(ViewEngineService);
 
-  // Configure Nunjucks as the view engine
+  /**
+   * Nunjucks View Engine Configuration
+   * 
+   * Configures Nunjucks as the template engine with error handling.
+   * The view engine service is used to render templates, and any errors
+   * during rendering are logged using our Winston logger.
+   */
   app.engine('njk', (filePath: string, options: Record<string, any>, callback: (e: any, rendered?: string) => void) => {
     try {
       const html = viewEngineService.render(filePath, options);
       callback(null, html);
-    } catch (err) {
-      callback(err);
+    } catch (error) {
+      logger.error('Error rendering template', error.stack, { filePath });
+      callback(error);
     }
   });
   app.setViewEngine('njk');
@@ -155,13 +179,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('api-docs', app, document);
 
-  // Start the application server
-  // The application will be available at http://localhost:3000
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  logger.info(`Application is running on: http://localhost:${port}`);
 }
 
 // Start the application and handle any startup errors
-bootstrap().catch(err => {
+bootstrap().catch((err) => {
   console.error('Failed to start application:', err);
   process.exit(1);
 }); 
