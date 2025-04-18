@@ -22,6 +22,7 @@ import { securityConfig } from './shared/config/security.config';
 import { performanceConfig } from './shared/config/performance.config';
 import { SecurityErrorFilter } from './shared/filters/security-error.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 /**
  * Bootstrap function that creates and configures the NestJS application.
@@ -47,6 +48,18 @@ async function bootstrap() {
   // Create the NestJS application instance with Express platform
   // This provides access to Express-specific features like view engine configuration
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Enable validation pipe with transform option
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   // Add this line to apply the global error filter
   app.useGlobalFilters(new SecurityErrorFilter());
