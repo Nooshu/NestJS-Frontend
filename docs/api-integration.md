@@ -165,3 +165,26 @@ Common issues and solutions:
 4. **Rate Limiting**
    - Monitor the rate limit headers from the backend
    - Implement exponential backoff for retries 
+
+## API Documentation with Swagger
+
+Our API is documented using Swagger (OpenAPI), providing an interactive interface for exploring and testing endpoints.
+
+### Using the Swagger UI
+
+1. Access the documentation at `/api-docs`
+2. Browse available endpoints grouped by tags
+3. Try out endpoints directly from the UI
+4. View request/response schemas and examples
+
+### Integration Testing with Swagger
+
+The Swagger UI can be used for integration testing:
+
+1. Navigate to the desired endpoint
+2. Click "Try it out"
+3. Fill in required parameters
+4. Execute the request
+5. View the response and status code
+
+For detailed information about Swagger documentation, see [Swagger Documentation Guide](./swagger-documentation.md). 
