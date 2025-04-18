@@ -1,12 +1,13 @@
 /**
  * Main entry point for the NestJS application.
- * Configures the application with Nunjucks templating and static assets.
+ * Configures the application with Nunjucks templating, static assets, and Swagger documentation.
  * This module initializes the NestJS application with necessary middleware,
  * view engine configuration, and static asset serving.
  * 
  * @module Main
  * @requires @nestjs/core
  * @requires @nestjs/platform-express
+ * @requires @nestjs/swagger
  * @requires path
  */
 
@@ -20,6 +21,7 @@ import { ViewEngineService } from './views/view-engine.service';
 import { securityConfig } from './shared/config/security.config';
 import { performanceConfig } from './shared/config/performance.config';
 import { SecurityErrorFilter } from './shared/filters/security-error.filter';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 /**
  * Bootstrap function that creates and configures the NestJS application.
@@ -89,6 +91,37 @@ async function bootstrap() {
     ...staticOptions,
     prefix: '/assets'
   });
+
+  /**
+   * Swagger (OpenAPI) Configuration
+   * Sets up API documentation with detailed information about the API endpoints.
+   * 
+   * The documentation will be available at: http://localhost:3000/api-docs
+   * 
+   * @swagger
+   * - Title: Name of the API documentation
+   * - Description: Detailed description of what the API provides
+   * - Version: Current version of the API
+   * - Additional configurations can be added here (e.g., authentication, tags, servers)
+   */
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('NestJS Frontend API')
+    .setDescription('API documentation for the NestJS Frontend application using GOV.UK Frontend')
+    .setVersion('1.0')
+    // You can add additional configuration here such as:
+    // .addBearerAuth()
+    // .addTag('your-tag')
+    // .addServer('http://localhost:3000')
+    .build();
+
+  /**
+   * Create and setup Swagger documentation
+   * @param {NestExpressApplication} app - The NestJS application instance
+   * @param {SwaggerDocumentOptions} swaggerConfig - Swagger configuration options
+   * @param {string} 'api-docs' - The endpoint where the Swagger UI will be served
+   */
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('api-docs', app, document);
 
   // Start the application server
   // The application will be available at http://localhost:3000

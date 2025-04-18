@@ -9,6 +9,7 @@
  */
 
 import { Controller, Get, Render } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 /**
  * Main application controller that handles HTTP requests and view rendering.
@@ -22,6 +23,7 @@ import { Controller, Get, Render } from '@nestjs/common';
  * // The controller will be automatically instantiated by NestJS
  * // and registered in the AppModule
  */
+@ApiTags('app')
 @Controller()
 export class AppController {
   /**
@@ -40,6 +42,11 @@ export class AppController {
    * // 2. Return the view data
    * // 3. Render the index.njk template with the provided data
    */
+  @ApiOperation({ summary: 'Get home page' })
+  @ApiResponse({ 
+    status: 200, 
+    description: 'Renders the home page with GOV.UK Frontend template.' 
+  })
   @Get()
   @Render('index')
   getIndex() {
