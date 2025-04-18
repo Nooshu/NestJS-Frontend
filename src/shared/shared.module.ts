@@ -10,6 +10,8 @@ import { Module, Global } from '@nestjs/common';
 import { HealthController } from './health/health.controller';
 import { ErrorMiddleware } from './middleware/error.middleware';
 import { LoggerMiddleware } from './middleware/logger.middleware';
+import { TerminusModule } from '@nestjs/terminus';
+import { HttpModule } from '@nestjs/axios';
 
 /**
  * Shared module that exports common components.
@@ -19,6 +21,10 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
  */
 @Global()
 @Module({
+  imports: [
+    TerminusModule,
+    HttpModule,
+  ],
   controllers: [HealthController],
   providers: [ErrorMiddleware, LoggerMiddleware],
   exports: [ErrorMiddleware, LoggerMiddleware],

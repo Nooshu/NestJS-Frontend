@@ -7,6 +7,14 @@
  */
 
 import { Controller, Get } from '@nestjs/common';
+import { 
+  HealthCheck, 
+  HealthCheckService, 
+  DiskHealthIndicator,
+  MemoryHealthIndicator,
+  HttpHealthIndicator,
+  HealthIndicatorResult
+} from '@nestjs/terminus';
 import configuration from '../config/configuration';
 
 /**
@@ -22,50 +30,72 @@ interface HealthCheckResponse {
 }
 
 /**
- * Controller for health check endpoints.
+ * Controller for health check endpoints using @nestjs/terminus.
+ * Provides basic and detailed health monitoring for the application.
  * 
  * @class HealthController
- * @description Provides endpoints to monitor application health
  */
 @Controller('health')
 export class HealthController {
+  constructor(
+    private health: HealthCheckService,
+    private http: HttpHealthIndicator,
+    private disk: DiskHealthIndicator,
+    private memory: MemoryHealthIndicator,
+  ) {}
+
   /**
-   * Basic health check endpoint.
-   * Returns a simple status indicating the application is running.
-   * 
-   * @method check
-   * @returns {HealthCheckResponse} Basic health status
+   * Basic health check endpoint that monitors critical system metrics.
+   * @returns {Promise<HealthIndicatorResult>} Health check results
    */
   @Get()
-  check(): HealthCheckResponse {
-    return {
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-    };
+  @HealthCheck()
+  check() {
+    return this.health.check([
+      // Basic application health
+      () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024), // 150MB
+      () => this.memory.checkRSS('memory_rss', 150 * 1024 * 1024),   // 150MB
+      
+      // Check disk storage
+      () => this.disk.checkStorage('disk_health', {
+        thresholdPercent: 0.9, // 90%
+        path: '/'
+      }),
+    ]);
   }
 
   /**
-   * Detailed health check endpoint.
-   * Returns comprehensive status information about the application.
-   * 
-   * @method detailed
-   * @returns {HealthCheckResponse} Detailed health status
+   * Detailed health check endpoint that provides comprehensive system information.
+   * Includes memory usage, disk health, application version, and environment details.
+   * @returns {Promise<HealthIndicatorResult>} Detailed health check results
    */
   @Get('detailed')
-  detailed(): HealthCheckResponse {
+  @HealthCheck()
+  detailed() {
     const config = configuration();
-    return {
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-      version: config.npmPackageVersion,
-      details: {
-        node: process.version,
-        platform: process.platform,
-        memory: {
-          heapUsed: process.memoryUsage().heapUsed,
-          heapTotal: process.memoryUsage().heapTotal,
-        },
-      },
-    };
+    return this.health.check([
+      // Include all basic health checks
+      () => this.memory.checkHeap('memory_heap', 150 * 1024 * 1024),
+      () => this.memory.checkRSS('memory_rss', 150 * 1024 * 1024),
+      () => this.disk.checkStorage('disk_health', {
+        thresholdPercent: 0.9,
+        path: '/'
+      }),
+
+      // Add custom health check info
+      async () => ({
+        app_info: {
+          status: 'up',
+          version: config.npmPackageVersion,
+          environment: config.environment,
+          node: process.version,
+          platform: process.platform,
+          memory: {
+            status: 'up',
+            ...process.memoryUsage()
+          }
+        }
+      })
+    ]);
   }
 } 
