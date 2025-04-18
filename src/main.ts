@@ -9,6 +9,8 @@
  * @requires @nestjs/platform-express
  * @requires @nestjs/swagger
  * @requires path
+ * @requires class-validator
+ * @requires class-transformer
  */
 
 import { NestFactory } from '@nestjs/core';
@@ -32,6 +34,7 @@ import { ValidationPipe } from '@nestjs/common';
  * - GOV.UK Frontend asset serving
  * - Security features (Helmet, CORS)
  * - Performance optimizations (Compression, Caching)
+ * - Request validation using class-validator and class-transformer
  * 
  * @async
  * @function bootstrap
@@ -49,7 +52,23 @@ async function bootstrap() {
   // This provides access to Express-specific features like view engine configuration
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  // Enable validation pipe with transform option
+  /**
+   * Global Validation Pipe Configuration
+   * 
+   * The ValidationPipe is a built-in NestJS pipe that uses class-validator and class-transformer
+   * to validate and transform incoming request data. It provides automatic validation
+   * of all incoming client payloads against DTO classes.
+   * 
+   * Configuration options:
+   * - transform: true - Automatically transform payloads to DTO instances
+   * - whitelist: true - Strip properties that don't have any decorators
+   * - forbidNonWhitelisted: true - Throw an error if non-whitelisted properties are present
+   * - transformOptions.enableImplicitConversion: true - Automatically convert primitive types
+   * 
+   * @see https://docs.nestjs.com/techniques/validation
+   * @see https://github.com/typestack/class-validator
+   * @see https://github.com/typestack/class-transformer
+   */
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
