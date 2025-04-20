@@ -1,15 +1,48 @@
+/**
+ * Security configuration for the application.
+ * Provides comprehensive security settings including CSP, CORS, and other security headers.
+ * 
+ * @module SecurityConfig
+ * @description Application security configuration
+ * 
+ * @example
+ * // Import and use security configuration
+ * import { securityConfig } from './security.config';
+ * 
+ * // Apply security middleware
+ * app.use(helmet(securityConfig.helmet));
+ */
+
 import { ThrottlerModuleOptions } from '@nestjs/throttler';
 import { HelmetOptions } from 'helmet';
 import configuration from './configuration';
 
 const isProd = process.env.NODE_ENV === 'production';
 
+/**
+ * Main security configuration object
+ * 
+ * @type {Object}
+ * @property {ThrottlerModuleOptions[]} throttler - Rate limiting configuration
+ * @property {HelmetOptions} helmet - Helmet security headers configuration
+ * @property {Object} cors - CORS configuration
+ * @property {Object} permissionsPolicy - Permissions policy configuration
+ * @property {Object} trustedTypes - Trusted Types policy configuration
+ */
 export const securityConfig = {
+  /**
+   * Rate limiting configuration
+   * @type {ThrottlerModuleOptions[]}
+   */
   throttler: [{
     ttl: 60000,
     limit: 10,
   }] as ThrottlerModuleOptions,
 
+  /**
+   * Helmet security headers configuration
+   * @type {HelmetOptions}
+   */
   helmet: {
     // Content Security Policy
     contentSecurityPolicy: {
@@ -130,6 +163,10 @@ export const securityConfig = {
     },
   } as HelmetOptions,
 
+  /**
+   * CORS configuration
+   * @type {Object}
+   */
   cors: {
     origin: configuration().corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -139,6 +176,10 @@ export const securityConfig = {
     maxAge: 600,
   },
 
+  /**
+   * Permissions Policy configuration
+   * @type {Object}
+   */
   permissionsPolicy: {
     policy: {
       'geolocation': ['self'],
@@ -149,20 +190,46 @@ export const securityConfig = {
     }
   },
 
+  /**
+   * Trusted Types policy configuration
+   * @type {Object}
+   */
   trustedTypes: {
     policy: "'self'"
   },
 };
 
+/**
+ * API-specific security configuration
+ * 
+ * @type {Object}
+ * @property {Object} headers - API request headers
+ * @property {Object} rateLimit - API rate limiting configuration
+ * @property {Object} cors - API CORS configuration
+ */
 export const apiSecurityConfig = {
+  /**
+   * API request headers
+   * @type {Object}
+   */
   headers: {
     'X-API-Key': process.env.API_KEY,
     'X-Client-ID': process.env.CLIENT_ID,
   },
+
+  /**
+   * API rate limiting configuration
+   * @type {Object}
+   */
   rateLimit: {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100 // limit each IP to 100 requests per windowMs
   },
+
+  /**
+   * API CORS configuration
+   * @type {Object}
+   */
   cors: {
     origin: process.env.API_ALLOWED_ORIGINS?.split(',') || ['http://localhost:8080'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

@@ -1,9 +1,36 @@
+/**
+ * Performance configuration for the application.
+ * Provides settings for compression, caching, and other performance optimizations.
+ * 
+ * @module PerformanceConfig
+ * @description Application performance configuration
+ * 
+ * @example
+ * // Import and use performance configuration
+ * import { performanceConfig } from './performance.config';
+ * 
+ * // Apply compression middleware
+ * app.use(compression(performanceConfig.compression));
+ */
+
 import { CompressionOptions } from 'compression';
 import { Request, Response } from 'express';
 import { ServeStaticOptions } from 'serve-static';
 
+/**
+ * Main performance configuration object
+ * 
+ * @type {Object}
+ * @property {CompressionOptions} compression - Response compression settings
+ * @property {ServeStaticOptions} staticAssets - Static file serving settings
+ * @property {Object} responseCompression - Response compression settings
+ * @property {Object} browserCache - Browser caching settings
+ */
 export const performanceConfig = {
-  // Compression settings
+  /**
+   * Response compression settings
+   * @type {CompressionOptions}
+   */
   compression: {
     level: 6, // Compression level (0-9)
     threshold: '1kb', // Only compress responses larger than 1kb
@@ -15,7 +42,10 @@ export const performanceConfig = {
     },
   } as CompressionOptions,
 
-  // Static file serving settings
+  /**
+   * Static file serving settings
+   * @type {ServeStaticOptions}
+   */
   staticAssets: {
     maxAge: '1y', // Cache static assets for 1 year
     immutable: true, // Mark static assets as immutable
@@ -31,7 +61,10 @@ export const performanceConfig = {
     },
   } as ServeStaticOptions,
 
-  // Response compression settings
+  /**
+   * Response compression settings
+   * @type {Object}
+   */
   responseCompression: {
     enabled: true,
     options: {
@@ -40,26 +73,51 @@ export const performanceConfig = {
     },
   },
 
-  // Browser caching settings
+  /**
+   * Browser caching settings
+   * @type {Object}
+   */
   browserCache: {
     maxAge: 31536000, // 1 year in seconds
     mustRevalidate: true,
   },
 };
 
+/**
+ * API-specific performance configuration
+ * 
+ * @type {Object}
+ * @property {Object} connection - Connection settings
+ * @property {Object} retry - Retry settings
+ * @property {Object} cache - Cache settings
+ */
 export const apiPerformanceConfig = {
+  /**
+   * Connection settings
+   * @type {Object}
+   */
   connection: {
     keepAlive: true,
     keepAliveMsecs: 60000,
     maxSockets: 100,
     maxFreeSockets: 10,
   },
+
+  /**
+   * Retry settings
+   * @type {Object}
+   */
   retry: {
     retries: 3,
     factor: 2,
     minTimeout: 1000,
     maxTimeout: 5000,
   },
+
+  /**
+   * Cache settings
+   * @type {Object}
+   */
   cache: {
     standard: 300000, // 5 minutes
     short: 60000,    // 1 minute
