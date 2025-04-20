@@ -2,6 +2,74 @@
 
 A NestJS application with GOV.UK Frontend integration.
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v20 or later)
+- npm or yarn
+
+### Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run start:dev
+```
+
+### Available Scripts
+
+#### Development
+- `npm run start` - Start the application in standard mode
+- `npm run start:dev` - Start development server with hot reload
+  - Automatically compiles TypeScript on the fly
+  - Watches for file changes and recompiles automatically
+  - Provides hot reloading for faster development
+- `npm run start:debug` - Start in debug mode with watch enabled
+  - Enables Node.js debugging capabilities
+  - Allows attaching debugger for step-through debugging
+- `npm run start:prod` - Start production server
+  - Runs the built application from dist/
+  - Uses production optimizations
+
+#### Building
+- `npm run build` - Build the application
+  - Compiles TypeScript to JavaScript
+  - Generates production-ready code in dist/
+
+#### Testing
+- `npm run test` - Run all tests
+  - Executes all test files using Jest
+  - Shows test results and summary
+- `npm run test:watch` - Run tests in watch mode
+  - Continuously watches for changes
+  - Re-runs tests when files are modified
+- `npm run test:cov` - Run tests with coverage reporting
+  - Generates detailed code coverage report
+  - Shows percentage of code covered by tests
+- `npm run test:debug` - Run tests in debug mode
+  - Enables debugging capabilities for tests
+  - Uses Node.js inspector for debugging
+- `npm run test:e2e` - Run end-to-end tests
+  - Executes tests from test/jest-e2e.json configuration
+- `npm run test:govuk` - Run GOV.UK component tests
+  - Tests specific to GOV.UK Frontend components
+- `npm run test:govuk:watch` - Run GOV.UK tests in watch mode
+  - Continuously watches for changes in GOV.UK component tests
+- `npm run test:govuk:cov` - Run GOV.UK tests with coverage
+  - Generates coverage report for GOV.UK component tests
+
+#### Code Quality
+- `npm run format` - Format code with Prettier
+  - Formats all TypeScript files in src/ and test/
+  - Ensures consistent code style
+- `npm run lint` - Run ESLint
+  - Lints all TypeScript files
+  - Automatically fixes fixable issues
+  - Checks code style and potential problems
+
 ## Project Structure
 
 ```
@@ -25,18 +93,6 @@ src/
 ├── views/          # Nunjucks templates
 └── public/         # Static assets
 ```
-
-## Logging
-
-The application uses a robust logging system built on Winston. For detailed information about the logging system, including configuration, usage, and best practices, see the [Logging Documentation](docs/logging.md).
-
-Key features:
-- Multiple log levels (error, warn, info, debug, verbose)
-- Context-aware logging
-- Structured JSON logging for files
-- Colored console output for development
-- Separate error log file
-- Stack trace capture for errors
 
 ## API Documentation
 
@@ -180,73 +236,17 @@ The application supports documenting security requirements:
 
 For more detailed information about Swagger documentation, see the [Swagger Documentation Guide](docs/swagger-documentation.md).
 
-## Getting Started
+## Logging
 
-### Prerequisites
+The application uses a robust logging system built on Winston. For detailed information about the logging system, including configuration, usage, and best practices, see the [Logging Documentation](docs/logging.md).
 
-- Node.js (v20 or later)
-- npm or yarn
-
-### Installation
-
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run start:dev
-```
-
-### Available Scripts
-
-#### Development
-- `npm run start` - Start the application in standard mode
-- `npm run start:dev` - Start development server with hot reload
-  - Automatically compiles TypeScript on the fly
-  - Watches for file changes and recompiles automatically
-  - Provides hot reloading for faster development
-- `npm run start:debug` - Start in debug mode with watch enabled
-  - Enables Node.js debugging capabilities
-  - Allows attaching debugger for step-through debugging
-- `npm run start:prod` - Start production server
-  - Runs the built application from dist/
-  - Uses production optimizations
-
-#### Building
-- `npm run build` - Build the application
-  - Compiles TypeScript to JavaScript
-  - Generates production-ready code in dist/
-
-#### Testing
-- `npm run test` - Run all tests
-  - Executes all test files using Jest
-  - Shows test results and summary
-- `npm run test:watch` - Run tests in watch mode
-  - Continuously watches for changes
-  - Re-runs tests when files are modified
-- `npm run test:cov` - Run tests with coverage reporting
-  - Generates detailed code coverage report
-  - Shows percentage of code covered by tests
-- `npm run test:debug` - Run tests in debug mode
-  - Enables debugging capabilities for tests
-  - Uses Node.js inspector for debugging
-- `npm run test:e2e` - Run end-to-end tests
-  - Executes tests from test/jest-e2e.json configuration
-- `npm run test:govuk` - Run GOV.UK component tests
-  - Tests specific to GOV.UK Frontend components
-- `npm run test:govuk:watch` - Run GOV.UK tests in watch mode
-  - Continuously watches for changes in GOV.UK component tests
-- `npm run test:govuk:cov` - Run GOV.UK tests with coverage
-  - Generates coverage report for GOV.UK component tests
-
-#### Code Quality
-- `npm run format` - Format code with Prettier
-  - Formats all TypeScript files in src/ and test/
-  - Ensures consistent code style
-- `npm run lint` - Run ESLint
-  - Lints all TypeScript files
-  - Automatically fixes fixable issues
-  - Checks code style and potential problems
+Key features:
+- Multiple log levels (error, warn, info, debug, verbose)
+- Context-aware logging
+- Structured JSON logging for files
+- Colored console output for development
+- Separate error log file
+- Stack trace capture for errors
 
 ## Development Guidelines
 
@@ -611,4 +611,23 @@ export class YourService {
    - Set appropriate TTL values based on data volatility
    - Consider using different TTLs for different types of data
    - Monitor cache hit rates to optimize TTL settings
+
+## Documentation
+
+### Core Documentation
+- [Component Management](docs/component-management.md) - Guidelines for component development and maintenance
+- [Configuration Management](docs/configuration-management.md) - Environment and configuration management
+- [Deployment and CI/CD](docs/deployment-cicd.md) - Build, deployment, and continuous integration processes
+- [Team Collaboration](docs/team-collaboration.md) - Team workflows and collaboration practices
+- [Compliance and Governance](docs/compliance-governance.md) - Compliance requirements and governance procedures
+- [Error Handling](docs/error-handling.md) - Error management and logging practices
+- [Dependency Management](docs/dependency-management.md) - Package and dependency management
+- [Training and Onboarding](docs/training-onboarding.md) - Onboarding processes and training materials
+- [API Integration Patterns](docs/api-integration-patterns.md) - API design and integration patterns
+
+### Technical Documentation
+- [Performance Monitoring](docs/performance-monitoring.md) - Performance optimization and monitoring
+- [Security Best Practices](docs/security-best-practices.md) - Security standards and practices
+- [Testing Strategies](docs/testing-strategies.md) - Testing methodologies and tools
+- [Accessibility Compliance](docs/accessibility-compliance.md) - Accessibility standards and practices
  
