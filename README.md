@@ -54,6 +54,9 @@ npm run start:dev
   - Uses Node.js inspector for debugging
 - `npm run test:e2e` - Run end-to-end tests
   - Executes tests from test/jest-e2e.json configuration
+  - Tests the application as a whole, including API endpoints and integration points
+  - Verifies complete user flows and system interactions
+  - Ensures all components work together correctly
 - `npm run test:govuk` - Run GOV.UK component tests
   - Tests specific to GOV.UK Frontend components
 - `npm run test:govuk:watch` - Run GOV.UK tests in watch mode
