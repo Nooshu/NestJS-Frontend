@@ -2,6 +2,19 @@
 
 A NestJS application with GOV.UK Frontend integration.
 
+## Project Overview
+
+This application is a modern web application built with NestJS and GOV.UK Frontend, providing a robust foundation for government digital services. It includes:
+
+- Modern TypeScript-based architecture
+- GOV.UK Frontend integration for consistent styling
+- Comprehensive testing suite
+- API documentation with Swagger
+- Robust logging and error handling
+- Redis-based caching
+- Request validation
+- Security best practices
+
 ## Getting Started
 
 ### Prerequisites
