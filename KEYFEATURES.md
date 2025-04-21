@@ -13,7 +13,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Easy integration with government authentication systems
 
 ### 2. Accessibility and Standards
-- Automatic compliance with WCAG 2.1 standards through GOV.UK Frontend
+- Automatic compliance with WCAG 2.2 standards through GOV.UK Frontend
 - Built-in support for accessibility testing
 - Consistent user experience across government services
 - Automatic handling of accessibility requirements
