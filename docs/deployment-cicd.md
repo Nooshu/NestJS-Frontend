@@ -51,7 +51,7 @@ This document outlines the deployment and Continuous Integration/Continuous Depl
 
 2. **Build Steps**
    - Compilation
-   - Optimization
+   - Optimisation
    - Asset processing
    - Bundle generation
 

@@ -10,7 +10,7 @@ This document outlines the standards and patterns for API integration in the Nes
 2. [Integration Patterns](#integration-patterns)
 3. [Error Handling](#error-handling)
 4. [Security Considerations](#security-considerations)
-5. [Performance Optimization](#performance-optimization)
+5. [Performance Optimisation](#performance-optimisation)
 6. [Testing Strategies](#testing-strategies)
 7. [Documentation Standards](#documentation-standards)
 
@@ -200,15 +200,15 @@ This document outlines the standards and patterns for API integration in the Nes
    - API key management
    - Session handling
 
-### Authorization
+### Authorisation
 
 1. **Access Control**
    ```typescript
-   // Authorization decorator
+   // Authorisation decorator
    @Injectable()
    export class AuthGuard implements CanActivate {
      canActivate(context: ExecutionContext): boolean {
-       // Authorization logic
+       // Authorisation logic
      }
    }
    ```
@@ -219,7 +219,7 @@ This document outlines the standards and patterns for API integration in the Nes
    - Permission validation
    - Access logging
 
-## Performance Optimization
+## Performance Optimisation
 
 ### Caching Strategies
 
@@ -246,7 +246,7 @@ This document outlines the standards and patterns for API integration in the Nes
    - Cache invalidation
    - Cache warming
 
-### Request Optimization
+### Request Optimisation
 
 1. **Batch Requests**
    ```typescript
@@ -263,7 +263,7 @@ This document outlines the standards and patterns for API integration in the Nes
    - Request batching
    - Request deduplication
    - Request queuing
-   - Request prioritization
+   - Request prioritisation
 
 ## Testing Strategies
 

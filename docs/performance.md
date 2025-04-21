@@ -1,15 +1,15 @@
-# Performance Optimizations
+# Performance Optimisations
 
-This document outlines the performance optimizations implemented in the NestJS application to ensure fast loading times and optimal user experience.
+This document outlines the performance optimisations implemented in the NestJS application to ensure fast loading times and optimal user experience.
 
 ## Overview
 
-The application implements several performance optimizations:
+The application implements several performance optimisations:
 
 - Response Compression
 - Static Asset Caching
 - Browser Caching
-- Asset Optimization
+- Asset Optimisation
 
 ## Response Compression
 
@@ -44,7 +44,7 @@ compression: {
 
 ## Static Asset Caching
 
-Static assets are served with optimized caching headers to improve performance:
+Static assets are served with optimised caching headers to improve performance:
 
 ```typescript
 staticAssets: {
@@ -122,7 +122,7 @@ browserCache: {
 All performance settings can be adjusted in `src/shared/config/performance.config.ts`. The configuration is loaded in:
 
 1. `src/main.ts` - For compression and static asset serving
-2. `src/app.module.ts` - For module-level optimizations
+2. `src/app.module.ts` - For module-level optimisations
 
 ## Troubleshooting
 

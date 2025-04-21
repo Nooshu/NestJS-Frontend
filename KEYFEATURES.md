@@ -20,13 +20,13 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Built-in support for GOV.UK Design System patterns
 - Accessibility compliance out of the box
 - Automatic asset serving from node_modules
-- Optimized static asset delivery with caching headers
+- Optimised static asset delivery with caching headers
 - Support for GOV.UK Frontend JavaScript components
 
 ### 3. Security Features
 - Helmet.js integration with custom security configurations
 - Built-in rate limiting with @nestjs/throttler
-- Compression middleware for optimized performance
+- Compression middleware for optimised performance
 - Environment-based configuration management
 - CSRF protection
 - CORS configuration
@@ -45,9 +45,9 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Built-in validation and transformation
 - Clear error messages and debugging support
 
-### 5. Performance Optimization
+### 5. Performance Optimisation
 - Redis caching support with module-based configuration
-- Static file serving optimization with custom headers
+- Static file serving optimisation with custom headers
 - Compression middleware with configurable options
 - Axios HTTP client for efficient API calls
 - Request batching support
@@ -60,7 +60,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ### 1. Architecture and Scalability
 - **Structured Architecture**: NestJS provides a more structured and scalable architecture compared to Express.js, with clear separation of concerns and modular design
 - **Type Safety**: Full TypeScript support with decorators and dependency injection, reducing runtime errors
-- **Modular Design**: Better code organization and reusability through modules, making it easier to maintain large applications
+- **Modular Design**: Better code organisation and reusability through modules, making it easier to maintain large applications
 - **Enterprise-Ready**: Built-in support for microservices and complex applications, perfect for government services
 - **Dependency Injection**: Automatic dependency management and testing support
 - **Middleware System**: More powerful and structured middleware handling
@@ -76,12 +76,12 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ### 3. Security and Performance
 - **Built-in Security**: Comprehensive security features out of the box with Helmet.js
-- **Performance Optimizations**: Caching, compression, and static file serving with optimal configurations
+- **Performance Optimisations**: Caching, compression, and static file serving with optimal configurations
 - **Rate Limiting**: Built-in protection against abuse with configurable limits
 - **Health Checks**: Built-in health monitoring endpoints
 - **Request Validation**: Automatic validation of incoming requests
 - **Error Handling**: Structured error handling with proper logging
-- **Caching**: Redis integration for performance optimization
+- **Caching**: Redis integration for performance optimisation
 
 ### 4. Maintenance and Updates
 - **Easier Updates**: Structured dependency management with clear upgrade paths
@@ -93,7 +93,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ### 5. Integration Features
 - **API Documentation**: Swagger/OpenAPI integration with automatic generation
-- **Caching**: Redis integration for performance optimization
+- **Caching**: Redis integration for performance optimisation
 - **Monitoring**: Health checks and structured logging
 - **Configuration**: Environment-based configuration management
 - **Validation**: Built-in request validation
@@ -117,7 +117,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Support for assistive technologies
 
 ### 3. Performance and Scalability
-- Optimized for high-traffic government services
+- Optimised for high-traffic government services
 - Built-in caching for improved performance
 - Automatic handling of peak loads
 - Efficient static asset delivery
@@ -154,7 +154,7 @@ This framework is particularly well-suited for:
 - **Swagger/OpenAPI Support**: Native support for consuming Java Spring Boot Swagger documentation
 - **Type Generation**: Automatic TypeScript type generation from Java API documentation
 - **API Client Generation**: Tools for generating strongly-typed API clients from Java API specs
-- **Documentation Synchronization**: Easy to keep frontend and backend documentation in sync
+- **Documentation Synchronisation**: Easy to keep frontend and backend documentation in sync
 
 ### 3. Security Integration
 - **JWT Support**: Built-in support for JWT authentication commonly used in Java applications
@@ -162,11 +162,11 @@ This framework is particularly well-suited for:
 - **CORS Configuration**: Easy configuration for cross-origin requests to Java APIs
 - **CSRF Protection**: Built-in CSRF protection compatible with Java security implementations
 
-### 4. Performance Optimization
+### 4. Performance Optimisation
 - **Caching Layer**: Redis caching can be used to reduce load on Java APIs
 - **Request Batching**: Support for batching multiple API calls to reduce network overhead
 - **Response Compression**: Built-in compression for efficient data transfer
-- **Connection Pooling**: Optimized HTTP client configuration for Java API connections
+- **Connection Pooling**: Optimised HTTP client configuration for Java API connections
 
 ### 5. Development Workflow
 - **Environment Configuration**: Easy configuration management for different Java API environments

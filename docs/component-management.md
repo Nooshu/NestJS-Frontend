@@ -52,7 +52,7 @@ This document outlines the standards and practices for managing components in th
 
 ### Best Practices
 
-1. **Code Organization**
+1. **Code Organisation**
    - Keep components small and focused
    - Use composition over inheritance
    - Follow single responsibility principle
@@ -65,9 +65,9 @@ This document outlines the standards and practices for managing components in th
    - Use proper TypeScript types
 
 3. **Performance**
-   - Implement proper memoization
+   - Implement proper memoisation
    - Use lazy loading when appropriate
-   - Optimize re-renders
+   - Optimise re-renders
    - Monitor component performance
 
 ## Component Registry

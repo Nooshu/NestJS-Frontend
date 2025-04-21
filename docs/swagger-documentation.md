@@ -84,7 +84,7 @@ If your API uses authentication:
 ### Regular Updates
 
 1. Review documentation when adding new endpoints
-2. Update examples to reflect current API behavior
+2. Update examples to reflect current API Behaviour
 3. Remove documentation for deprecated endpoints
 4. Keep authentication documentation current
 

@@ -1,7 +1,7 @@
 /**
  * Main entry point for the NestJS application.
  * Configures the application with Nunjucks templating, static assets, and Swagger documentation.
- * This module initializes the NestJS application with necessary middleware,
+ * This module initialses the NestJS application with necessary middleware,
  * view engine configuration, and static asset serving.
  * 
  * @module Main

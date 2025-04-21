@@ -4,7 +4,7 @@ This document provides guidance on how to integrate the frontend application wit
 
 ## Overview
 
-The frontend application uses a centralized `ApiService` for making HTTP requests to the backend. The service includes built-in error handling, timeout management, and response transformation.
+The frontend application uses a centralised `ApiService` for making HTTP requests to the backend. The service includes built-in error handling, timeout management, and response transformation.
 
 ## Configuration
 
@@ -112,7 +112,7 @@ The application implements rate limiting with the following settings:
    - Use the provided error interceptor for consistent error responses
 
 2. **Caching**
-   - Utilize the built-in caching service for frequently accessed data
+   - Utilise the built-in caching service for frequently accessed data
    - Cache durations are configurable based on data volatility
 
 3. **Performance**

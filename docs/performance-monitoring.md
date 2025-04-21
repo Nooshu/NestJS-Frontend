@@ -1,14 +1,14 @@
-# Performance Monitoring and Optimization
+# Performance Monitoring and Optimisation
 
 ## Overview
 
-This document outlines the standards and practices for performance monitoring and optimization in the NestJS Frontend application. It covers monitoring tools, optimization techniques, and performance metrics.
+This document outlines the standards and practices for performance monitoring and optimisation in the NestJS Frontend application. It covers monitoring tools, optimisation techniques, and performance metrics.
 
 ## Table of Contents
 
 1. [Monitoring Tools](#monitoring-tools)
 2. [Performance Metrics](#performance-metrics)
-3. [Optimization Techniques](#optimization-techniques)
+3. [Optimisation Techniques](#optimisation-techniques)
 4. [Resource Management](#resource-management)
 5. [Caching Strategies](#caching-strategies)
 6. [Load Testing](#load-testing)
@@ -115,15 +115,15 @@ This document outlines the standards and practices for performance monitoring an
    - Time-series database
    - Metrics aggregation
    - Data retention
-   - Query optimization
+   - Query optimisation
 
-## Optimization Techniques
+## Optimisation Techniques
 
-### Code Optimization
+### Code Optimisation
 
 1. **Performance Patterns**
    ```typescript
-   // Performance optimization patterns
+   // Performance optimisation patterns
    const optimizationPatterns = {
      lazyLoading: true,
      codeSplitting: true,
@@ -132,17 +132,17 @@ This document outlines the standards and practices for performance monitoring an
    };
    ```
 
-2. **Optimization Methods**
-   - Bundle optimization
+2. **Optimisation Methods**
+   - Bundle optimisation
    - Code splitting
    - Lazy loading
    - Memory management
 
-### Resource Optimization
+### Resource Optimisation
 
 1. **Resource Configuration**
    ```typescript
-   // Resource optimization configuration
+   // Resource optimisation configuration
    const resourceConfig = {
      memory: {
        heapSize: '1g',
@@ -155,11 +155,11 @@ This document outlines the standards and practices for performance monitoring an
    };
    ```
 
-2. **Optimization Strategies**
-   - Memory optimization
-   - CPU optimization
-   - Network optimization
-   - Storage optimization
+2. **Optimisation Strategies**
+   - Memory optimisation
+   - CPU optimisation
+   - Network optimisation
+   - Storage optimisation
 
 ## Resource Management
 
@@ -180,11 +180,11 @@ This document outlines the standards and practices for performance monitoring an
    };
    ```
 
-2. **Memory Optimization**
+2. **Memory Optimisation**
    - Garbage collection
    - Memory leaks
    - Buffer management
-   - Cache optimization
+   - Cache optimisation
 
 ### CPU Management
 
@@ -203,7 +203,7 @@ This document outlines the standards and practices for performance monitoring an
    };
    ```
 
-2. **CPU Optimization**
+2. **CPU Optimisation**
    - Thread management
    - Process scheduling
    - Load balancing
@@ -363,4 +363,4 @@ This document outlines the standards and practices for performance monitoring an
 - [NestJS Performance](https://docs.nestjs.com/techniques/performance)
 - [Performance Monitoring](https://www.gov.uk/service-manual/technology/monitoring-the-status-of-your-service)
 - [Load Testing](https://www.gov.uk/service-manual/technology/test-your-services-performance)
-- [Performance Optimization](https://www.gov.uk/service-manual/technology/performance) 
+- [Performance Optimisation](https://www.gov.uk/service-manual/technology/performance) 

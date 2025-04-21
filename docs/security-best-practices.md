@@ -2,12 +2,12 @@
 
 ## Overview
 
-This document outlines the security best practices for the NestJS Frontend application. It covers authentication, authorization, data protection, and security monitoring.
+This document outlines the security best practices for the NestJS Frontend application. It covers authentication, authorisation, data protection, and security monitoring.
 
 ## Table of Contents
 
 1. [Authentication](#authentication)
-2. [Authorization](#authorization)
+2. [Authorisation](#authorisation)
 3. [Data Protection](#data-protection)
 4. [Security Monitoring](#security-monitoring)
 5. [Vulnerability Management](#vulnerability-management)
@@ -63,7 +63,7 @@ This document outlines the security best practices for the NestJS Frontend appli
    - Password rotation
    - Account lockout
 
-## Authorization
+## Authorisation
 
 ### Access Control
 
@@ -83,17 +83,17 @@ This document outlines the security best practices for the NestJS Frontend appli
    - Access control lists
    - Resource-based access
 
-### Authorization Implementation
+### Authorisation Implementation
 
 1. **Guard Implementation**
    ```typescript
-   // Authorization guard
+   // Authorisation guard
    @Injectable()
    export class AuthGuard implements CanActivate {
      constructor(private readonly authService: AuthService) {}
      
      canActivate(context: ExecutionContext): boolean {
-       // Authorization logic
+       // Authorisation logic
      }
    }
    ```
@@ -144,8 +144,8 @@ This document outlines the security best practices for the NestJS Frontend appli
    ```
 
 2. **Privacy Implementation**
-   - Data minimization
-   - Data anonymization
+   - Data minimisation
+   - Data anonymisation
    - Data retention
    - Data deletion
 

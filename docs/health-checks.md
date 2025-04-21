@@ -8,7 +8,7 @@ The application provides two health check endpoints:
 - Basic health check (`/health`)
 - Detailed health check (`/health/detailed`)
 
-These endpoints monitor various aspects of the application's health and provide status information in a standardized format.
+These endpoints monitor various aspects of the application's health and provide status information in a standardised format.
 
 ## Endpoints
 

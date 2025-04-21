@@ -280,11 +280,11 @@ This document outlines the standards and practices for managing dependencies in 
    - CPU usage
    - Network impact
 
-### Optimization Strategies
+### Optimisation Strategies
 
-1. **Optimization Techniques**
+1. **Optimisation Techniques**
    ```typescript
-   // Optimization configuration
+   // Optimisation configuration
    const optimizationConfig = {
      treeShaking: true,
      codeSplitting: true,
@@ -294,7 +294,7 @@ This document outlines the standards and practices for managing dependencies in 
    ```
 
 2. **Performance Improvements**
-   - Bundle optimization
+   - Bundle optimisation
    - Code splitting
    - Lazy loading
    - Caching strategies

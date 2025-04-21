@@ -39,7 +39,7 @@ This document outlines the standards and practices for managing configuration in
    };
    ```
 
-### Configuration Organization
+### Configuration Organisation
 
 1. **Configuration Categories**
    - Application settings
@@ -78,7 +78,7 @@ This document outlines the standards and practices for managing configuration in
 
 4. **Production**
    - Live environment
-   - Optimized settings
+   - Optimised settings
    - Security measures
    - Monitoring enabled
 

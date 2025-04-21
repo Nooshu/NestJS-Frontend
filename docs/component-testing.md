@@ -67,7 +67,7 @@ The `GovukTestUtils` class provides:
    static compareHtml(rendered: string, fixture: string): boolean
    ```
    - Compares rendered HTML with fixture
-   - Normalizes whitespace and line endings
+   - Normalises whitespace and line endings
 
 3. **generateTestReport**
    ```typescript
@@ -165,7 +165,7 @@ Test results are saved in `test-output/govuk-components/test-results.json`:
 3. **Performance**
    - Run tests in parallel
    - Cache fixture loading
-   - Optimize HTML comparison
+   - Optimise HTML comparison
 
 ## References
 

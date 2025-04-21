@@ -32,7 +32,7 @@ npm run start:dev
   - Allows attaching debugger for step-through debugging
 - `npm run start:prod` - Start production server
   - Runs the built application from dist/
-  - Uses production optimizations
+  - Uses production optimisations
 
 #### Building
 - `npm run build` - Build the application
@@ -82,7 +82,7 @@ src/
 │   ├── config/     # Configuration files
 │   ├── constants/  # Application constants
 │   ├── decorators/ # Custom decorators
-│   ├── guards/     # Authentication/Authorization guards
+│   ├── guards/     # Authentication/Authorisation guards
 │   ├── interfaces/ # TypeScript interfaces
 │   ├── middleware/ # Custom middleware
 │   ├── services/   # Shared services
@@ -169,7 +169,7 @@ export class UsersController {
   })
   @ApiResponse({ 
     status: 401, 
-    description: 'Unauthorized - Authentication required'
+    description: 'Unauthorised - Authentication required'
   })
   @ApiBearerAuth()
   @Get('profile')
@@ -380,7 +380,7 @@ The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling 
 4. Test the application:
    - Run all tests: `npm test`
    - Check visual appearance of components
-   - Verify responsive behavior
+   - Verify responsive Behaviour
    - Test accessibility features
 
 ### Troubleshooting
@@ -526,7 +526,7 @@ Validation errors are automatically handled and return a 400 Bad Request respons
 
 #### Best Practices
 
-1. **DTO Organization**
+1. **DTO Organisation**
    - Keep DTOs in a dedicated directory (e.g., `src/dto`)
    - Use clear naming conventions (e.g., `CreateUserDto`, `UpdateUserDto`)
    - Document DTOs with comments and examples
@@ -539,7 +539,7 @@ Validation errors are automatically handled and return a 400 Bad Request respons
 
 3. **Error Messages**
    - Use descriptive error messages
-   - Consider internationalization
+   - Consider internationalisation
    - Provide helpful error details
    - Handle validation errors gracefully
 
@@ -613,7 +613,7 @@ export class YourService {
 3. **TTL Management**
    - Set appropriate TTL values based on data volatility
    - Consider using different TTLs for different types of data
-   - Monitor cache hit rates to optimize TTL settings
+   - Monitor cache hit rates to optimise TTL settings
 
 ## Documentation
 
@@ -629,7 +629,7 @@ export class YourService {
 - [API Integration Patterns](docs/api-integration-patterns.md) - API design and integration patterns
 
 ### Technical Documentation
-- [Performance Monitoring](docs/performance-monitoring.md) - Performance optimization and monitoring
+- [Performance Monitoring](docs/performance-monitoring.md) - Performance optimisation and monitoring
 - [Security Best Practices](docs/security-best-practices.md) - Security standards and practices
 - [Testing Strategies](docs/testing-strategies.md) - Testing methodologies and tools
 - [Accessibility Compliance](docs/accessibility-compliance.md) - Accessibility standards and practices

@@ -136,12 +136,12 @@ If you encounter issues with the security configuration:
 
 The application implements secure error handling through the `SecurityErrorFilter`:
 
-### Error Sanitization
+### Error Sanitisation
 ```typescript
 // Production vs Development error responses
 {
   production: {
-    // Sanitized error response
+    // Sanitised error response
     status: httpStatus,
     message: 'Internal server error',  // Generic message for unhandled errors
     stack: undefined                   // No stack trace in production
@@ -155,18 +155,18 @@ The application implements secure error handling through the `SecurityErrorFilte
 ```
 
 ### Security Features
-- Sanitizes error messages in production to prevent information leakage
+- Sanitises error messages in production to prevent information leakage
 - Removes stack traces in production environment
 - Maintains detailed error information for development
 - Implements secure logging that excludes sensitive data
-- Standardizes error response format across the application
+- Standardises error response format across the application
 
 ### Error Logging
 The application securely logs errors with the following information:
 - Request path
 - HTTP method
 - Timestamp
-- Sanitized error message
+- Sanitised error message
 - HTTP status code
 
 ### Best Practices
@@ -182,7 +182,7 @@ The application securely logs errors with the following information:
 3. **Error Response Structure**
    - Consistent format across all errors
    - Includes only necessary information
-   - Sanitized based on environment
+   - Sanitised based on environment
 
 ## References
 
