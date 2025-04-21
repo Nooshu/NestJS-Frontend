@@ -5,6 +5,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { CacheConfig, CacheKey } from './cache.types';
 import { CacheService as CacheServiceImpl } from './cache.service';
+import { SecurityError, SecurityErrorCode } from './error.types';
+import { securityErrorHandler } from './error.handler';
 
 type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
@@ -42,6 +44,7 @@ export function applyGovernmentSecurity(app: Application, config: Required<Secur
 
   const middleware = securityMiddleware(config);
   middleware.forEach(m => app.use(m));
+  app.use(securityErrorHandler);
 }
 
 /**
@@ -175,106 +178,173 @@ export const securityMiddleware = (config: SecurityConfig) => {
   // Rate limiting with cache
   if (config.rateLimit) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
-      const key: CacheKey = {
-        type: 'rate-limit',
-        identifier: req.ip || 'unknown',
-        timestamp: Math.floor(Date.now() / config.rateLimit!.windowMs)
-      };
+      try {
+        const key: CacheKey = {
+          type: 'rate-limit',
+          identifier: req.ip || 'unknown',
+          timestamp: Math.floor(Date.now() / config.rateLimit!.windowMs)
+        };
 
-      const cachedCount = await cache.get<number>(key) || 0;
-      
-      if (cachedCount >= config.rateLimit!.max) {
-        return res.status(429).json({ error: 'Too many requests' });
+        const cachedCount = await cache.get<number>(key) || 0;
+        
+        if (cachedCount >= config.rateLimit!.max) {
+          throw new SecurityError(
+            SecurityErrorCode.RATE_LIMIT_EXCEEDED,
+            'Too many requests',
+            {
+              path: req.path,
+              ip: req.ip,
+              metadata: {
+                limit: config.rateLimit!.max,
+                windowMs: config.rateLimit!.windowMs
+              }
+            }
+          );
+        }
+
+        await cache.set(key, cachedCount + 1, config.rateLimit!.windowMs / 1000);
+        next();
+      } catch (error) {
+        next(error);
       }
-
-      await cache.set(key, cachedCount + 1, config.rateLimit!.windowMs / 1000);
-      next();
     });
   }
 
   // Password policy with cache
   if (config.passwordPolicy) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
-      if (req.path === '/auth/register' && req.method === 'POST') {
-        const { password } = req.body as { password: string };
-        const key: CacheKey = {
-          type: 'password-policy',
-          identifier: password
-        };
+      try {
+        if (req.path === '/auth/register' && req.method === 'POST') {
+          const { password } = req.body as { password: string };
+          const key: CacheKey = {
+            type: 'password-policy',
+            identifier: password
+          };
 
-        const cachedResult = await cache.get<boolean>(key);
-        if (cachedResult !== null) {
-          if (!cachedResult) {
-            return res.status(400).json({ error: 'Password does not meet policy requirements' });
+          const cachedResult = await cache.get<boolean>(key);
+          if (cachedResult !== null) {
+            if (!cachedResult) {
+              throw new SecurityError(
+                SecurityErrorCode.PASSWORD_POLICY_VIOLATION,
+                'Password does not meet policy requirements',
+                {
+                  path: req.path,
+                  ip: req.ip,
+                  metadata: {
+                    policy: config.passwordPolicy
+                  }
+                }
+              );
+            }
+            return next();
           }
-          return next();
-        }
 
-        const isValid = validatePassword(password, config.passwordPolicy!);
-        await cache.set(key, isValid, 3600); // Cache for 1 hour
+          const isValid = validatePassword(password, config.passwordPolicy!);
+          await cache.set(key, isValid, 3600);
 
-        if (!isValid) {
-          return res.status(400).json({ error: 'Password does not meet policy requirements' });
+          if (!isValid) {
+            throw new SecurityError(
+              SecurityErrorCode.PASSWORD_POLICY_VIOLATION,
+              'Password does not meet policy requirements',
+              {
+                path: req.path,
+                ip: req.ip,
+                metadata: {
+                  policy: config.passwordPolicy
+                }
+              }
+            );
+          }
         }
+        next();
+      } catch (error) {
+        next(error);
       }
-      next();
     });
   }
 
   // Security headers with cache
   if (config.helmet || config.headers) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
-      const key: CacheKey = {
-        type: 'security-headers',
-        identifier: req.path
-      };
+      try {
+        const key: CacheKey = {
+          type: 'security-headers',
+          identifier: req.path
+        };
 
-      const cachedHeaders = await cache.get<Record<string, string>>(key);
-      if (cachedHeaders) {
-        Object.entries(cachedHeaders).forEach(([headerKey, value]) => {
-          res.setHeader(headerKey, value);
+        const cachedHeaders = await cache.get<Record<string, string>>(key);
+        if (cachedHeaders) {
+          Object.entries(cachedHeaders).forEach(([headerKey, value]) => {
+            res.setHeader(headerKey, value);
+          });
+          return next();
+        }
+
+        const headers = {
+          ...(config.helmet ? getHelmetHeaders() : {}),
+          ...(config.headers || {})
+        };
+
+        await cache.set(key, headers, 3600);
+        Object.entries(headers).forEach(([headerKey, value]) => {
+          res.setHeader(headerKey, String(value));
         });
-        return next();
+        next();
+      } catch (error) {
+        next(new SecurityError(
+          SecurityErrorCode.SECURITY_HEADER_ERROR,
+          'Failed to set security headers',
+          {
+            path: req.path,
+            ip: req.ip,
+            metadata: {
+              originalError: error instanceof Error ? error.message : 'Unknown error'
+            }
+          }
+        ));
       }
-
-      const headers = {
-        ...(config.helmet ? getHelmetHeaders() : {}),
-        ...(config.headers || {})
-      };
-
-      await cache.set(key, headers, 3600); // Cache for 1 hour
-      Object.entries(headers).forEach(([headerKey, value]) => {
-        res.setHeader(headerKey, String(value));
-      });
-      next();
     });
   }
 
   // Audit logging with cache
   if (config.audit?.enabled) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
-      const key: CacheKey = {
-        type: 'audit-log',
-        identifier: `${req.method}:${req.path}`,
-        timestamp: Math.floor(Date.now() / 60000) // Cache per minute
-      };
+      try {
+        const key: CacheKey = {
+          type: 'audit-log',
+          identifier: `${req.method}:${req.path}`,
+          timestamp: Math.floor(Date.now() / 60000)
+        };
 
-      const cachedLog = await cache.get<boolean>(key);
-      if (cachedLog) {
-        return next();
+        const cachedLog = await cache.get<boolean>(key);
+        if (cachedLog) {
+          return next();
+        }
+
+        const logData = {
+          timestamp: new Date(),
+          method: req.method,
+          path: req.path,
+          ip: req.ip || 'unknown',
+          ...(config.audit?.exclude ? excludeFields(req.body as Record<string, unknown>, config.audit.exclude) : {})
+        };
+
+        await cache.set(key, true, 60);
+        console.log('Audit Log:', logData);
+        next();
+      } catch (error) {
+        next(new SecurityError(
+          SecurityErrorCode.AUDIT_LOG_FAILURE,
+          'Failed to log audit entry',
+          {
+            path: req.path,
+            ip: req.ip,
+            metadata: {
+              originalError: error instanceof Error ? error.message : 'Unknown error'
+            }
+          }
+        ));
       }
-
-      const logData = {
-        timestamp: new Date(),
-        method: req.method,
-        path: req.path,
-        ip: req.ip || 'unknown',
-        ...(config.audit?.exclude ? excludeFields(req.body as Record<string, unknown>, config.audit.exclude) : {})
-      };
-
-      await cache.set(key, true, 60); // Cache for 1 minute
-      console.log('Audit Log:', logData);
-      next();
     });
   }
 
