@@ -1,46 +1,137 @@
 import { Request, Response, NextFunction, RequestHandler, Application } from 'express';
-import { SecurityConfig, RequestWithUser } from './security.types';
+import { SecurityConfig, RequestWithUser, MaxValue, CacheStore, RateLimitOptions, DataProtectionConfig, AuditConfig } from './security.types';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import helmet from 'helmet';
 import { CacheConfig, CacheKey } from './cache.types';
-import { CacheService as CacheServiceImpl } from './cache.service';
+import { CacheService } from './cache.service';
 import { SecurityError, SecurityErrorCode } from './error.types';
 import { securityErrorHandler } from './error.handler';
 
 type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
+function isValidRateLimitConfig(config: unknown): config is RateLimitOptions {
+  if (!config || typeof config !== 'object') return false;
+  const { windowMs, max, enabled } = config as Record<string, unknown>;
+  return typeof windowMs === 'number' && 
+         typeof max === 'number' &&
+         typeof enabled === 'boolean';
+}
+
+async function getMaxRequests(max: MaxValue, req: Request, res: Response): Promise<number> {
+  if (typeof max === 'number') {
+    return max;
+  }
+  const result = max(req, res);
+  return result instanceof Promise ? await result : result;
+}
+
 /**
  * Applies government security standards to the Express application
  */
-export function applyGovernmentSecurity(app: Application, config: Required<SecurityConfig>): void {
-  // Apply security headers
-  app.use(helmet(config.helmet));
+export function applyGovernmentSecurity(app: Application, config: SecurityConfig): void {
+  // Apply Helmet security headers
+  if (config.helmet) {
+    app.use(helmet(typeof config.helmet === 'boolean' ? {} : config.helmet));
+  }
 
-  // Configure CORS
-  app.use(cors(config.cors));
+  // Apply CORS
+  if (config.cors) {
+    app.use(cors(config.cors));
+  }
 
-  // Apply rate limiting
-  app.use(rateLimit(config.rateLimit));
-
-  // Apply custom security headers
+  // Apply custom headers
   if (config.headers) {
     app.use((req: Request, res: Response, next: NextFunction) => {
-      Object.entries(config.headers).forEach(([key, value]) => {
-        res.setHeader(key, String(value));
+      Object.entries(config.headers || {}).forEach(([key, value]) => {
+        res.setHeader(key, value);
       });
       next();
     });
   }
 
+  // Apply rate limiting
+  if (config.rateLimit && isValidRateLimitConfig(config.rateLimit)) {
+    const { windowMs, max } = config.rateLimit;
+
+    const cache = new CacheService({
+      enabled: true,
+      ttl: windowMs / 1000,
+      prefix: 'rate-limit',
+      store: 'memory'
+    });
+
+    app.use(async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const key: CacheKey = {
+          type: 'rate-limit',
+          identifier: req.ip || 'unknown',
+          timestamp: Math.floor(Date.now() / windowMs)
+        };
+
+        const cachedCount = await cache.get<number>(key) || 0;
+        const maxRequests = await getMaxRequests(max, req, res);
+        
+        if (cachedCount >= maxRequests) {
+          return res.status(429).json({ error: 'Too many requests' });
+        }
+
+        await cache.set(key, cachedCount + 1, windowMs / 1000);
+        next();
+      } catch (error) {
+        next(error);
+      }
+    });
+  }
+
+  // Apply password policy
+  if (config.passwordPolicy) {
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      if (req.path === '/register' && req.method === 'POST') {
+        const { password } = req.body;
+        if (!password || !validatePassword(password, config.passwordPolicy!)) {
+          return res.status(400).json({ error: 'Invalid password' });
+        }
+      }
+      next();
+    });
+  }
+
   // Apply audit logging
-  app.use(auditLogging(config));
+  if (config.audit?.enabled) {
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      const start = Date.now();
+      res.on('finish', () => {
+        const duration = Date.now() - start;
+        const auditData = {
+          timestamp: new Date().toISOString(),
+          method: req.method,
+          path: req.path,
+          status: res.statusCode,
+          duration,
+          ip: req.ip,
+          userAgent: req.get('user-agent'),
+        };
+        console.log('Audit:', auditData);
+      });
+      next();
+    });
+  }
 
-  // Apply password policy validation
-  app.use(validatePasswordPolicy(config));
-
-  // Apply sensitive data protection
-  app.use(protectSensitiveData(config));
+  // Apply data protection
+  if (config.dataProtection?.masking.enabled) {
+    app.use((req: Request, res: Response, next: NextFunction) => {
+      const originalJson = res.json;
+      res.json = function (data: any) {
+        if (typeof data === 'object') {
+          const maskedData = excludeFields(data, config.dataProtection?.masking.fields || []);
+          return originalJson.call(this, maskedData);
+        }
+        return originalJson.call(this, data);
+      };
+      next();
+    });
+  }
 
   const middleware = securityMiddleware(config);
   middleware.forEach(m => app.use(m));
@@ -89,7 +180,7 @@ function validatePasswordPolicy(config: Required<SecurityConfig>) {
  */
 function protectSensitiveData(config: Required<SecurityConfig>) {
   return (req: RequestWithUser, res: Response, next: NextFunction) => {
-    const masking = config.dataProtection.masking;
+    const { masking } = config.dataProtection;
     if (masking.enabled && Array.isArray(masking.fields)) {
       const originalJson = res.json;
       res.json = function(data: unknown) {
@@ -138,7 +229,7 @@ function auditLogging(config: Required<SecurityConfig>) {
 }
 
 // Helper functions
-const validatePassword = (password: string, policy: Required<SecurityConfig>['passwordPolicy']): boolean => {
+const validatePassword = (password: string, policy: NonNullable<SecurityConfig['passwordPolicy']>): boolean => {
   if (password.length < policy.minLength) return false;
   if (policy.requireUppercase && !/[A-Z]/.test(password)) return false;
   if (policy.requireLowercase && !/[a-z]/.test(password)) return false;
@@ -163,19 +254,26 @@ const excludeFields = (data: Record<string, unknown>, fields: string[]): Record<
   return result;
 };
 
+/**
+ * Creates an array of security middleware functions with error handling.
+ * Each middleware function is wrapped in a try-catch block to ensure proper error handling.
+ * 
+ * @param config - The security configuration object
+ * @returns An array of Express middleware functions
+ */
 export const securityMiddleware = (config: SecurityConfig) => {
   const cacheConfig: CacheConfig = {
     enabled: true,
-    ttl: 300, // 5 minutes default TTL
+    ttl: 300,
     prefix: 'gov-security',
     store: 'memory'
   };
 
-  const cache = new CacheServiceImpl(cacheConfig);
+  const cache = new CacheService(cacheConfig);
 
   const middleware: RequestHandler[] = [];
 
-  // Rate limiting with cache
+  // Rate limiting with cache and error handling
   if (config.rateLimit) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -210,7 +308,7 @@ export const securityMiddleware = (config: SecurityConfig) => {
     });
   }
 
-  // Password policy with cache
+  // Password policy validation with cache and error handling
   if (config.passwordPolicy) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -263,7 +361,7 @@ export const securityMiddleware = (config: SecurityConfig) => {
     });
   }
 
-  // Security headers with cache
+  // Security headers with cache and error handling
   if (config.helmet || config.headers) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -306,7 +404,7 @@ export const securityMiddleware = (config: SecurityConfig) => {
     });
   }
 
-  // Audit logging with cache
+  // Audit logging with cache and error handling
   if (config.audit?.enabled) {
     middleware.push(async (req: Request, res: Response, next: NextFunction) => {
       try {
@@ -326,7 +424,7 @@ export const securityMiddleware = (config: SecurityConfig) => {
           method: req.method,
           path: req.path,
           ip: req.ip || 'unknown',
-          ...(config.audit?.exclude ? excludeFields(req.body as Record<string, unknown>, config.audit.exclude) : {})
+          ...(config.audit?.excludeFields ? excludeFields(req.body as Record<string, unknown>, config.audit.excludeFields) : {})
         };
 
         await cache.set(key, true, 60);
@@ -349,4 +447,98 @@ export const securityMiddleware = (config: SecurityConfig) => {
   }
 
   return middleware;
+};
+
+export const rateLimitMiddleware = (config: SecurityConfig): RequestHandler => {
+  const { rateLimit, cache } = config;
+  
+  // Early return if rate limiting is not enabled
+  if (!rateLimit?.enabled) {
+    return (req, res, next) => next();
+  }
+
+  // At this point we know rateLimit is defined and enabled
+  const { max, windowMs } = rateLimit;
+
+  return async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const key = `rate_limit:${req.ip}`;
+      const cachedCount = cache ? await cache.get(key) : null;
+      const currentCount = cachedCount ? parseInt(cachedCount, 10) : 0;
+
+      if (currentCount >= max) {
+        return res.status(rateLimit.statusCode || 429).json({
+          message: rateLimit.message || 'Too many requests'
+        });
+      }
+
+      if (cache) {
+        await cache.set(key, (currentCount + 1).toString(), windowMs);
+      }
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
+};
+
+export const auditMiddleware = (config: SecurityConfig): RequestHandler => {
+  const { audit } = config;
+  if (!audit?.enabled) {
+    return (req, res, next) => next();
+  }
+
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const requestData = {
+        method: req.method,
+        path: req.path,
+        query: req.query,
+        body: req.body,
+        timestamp: new Date().toISOString()
+      };
+
+      // Filter out excluded fields
+      if (audit.excludeFields?.length) {
+        audit.excludeFields.forEach(field => {
+          delete requestData.body[field];
+        });
+      }
+
+      // Log the audit data (implement your logging logic here)
+      console.log('Audit Log:', requestData);
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
+};
+
+export const dataProtectionMiddleware = (config: SecurityConfig): RequestHandler => {
+  const { dataProtection } = config;
+  if (!dataProtection?.enabled) {
+    return (req, res, next) => next();
+  }
+
+  return (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Mask sensitive fields in the response
+      const originalSend = res.send;
+      res.send = function (body) {
+        if (body && dataProtection.masking?.fields?.length) {
+          const maskedBody = { ...body };
+          dataProtection.masking.fields.forEach((field: string) => {
+            if (maskedBody[field]) {
+              maskedBody[field] = '********';
+            }
+          });
+          return originalSend.call(this, maskedBody);
+        }
+        return originalSend.call(this, body);
+      };
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
 }; 

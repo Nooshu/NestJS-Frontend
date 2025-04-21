@@ -5,40 +5,49 @@ import { LoggingConfig } from '../logging.config';
 /**
  * Mock security configuration for testing
  */
-export const mockSecurityConfig: Required<SecurityConfig> = {
-  helmet: {
-    contentSecurityPolicy: false,
-  },
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type'],
-  },
-  rateLimit: {
-    windowMs: 15 * 60 * 1000,
-    max: 100,
-    headers: true,
-  },
-  headers: {
-    'X-Content-Type-Options': 'nosniff',
-  },
-  audit: {
-    enabled: true,
-    exclude: ['password'],
-  },
+export const mockSecurityConfig: SecurityConfig = {
   passwordPolicy: {
     minLength: 8,
     requireUppercase: true,
     requireLowercase: true,
     requireNumbers: true,
-    requireSpecialChars: true,
+    requireSpecialChars: true
+  },
+  rateLimit: {
+    enabled: true,
+    max: 100,
+    windowMs: 15 * 60 * 1000, // 15 minutes
+  },
+  audit: {
+    enabled: true,
+    excludeFields: ['password', 'token']
   },
   dataProtection: {
+    enabled: true,
+    encryptionKey: 'test-key-12345',
     masking: {
       enabled: true,
-      fields: ['password', 'token'],
-    },
+      fields: ['password', 'ssn', 'creditCard']
+    }
   },
+  helmet: {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"]
+      }
+    }
+  },
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+  },
+  headers: {
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
+  }
 };
 
 /**

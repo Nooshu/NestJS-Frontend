@@ -1,51 +1,92 @@
 import { CacheConfig, CacheStore, CacheKey } from './cache.types';
 import Redis from 'ioredis';
 
-export class MemoryCacheStore implements CacheStore {
-  private store: Map<string, { value: string; expires: number }> = new Map();
+/**
+ * In-memory cache store implementation.
+ * Uses a Map to store key-value pairs with expiration logic.
+ */
+class MemoryCacheStore implements CacheStore {
+  private store: Map<string, { value: string; expiresAt: number }>;
 
+  constructor() {
+    this.store = new Map();
+  }
+
+  /**
+   * Retrieves a value from the in-memory cache.
+   * @param key - The cache key
+   * @returns The cached value or null if not found/expired
+   */
   async get(key: string): Promise<string | null> {
     const item = this.store.get(key);
     if (!item) return null;
-    
-    if (item.expires < Date.now()) {
+
+    if (Date.now() > item.expiresAt) {
       await this.del(key);
       return null;
     }
-    
+
     return item.value;
   }
 
+  /**
+   * Stores a value in the in-memory cache.
+   * @param key - The cache key
+   * @param value - The value to cache
+   * @param ttl - Time-to-live in seconds
+   */
   async set(key: string, value: string, ttl?: number): Promise<void> {
-    const expires = ttl ? Date.now() + ttl * 1000 : Infinity;
-    this.store.set(key, { value, expires });
+    const expiresAt = Date.now() + (ttl || 3600) * 1000;
+    this.store.set(key, { value, expiresAt });
   }
 
+  /**
+   * Deletes a value from the in-memory cache.
+   * @param key - The cache key to delete
+   */
   async del(key: string): Promise<void> {
     this.store.delete(key);
   }
 
+  /**
+   * Clears all entries from the in-memory cache.
+   */
   async clear(): Promise<void> {
     this.store.clear();
   }
 }
 
-export class RedisCacheStore implements CacheStore {
+/**
+ * Redis cache store implementation.
+ * Uses ioredis to interact with a Redis database.
+ */
+class RedisCacheStore implements CacheStore {
   private client: Redis;
 
-  constructor(config: CacheConfig['redis']) {
+  constructor(config: CacheConfig) {
     this.client = new Redis({
-      host: config?.host || 'localhost',
-      port: config?.port || 6379,
-      password: config?.password,
-      db: config?.db || 0
+      host: config.redis?.host || 'localhost',
+      port: config.redis?.port || 6379,
+      password: config.redis?.password,
+      db: config.redis?.db || 0
     });
   }
 
+  /**
+   * Retrieves a value from Redis cache.
+   * @param key - The cache key
+   * @returns The cached value or null if not found
+   */
   async get(key: string): Promise<string | null> {
     return this.client.get(key);
   }
 
+  /**
+   * Stores a value in Redis cache.
+   * @param key - The cache key
+   * @param value - The value to cache
+   * @param ttl - Time-to-live in seconds
+   */
   async set(key: string, value: string, ttl?: number): Promise<void> {
     if (ttl) {
       await this.client.setex(key, ttl, value);
@@ -54,26 +95,46 @@ export class RedisCacheStore implements CacheStore {
     }
   }
 
+  /**
+   * Deletes a value from Redis cache.
+   * @param key - The cache key to delete
+   */
   async del(key: string): Promise<void> {
     await this.client.del(key);
   }
 
+  /**
+   * Clears all entries from Redis cache.
+   */
   async clear(): Promise<void> {
     await this.client.flushdb();
   }
 }
 
+/**
+ * Cache service that provides a unified interface for caching operations.
+ * Supports both in-memory and Redis-based caching.
+ */
 export class CacheService {
   private store: CacheStore;
   private prefix: string;
 
+  /**
+   * Creates a new CacheService instance.
+   * @param config - Cache configuration options
+   */
   constructor(config: CacheConfig) {
-    this.prefix = config.prefix || 'gov-security:';
-    this.store = config.store === 'redis' && config.redis
-      ? new RedisCacheStore(config.redis)
+    this.prefix = config.prefix || 'gov-security';
+    this.store = config.store === 'redis' 
+      ? new RedisCacheStore(config)
       : new MemoryCacheStore();
   }
 
+  /**
+   * Builds a cache key from the provided components.
+   * @param key - The cache key components
+   * @returns A formatted cache key string
+   */
   private buildKey(key: CacheKey): string {
     const parts = [this.prefix, key.type, key.identifier];
     if (key.timestamp) {
@@ -82,38 +143,67 @@ export class CacheService {
     return parts.join(':');
   }
 
+  /**
+   * Retrieves a value from the cache.
+   * @param key - The cache key components
+   * @returns The cached value or null if not found
+   */
   async get<T>(key: CacheKey): Promise<T | null> {
-    if (!key) return null;
-    
-    const cacheKey = this.buildKey(key);
-    const value = await this.store.get(cacheKey);
-    
-    if (!value) return null;
-    
+    if (!this.store) return null;
+
     try {
-      return JSON.parse(value) as T;
-    } catch {
+      const value = await this.store.get(this.buildKey(key));
+      return value ? JSON.parse(value) : null;
+    } catch (error) {
+      console.error('Cache get error:', error);
       return null;
     }
   }
 
-  async set<T>(key: CacheKey, value: T, ttl?: number): Promise<void> {
-    if (!key || !value) return;
-    
-    const cacheKey = this.buildKey(key);
-    const serialized = JSON.stringify(value);
-    
-    await this.store.set(cacheKey, serialized, ttl);
+  /**
+   * Stores a value in the cache.
+   * @param key - The cache key components
+   * @param value - The value to cache
+   * @param ttl - Time-to-live in seconds
+   */
+  async set(key: CacheKey, value: unknown, ttl?: number): Promise<void> {
+    if (!this.store) return;
+
+    try {
+      await this.store.set(
+        this.buildKey(key),
+        JSON.stringify(value),
+        ttl
+      );
+    } catch (error) {
+      console.error('Cache set error:', error);
+    }
   }
 
-  async del(key: CacheKey): Promise<void> {
-    if (!key) return;
-    
-    const cacheKey = this.buildKey(key);
-    await this.store.del(cacheKey);
+  /**
+   * Deletes a value from the cache.
+   * @param key - The cache key components
+   */
+  async delete(key: CacheKey): Promise<void> {
+    if (!this.store) return;
+
+    try {
+      await this.store.del(this.buildKey(key));
+    } catch (error) {
+      console.error('Cache delete error:', error);
+    }
   }
 
+  /**
+   * Clears all entries from the cache.
+   */
   async clear(): Promise<void> {
-    await this.store.clear();
+    if (!this.store) return;
+
+    try {
+      await this.store.clear();
+    } catch (error) {
+      console.error('Cache clear error:', error);
+    }
   }
 } 
