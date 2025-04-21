@@ -1,10 +1,10 @@
 # API Integration Guide
 
-This document provides guidance on how to integrate the frontend application with a Java backend API.
+This document provides guidance on how to integrate the frontend application with backend APIs.
 
 ## Overview
 
-The frontend application uses a specialized `JavaApiClient` for making HTTP requests to Java-based backend APIs. The client includes built-in error handling, timeout management, logging, and authentication support.
+The frontend application uses a standardized API client configuration for making HTTP requests to backend APIs. The configuration includes built-in error handling, timeout management, logging, and authentication support.
 
 ## Configuration
 
@@ -13,49 +13,29 @@ The frontend application uses a specialized `JavaApiClient` for making HTTP requ
 The following environment variables need to be configured in your `.env` file:
 
 ```env
-JAVA_API_BASE_URL=http://your-java-backend-url
-JAVA_API_TIMEOUT=30000
-JAVA_API_RETRY_ATTEMPTS=3
-JAVA_API_RETRY_DELAY=1000
+API_BASE_URL=http://your-backend-url
+API_TIMEOUT=30000
+API_RETRY_ATTEMPTS=3
+API_CACHE_ENABLED=false
+API_CACHE_TTL=300000
 ```
 
-### Authentication Configuration
+### API Configuration
 
-The Java API client supports multiple authentication methods:
+The API configuration is defined in `src/shared/config/api.config.ts`:
 
 ```typescript
-// Basic Authentication
-const basicAuthConfig: JavaApiClientConfig = {
-  baseUrl: 'https://api.example.gov.uk',
-  auth: {
-    type: 'basic',
-    credentials: {
-      username: 'your-username',
-      password: 'your-password'
-    }
-  }
-};
-
-// Bearer Token Authentication
-const bearerAuthConfig: JavaApiClientConfig = {
-  baseUrl: 'https://api.example.gov.uk',
-  auth: {
-    type: 'bearer',
-    credentials: {
-      token: 'your-token'
-    }
-  }
-};
-
-// OAuth2 Authentication
-const oauth2Config: JavaApiClientConfig = {
-  baseUrl: 'https://api.example.gov.uk',
-  auth: {
-    type: 'oauth2',
-    credentials: {
-      clientId: 'your-client-id',
-      clientSecret: 'your-client-secret'
-    }
+export const apiConfig = {
+  baseUrl: process.env.API_BASE_URL || 'http://localhost:8080',
+  timeout: parseInt(process.env.API_TIMEOUT || '30000', 10),
+  retryAttempts: parseInt(process.env.API_RETRY_ATTEMPTS || '3', 10),
+  caching: {
+    enabled: process.env.API_CACHE_ENABLED === 'true',
+    ttl: parseInt(process.env.API_CACHE_TTL || '300000', 10),
+  },
+  endpoints: {
+    auth: '/api/auth',
+    users: '/api/users',
   }
 };
 ```
@@ -64,42 +44,39 @@ const oauth2Config: JavaApiClientConfig = {
 
 ### Making Requests
 
-The `JavaApiClient` provides methods for making HTTP requests:
+The application uses NestJS's built-in HTTP module for making requests:
 
 ```typescript
 // Example usage in a service
+@Injectable()
 export class UserService {
-  private apiClient: JavaApiClient;
-
-  constructor(config: JavaApiClientConfig, logger: Logger) {
-    this.apiClient = new JavaApiClient(config, logger);
-  }
+  constructor(
+    private readonly httpService: HttpService,
+    private readonly configService: ConfigService,
+  ) {}
 
   // GET request
   async getUsers(): Promise<User[]> {
-    return this.apiClient.get<User[]>('/api/users');
+    const { data } = await this.httpService.get<User[]>(
+      `${this.configService.get('api.baseUrl')}/api/users`
+    ).toPromise();
+    return data;
   }
 
   // POST request
   async createUser(user: User): Promise<User> {
-    return this.apiClient.post<User>('/api/users', user);
-  }
-
-  // PUT request
-  async updateUser(id: string, user: User): Promise<User> {
-    return this.apiClient.put<User>(`/api/users/${id}`, user);
-  }
-
-  // DELETE request
-  async deleteUser(id: string): Promise<void> {
-    return this.apiClient.delete(`/api/users/${id}`);
+    const { data } = await this.httpService.post<User>(
+      `${this.configService.get('api.baseUrl')}/api/users`,
+      user
+    ).toPromise();
+    return data;
   }
 }
 ```
 
 ### Error Handling
 
-The client includes built-in error handling for API responses:
+The application includes built-in error handling for API responses:
 
 ```typescript
 try {
@@ -131,107 +108,65 @@ try {
 
 ### Authentication
 
-The Java API client supports multiple authentication methods:
-- Basic Authentication
-- Bearer Token Authentication
-- OAuth2 Authentication
+The application supports multiple authentication methods through the security configuration:
 
-### Rate Limiting
-
-The client implements rate limiting with the following settings:
-- Window: 15 minutes
-- Maximum requests: 100 per IP address
+```typescript
+// Security configuration in src/shared/config/security.config.ts
+export const securityConfig = {
+  // ... other security config
+  cors: {
+    origin: configuration().corsOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    credentials: true,
+    maxAge: 600,
+  },
+};
+```
 
 ## Best Practices
 
 1. **Error Handling**
-   - Always handle API errors using the built-in error handling
-   - Use the provided error interceptor for consistent error responses
-   - Log errors appropriately using the provided logger
+   - Use the built-in error handling and filters
+   - Implement proper error logging
+   - Sanitize error messages in production
 
 2. **Caching**
-   - Utilise the built-in caching service for frequently accessed data
-   - Cache durations are configurable based on data volatility
+   - Utilize the built-in caching service
+   - Configure appropriate TTL values
+   - Consider data volatility when setting cache durations
 
 3. **Performance**
-   - The API client includes connection pooling and keep-alive settings
-   - Automatic retry logic for failed requests
-   - Configurable timeouts and retry attempts
+   - Use the configured timeout settings
+   - Implement retry logic for failed requests
+   - Monitor API response times
 
 4. **Security**
    - Always use HTTPS for API communication
-   - Implement proper CORS policies on the Java backend
-   - Use secure authentication methods
+   - Implement proper CORS policies
    - Follow government security guidelines
-
-## Example Integration
-
-Here's a complete example of integrating with a Java backend:
-
-```typescript
-// user.service.ts
-export class UserService {
-  private apiClient: JavaApiClient;
-
-  constructor(config: JavaApiClientConfig, logger: Logger) {
-    this.apiClient = new JavaApiClient(config, logger);
-  }
-
-  async getUsers(page: number = 1): Promise<PaginatedResponse<User[]>> {
-    return this.apiClient.get<PaginatedResponse<User[]>>(
-      `/api/users?page=${page}`
-    );
-  }
-
-  async createUser(user: User): Promise<User> {
-    return this.apiClient.post<User>('/api/users', user);
-  }
-}
-```
-
-## Troubleshooting
-
-Common issues and solutions:
-
-1. **Authentication Failures**
-   - Check that authentication credentials are correctly configured
-   - Verify the authentication type matches the backend requirements
-   - Ensure tokens are valid and not expired
-
-2. **Timeout Issues**
-   - The default timeout is 30 seconds
-   - Adjust the timeout in the configuration if needed
-   - Check network connectivity and backend response times
-
-3. **Rate Limiting**
-   - Monitor the rate limit headers from the backend
-   - Implement exponential backoff for retries
-   - Consider implementing request queuing for high-volume scenarios
-
-4. **Error Handling**
-   - Check the error response format
-   - Verify error handling implementation
-   - Review logs for detailed error information
 
 ## API Documentation with Swagger
 
-Our API is documented using Swagger (OpenAPI), providing an interactive interface for exploring and testing endpoints.
+The application includes Swagger (OpenAPI) documentation for all API endpoints. The documentation is automatically generated from code annotations and is available when running the application.
 
-### Using the Swagger UI
+### Accessing the Documentation
 
-1. Access the documentation at `/api-docs`
-2. Browse available endpoints grouped by tags
-3. Try out endpoints directly from the UI
-4. View request/response schemas and examples
+1. Start the application:
+```bash
+npm run start:dev
+```
 
-### Integration Testing with Swagger
+2. Visit the Swagger UI at: `http://localhost:3000/api-docs`
 
-The Swagger UI can be used for integration testing:
+### Documentation Features
 
-1. Navigate to the desired endpoint
-2. Click "Try it out"
-3. Fill in required parameters
-4. Execute the request
-5. View the response and status code
+- Interactive API exploration
+- Detailed endpoint descriptions
+- Request/response schema documentation
+- Try-it-out functionality for testing endpoints
+- Authentication documentation
+- Automatic schema generation from TypeScript types
 
 For detailed information about Swagger documentation, see [Swagger Documentation Guide](./swagger-documentation.md). 

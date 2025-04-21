@@ -1,12 +1,33 @@
-# Logging System
-
-The application uses a robust logging system built on Winston, providing comprehensive logging capabilities across all components.
+# Logging
 
 ## Overview
+The application uses a combination of Winston and Pino for logging, with NestJS integration through nest-winston.
 
-The logging system is implemented through two main components:
-- `LoggerModule`: Configures the Winston logger with multiple transports
-- `LoggerService`: Provides a NestJS-compatible interface for logging
+## Logging Configuration
+
+### Log Levels
+- error: Critical errors that require immediate attention
+- warn: Warning messages for potential issues
+- info: General operational information
+- debug: Detailed debugging information
+
+### Log Format
+Logs are formatted using Pino Pretty for development and structured JSON for production.
+
+### Log Storage
+- Console output for development
+- File-based logging for production
+- Integration with monitoring systems
+
+### Request Logging
+- Request ID tracking via express-request-id
+- Request/response logging middleware
+- Performance metrics logging
+
+### Error Logging
+- Global exception filter for error handling
+- Stack trace preservation
+- Error context logging
 
 ## Features
 

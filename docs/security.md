@@ -4,189 +4,211 @@ This document outlines the security features implemented in the NestJS applicati
 
 ## Overview
 
-The application implements several security measures following OWASP best practices, including:
+The application implements comprehensive security measures following OWASP best practices and government security standards, including:
 
 - Rate Limiting
 - Security Headers
 - CORS Configuration
 - Content Security Policy
 - Cross-Origin Policies
+- Session Security
+- Audit Logging
+- Data Protection
 
-## Rate Limiting
+## Security Configuration
 
-The application implements rate limiting using `@nestjs/throttler`:
+The main security configuration is defined in `src/shared/config/security.config.ts`:
 
 ```typescript
-throttler: {
-  throttlers: [{
-    ttl: 60,      // Time to live in seconds
-    limit: 10,    // Maximum number of requests within TTL
+export const securityConfig = {
+  throttler: [{
+    ttl: 60000,
+    limit: 10,
   }],
-}
-```
 
-This configuration:
-- Limits requests to 10 per minute per IP address
-- Helps prevent brute force and DoS attacks
-- Can be adjusted in `src/shared/config/security.config.ts`
+  helmet: {
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
+        baseUri: ["'self'"],
+        formAction: ["'self'"],
+        frameAncestors: ["'none'"],
+        upgradeInsecureRequests: [],
+      }
+    },
+    crossOriginEmbedderPolicy: { policy: 'require-corp' },
+    crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    dnsPrefetchControl: { allow: false },
+    frameguard: { action: 'deny' },
+    hidePoweredBy: true,
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true,
+    },
+    ieNoOpen: true,
+    noSniff: true,
+    originAgentCluster: true,
+    permittedCrossDomainPolicies: { permittedPolicies: 'none' },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    xssFilter: true,
+    expectCt: {
+      maxAge: 86400,
+      enforce: true,
+    },
+  },
 
-## Security Headers
+  cors: {
+    origin: configuration().corsOrigin,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    credentials: true,
+    maxAge: 600,
+  },
 
-The application uses Helmet.js to set various security headers:
+  permissionsPolicy: {
+    policy: {
+      'geolocation': ['self'],
+      'camera': ['none'],
+      'microphone': ['none'],
+      'payment': ['self'],
+      'usb': ['none']
+    }
+  },
 
-### Content Security Policy (CSP)
-```typescript
-contentSecurityPolicy: {
-  directives: {
-    defaultSrc: ["'self'"],
-    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-    styleSrc: ["'self'", "'unsafe-inline'"],
-    imgSrc: ["'self'", 'data:', 'https:'],
-    connectSrc: ["'self'"],
-    fontSrc: ["'self'"],
-    objectSrc: ["'none'"],
-    mediaSrc: ["'self'"],
-    frameSrc: ["'none'"],
-    baseUri: ["'self'"],
-    formAction: ["'self'"],
-    frameAncestors: ["'none'"],
-    upgradeInsecureRequests: [],
+  trustedTypes: {
+    policy: "'self'"
   }
+};
+```
+
+## Session Security
+
+The application implements secure session management:
+
+```typescript
+session: {
+  secret: process.env.SESSION_SECRET || 'your-secret-key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'strict',
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+  },
 }
 ```
 
-### Cross-Origin Policies
-```typescript
-crossOriginEmbedderPolicy: { policy: 'require-corp' },
-crossOriginOpenerPolicy: { policy: 'same-origin' },
-crossOriginResourcePolicy: { policy: 'same-origin' },
-```
+## Audit Logging
 
-### Other Security Headers
-- `dnsPrefetchControl`: Prevents DNS prefetching
-- `frameguard`: Prevents clickjacking
-- `hidePoweredBy`: Removes X-Powered-By header
-- `hsts`: Enforces HTTPS
-- `ieNoOpen`: Prevents automatic downloads in IE
-- `noSniff`: Prevents MIME type sniffing
-- `originAgentCluster`: Improves origin isolation
-- `permittedCrossDomainPolicies`: Controls cross-domain access
-- `referrerPolicy`: Controls referrer information
-- `xssFilter`: Enables XSS protection
-- `expectCt`: Enforces Certificate Transparency
-
-## CORS Configuration
-
-The application implements CORS with the following settings:
+The application includes comprehensive audit logging:
 
 ```typescript
-cors: {
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Content-Range', 'X-Content-Range'],
-  credentials: true,
-  maxAge: 600,
+audit: {
+  enabled: true,
+  level: 'info',
+  format: 'json',
+  include: [
+    'timestamp',
+    'user',
+    'action',
+    'resource',
+    'status',
+    'ip',
+    'userAgent',
+  ],
 }
 ```
 
-## Configuration
+## Data Protection
 
-All security settings can be adjusted in `src/shared/config/security.config.ts`. The configuration is loaded in:
+The application implements data protection measures:
 
-1. `src/shared/security/security.module.ts` - For rate limiting
-2. `src/main.ts` - For Helmet and CORS configuration
+```typescript
+dataProtection: {
+  encryption: {
+    algorithm: 'aes-256-gcm',
+    keyRotationDays: 90,
+  },
+  masking: {
+    enabled: true,
+    fields: ['password', 'token', 'secret'],
+  },
+}
+```
 
 ## Best Practices
 
 1. **Environment Variables**
    - Use environment variables for sensitive configurations
-   - Example: `CORS_ORIGIN` for CORS configuration
+   - Store secrets in secure vaults
+   - Rotate secrets regularly
 
 2. **Content Security Policy**
    - Review and adjust CSP directives based on application needs
-   - Consider using nonces or hashes instead of 'unsafe-inline'
+   - Use nonces or hashes instead of 'unsafe-inline' where possible
+   - Regularly audit CSP violations
 
 3. **Rate Limiting**
    - Adjust rate limits based on application requirements
-   - Consider implementing different limits for different endpoints
+   - Implement different limits for different endpoints
+   - Monitor for abuse patterns
 
 4. **CORS**
    - Set appropriate origins in production
    - Review allowed methods and headers
-   - Consider using a whitelist for origins
+   - Use a whitelist for origins
 
-## Troubleshooting
+5. **Session Management**
+   - Use secure session configuration
+   - Implement proper session timeouts
+   - Handle session revocation
 
-If you encounter issues with the security configuration:
+6. **Audit Logging**
+   - Log all security-relevant events
+   - Maintain audit trails
+   - Protect audit logs from tampering
 
-1. **CSP Violations**
-   - Check browser console for CSP violation reports
-   - Adjust CSP directives as needed
-
-2. **CORS Issues**
-   - Verify CORS origin configuration
-   - Check allowed methods and headers
-
-3. **Rate Limiting**
-   - Adjust TTL and limit values if needed
-   - Consider implementing different limits for different routes
+7. **Data Protection**
+   - Encrypt sensitive data
+   - Implement proper key rotation
+   - Mask sensitive fields in logs
 
 ## Error Handling Security
 
 The application implements secure error handling through the `SecurityErrorFilter`:
 
-### Error Sanitisation
 ```typescript
 // Production vs Development error responses
 {
   production: {
-    // Sanitised error response
     status: httpStatus,
-    message: 'Internal server error',  // Generic message for unhandled errors
-    stack: undefined                   // No stack trace in production
+    message: 'Internal server error',
+    stack: undefined
   },
   development: {
     status: httpStatus,
     message: actualErrorMessage,
-    stack: errorStack                  // Stack trace available for debugging
+    stack: errorStack
   }
 }
 ```
-
-### Security Features
-- Sanitises error messages in production to prevent information leakage
-- Removes stack traces in production environment
-- Maintains detailed error information for development
-- Implements secure logging that excludes sensitive data
-- Standardises error response format across the application
-
-### Error Logging
-The application securely logs errors with the following information:
-- Request path
-- HTTP method
-- Timestamp
-- Sanitised error message
-- HTTP status code
-
-### Best Practices
-1. **Error Messages**
-   - Use generic error messages in production
-   - Avoid exposing internal system details
-   - Keep detailed logs for debugging while ensuring no sensitive data is logged
-
-2. **Stack Traces**
-   - Only exposed in development environment
-   - Completely removed in production for security
-
-3. **Error Response Structure**
-   - Consistent format across all errors
-   - Includes only necessary information
-   - Sanitised based on environment
 
 ## References
 
 - [OWASP Security Headers](https://owasp.org/www-project-secure-headers/)
 - [Helmet.js Documentation](https://helmetjs.github.io/)
 - [NestJS Security](https://docs.nestjs.com/security)
-- [CORS Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) 
+- [CORS Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [Government Security Standards](https://www.gov.uk/government/publications/security-policy-framework) 

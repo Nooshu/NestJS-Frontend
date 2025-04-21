@@ -1,8 +1,36 @@
 # Configuration Management
 
 ## Overview
+The project uses @nestjs/config for configuration management, supporting both environment variables and configuration files.
 
-This document outlines the standards and practices for managing configuration in the NestJS Frontend application. It covers environment-specific configurations, secret management, and configuration validation.
+## Configuration Structure
+
+### Environment Variables
+The application supports the following environment variables:
+- NODE_ENV: Development environment (development, production, test)
+- PORT: Application port (default: 3000)
+- REDIS_HOST: Redis host for caching
+- REDIS_PORT: Redis port
+- API_BASE_URL: Base URL for API integration
+- LOG_LEVEL: Logging level (error, warn, info, debug)
+
+### Configuration Files
+Configuration is managed through:
+- `.env` files for environment-specific variables
+- `src/config/` directory for application configuration
+- `src/app.module.ts` for module-level configuration
+
+### Security Configuration
+Security settings are configured through:
+- Helmet middleware for HTTP security headers
+- Rate limiting via @nestjs/throttler
+- CORS configuration in main.ts
+
+### Cache Configuration
+Redis caching is configured through:
+- Cache manager module configuration
+- Redis store settings
+- Cache TTL and other parameters
 
 ## Table of Contents
 
@@ -13,46 +41,6 @@ This document outlines the standards and practices for managing configuration in
 5. [Security Considerations](#security-considerations)
 6. [Deployment Configuration](#deployment-configuration)
 7. [Monitoring and Logging](#monitoring-and-logging)
-
-## Configuration Structure
-
-### Configuration Files
-
-1. **Base Configuration**
-   ```typescript
-   // src/shared/config/configuration.ts
-   export default () => ({
-     // Base configuration
-     nodeEnv: process.env.NODE_ENV,
-     port: parseInt(process.env.PORT, 10) || 3000,
-     // ... other base configurations
-   });
-   ```
-
-2. **Environment-Specific Configuration**
-   ```typescript
-   // src/shared/config/environments/development.ts
-   export default {
-     // Development-specific configurations
-     debug: true,
-     // ... other development configurations
-   };
-   ```
-
-### Configuration Organisation
-
-1. **Configuration Categories**
-   - Application settings
-   - Environment variables
-   - Feature flags
-   - Service endpoints
-   - Security settings
-
-2. **Configuration Hierarchy**
-   - Base configuration
-   - Environment-specific overrides
-   - Feature-specific configurations
-   - Local development overrides
 
 ## Environment Management
 

@@ -1,8 +1,70 @@
 # Testing Strategies
 
 ## Overview
+The project uses Jest as the testing framework with comprehensive test coverage across different levels.
 
-This document outlines the testing strategies for the NestJS Frontend application. It covers testing methodologies, tools, and best practices for ensuring application quality.
+## Test Types
+
+### Unit Tests
+- Component-level testing
+- Service testing
+- Controller testing
+- Utility function testing
+
+### Integration Tests
+- API integration testing
+- Database integration
+- Cache integration
+- External service integration
+
+### E2E Tests
+- Full application flow testing
+- User journey testing
+- Performance testing
+
+## Test Configuration
+
+### Jest Configuration
+- TypeScript support via ts-jest
+- Coverage reporting
+- Test environment setup
+- Mock configurations
+
+### Test Scripts
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage
+npm run test:cov
+
+# Run E2E tests
+npm run test:e2e
+
+# Run GOV.UK component tests
+npm run test:govuk
+```
+
+## Testing Best Practices
+
+### Code Organization
+- Test files alongside source files
+- Separate test directories for different test types
+- Clear test naming conventions
+
+### Mocking
+- Jest mock functions
+- Mock modules
+- Mock services
+- Mock HTTP requests
+
+### Coverage Requirements
+- Minimum 80% test coverage
+- Critical path coverage
+- Edge case coverage
 
 ## Table of Contents
 

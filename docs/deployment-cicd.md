@@ -35,8 +35,10 @@ This document outlines the deployment and Continuous Integration/Continuous Depl
    {
      "scripts": {
        "build": "nest build",
-       "build:prod": "nest build --prod",
-       "build:test": "nest build --test"
+       "start": "nest start",
+       "start:dev": "nest start --watch",
+       "start:debug": "nest start --debug --watch",
+       "start:prod": "node dist/main"
      }
    }
    ```
@@ -44,19 +46,19 @@ This document outlines the deployment and Continuous Integration/Continuous Depl
 ### Build Pipeline
 
 1. **Pre-build Steps**
-   - Dependency installation
-   - Code linting
+   - Dependency installation (`npm install`)
+   - Code linting (`npm run lint`)
    - Type checking
    - Security scanning
 
 2. **Build Steps**
-   - Compilation
+   - Compilation (`npm run build`)
    - Optimisation
    - Asset processing
    - Bundle generation
 
 3. **Post-build Steps**
-   - Testing
+   - Testing (`npm test`)
    - Documentation generation
    - Artifact creation
    - Deployment preparation
@@ -134,11 +136,13 @@ This document outlines the deployment and Continuous Integration/Continuous Depl
    export const environment = {
      development: {
        apiUrl: 'http://localhost:3000',
-       debug: true
+       debug: true,
+       logLevel: 'debug'
      },
      production: {
        apiUrl: 'https://api.example.com',
-       debug: false
+       debug: false,
+       logLevel: 'info'
      }
    };
    ```
@@ -147,8 +151,11 @@ This document outlines the deployment and Continuous Integration/Continuous Depl
    ```bash
    # Environment variables
    NODE_ENV=production
-   API_URL=https://api.example.com
-   DEBUG=false
+   PORT=3000
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
+   API_BASE_URL=https://api.example.com
+   LOG_LEVEL=info
    ```
 
 ## Rollback Procedures
@@ -198,33 +205,25 @@ This document outlines the deployment and Continuous Integration/Continuous Depl
      },
      alerts: {
        thresholds: {
-         errorRate: 0.1,
+         errorRate: 5,
          responseTime: 1000,
-         cpuUsage: 80
+         memoryUsage: 80
        }
      }
    };
    ```
 
-2. **Alert Configuration**
-   - Error thresholds
-   - Performance thresholds
-   - Security events
-   - Business metrics
+2. **Health Checks**
+   - Memory usage monitoring
+   - Disk space monitoring
+   - API endpoint health
+   - Cache health
 
-### Alert Management
-
-1. **Alert Types**
-   - Critical alerts
-   - Warning alerts
-   - Information alerts
-   - Security alerts
-
-2. **Alert Response**
-   - Escalation procedures
-   - Response times
-   - Resolution procedures
-   - Documentation requirements
+3. **Logging**
+   - Request logging
+   - Error logging
+   - Performance logging
+   - Security logging
 
 ## Security Considerations
 
