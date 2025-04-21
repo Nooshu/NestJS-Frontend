@@ -4,7 +4,7 @@ This document provides guidance on how to integrate the frontend application wit
 
 ## Overview
 
-The frontend application uses a centralised `ApiService` for making HTTP requests to the backend. The service includes built-in error handling, timeout management, and response transformation.
+The frontend application uses a specialized `JavaApiClient` for making HTTP requests to Java-based backend APIs. The client includes built-in error handling, timeout management, logging, and authentication support.
 
 ## Configuration
 
@@ -13,95 +13,132 @@ The frontend application uses a centralised `ApiService` for making HTTP request
 The following environment variables need to be configured in your `.env` file:
 
 ```env
-API_BASE_URL=http://your-java-backend-url
-API_KEY=your-api-key
-CLIENT_ID=your-client-id
+JAVA_API_BASE_URL=http://your-java-backend-url
+JAVA_API_TIMEOUT=30000
+JAVA_API_RETRY_ATTEMPTS=3
+JAVA_API_RETRY_DELAY=1000
 ```
 
-### CORS Configuration
+### Authentication Configuration
 
-The application is configured to work with Java backends with the following CORS settings:
+The Java API client supports multiple authentication methods:
 
 ```typescript
-cors: {
-  origin: ['http://localhost:8080'], // Add your Java backend URL
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Client-ID'],
-  credentials: true
-}
+// Basic Authentication
+const basicAuthConfig: JavaApiClientConfig = {
+  baseUrl: 'https://api.example.gov.uk',
+  auth: {
+    type: 'basic',
+    credentials: {
+      username: 'your-username',
+      password: 'your-password'
+    }
+  }
+};
+
+// Bearer Token Authentication
+const bearerAuthConfig: JavaApiClientConfig = {
+  baseUrl: 'https://api.example.gov.uk',
+  auth: {
+    type: 'bearer',
+    credentials: {
+      token: 'your-token'
+    }
+  }
+};
+
+// OAuth2 Authentication
+const oauth2Config: JavaApiClientConfig = {
+  baseUrl: 'https://api.example.gov.uk',
+  auth: {
+    type: 'oauth2',
+    credentials: {
+      clientId: 'your-client-id',
+      clientSecret: 'your-client-secret'
+    }
+  }
+};
 ```
 
-## API Service Usage
+## API Client Usage
 
 ### Making Requests
 
-The `ApiService` provides methods for making HTTP requests:
+The `JavaApiClient` provides methods for making HTTP requests:
 
 ```typescript
 // Example usage in a service
-@Injectable()
-export class YourService {
-  constructor(private readonly apiService: ApiService) {}
+export class UserService {
+  private apiClient: JavaApiClient;
+
+  constructor(config: JavaApiClientConfig, logger: Logger) {
+    this.apiClient = new JavaApiClient(config, logger);
+  }
 
   // GET request
-  async getData(): Promise<YourDataType> {
-    return this.apiService.get<YourDataType>('/api/endpoint');
+  async getUsers(): Promise<User[]> {
+    return this.apiClient.get<User[]>('/api/users');
   }
 
   // POST request
-  async createData(data: YourDataType): Promise<YourDataType> {
-    return this.apiService.post<YourDataType>('/api/endpoint', data);
+  async createUser(user: User): Promise<User> {
+    return this.apiClient.post<User>('/api/users', user);
+  }
+
+  // PUT request
+  async updateUser(id: string, user: User): Promise<User> {
+    return this.apiClient.put<User>(`/api/users/${id}`, user);
+  }
+
+  // DELETE request
+  async deleteUser(id: string): Promise<void> {
+    return this.apiClient.delete(`/api/users/${id}`);
   }
 }
 ```
 
-### Response Format
+### Error Handling
 
-The Java backend should return responses in the following format:
-
-```typescript
-interface ApiResponse<T> {
-  data: T;
-  status: number;
-  message: string;
-  timestamp: string;
-}
-```
-
-For paginated responses:
+The client includes built-in error handling for API responses:
 
 ```typescript
-interface PaginatedResponse<T> extends ApiResponse<T> {
-  totalItems: number;
-  totalPages: number;
-  currentPage: number;
-}
-```
-
-## Error Handling
-
-The application includes built-in error handling for API responses. The Java backend should return errors in the following format:
-
-```json
-{
-  "statusCode": 400,
-  "message": "Error message",
-  "timestamp": "2024-04-17T12:00:00.000Z",
-  "path": "/api/endpoint"
+try {
+  const user = await userService.getUserById('123');
+} catch (error) {
+  if (error instanceof HttpException) {
+    switch (error.getStatus()) {
+      case 400:
+        // Handle validation errors
+        break;
+      case 401:
+        // Handle authentication errors
+        break;
+      case 403:
+        // Handle authorization errors
+        break;
+      case 404:
+        // Handle not found errors
+        break;
+      case 500:
+        // Handle server errors
+        break;
+    }
+  }
 }
 ```
 
 ## Security
 
-### API Authentication
+### Authentication
 
-The application sends the following headers with each request:
-- `X-API-Key`: API key for authentication
-- `X-Client-ID`: Client identifier
+The Java API client supports multiple authentication methods:
+- Basic Authentication
+- Bearer Token Authentication
+- OAuth2 Authentication
 
 ### Rate Limiting
 
-The application implements rate limiting with the following settings:
+The client implements rate limiting with the following settings:
 - Window: 15 minutes
 - Maximum requests: 100 per IP address
 
@@ -110,19 +147,22 @@ The application implements rate limiting with the following settings:
 1. **Error Handling**
    - Always handle API errors using the built-in error handling
    - Use the provided error interceptor for consistent error responses
+   - Log errors appropriately using the provided logger
 
 2. **Caching**
    - Utilise the built-in caching service for frequently accessed data
    - Cache durations are configurable based on data volatility
 
 3. **Performance**
-   - The API service includes connection pooling and keep-alive settings
+   - The API client includes connection pooling and keep-alive settings
    - Automatic retry logic for failed requests
+   - Configurable timeouts and retry attempts
 
 4. **Security**
    - Always use HTTPS for API communication
    - Implement proper CORS policies on the Java backend
-   - Use secure API key management
+   - Use secure authentication methods
+   - Follow government security guidelines
 
 ## Example Integration
 
@@ -130,18 +170,21 @@ Here's a complete example of integrating with a Java backend:
 
 ```typescript
 // user.service.ts
-@Injectable()
 export class UserService {
-  constructor(private readonly apiService: ApiService) {}
+  private apiClient: JavaApiClient;
+
+  constructor(config: JavaApiClientConfig, logger: Logger) {
+    this.apiClient = new JavaApiClient(config, logger);
+  }
 
   async getUsers(page: number = 1): Promise<PaginatedResponse<User[]>> {
-    return this.apiService.get<PaginatedResponse<User[]>>(
+    return this.apiClient.get<PaginatedResponse<User[]>>(
       `/api/users?page=${page}`
     );
   }
 
-  async createUser(user: User): Promise<ApiResponse<User>> {
-    return this.apiService.post<ApiResponse<User>>('/api/users', user);
+  async createUser(user: User): Promise<User> {
+    return this.apiClient.post<User>('/api/users', user);
   }
 }
 ```
@@ -150,21 +193,25 @@ export class UserService {
 
 Common issues and solutions:
 
-1. **CORS Errors**
-   - Ensure the Java backend has the correct CORS configuration
-   - Verify the allowed origins include your frontend domain
+1. **Authentication Failures**
+   - Check that authentication credentials are correctly configured
+   - Verify the authentication type matches the backend requirements
+   - Ensure tokens are valid and not expired
 
-2. **Authentication Failures**
-   - Check that API keys and client IDs are correctly configured
-   - Verify the headers are being sent with requests
-
-3. **Timeout Issues**
+2. **Timeout Issues**
    - The default timeout is 30 seconds
-   - Adjust the timeout in the API configuration if needed
+   - Adjust the timeout in the configuration if needed
+   - Check network connectivity and backend response times
 
-4. **Rate Limiting**
+3. **Rate Limiting**
    - Monitor the rate limit headers from the backend
-   - Implement exponential backoff for retries 
+   - Implement exponential backoff for retries
+   - Consider implementing request queuing for high-volume scenarios
+
+4. **Error Handling**
+   - Check the error response format
+   - Verify error handling implementation
+   - Review logs for detailed error information
 
 ## API Documentation with Swagger
 

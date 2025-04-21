@@ -63,54 +63,33 @@ This document outlines the standards and patterns for API integration in the Nes
 
 ### Client-Side Patterns
 
-1. **API Client**
+1. **Java API Client**
    ```typescript
-   // API client implementation
-   @Injectable()
-   export class ApiClient {
-     constructor(private readonly httpService: HttpService) {}
-     
-     async get<T>(endpoint: string, params?: any): Promise<T> {
-       return this.httpService.get<T>(endpoint, { params }).toPromise();
-     }
-     
-     async post<T>(endpoint: string, data: any): Promise<T> {
-       return this.httpService.post<T>(endpoint, data).toPromise();
-     }
-   }
-   ```
+   // Java API client implementation
+   export class JavaApiClient {
+     private client: AxiosInstance;
+     private logger: Logger;
 
-2. **Data Fetching**
-   ```typescript
-   // Data fetching patterns
-   @Injectable()
-   export class DataService {
-     constructor(private readonly apiClient: ApiClient) {}
-     
-     async fetchData<T>(endpoint: string): Promise<T> {
+     constructor(config: JavaApiClientConfig, logger: Logger) {
+       this.logger = logger;
+       this.client = axios.create({
+         baseURL: config.baseUrl,
+         timeout: config.timeout || 30000,
+         headers: {
+           'Content-Type': 'application/json',
+           'Accept': 'application/json'
+         }
+       });
+     }
+
+     async get<T>(path: string, config?: AxiosRequestConfig): Promise<T> {
        try {
-         return await this.apiClient.get<T>(endpoint);
+         const response = await this.client.get<T>(path, config);
+         return response.data;
        } catch (error) {
-         // Error handling
+         this.logger.error('Java API GET Error', { path, error });
+         throw error;
        }
-     }
-   }
-   ```
-
-### Server-Side Patterns
-
-1. **API Gateway**
-   ```typescript
-   // API gateway implementation
-   @Injectable()
-   export class ApiGateway {
-     constructor(
-       private readonly configService: ConfigService,
-       private readonly httpService: HttpService
-     ) {}
-     
-     async proxyRequest(req: Request, res: Response) {
-       // Request forwarding logic
      }
    }
    ```
@@ -118,15 +97,22 @@ This document outlines the standards and patterns for API integration in the Nes
 2. **Service Integration**
    ```typescript
    // Service integration pattern
-   @Injectable()
-   export class IntegrationService {
-     constructor(
-       private readonly apiClient: ApiClient,
-       private readonly cacheService: CacheService
-     ) {}
-     
-     async getData<T>(key: string): Promise<T> {
-       // Caching and data retrieval logic
+   export class UserService {
+     private apiClient: JavaApiClient;
+
+     constructor(config: JavaApiClientConfig, logger: Logger) {
+       this.apiClient = new JavaApiClient(config, logger);
+     }
+
+     async getUserById(id: string) {
+       try {
+         return await this.apiClient.get(`/api/users/${id}`);
+       } catch (error) {
+         if (error.statusCode === 404) {
+           throw new Error(`User with ID ${id} not found`);
+         }
+         throw error;
+       }
      }
    }
    ```
@@ -137,13 +123,16 @@ This document outlines the standards and patterns for API integration in the Nes
 
 1. **Error Types**
    ```typescript
-   // API error types
-   enum ApiErrorType {
-     VALIDATION = 'VALIDATION_ERROR',
-     AUTHENTICATION = 'AUTHENTICATION_ERROR',
-     AUTHORIZATION = 'AUTHORIZATION_ERROR',
-     NOT_FOUND = 'NOT_FOUND_ERROR',
-     SERVER = 'SERVER_ERROR'
+   // API error handling
+   private handleError(error: AxiosError) {
+     const status = error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR;
+     const errorMessage = error.response?.data || 'An error occurred';
+     
+     return throwError(() => new HttpException({
+       status,
+       error: errorMessage,
+       timestamp: new Date().toISOString()
+     }, status));
    }
    ```
 
@@ -151,9 +140,8 @@ This document outlines the standards and patterns for API integration in the Nes
    ```typescript
    // Error response format
    interface ApiError {
-     code: string;
-     message: string;
-     details?: any;
+     status: number;
+     error: string;
      timestamp: string;
    }
    ```
@@ -183,32 +171,52 @@ This document outlines the standards and patterns for API integration in the Nes
 
 1. **Auth Implementation**
    ```typescript
-   // Authentication service
-   @Injectable()
-   export class AuthService {
-     constructor(private readonly jwtService: JwtService) {}
-     
-     async validateToken(token: string): Promise<boolean> {
-       // Token validation logic
-     }
+   // Authentication configuration
+   interface JavaApiClientConfig {
+     baseUrl: string;
+     timeout?: number;
+     retryAttempts?: number;
+     retryDelay?: number;
+     auth?: {
+       type: 'basic' | 'bearer' | 'oauth2';
+       credentials: {
+         username?: string;
+         password?: string;
+         token?: string;
+         clientId?: string;
+         clientSecret?: string;
+       };
+     };
    }
    ```
 
 2. **Auth Patterns**
-   - JWT authentication
-   - OAuth2 integration
+   - Basic authentication
+   - Bearer token authentication
+   - OAuth2 authentication
    - API key management
-   - Session handling
 
 ### Authorisation
 
 1. **Access Control**
    ```typescript
-   // Authorisation decorator
-   @Injectable()
-   export class AuthGuard implements CanActivate {
-     canActivate(context: ExecutionContext): boolean {
-       // Authorisation logic
+   // Authorisation implementation
+   private setupAuth(auth?: JavaApiClientConfig['auth']) {
+     if (!auth) return;
+
+     switch (auth.type) {
+       case 'basic':
+         this.client.defaults.auth = {
+           username: auth.credentials.username || '',
+           password: auth.credentials.password || ''
+         };
+         break;
+       case 'bearer':
+         this.client.defaults.headers.common['Authorization'] = `Bearer ${auth.credentials.token}`;
+         break;
+       case 'oauth2':
+         this.setupOAuth2(auth.credentials);
+         break;
      }
    }
    ```
@@ -225,19 +233,11 @@ This document outlines the standards and patterns for API integration in the Nes
 
 1. **Cache Implementation**
    ```typescript
-   // Cache service
-   @Injectable()
-   export class CacheService {
-     constructor(private readonly cacheManager: Cache) {}
-     
-     async get<T>(key: string): Promise<T> {
-       // Cache retrieval logic
-     }
-     
-     async set(key: string, value: any, ttl?: number): Promise<void> {
-       // Cache storage logic
-     }
-   }
+   // Cache module configuration
+   CacheModule.register({
+     ttl: apiConfig.caching.ttl,
+     max: 100, // Maximum number of items in cache
+   })
    ```
 
 2. **Cache Patterns**
@@ -248,15 +248,13 @@ This document outlines the standards and patterns for API integration in the Nes
 
 ### Request Optimisation
 
-1. **Batch Requests**
+1. **Request Configuration**
    ```typescript
-   // Batch request implementation
-   @Injectable()
-   export class BatchService {
-     async batchRequest<T>(requests: Request[]): Promise<T[]> {
-       // Batch processing logic
-     }
-   }
+   // HTTP module configuration
+   HttpModule.register({
+     timeout: apiConfig.timeout,
+     maxRedirects: 5,
+   })
    ```
 
 2. **Request Patterns**
