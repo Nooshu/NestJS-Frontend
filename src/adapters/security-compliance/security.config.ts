@@ -1,11 +1,91 @@
 import { HelmetOptions } from 'helmet';
 import { CorsOptions } from 'cors';
+import { Options as RateLimitOptions } from 'express-rate-limit';
+
+/**
+ * Environment-specific configuration types
+ */
+type Environment = 'development' | 'staging' | 'production';
+
+/**
+ * Security configuration interface
+ */
+export interface SecurityConfig {
+  environment: Environment;
+  helmet: HelmetOptions;
+  cors: CorsOptions;
+  rateLimit: RateLimitOptions;
+  session: {
+    secret: string;
+    resave: boolean;
+    saveUninitialized: boolean;
+    cookie: {
+      secure: boolean;
+      httpOnly: boolean;
+      sameSite: 'strict' | 'lax' | 'none';
+      maxAge: number;
+    };
+  };
+  audit: {
+    enabled: boolean;
+    level: 'debug' | 'info' | 'warn' | 'error';
+    format: 'json' | 'text';
+    include: string[];
+  };
+  headers: Record<string, string>;
+  passwordPolicy: {
+    minLength: number;
+    requireUppercase: boolean;
+    requireLowercase: boolean;
+    requireNumbers: boolean;
+    requireSpecialChars: boolean;
+    maxAgeDays: number;
+    historySize: number;
+  };
+  dataProtection: {
+    encryption: {
+      algorithm: string;
+      keyRotationDays: number;
+    };
+    masking: {
+      enabled: boolean;
+      fields: string[];
+    };
+  };
+}
+
+/**
+ * Validates required environment variables
+ * @throws Error if required environment variables are missing
+ */
+function validateEnvironment(): void {
+  const requiredEnvVars = ['NODE_ENV', 'SESSION_SECRET', 'CORS_ORIGIN'];
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+  
+  if (missingVars.length > 0) {
+    throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
+  }
+}
+
+/**
+ * Gets the current environment
+ * @returns The current environment
+ */
+function getEnvironment(): Environment {
+  const env = process.env.NODE_ENV?.toLowerCase();
+  if (env === 'production' || env === 'staging') {
+    return env;
+  }
+  return 'development';
+}
 
 /**
  * Security configuration based on government standards
  * Implements security headers and policies required for government services
  */
-export const governmentSecurityConfig = {
+export const governmentSecurityConfig: SecurityConfig = {
+  environment: getEnvironment(),
+  
   /**
    * Helmet security headers configuration
    * Based on government security requirements
@@ -42,7 +122,7 @@ export const governmentSecurityConfig = {
     permittedCrossDomainPolicies: { permittedPolicies: 'none' },
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
     xssFilter: true,
-  } as HelmetOptions,
+  },
 
   /**
    * CORS configuration for government services
@@ -54,7 +134,7 @@ export const governmentSecurityConfig = {
     exposedHeaders: ['Content-Length', 'X-Request-ID'],
     credentials: true,
     maxAge: 86400, // 24 hours
-  } as CorsOptions,
+  },
 
   /**
    * Rate limiting configuration
@@ -137,4 +217,7 @@ export const governmentSecurityConfig = {
       fields: ['password', 'token', 'secret'],
     },
   },
-}; 
+};
+
+// Validate environment variables on startup
+validateEnvironment(); 
