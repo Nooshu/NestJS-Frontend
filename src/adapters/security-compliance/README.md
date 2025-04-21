@@ -16,6 +16,7 @@ A comprehensive security middleware suite for government applications, implement
 11. [Security Compliance Documentation](#security-compliance-documentation)
 12. [Contributing](#contributing)
 13. [License](#license)
+14. [Cache Layer Abstraction](#cache-layer-abstraction)
 
 ## Features
 
@@ -1870,3 +1871,111 @@ This section outlines the security compliance documentation requirements for gov
    - [ ] Policy effectiveness reviews
    - [ ] Incident response reviews
    - [ ] Compliance monitoring reviews 
+```
+
+## Cache Layer Abstraction
+
+The middleware includes a flexible cache layer to improve performance and reduce load on security services.
+
+### Cache Configuration
+
+```typescript
+interface CacheConfig {
+  enabled: boolean;
+  ttl: number; // Time to live in seconds
+  prefix?: string;
+  store?: 'memory' | 'redis';
+  redis?: {
+    host: string;
+    port: number;
+    password?: string;
+    db?: number;
+  };
+}
+```
+
+### Cache Stores
+
+1. **Memory Store**
+   - In-memory cache using Map
+   - Suitable for single-instance deployments
+   - No external dependencies
+   - Cleared on application restart
+
+2. **Redis Store**
+   - Distributed cache using Redis
+   - Suitable for multi-instance deployments
+   - Requires Redis server
+   - Persists across application restarts
+
+### Cached Features
+
+1. **Rate Limiting**
+   - Caches request counts per IP
+   - Configurable TTL based on rate limit window
+   - Prevents unnecessary database lookups
+
+2. **Password Policy**
+   - Caches password validation results
+   - Reduces CPU usage for common passwords
+   - Configurable TTL (default: 1 hour)
+
+3. **Security Headers**
+   - Caches header configurations per path
+   - Reduces header computation overhead
+   - Configurable TTL (default: 1 hour)
+
+4. **Audit Logging**
+   - Caches log entries per minute
+   - Prevents duplicate logging
+   - Configurable TTL (default: 1 minute)
+
+### Usage Example
+
+```typescript
+import { applyGovernmentSecurity } from './security.middleware';
+import { SecurityConfig } from './security.types';
+
+const config: SecurityConfig = {
+  // ... other security config
+  cache: {
+    enabled: true,
+    ttl: 300, // 5 minutes
+    store: 'redis',
+    redis: {
+      host: 'localhost',
+      port: 6379
+    }
+  }
+};
+
+applyGovernmentSecurity(app, config);
+```
+
+### Best Practices
+
+1. **Configuration**
+   - Set appropriate TTL values based on your needs
+   - Use Redis for distributed deployments
+   - Configure proper cache prefixes
+   - Monitor cache hit rates
+
+2. **Memory Store**
+   - Monitor memory usage
+   - Set appropriate TTL values
+   - Consider cache size limits
+   - Implement cache eviction policies
+
+3. **Redis Store**
+   - Use connection pooling
+   - Implement proper error handling
+   - Monitor Redis performance
+   - Set up Redis high availability
+
+4. **Cache Invalidation**
+   - Implement proper cache invalidation
+   - Handle cache misses gracefully
+   - Consider cache warming strategies
+   - Monitor cache consistency
+
+[Rest of the content...] 

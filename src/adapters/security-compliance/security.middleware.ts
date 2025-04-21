@@ -1,8 +1,10 @@
-import { Request, Response, NextFunction, Application } from 'express';
+import { Request, Response, NextFunction, RequestHandler, Application } from 'express';
 import { SecurityConfig, RequestWithUser } from './security.types';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 import helmet from 'helmet';
+import { CacheConfig, CacheKey } from './cache.types';
+import { CacheService as CacheServiceImpl } from './cache.service';
 
 type Middleware = (req: Request, res: Response, next: NextFunction) => void;
 
@@ -37,6 +39,9 @@ export function applyGovernmentSecurity(app: Application, config: Required<Secur
 
   // Apply sensitive data protection
   app.use(protectSensitiveData(config));
+
+  const middleware = securityMiddleware(config);
+  middleware.forEach(m => app.use(m));
 }
 
 /**
@@ -129,106 +134,146 @@ function auditLogging(config: Required<SecurityConfig>) {
   };
 }
 
-export const securityMiddleware = (config: Required<SecurityConfig>): Middleware[] => {
-  const middleware: Middleware[] = [];
+// Helper functions
+const validatePassword = (password: string, policy: Required<SecurityConfig>['passwordPolicy']): boolean => {
+  if (password.length < policy.minLength) return false;
+  if (policy.requireUppercase && !/[A-Z]/.test(password)) return false;
+  if (policy.requireLowercase && !/[a-z]/.test(password)) return false;
+  if (policy.requireNumbers && !/[0-9]/.test(password)) return false;
+  if (policy.requireSpecialChars && !/[^A-Za-z0-9]/.test(password)) return false;
+  return true;
+};
 
-  // Rate limiting
-  if (config.rateLimit) {
-    middleware.push(
-      rateLimit({
-        windowMs: config.rateLimit.windowMs,
-        max: config.rateLimit.max,
-        headers: config.rateLimit.headers,
-      })
-    );
-  }
+const getHelmetHeaders = (): Record<string, string> => ({
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
+});
 
-  // CORS
-  if (config.cors) {
-    middleware.push(
-      cors({
-        origin: config.cors.origin,
-        methods: config.cors.methods,
-        allowedHeaders: config.cors.allowedHeaders,
-      })
-    );
-  }
-
-  // Helmet security headers
-  if (config.helmet) {
-    middleware.push(helmet(config.helmet));
-  }
-
-  // Custom headers
-  if (config.headers) {
-    middleware.push((req: Request, res: Response, next: NextFunction) => {
-      Object.entries(config.headers).forEach(([key, value]) => {
-        res.setHeader(key, String(value));
-      });
-      next();
-    });
-  }
-
-  // Password policy validation
-  const policy = config.passwordPolicy;
-  middleware.push((req: RequestWithUser, res: Response, next: NextFunction) => {
-    if (req.path === '/auth/register' && req.method === 'POST') {
-      const { password } = req.body;
-      if (!password) {
-        return res.status(400).json({ error: 'Password is required' });
-      }
-
-      if (password.length < policy.minLength) {
-        return res.status(400).json({ error: `Password must be at least ${policy.minLength} characters long` });
-      }
-      if (policy.requireUppercase && !/[A-Z]/.test(password)) {
-        return res.status(400).json({ error: 'Password must contain at least one uppercase letter' });
-      }
-      if (policy.requireLowercase && !/[a-z]/.test(password)) {
-        return res.status(400).json({ error: 'Password must contain at least one lowercase letter' });
-      }
-      if (policy.requireNumbers && !/[0-9]/.test(password)) {
-        return res.status(400).json({ error: 'Password must contain at least one number' });
-      }
-      if (policy.requireSpecialChars && !/[^A-Za-z0-9]/.test(password)) {
-        return res.status(400).json({ error: 'Password must contain at least one special character' });
-      }
+const excludeFields = (data: Record<string, unknown>, fields: string[]): Record<string, unknown> => {
+  const result = { ...data };
+  fields.forEach(field => {
+    if (field in result) {
+      result[field] = '********';
     }
-    next();
   });
+  return result;
+};
 
-  // Data protection
-  const masking = config.dataProtection.masking;
-  if (masking.enabled && Array.isArray(masking.fields)) {
-    const fields = [...masking.fields];
-    middleware.push((req: Request, res: Response, next: NextFunction) => {
-      const originalJson = res.json;
-      res.json = function (data) {
-        data = maskSensitiveFields(data, fields);
-        return originalJson.call(this, data);
+export const securityMiddleware = (config: SecurityConfig) => {
+  const cacheConfig: CacheConfig = {
+    enabled: true,
+    ttl: 300, // 5 minutes default TTL
+    prefix: 'gov-security',
+    store: 'memory'
+  };
+
+  const cache = new CacheServiceImpl(cacheConfig);
+
+  const middleware: RequestHandler[] = [];
+
+  // Rate limiting with cache
+  if (config.rateLimit) {
+    middleware.push(async (req: Request, res: Response, next: NextFunction) => {
+      const key: CacheKey = {
+        type: 'rate-limit',
+        identifier: req.ip || 'unknown',
+        timestamp: Math.floor(Date.now() / config.rateLimit!.windowMs)
       };
+
+      const cachedCount = await cache.get<number>(key) || 0;
+      
+      if (cachedCount >= config.rateLimit!.max) {
+        return res.status(429).json({ error: 'Too many requests' });
+      }
+
+      await cache.set(key, cachedCount + 1, config.rateLimit!.windowMs / 1000);
       next();
     });
   }
 
-  // Audit logging
-  const audit = config.audit;
-  if (audit.enabled) {
-    middleware.push((req: Request, res: Response, next: NextFunction) => {
-      const start = Date.now();
-      res.on('finish', () => {
-        const duration = Date.now() - start;
-        const auditData = {
-          timestamp: new Date().toISOString(),
-          method: req.method,
-          path: req.path,
-          status: res.statusCode,
-          duration,
-          userAgent: req.headers['user-agent'],
-          ip: req.ip,
+  // Password policy with cache
+  if (config.passwordPolicy) {
+    middleware.push(async (req: Request, res: Response, next: NextFunction) => {
+      if (req.path === '/auth/register' && req.method === 'POST') {
+        const { password } = req.body as { password: string };
+        const key: CacheKey = {
+          type: 'password-policy',
+          identifier: password
         };
-        console.log('Audit:', auditData);
+
+        const cachedResult = await cache.get<boolean>(key);
+        if (cachedResult !== null) {
+          if (!cachedResult) {
+            return res.status(400).json({ error: 'Password does not meet policy requirements' });
+          }
+          return next();
+        }
+
+        const isValid = validatePassword(password, config.passwordPolicy!);
+        await cache.set(key, isValid, 3600); // Cache for 1 hour
+
+        if (!isValid) {
+          return res.status(400).json({ error: 'Password does not meet policy requirements' });
+        }
+      }
+      next();
+    });
+  }
+
+  // Security headers with cache
+  if (config.helmet || config.headers) {
+    middleware.push(async (req: Request, res: Response, next: NextFunction) => {
+      const key: CacheKey = {
+        type: 'security-headers',
+        identifier: req.path
+      };
+
+      const cachedHeaders = await cache.get<Record<string, string>>(key);
+      if (cachedHeaders) {
+        Object.entries(cachedHeaders).forEach(([headerKey, value]) => {
+          res.setHeader(headerKey, value);
+        });
+        return next();
+      }
+
+      const headers = {
+        ...(config.helmet ? getHelmetHeaders() : {}),
+        ...(config.headers || {})
+      };
+
+      await cache.set(key, headers, 3600); // Cache for 1 hour
+      Object.entries(headers).forEach(([headerKey, value]) => {
+        res.setHeader(headerKey, String(value));
       });
+      next();
+    });
+  }
+
+  // Audit logging with cache
+  if (config.audit?.enabled) {
+    middleware.push(async (req: Request, res: Response, next: NextFunction) => {
+      const key: CacheKey = {
+        type: 'audit-log',
+        identifier: `${req.method}:${req.path}`,
+        timestamp: Math.floor(Date.now() / 60000) // Cache per minute
+      };
+
+      const cachedLog = await cache.get<boolean>(key);
+      if (cachedLog) {
+        return next();
+      }
+
+      const logData = {
+        timestamp: new Date(),
+        method: req.method,
+        path: req.path,
+        ip: req.ip || 'unknown',
+        ...(config.audit?.exclude ? excludeFields(req.body as Record<string, unknown>, config.audit.exclude) : {})
+      };
+
+      await cache.set(key, true, 60); // Cache for 1 minute
+      console.log('Audit Log:', logData);
       next();
     });
   }

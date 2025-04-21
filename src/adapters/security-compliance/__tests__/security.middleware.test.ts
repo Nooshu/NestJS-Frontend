@@ -238,7 +238,7 @@ describe('Security Middleware', () => {
 
     // Test rate limit exceeded
     await new Promise<void>((resolve) => {
-      rateLimitMiddleware(mockRequest as Request, mockResponse as Response, (err) => {
+      rateLimitMiddleware(mockRequest as Request, mockResponse as Response, (err?: any) => {
         expect(err).toBeDefined();
         resolve();
       });
