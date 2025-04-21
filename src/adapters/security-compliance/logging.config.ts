@@ -1,3 +1,5 @@
+import { Logger } from 'pino';
+
 /**
  * Logging configuration interface
  */
@@ -25,6 +27,11 @@ export interface LoggingConfig {
      * Whether to enable pretty printing in development
      */
     prettyPrint: boolean;
+    
+    /**
+     * Logger instance
+     */
+    logger?: Logger;
   };
   
   /**
