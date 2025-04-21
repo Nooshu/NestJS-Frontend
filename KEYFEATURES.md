@@ -6,54 +6,61 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ## Key Features
 
 ### 1. Modern Framework Architecture
-- Built on NestJS, providing a scalable and maintainable architecture
-- TypeScript-first approach for better type safety and developer experience
+- Built on NestJS v11, providing a scalable and maintainable architecture
+- TypeScript v5.1 with strict mode enabled for maximum type safety
 - Modular design following SOLID principles with clear separation of concerns
 - Dependency injection for better testability and maintainability
 - Built-in support for microservices architecture
 - Comprehensive middleware system for request/response handling
 - Structured error handling with custom error filters
+- Adapter pattern implementation for external service integration
+- Core application functionality separation for better maintainability
 
 ### 2. GOV.UK Frontend Integration
-- Seamless integration with GOV.UK Frontend components
+- Seamless integration with GOV.UK Frontend v5.9.0 components
 - Pre-configured Nunjucks templating engine with error handling
 - Built-in support for GOV.UK Design System patterns
 - Accessibility compliance out of the box
 - Automatic asset serving from node_modules
 - Optimised static asset delivery with caching headers
 - Support for GOV.UK Frontend JavaScript components
+- SASS preprocessing for custom styling
 
 ### 3. Security Features
-- Helmet.js integration with custom security configurations
-- Built-in rate limiting with @nestjs/throttler
+- Helmet.js v8.1.0 integration with custom security configurations
+- Built-in rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware for optimised performance
 - Environment-based configuration management
 - CSRF protection
 - CORS configuration
-- Request validation using class-validator
+- Request validation using class-validator v0.14.1
 - Security error filtering and logging
 - Session management
 - JWT support for authentication
+- Express v5.1.0 with enhanced security features
 
 ### 4. Developer Experience
-- Comprehensive testing setup with Jest
+- Comprehensive testing setup with Jest v29.7.0
 - Swagger/OpenAPI documentation with automatic generation
-- Winston logging integration with structured logging
-- Prettier and ESLint for code quality
+- Winston v3.17.0 logging integration with structured logging
+- Prettier v3.0.0 and ESLint for code quality
 - Hot-reload development environment
 - TypeScript decorators for clean code
 - Built-in validation and transformation
 - Clear error messages and debugging support
+- Supertest for API testing
+- Node.js v20+ support with modern features
 
 ### 5. Performance Optimisation
-- Redis caching support with module-based configuration
+- Redis caching support with cache-manager v6.4.2
 - Static file serving optimisation with custom headers
 - Compression middleware with configurable options
-- Axios HTTP client for efficient API calls
+- Axios v1.8.4 HTTP client for efficient API calls
 - Request batching support
 - Connection pooling
 - Response compression
 - Asset versioning and caching
+- ioredis v5.6.1 for Redis operations
 
 ## Advantages Over Express.js + GOV.UK Frontend
 

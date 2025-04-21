@@ -77,25 +77,57 @@ npm run start:dev
 
 ```
 src/
-├── modules/         # Feature modules
-├── shared/          # Shared utilities and services
-│   ├── config/     # Configuration files
-│   ├── constants/  # Application constants
-│   ├── decorators/ # Custom decorators
-│   ├── guards/     # Authentication/Authorisation guards
-│   ├── interfaces/ # TypeScript interfaces
-│   ├── middleware/ # Custom middleware
-│   ├── services/   # Shared services
-│   └── utils/      # Utility functions
+├── adapters/        # Adapter implementations for external services
+├── api/            # API endpoints and controllers
 ├── cache/          # Caching functionality
 │   ├── cache.module.ts  # Cache module configuration
 │   └── cache.service.ts # Cache service implementation
+├── core/           # Core application functionality
 ├── logger/         # Logging functionality
 │   ├── logger.module.ts # Logger module configuration
 │   └── logger.service.ts # Logger service implementation
+├── modules/        # Feature modules
+├── shared/         # Shared utilities and services
+│   ├── config/    # Configuration files
+│   ├── constants/ # Application constants
+│   ├── decorators/# Custom decorators
+│   ├── guards/    # Authentication/Authorisation guards
+│   ├── interfaces/# TypeScript interfaces
+│   ├── middleware/# Custom middleware
+│   ├── services/  # Shared services
+│   └── utils/     # Utility functions
 ├── views/          # Nunjucks templates
 └── public/         # Static assets
 ```
+
+## Dependencies
+
+### Core Dependencies
+- NestJS v11.0.0
+- Express v5.1.0
+- GOV.UK Frontend v5.9.0
+- TypeScript v5.1.3
+- Node.js v20 or later
+
+### Key Features
+- Axios HTTP client for API integration
+- Redis caching with cache-manager
+- Winston logging with structured output
+- Swagger/OpenAPI documentation
+- Rate limiting with @nestjs/throttler
+- Compression middleware
+- Helmet.js security headers
+- Nunjucks templating engine
+- Class-validator for request validation
+- Class-transformer for object transformation
+
+### Development Tools
+- Jest for testing
+- Prettier for code formatting
+- ESLint for code linting
+- TypeScript strict mode enabled
+- SASS for CSS preprocessing
+- Supertest for API testing
 
 ## API Documentation
 
