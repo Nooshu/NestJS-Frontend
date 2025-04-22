@@ -4,7 +4,7 @@ import { applyGovernmentSecurity, securityMiddleware } from '../security.middlew
 import { testConfig } from '../test.config';
 import { Request, Response, NextFunction, Application } from 'express';
 import { SecurityConfig } from '../security.types';
-import { RateLimit, MaxValueFn } from 'express-rate-limit';
+import { rateLimit } from 'express-rate-limit';
 import { rateLimitMiddleware, auditMiddleware, dataProtectionMiddleware } from '../security.middleware';
 
 describe('Security Middleware', () => {

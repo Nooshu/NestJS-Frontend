@@ -1,6 +1,7 @@
 import { HelmetOptions } from 'helmet';
 import { CorsOptions } from 'cors';
 import { Options as RateLimitOptions } from 'express-rate-limit';
+import { MemoryStore } from 'express-rate-limit';
 
 /**
  * Environment-specific configuration types
@@ -143,6 +144,23 @@ export const governmentSecurityConfig: SecurityConfig = {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
     message: 'Too many requests from this IP, please try again later',
+    standardHeaders: true,
+    legacyHeaders: false,
+    limit: 100,
+    statusCode: 429,
+    skipFailedRequests: false,
+    skipSuccessfulRequests: false,
+    keyGenerator: (req) => req.ip || 'unknown',
+    handler: (req, res) => {
+      res.status(429).json({ message: 'Too many requests from this IP, please try again later' });
+    },
+    identifier: 'rate-limit',
+    requestPropertyName: 'rateLimit',
+    skip: () => false,
+    requestWasSuccessful: (req, res) => res.statusCode < 400,
+    store: new MemoryStore(),
+    validate: true,
+    passOnStoreError: false
   },
 
   /**
