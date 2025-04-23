@@ -47,7 +47,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - [Express](https://expressjs.com/) v5.1.0+
 - [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.9.0+
 - [TypeScript](https://www.typescriptlang.org/) v5.1.3+
-- [Node.js v20 or later](https://github.com/nodejs/release#release-schedule)
+- [Node.js](https://github.com/nodejs/release#release-schedule) v20+
 
 ### Key Features
 - Axios HTTP client for API integration
