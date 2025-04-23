@@ -73,7 +73,8 @@ export function applyGovernmentSecurity(app: Application, config: SecurityConfig
         const maxRequests = await getMaxRequests(max, req, res);
         
         if (cachedCount >= maxRequests) {
-          return res.status(429).json({ error: 'Too many requests' });
+          res.status(429).json({ error: 'Too many requests' });
+          return;
         }
 
         await cache.set(key, cachedCount + 1, windowMs / 1000);
@@ -90,7 +91,8 @@ export function applyGovernmentSecurity(app: Application, config: SecurityConfig
       if (req.path === '/register' && req.method === 'POST') {
         const { password } = req.body;
         if (!password || !validatePassword(password, config.passwordPolicy!)) {
-          return res.status(400).json({ error: 'Invalid password' });
+          res.status(400).json({ error: 'Invalid password' });
+          return;
         }
       }
       next();
@@ -450,36 +452,42 @@ export const securityMiddleware = (config: SecurityConfig) => {
 };
 
 export const rateLimitMiddleware = (config: SecurityConfig): RequestHandler => {
-  const { rateLimit, cache } = config;
-  
-  // Early return if rate limiting is not enabled
-  if (!rateLimit?.enabled) {
-    return (req, res, next) => next();
+  if (!config.rateLimit || !isValidRateLimitConfig(config.rateLimit)) {
+    return (req: Request, res: Response, next: NextFunction) => next();
   }
 
-  // At this point we know rateLimit is defined and enabled
-  const { max, windowMs } = rateLimit;
+  const { windowMs, max } = config.rateLimit;
+  const cache = new CacheService({
+    enabled: true,
+    ttl: windowMs / 1000,
+    prefix: 'rate-limit',
+    store: 'memory'
+  });
 
-  return async (req: Request, res: Response, next: NextFunction) => {
+  const middleware: RequestHandler = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const key = `rate_limit:${req.ip}`;
-      const cachedCount = cache ? await cache.get(key) : null;
-      const currentCount = cachedCount ? parseInt(cachedCount, 10) : 0;
+      const key: CacheKey = {
+        type: 'rate-limit',
+        identifier: req.ip || 'unknown',
+        timestamp: Math.floor(Date.now() / windowMs)
+      };
 
-      if (currentCount >= max) {
-        return res.status(rateLimit.statusCode || 429).json({
-          message: rateLimit.message || 'Too many requests'
-        });
+      const cachedCount = await cache.get<number>(key) || 0;
+      const maxRequests = await getMaxRequests(max, req, res);
+      
+      if (cachedCount >= maxRequests) {
+        res.status(429).json({ error: 'Too many requests' });
+        return;
       }
 
-      if (cache) {
-        await cache.set(key, (currentCount + 1).toString(), windowMs);
-      }
+      await cache.set(key, cachedCount + 1, windowMs / 1000);
       next();
-    } catch (err) {
-      next(err);
+    } catch (error) {
+      next(error);
     }
   };
+
+  return middleware;
 };
 
 export const auditMiddleware = (config: SecurityConfig): RequestHandler => {
