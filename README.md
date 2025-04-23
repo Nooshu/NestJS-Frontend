@@ -120,6 +120,8 @@ src/
 - [Security Best Practices](docs/security-best-practices.md) - Security guidelines and best practices
 - [Error Handling](docs/error-handling.md) - Error handling patterns and practices
 - [Health Checks](docs/health-checks.md) - Application health monitoring and checks
+- [TypeORM Migration Guide](docs/typeorm-migration.md) - Guide for migrating to TypeORM
+- [Prisma Migration Guide](docs/prisma-migration.md) - Guide for migrating to Prisma
 
 ## Dependencies
 
