@@ -688,4 +688,42 @@ export class YourService {
 - [Security Best Practices](docs/security-best-practices.md) - Security standards and practices
 - [Testing Strategies](docs/testing-strategies.md) - Testing methodologies and tools
 - [Accessibility Compliance](docs/accessibility-compliance.md) - Accessibility standards and practices
- 
+
+## Process Isolation
+
+This project includes a process isolation system to handle CPU-intensive tasks and prevent main thread congestion. The system distributes work across multiple processes, effectively utilizing all available CPU cores.
+
+### Key Features
+
+- Automatic worker process management
+- CPU core utilization
+- Process isolation for better stability
+- Built-in error handling
+- Graceful shutdown
+
+### Documentation
+
+For detailed documentation on using the process isolation system, see [Process Isolation Documentation](docs/process-isolation.md).
+
+### Quick Start
+
+```typescript
+import ProcessManager from './src/process-isolation/worker';
+
+const processManager = new ProcessManager();
+processManager.startWorkers();
+
+// Distribute tasks
+processManager.distributeTask({
+  id: 1,
+  data: 'some data to process'
+});
+
+// Handle results
+processManager.on('result', (result) => {
+  console.log('Task completed:', result);
+});
+
+// Shutdown when done
+processManager.shutdown();
+``` 
