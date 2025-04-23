@@ -3,38 +3,7 @@
 ## Overview
 This project combines the power of NestJS with GOV.UK Frontend to create a robust, secure, and maintainable web application framework specifically designed for UK government services. The framework provides a complete solution for building government digital services that are secure, accessible, and maintainable.
 
-## Government Service Benefits
-
-### 1. Security and Compliance
-- Built-in security features aligned with government security standards
-- Automatic compliance with GOV.UK Design System
-- Structured logging for audit trails
-- Built-in protection against common security vulnerabilities
-- Easy integration with government authentication systems
-
-### 2. Accessibility and Standards
-- Automatic compliance with WCAG 2.2 standards through GOV.UK Frontend
-- Built-in support for accessibility testing
-- Consistent user experience across government services
-- Automatic handling of accessibility requirements
-- Support for assistive technologies
-
-### 3. Performance and Scalability
-- Optimised for high-traffic government services
-- Built-in caching for improved performance
-- Automatic handling of peak loads
-- Efficient static asset delivery
-- Support for multiple environments (development, staging, production)
-
-### 4. Development and Maintenance
-- Reduced development time through built-in features
-- Easier onboarding for new developers
-- Better code quality through enforced patterns
-- Simplified maintenance through modular design
-- Automatic documentation generation
-- Built-in testing support
-
-## Key Features
+## Core Features
 
 ### 1. Modern Framework Architecture
 - Built on NestJS v11, providing a scalable and maintainable architecture
@@ -92,6 +61,37 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Response compression
 - Asset versioning and caching
 - ioredis v5.6.1 for Redis operations
+
+## Government Service Benefits
+
+### 1. Security and Compliance
+- Built-in security features aligned with government security standards
+- Automatic compliance with GOV.UK Design System
+- Structured logging for audit trails
+- Built-in protection against common security vulnerabilities
+- Easy integration with government authentication systems
+
+### 2. Accessibility and Standards
+- Automatic compliance with WCAG 2.2 standards through GOV.UK Frontend
+- Built-in support for accessibility testing
+- Consistent user experience across government services
+- Automatic handling of accessibility requirements
+- Support for assistive technologies
+
+### 3. Performance and Scalability
+- Optimised for high-traffic government services
+- Built-in caching for improved performance
+- Automatic handling of peak loads
+- Efficient static asset delivery
+- Support for multiple environments (development, staging, production)
+
+### 4. Development and Maintenance
+- Reduced development time through built-in features
+- Easier onboarding for new developers
+- Better code quality through enforced patterns
+- Simplified maintenance through modular design
+- Automatic documentation generation
+- Built-in testing support
 
 ## Java API Integration Advantages
 

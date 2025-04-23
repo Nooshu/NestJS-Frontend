@@ -14,6 +14,9 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Redis-based caching
 - Request validation
 - Security best practices
+- Process isolation for CPU-intensive tasks
+- TypeORM and Prisma ORM support
+- Automated dependency updates with Renovate bot
 
 ## Documentation
 
@@ -35,6 +38,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - [Health Checks](docs/health-checks.md)
 - [TypeORM Migration Guide](docs/typeorm-migration.md)
 - [Prisma Migration Guide](docs/prisma-migration.md)
+- [Process Isolation](docs/process-isolation.md)
 
 ## Dependencies
 
@@ -56,6 +60,9 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Nunjucks templating engine
 - Class-validator for request validation
 - Class-transformer for object transformation
+- TypeORM for database operations
+- Prisma ORM support
+- Process isolation for CPU-intensive tasks
 
 ### Development Tools
 - Jest for testing
@@ -64,6 +71,17 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - TypeScript strict mode enabled
 - SASS for CSS preprocessing
 - Supertest for API testing
+- Renovate bot for dependency updates
+
+## Dependency Management
+
+This project uses [Renovate](https://renovatebot.com/) to automatically keep dependencies up to date. The Renovate configuration is defined in `renovate.json` and includes:
+
+- Automated dependency updates
+- Scheduled update checks
+- Version constraint management
+- Update grouping
+- Automated merge requests
 
 ## License
 
