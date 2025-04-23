@@ -113,6 +113,14 @@ src/
 └── public/         # Static assets
 ```
 
+## Documentation
+
+- [Dependency Injection Best Practices](docs/dependency-injection.md) - Guidelines for managing dependency injection and ensuring stateless services
+- [API Documentation](#api-documentation) - Swagger/OpenAPI documentation for API endpoints
+- [Security Best Practices](docs/security-best-practices.md) - Security guidelines and best practices
+- [Error Handling](docs/error-handling.md) - Error handling patterns and practices
+- [Health Checks](docs/health-checks.md) - Application health monitoring and checks
+
 ## Dependencies
 
 ### Core Dependencies
