@@ -23,7 +23,7 @@
 > - Better performance on all devices
 > - Improved accessibility out of the box
 > - Better support for users with limited connectivity
-> - Compliance with government accessibility standards
+> - Compliance with government [WCAG 2.2 accessibility standards](https://design-system.service.gov.uk/accessibility/wcag-2.2/)
 > - Simpler development and maintenance
 > - Easier integration with existing government services
 > - Reduced complexity in the codebase
