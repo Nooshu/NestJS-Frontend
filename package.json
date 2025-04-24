@@ -5,6 +5,10 @@
   "author": "Matt Hobbs",
   "private": true,
   "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hmcts/NestJS-frontend"
+  },
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
