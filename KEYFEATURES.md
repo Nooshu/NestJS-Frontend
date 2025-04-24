@@ -6,8 +6,8 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ## Core Features
 
 ### 1. Modern Framework Architecture
-- Built on NestJS v11, providing a scalable and maintainable architecture
-- TypeScript v5.1 with strict mode enabled for maximum type safety
+- Built on NestJS v11.1.0, providing a scalable and maintainable architecture
+- TypeScript v5.1.3 with strict mode enabled for maximum type safety
 - Modular design following SOLID principles with clear separation of concerns
 - Dependency injection for better testability and maintainability
 - Built-in support for microservices architecture
@@ -55,7 +55,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - TypeScript decorators for clean code
 - Built-in validation and transformation
 - Clear error messages and debugging support
-- Supertest for API testing
+- Supertest v7.1.0 for API testing
 - Node.js v20+ support with modern features
 
 ### 6. Performance Optimisation
