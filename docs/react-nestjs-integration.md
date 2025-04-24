@@ -393,6 +393,8 @@ describe('AppController (e2e)', () => {
    - Simpler deployment process
    - Lower hosting costs
    - Better suited for government websites
+   - Automatic HTML updates with each GOV.UK Frontend release
+   - No need to manually update HTML markup when GOV.UK Frontend is updated
 
 ### Cons of Using Nunjucks Macros
 

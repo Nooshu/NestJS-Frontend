@@ -32,6 +32,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Optimised static asset delivery with caching headers
 - Support for GOV.UK Frontend JavaScript components
 - SASS preprocessing for custom styling
+- Automatic HTML updates with each GOV.UK Frontend release through Nunjucks macros
 
 ### 4. Security Features
 - Helmet.js v8.1.0 integration with custom security configurations
