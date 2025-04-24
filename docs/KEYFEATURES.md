@@ -24,10 +24,10 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ![NestJS Popularity Trends](../docs/assets/nestjs-popularity-graph.png)
 
 ### 3. GOV.UK Frontend Integration
-- Seamless integration with GOV.UK Frontend v5.9.0 components
+- Seamless integration with the [latest version of GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) components
 - Pre-configured Nunjucks templating engine with error handling
-- Built-in support for GOV.UK Design System patterns
-- Accessibility compliance out of the box
+- Built-in support for [GOV.UK Design System patterns](https://design-system.service.gov.uk/)
+- [WCAG 2.2 Accessibility compliance](https://design-system.service.gov.uk/accessibility/wcag-2.2/) built into the codebase
 - Automatic asset serving from node_modules
 - Optimised static asset delivery with caching headers
 - Support for GOV.UK Frontend JavaScript components

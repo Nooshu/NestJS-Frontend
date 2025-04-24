@@ -358,6 +358,8 @@ This document outlines the accessibility standards and practices for the NestJS 
 ## References
 
 - [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
+- [WCAG 2.2 Guidelines](https://www.w3.org/WAI/WCAG22/quickref/)
 - [GOV.UK Accessibility](https://www.gov.uk/service-manual/helping-people-to-use-your-service)
+- [Changes to the Design System to meet WCAG 2.2](https://design-system.service.gov.uk/accessibility/wcag-2.2/)
 - [Accessibility Testing](https://www.gov.uk/service-manual/technology/testing-for-accessibility)
 - [Inclusive Design](https://www.gov.uk/service-manual/design/making-your-service-more-inclusive) 
