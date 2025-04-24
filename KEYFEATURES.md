@@ -17,7 +17,13 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Core application functionality separation for better maintainability
 - Monorepo architecture support for managing multiple related applications
 
-### 2. GOV.UK Frontend Integration
+### 2. Framework Popularity
+- Second most popular Node.js web framework after Express.js, demonstrating strong community adoption and reliability
+- Growing adoption rate with increasing number of downloads and active users
+- [View detailed popularity trends on npmtrends.com](https://npmtrends.com/@nestjs/core-vs-fastify-vs-hapi-vs-koa)
+![NestJS Popularity Trends](docs/assets/nestjs-popularity-graph.png)
+
+### 3. GOV.UK Frontend Integration
 - Seamless integration with GOV.UK Frontend v5.9.0 components
 - Pre-configured Nunjucks templating engine with error handling
 - Built-in support for GOV.UK Design System patterns
@@ -27,7 +33,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Support for GOV.UK Frontend JavaScript components
 - SASS preprocessing for custom styling
 
-### 3. Security Features
+### 4. Security Features
 - Helmet.js v8.1.0 integration with custom security configurations
 - Built-in rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware for optimised performance
@@ -40,7 +46,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - JWT support for authentication
 - Express v5.1.0 with enhanced security features
 
-### 4. Developer Experience
+### 5. Developer Experience
 - Comprehensive testing setup with Jest v29.7.0
 - Swagger/OpenAPI documentation with automatic generation
 - Winston v3.17.0 logging integration with structured logging
@@ -52,7 +58,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Supertest for API testing
 - Node.js v20+ support with modern features
 
-### 5. Performance Optimisation
+### 6. Performance Optimisation
 - Redis caching support with cache-manager v6.4.2
 - Static file serving optimisation with custom headers
 - Compression middleware with configurable options
