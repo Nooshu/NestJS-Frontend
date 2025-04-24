@@ -15,6 +15,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Structured error handling with custom error filters
 - Adapter pattern implementation for external service integration
 - Core application functionality separation for better maintainability
+- Monorepo architecture support for managing multiple related applications
 
 ### 2. GOV.UK Frontend Integration
 - Seamless integration with GOV.UK Frontend v5.9.0 components
