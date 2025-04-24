@@ -41,6 +41,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - [Process Isolation](docs/process-isolation.md)
 - [Express.js to NestJS Migration Guide](docs/express-migration.md)
 - [Monorepo Architecture](docs/monorepo-architecture.md)
+- [React Integration Guide](docs/react-nestjs-integration.md) - **Not Recommended for Government Services**
 
 ## Dependencies
 
