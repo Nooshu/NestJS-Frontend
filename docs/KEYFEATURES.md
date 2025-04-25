@@ -45,8 +45,16 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Built-in rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware for optimised performance
 - Environment-based configuration management
-- CSRF protection
+- CSRF protection with secure cookies
+- Content Security Policy with nonce-based script security
+- Comprehensive security headers
+- Strict permissions policy
 - CORS configuration
+- CSP violation reporting
+- Secure cookie settings
+- Token validation
+- API route exclusions
+- Automatic token generation
 - Request validation using class-validator v0.14.1
 - Security error filtering and logging
 - Session management
@@ -148,6 +156,48 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Efficient asset delivery
 - Cache control headers
 
+## Security Features
+
+### 1. CSRF Protection
+- Secure cookie settings
+- Token validation
+- Proper error handling
+- API route exclusions
+- Automatic token generation
+- Form integration
+- Cookie-based token storage
+- Development mode support
+
+### 2. Content Security Policy
+- Strict default source restrictions
+- Nonce-based script security
+- Inline style allowances
+- Resource restrictions
+- Violation reporting
+- Development mode support
+- CSP monitoring
+- Automatic header generation
+
+### 3. Security Headers
+- X-Content-Type-Options
+- X-Frame-Options
+- X-XSS-Protection
+- Strict-Transport-Security
+- Referrer-Policy
+- Permissions-Policy
+- Cross-Origin Policies
+- DNS Prefetch Control
+
+### 4. CORS Configuration
+- Configurable origins
+- Method restrictions
+- Header controls
+- Credential handling
+- Cache control
+- Security headers
+- Development mode support
+- API-specific settings
+
 ## Government Service Benefits
 
 ### 1. Security and Compliance
@@ -156,6 +206,10 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Structured logging for audit trails
 - Built-in protection against common security vulnerabilities
 - Easy integration with government authentication systems
+- CSRF protection for forms
+- Content Security Policy
+- Comprehensive security headers
+- Strict permissions policy
 
 ### 2. Accessibility and Standards
 - Automatic compliance with WCAG 2.2 standards through GOV.UK Frontend
@@ -206,6 +260,9 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Session Management**: Flexible session handling compatible with Java session management
 - **CORS Configuration**: Easy configuration for cross-origin requests to Java APIs
 - **CSRF Protection**: Built-in CSRF protection compatible with Java security implementations
+- **Content Security Policy**: Comprehensive CSP configuration
+- **Security Headers**: Enhanced security headers
+- **Permissions Policy**: Strict permissions policy
 
 ### 4. Performance Optimisation
 - **Caching Layer**: Redis caching can be used to reduce load on Java APIs
@@ -240,4 +297,8 @@ This framework is particularly well-suited for:
 - Services requiring comprehensive performance monitoring
 - Applications needing real-time performance tracking
 - Services requiring user interaction monitoring
-- Applications needing visual performance metrics 
+- Applications needing visual performance metrics
+- Services requiring CSRF protection
+- Applications needing Content Security Policy
+- Services requiring comprehensive security headers
+- Applications needing strict permissions policy 

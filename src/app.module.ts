@@ -18,6 +18,8 @@ import { LoggerMiddleware } from './shared/middleware/logger.middleware';
 import { ViewsController } from './views/views.controller';
 import { AppCacheModule } from './cache/cache.module';
 import { LoggerModule } from './logger/logger.module';
+import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
+import { CspReportController } from './shared/controllers/csp-report.controller';
 
 /**
  * Root module class that bootstraps the application.
@@ -41,7 +43,7 @@ import { LoggerModule } from './logger/logger.module';
     AppCacheModule,
     LoggerModule,
   ],
-  controllers: [AppController, ViewsController],
+  controllers: [AppController, ViewsController, CspReportController],
   providers: [],
 })
 export class AppModule {
@@ -60,6 +62,16 @@ export class AppModule {
     // Apply logging middleware to all routes
     consumer
       .apply(LoggerMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+
+    // Apply CSRF protection to all routes except API routes
+    consumer
+      .apply(CsrfMiddleware)
+      .exclude(
+        { path: 'api', method: RequestMethod.ALL },
+        { path: 'api/*path', method: RequestMethod.ALL },
+        { path: 'health', method: RequestMethod.ALL }
+      )
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 } 

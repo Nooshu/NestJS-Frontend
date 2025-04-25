@@ -23,6 +23,12 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Real-time performance tracking
 - User interaction monitoring
 - Visual performance metrics
+- Enhanced security features
+- CSRF protection
+- Content Security Policy
+- Comprehensive security headers
+- Permissions policy
+- CORS configuration
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
@@ -39,6 +45,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - [Request Validation](docs/readme/validation.md)
 - [GOV.UK Frontend Integration](docs/readme/govuk-frontend.md)
 - [Frontend Performance](docs/readme/frontend-performance.md)
+- [Security Features](docs/security.md)
 
 ### Additional Documentation
 - [Dependency Injection Best Practices](docs/dependency-injection.md)
@@ -81,6 +88,11 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Real-time performance tracking
 - User interaction monitoring
 - Visual performance metrics
+- CSRF protection with csurf
+- Content Security Policy
+- Comprehensive security headers
+- Permissions policy
+- CORS configuration
 
 ### Development Tools
 - Jest for testing
@@ -113,6 +125,18 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Largest contentful paint tracking
 - Time to interactive monitoring
 - Total blocking time tracking
+
+## Security Features
+- CSRF protection with secure cookies
+- Content Security Policy with nonce-based script security
+- Comprehensive security headers
+- Strict permissions policy
+- CORS configuration
+- CSP violation reporting
+- Secure cookie settings
+- Token validation
+- API route exclusions
+- Automatic token generation
 
 ## Dependency Management
 

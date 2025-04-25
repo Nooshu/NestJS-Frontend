@@ -52,7 +52,7 @@ export const securityConfig = {
         
         // Scripts configuration
         scriptSrc: isProd 
-          ? ["'self'"] 
+          ? ["'self'", "'nonce-${nonce}'"] 
           : ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
         
         // Styles configuration
@@ -110,11 +110,11 @@ export const securityConfig = {
         workerSrc: ["'self'"],
         
         // CSP violation reporting
-        //reportUri: '/api/csp-report'
+        reportUri: '/api/csp-report'
       },
       
       // Report violations instead of blocking if you want to monitor
-      // reportUri: '/csp-violation-report'
+      reportOnly: !isProd,
     },
     
     // Cross-Origin Policies
@@ -170,7 +170,7 @@ export const securityConfig = {
   cors: {
     origin: configuration().corsOrigin,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-CSRF-Token'],
     exposedHeaders: ['Content-Range', 'X-Content-Range'],
     credentials: true,
     maxAge: 600,
@@ -186,7 +186,37 @@ export const securityConfig = {
       'camera': ['none'],
       'microphone': ['none'],
       'payment': ['self'],
-      'usb': ['none']
+      'accelerometer': ['none'],
+      'ambient-light-sensor': ['none'],
+      'autoplay': ['none'],
+      'battery': ['none'],
+      'bluetooth': ['none'],
+      'clipboard-read': ['none'],
+      'clipboard-write': ['none'],
+      'display-capture': ['none'],
+      'document-domain': ['none'],
+      'encrypted-media': ['none'],
+      'execution-while-not-rendered': ['none'],
+      'execution-while-out-of-viewport': ['none'],
+      'fullscreen': ['none'],
+      'gamepad': ['none'],
+      'gyroscope': ['none'],
+      'hid': ['none'],
+      'idle-detection': ['none'],
+      'magnetometer': ['none'],
+      'midi': ['none'],
+      'navigation-override': ['none'],
+      'picture-in-picture': ['none'],
+      'publickey-credentials-get': ['none'],
+      'screen-wake-lock': ['none'],
+      'serial': ['none'],
+      'speaker-selection': ['none'],
+      'sync-xhr': ['none'],
+      'trust-token-redemption': ['none'],
+      'unload': ['none'],
+      'usb': ['none'],
+      'web-share': ['none'],
+      'xr-spatial-tracking': ['none']
     }
   },
 
