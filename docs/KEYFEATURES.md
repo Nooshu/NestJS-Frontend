@@ -21,7 +21,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Second most popular Node.js web framework after Express.js, demonstrating strong community adoption and reliability
 - Growing adoption rate with increasing number of downloads and active users
 - [View detailed popularity trends on npmtrends.com](https://npmtrends.com/@nestjs/core-vs-fastify-vs-hapi-vs-koa)
-![NestJS Popularity Trends](../docs/assets/nestjs-popularity-graph.png)
+![NestJS Popularity Trends](./assets/nestjs-popularity-graph.png)
 
 ### 3. GOV.UK Frontend Integration
 - Seamless integration with the [latest version of GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) components
