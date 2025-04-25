@@ -50,6 +50,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - [Express.js to NestJS Migration Guide](docs/express-migration.md)
 - [Monorepo Architecture](docs/monorepo-architecture.md)
 - [React Integration Guide](docs/react-nestjs-integration.md) - **Not Recommended for Government Services**
+- [TypeScript and Babel Setup](docs/typescript-babel-setup.md)
 
 ## Dependencies
 
