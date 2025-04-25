@@ -14,7 +14,7 @@ import { Controller, Get, Render } from '@nestjs/common';
  * GET /views/third-page      // Renders the third page
  * GET /views/form-components // Renders form components demo
  */
-@Controller('views')
+@Controller()
 export class ViewsController {
   /**
    * Renders the home page
