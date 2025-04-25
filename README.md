@@ -1,6 +1,6 @@
-# NestJS Frontend Application
+# PoC: NestJS Frontend Application
 
-A NestJS application with GOV.UK Frontend integration.
+A proof of concept for a HMCTS NestJS application with GOV.UK Frontend integration.
 
 ## Project Overview
 
