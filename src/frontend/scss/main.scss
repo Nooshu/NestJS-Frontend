@@ -1,0 +1,47 @@
+// Import GOV.UK Frontend
+@import "govuk-frontend/govuk/all";
+
+// Custom styles
+.govuk-header {
+  border-bottom: 10px solid #0b0c0c;
+}
+
+.govuk-footer {
+  border-top: 10px solid #0b0c0c;
+}
+
+// Custom components
+.app-header {
+  &__container {
+    @include govuk-clearfix;
+    padding: govuk-spacing(3) 0;
+  }
+
+  &__logo {
+    float: left;
+    margin-right: govuk-spacing(3);
+  }
+
+  &__content {
+    float: left;
+  }
+}
+
+// Utility classes
+.app-util {
+  &--hidden {
+    display: none !important;
+  }
+
+  &--visually-hidden {
+    @include govuk-visually-hidden;
+  }
+}
+
+// Print styles
+@media print {
+  .govuk-header,
+  .govuk-footer {
+    display: none;
+  }
+} 

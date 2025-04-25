@@ -17,6 +17,12 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Process isolation for CPU-intensive tasks
 - TypeORM and Prisma ORM support
 - Automated dependency updates with Renovate bot
+- Advanced frontend performance optimizations
+- Service worker for offline support
+- Comprehensive performance monitoring and metrics
+- Real-time performance tracking
+- User interaction monitoring
+- Visual performance metrics
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
@@ -32,6 +38,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - [Caching](docs/readme/caching.md)
 - [Request Validation](docs/readme/validation.md)
 - [GOV.UK Frontend Integration](docs/readme/govuk-frontend.md)
+- [Frontend Performance](docs/readme/frontend-performance.md)
 
 ### Additional Documentation
 - [Dependency Injection Best Practices](docs/dependency-injection.md)
@@ -68,6 +75,12 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - TypeORM for database operations
 - Prisma ORM support
 - Process isolation for CPU-intensive tasks
+- Webpack for frontend optimization
+- Service worker for offline support
+- Performance monitoring and metrics
+- Real-time performance tracking
+- User interaction monitoring
+- Visual performance metrics
 
 ### Development Tools
 - Jest for testing
@@ -77,6 +90,29 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - SASS for CSS preprocessing
 - Supertest for API testing
 - Renovate bot for dependency updates
+- Webpack for frontend bundling
+- PostCSS for CSS optimization
+- Babel for JavaScript transpilation
+
+## Frontend Performance Features
+- Code splitting and lazy loading
+- Asset optimization and minification
+- CSS optimization with PostCSS
+- Service worker for offline support
+- Performance monitoring and metrics
+- Resource timing tracking
+- Long task detection
+- Navigation timing metrics
+- Cache-first strategy for static assets
+- Automatic asset versioning
+- Real-time performance tracking
+- User interaction monitoring
+- Visual performance metrics
+- Layout shift monitoring
+- First input delay tracking
+- Largest contentful paint tracking
+- Time to interactive monitoring
+- Total blocking time tracking
 
 ## Dependency Management
 

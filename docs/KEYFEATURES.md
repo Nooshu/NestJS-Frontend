@@ -33,6 +33,12 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Support for GOV.UK Frontend JavaScript components
 - SASS preprocessing for custom styling
 - Automatic HTML updates with each GOV.UK Frontend release through Nunjucks macros
+- Advanced frontend optimization with Webpack
+- Service worker for offline support and caching
+- Performance monitoring and metrics collection
+- Real-time performance tracking
+- User interaction monitoring
+- Visual performance metrics
 
 ### 4. Security Features
 - Helmet.js v8.1.0 integration with custom security configurations
@@ -58,6 +64,9 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Clear error messages and debugging support
 - Supertest v7.1.0 for API testing
 - Node.js v20+ support with modern features
+- Webpack for efficient frontend development
+- PostCSS for modern CSS processing
+- Babel for JavaScript transpilation
 
 ### 6. Performance Optimisation
 - Redis caching support with cache-manager v6.4.2
@@ -69,6 +78,75 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Response compression
 - Asset versioning and caching
 - ioredis v5.6.1 for Redis operations
+- Webpack optimization for frontend assets
+- Code splitting and lazy loading
+- CSS optimization with PostCSS
+- Service worker for offline support
+- Performance monitoring and metrics
+- Resource timing tracking
+- Long task detection
+- Navigation timing metrics
+- Cache-first strategy for static assets
+- Real-time performance tracking
+- User interaction monitoring
+- Visual performance metrics
+- Layout shift monitoring
+- First input delay tracking
+- Largest contentful paint tracking
+- Time to interactive monitoring
+- Total blocking time tracking
+
+## Frontend Performance Features
+
+### 1. Build Optimization
+- Webpack configuration for efficient bundling
+- Code splitting for better performance
+- CSS optimization with PostCSS
+- Asset optimization and minification
+- Automatic asset versioning
+- Development and production builds
+- Source maps for debugging
+
+### 2. Caching and Offline Support
+- Service worker implementation
+- Cache-first strategy for static assets
+- Offline fallback support
+- Cache versioning and cleanup
+- Automatic cache updates
+- Efficient asset caching
+
+### 3. Performance Monitoring
+- Comprehensive performance metrics
+- Navigation timing tracking
+- Resource loading metrics
+- Long task detection
+- Performance observer pattern
+- Custom metric collection
+- Production-only monitoring
+- Real-time performance tracking
+- User interaction monitoring
+- Visual performance metrics
+- Layout shift monitoring
+- First input delay tracking
+- Largest contentful paint tracking
+- Time to interactive monitoring
+- Total blocking time tracking
+- Configurable sampling rate
+- Maximum entries limit
+- Periodic reporting
+- On-page-unload reporting
+- Error handling
+- Metrics storage
+- Development mode support
+
+### 4. Asset Optimization
+- CSS minification and optimization
+- JavaScript minification and transpilation
+- Image optimization
+- Font optimization
+- Asset versioning
+- Efficient asset delivery
+- Cache control headers
 
 ## Government Service Benefits
 
@@ -92,6 +170,12 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Automatic handling of peak loads
 - Efficient static asset delivery
 - Support for multiple environments (development, staging, production)
+- Advanced frontend optimization
+- Offline support and caching
+- Performance monitoring and metrics
+- Real-time performance tracking
+- User interaction monitoring
+- Visual performance metrics
 
 ### 4. Development and Maintenance
 - Reduced development time through built-in features
@@ -100,6 +184,8 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Simplified maintenance through modular design
 - Automatic documentation generation
 - Built-in testing support
+- Modern frontend tooling
+- Efficient development workflow
 
 ## Java API Integration Advantages
 
@@ -126,12 +212,19 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Request Batching**: Support for batching multiple API calls to reduce network overhead
 - **Response Compression**: Built-in compression for efficient data transfer
 - **Connection Pooling**: Optimised HTTP client configuration for Java API connections
+- **Frontend Optimization**: Advanced frontend optimization for better user experience
+- **Offline Support**: Service worker for offline access to cached resources
+- **Performance Monitoring**: Comprehensive performance metrics collection
+- **Real-time Tracking**: Real-time performance tracking and monitoring
+- **User Interaction**: User interaction monitoring and analysis
+- **Visual Metrics**: Visual performance metrics and analysis
 
 ### 5. Development Workflow
 - **Environment Configuration**: Easy configuration management for different Java API environments
 - **Mocking Support**: Built-in tools for mocking Java API responses during development
 - **Error Handling**: Consistent error handling patterns between Java and TypeScript
 - **Logging Integration**: Winston logging can be configured to match Java logging patterns
+- **Frontend Tooling**: Modern frontend development tools and optimization
 
 ## Use Cases
 This framework is particularly well-suited for:
@@ -142,4 +235,9 @@ This framework is particularly well-suited for:
 - Projects needing comprehensive documentation
 - Services requiring integration with other government systems
 - Applications needing robust error handling and logging
-- Services requiring high performance and scalability 
+- Services requiring high performance and scalability
+- Applications needing offline support and caching
+- Services requiring comprehensive performance monitoring
+- Applications needing real-time performance tracking
+- Services requiring user interaction monitoring
+- Applications needing visual performance metrics 

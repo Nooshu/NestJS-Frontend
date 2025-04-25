@@ -24,7 +24,10 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "test:govuk": "jest --testPathPattern=govuk-components",
     "test:govuk:watch": "jest --testPathPattern=govuk-components --watch",
-    "test:govuk:cov": "jest --testPathPattern=govuk-components --coverage"
+    "test:govuk:cov": "jest --testPathPattern=govuk-components --coverage",
+    "build:frontend": "webpack --config webpack.config.js",
+    "build:frontend:watch": "webpack --config webpack.config.js --watch",
+    "build:frontend:prod": "NODE_ENV=production webpack --config webpack.config.js"
   },
   "keywords": [
     "nestjs",
@@ -87,7 +90,23 @@
     "sass": "^1.69.5",
     "supertest": "^7.1.0",
     "ts-jest": "^29.3.2",
-    "typescript": "^5.1.3"
+    "typescript": "^5.1.3",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "autoprefixer": "^10.4.18",
+    "babel-loader": "^9.1.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^6.10.0",
+    "css-minimizer-webpack-plugin": "^6.0.0",
+    "mini-css-extract-plugin": "^2.8.1",
+    "postcss": "^8.4.35",
+    "postcss-loader": "^8.1.1",
+    "sass": "^1.71.1",
+    "sass-loader": "^14.1.0",
+    "terser-webpack-plugin": "^5.3.10",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   },
   "compilerOptions": {
     "strict": true
