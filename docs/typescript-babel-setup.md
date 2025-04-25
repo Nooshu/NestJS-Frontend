@@ -98,6 +98,6 @@ The setup is managed through standard configuration files and build scripts. The
 
 ## Related Documentation
 
-- [Project Structure](docs/readme/project-structure.md)
-- [Development Guidelines](docs/readme/development-guidelines.md)
-- [Build Process](docs/readme/build-process.md) 
+- [Project Structure](./readme/project-structure.md)
+- [Development Guidelines](./readme/development-guidelines.md)
+- [Getting Started](./readme/getting-started.md) 
