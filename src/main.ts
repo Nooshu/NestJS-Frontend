@@ -1,7 +1,7 @@
 /**
  * Main entry point for the NestJS application.
  * Configures the application with Nunjucks templating, static assets, and Swagger documentation.
- * This module initialses the NestJS application with necessary middleware,
+ * This module initialises the NestJS application with necessary middleware,
  * view engine configuration, and static asset serving.
  * 
  * @module Main
@@ -11,6 +11,8 @@
  * @requires path
  * @requires class-validator
  * @requires class-transformer
+ * @requires helmet
+ * @requires compression
  */
 
 import { NestFactory } from '@nestjs/core';
@@ -48,6 +50,8 @@ import { LoggerService } from './logger/logger.service';
  *   console.error('Failed to start application:', err);
  *   process.exit(1);
  * });
+ * 
+ * @throws {Error} If the application fails to start
  */
 async function bootstrap() {
   // Create the NestJS application instance with Express platform
@@ -99,10 +103,23 @@ async function bootstrap() {
   // Add this line to apply the global error filter
   app.useGlobalFilters(new SecurityErrorFilter());
 
-  // Security middleware
+  /**
+   * Security Middleware Configuration
+   * 
+   * Helmet helps secure Express apps by setting various HTTP headers.
+   * It's not a silver bullet, but it can help!
+   * 
+   * @see https://helmetjs.github.io/
+   */
   app.use(helmet(securityConfig.helmet));
 
-  // Performance middleware
+  /**
+   * Performance Middleware Configuration
+   * 
+   * Compression middleware compresses response bodies for all requests that traverse through the middleware.
+   * 
+   * @see https://github.com/expressjs/compression
+   */
   app.use(compression(performanceConfig.compression));
 
   // Get the view engine service
@@ -114,6 +131,10 @@ async function bootstrap() {
    * Configures Nunjucks as the template engine with error handling.
    * The view engine service is used to render templates, and any errors
    * during rendering are logged using our Winston logger.
+   * 
+   * @param {string} filePath - The path to the template file
+   * @param {Record<string, any>} options - The options to pass to the template
+   * @param {Function} callback - The callback function to call with the rendered template or error
    */
   app.engine('njk', (filePath: string, options: Record<string, any>, callback: (e: any, rendered?: string) => void) => {
     try {
@@ -127,7 +148,16 @@ async function bootstrap() {
   app.setViewEngine('njk');
   app.setBaseViewsDir(join(process.cwd(), 'src', 'views'));
 
-  // Configure static asset directories with performance optimizations
+  /**
+   * Static Asset Configuration
+   * 
+   * Configures static asset serving with performance optimizations:
+   * - maxAge: How long the browser should cache the assets
+   * - immutable: Whether the assets are immutable
+   * - etag: Whether to use ETags for caching
+   * - lastModified: Whether to use Last-Modified headers
+   * - setHeaders: Custom headers to set on static assets
+   */
   const staticOptions = {
     maxAge: performanceConfig.staticAssets.maxAge,
     immutable: performanceConfig.staticAssets.immutable,
@@ -173,7 +203,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  // Apply security middleware
+  /**
+   * CORS Configuration
+   * 
+   * Configures Cross-Origin Resource Sharing (CORS) for the application.
+   * Only enabled if specified in the security configuration.
+   * 
+   * @see https://docs.nestjs.com/security/cors
+   */
   if (securityConfig.cors.enabled) {
     app.enableCors({
       origin: securityConfig.cors.origin,
@@ -186,7 +223,10 @@ async function bootstrap() {
   logger.info(`Application is running on: http://localhost:${port}`);
 }
 
-// Start the application and handle any startup errors
+/**
+ * Start the application and handle any startup errors
+ * @throws {Error} If the application fails to start
+ */
 bootstrap().catch((err) => {
   console.error('Failed to start application:', err);
   process.exit(1);
