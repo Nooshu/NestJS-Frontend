@@ -5,7 +5,37 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
+  collectCoverageFrom: [
+    '**/*.(t|j)s',
+    '!**/*.module.ts',
+    '!**/*.interface.ts',
+    '!**/*.enum.ts',
+    '!**/*.dto.ts',
+    '!**/*.entity.ts',
+    '!**/*.config.ts',
+    '!**/main.ts',
+    '!**/test/**',
+  ],
   coverageDirectory: '../coverage',
+  coverageReporters: ['text', 'lcov', 'clover', 'html'],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+  },
   testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/$1',
+  },
+  testTimeout: 30000,
+  verbose: true,
+  detectOpenHandles: true,
+  forceExit: true,
+  clearMocks: true,
+  resetMocks: true,
+  restoreMocks: true,
 }; 

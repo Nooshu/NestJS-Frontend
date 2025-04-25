@@ -95,7 +95,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - CORS configuration
 
 ### Development Tools
-- Jest for testing
+- Jest for testing with comprehensive performance API mocking
 - Prettier for code formatting
 - ESLint for code linting
 - TypeScript strict mode enabled
