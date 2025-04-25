@@ -12,6 +12,7 @@ import { ErrorMiddleware } from './middleware/error.middleware';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 import { TerminusModule } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
+import { LoggerModule } from '../logger/logger.module';
 
 /**
  * Shared module that exports common components.
@@ -24,6 +25,7 @@ import { HttpModule } from '@nestjs/axios';
   imports: [
     TerminusModule,
     HttpModule,
+    LoggerModule,
   ],
   controllers: [HealthController],
   providers: [ErrorMiddleware, LoggerMiddleware],

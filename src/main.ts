@@ -20,7 +20,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import { AppModule } from './app.module';
 import { ViewEngineService } from './views/view-engine.service';
-import { securityConfig } from './shared/config/security.config';
+import { SecurityConfig } from './shared/config/security.config';
 import { performanceConfig } from './shared/config/performance.config';
 import { SecurityErrorFilter } from './shared/filters/security-error.filter';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -69,6 +69,8 @@ async function bootstrap() {
   logger.setContext('Bootstrap');
   app.useLogger(logger);
 
+  const securityConfig = app.get(SecurityConfig);
+
   /**
    * Global Validation Pipe Configuration
    * 
@@ -91,9 +93,6 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
     }),
   );
 
@@ -102,7 +101,6 @@ async function bootstrap() {
 
   // Security middleware
   app.use(helmet(securityConfig.helmet));
-  app.enableCors(securityConfig.cors);
 
   // Performance middleware
   app.use(compression(performanceConfig.compression));
@@ -160,14 +158,10 @@ async function bootstrap() {
    * - Version: Current version of the API
    * - Additional configurations can be added here (e.g., authentication, tags, servers)
    */
-  const swaggerConfig = new DocumentBuilder()
+  const config = new DocumentBuilder()
     .setTitle('NestJS Frontend API')
-    .setDescription('API documentation for the NestJS Frontend application using GOV.UK Frontend')
+    .setDescription('API documentation for the NestJS Frontend application')
     .setVersion('1.0')
-    // You can add additional configuration here such as:
-    // .addBearerAuth()
-    // .addTag('your-tag')
-    // .addServer('http://localhost:3000')
     .build();
 
   /**
@@ -176,8 +170,16 @@ async function bootstrap() {
    * @param {SwaggerDocumentOptions} swaggerConfig - Swagger configuration options
    * @param {string} 'api-docs' - The endpoint where the Swagger UI will be served
    */
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
+
+  // Apply security middleware
+  if (securityConfig.cors.enabled) {
+    app.enableCors({
+      origin: securityConfig.cors.origin,
+      credentials: true,
+    });
+  }
 
   const port = process.env.PORT || 3000;
   await app.listen(port);

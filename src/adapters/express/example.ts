@@ -1,44 +1,40 @@
 import { createExpressApp } from './index';
+import { Request, Response, NextFunction } from 'express';
 
 /**
  * Example usage of the Express.js adapter in a government department's project.
  * This file demonstrates how to use the adapter with minimal configuration.
  */
 
-// Create the Express.js application
-const app = createExpressApp({
-  // Add any custom configuration here
-  port: process.env.PORT || 3000,
-  environment: process.env.NODE_ENV || 'development'
-});
+async function startServer() {
+  const port = process.env.PORT || 3000;
+  const app = await createExpressApp();
 
-// Start the server
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
-});
+  // Get the underlying Express instance
+  const expressApp = app.getHttpAdapter().getInstance();
 
-// Example of adding a custom route
-app.get('/example', (req, res) => {
-  res.render('example', {
-    title: 'Example Page',
-    serviceName: 'Government Service'
+  // Example routes
+  expressApp.get('/example', (req: Request, res: Response) => {
+    res.send('Hello from NestJS with Express!');
   });
-});
 
-// Example of handling API routes
-app.get('/api/data', (req, res) => {
-  // Example of handling API responses
-  res.json({
-    data: 'Example API response'
+  expressApp.get('/api/data', (req: Request, res: Response) => {
+    res.json({
+      message: 'This is an example API endpoint',
+      timestamp: new Date().toISOString(),
+    });
   });
-});
 
-// Example of error handling
-app.get('/error', (req, res, next) => {
-  try {
-    throw new Error('Example error');
-  } catch (error) {
-    next(error);
-  }
+  expressApp.get('/error', (req: Request, res: Response, next: NextFunction) => {
+    next(new Error('This is an example error'));
+  });
+
+  // Start the server
+  await app.listen(port);
+  console.log(`Server is running on port ${port}`);
+}
+
+startServer().catch((error) => {
+  console.error('Failed to start server:', error);
+  process.exit(1);
 }); 

@@ -16,6 +16,32 @@
 import { CompressionOptions } from 'compression';
 import { Request, Response } from 'express';
 import { ServeStaticOptions } from 'serve-static';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from './config.service';
+
+@Injectable()
+export class PerformanceConfig {
+  constructor(private configService: ConfigService) {}
+
+  get staticAssets() {
+    return {
+      maxAge: 86400000, // 24 hours
+      immutable: true,
+      etag: true,
+      lastModified: true,
+      setHeaders: (res: any) => {
+        res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
+      },
+    };
+  }
+
+  get compression() {
+    return {
+      level: 6,
+      threshold: 1024,
+    };
+  }
+}
 
 /**
  * Main performance configuration object
@@ -33,7 +59,7 @@ export const performanceConfig = {
    */
   compression: {
     level: 6, // Compression level (0-9)
-    threshold: '1kb', // Only compress responses larger than 1kb
+    threshold: 1024, // Only compress responses larger than 1kb
     filter: (req: Request, res: Response) => {
       if (req.headers['x-no-compression']) {
         return false;
@@ -47,17 +73,12 @@ export const performanceConfig = {
    * @type {ServeStaticOptions}
    */
   staticAssets: {
-    maxAge: '1y', // Cache static assets for 1 year
-    immutable: true, // Mark static assets as immutable
-    etag: true, // Enable ETag generation
-    lastModified: true, // Enable Last-Modified header
-    setHeaders: (res: Response, path: string) => {
-      // Add Cache-Control header for static assets
-      if (path.endsWith('.html')) {
-        res.setHeader('Cache-Control', 'no-cache');
-      } else {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-      }
+    maxAge: 86400000, // 24 hours
+    immutable: true,
+    etag: true,
+    lastModified: true,
+    setHeaders: (res: any) => {
+      res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
     },
   } as ServeStaticOptions,
 

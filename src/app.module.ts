@@ -57,12 +57,12 @@ export class AppModule {
     // Apply error handling middleware to all routes
     consumer
       .apply(ErrorMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      .forRoutes({ path: '*path', method: RequestMethod.ALL });
 
     // Apply logging middleware to all routes
     consumer
       .apply(LoggerMiddleware)
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      .forRoutes({ path: '*path', method: RequestMethod.ALL });
 
     // Apply CSRF protection to all routes except API routes
     consumer
@@ -72,6 +72,6 @@ export class AppModule {
         { path: 'api/*path', method: RequestMethod.ALL },
         { path: 'health', method: RequestMethod.ALL }
       )
-      .forRoutes({ path: '*', method: RequestMethod.ALL });
+      .forRoutes({ path: '*path', method: RequestMethod.ALL });
   }
 } 

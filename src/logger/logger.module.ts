@@ -19,10 +19,18 @@ import { Module } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import { transports, format } from 'winston';
 import { LoggerService } from './logger.service';
+import { loggingConfig } from '../shared/config/logging.config';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule,
     WinstonModule.forRoot({
+      level: loggingConfig.base.level,
+      format: format.combine(
+        format.timestamp(),
+        format.json(),
+      ),
       transports: [
         /**
          * Console Transport Configuration
@@ -31,48 +39,62 @@ import { LoggerService } from './logger.service';
          * Includes timestamp, context, and log level in a human-readable format.
          * Stack traces are included for error logs.
          */
-        new transports.Console({
-          format: format.combine(
-            format.timestamp(),
-            format.colorize(),
-            format.printf(({ timestamp, level, message, context, trace }) => {
-              return `${timestamp} [${context}] ${level}: ${message}${
-                trace ? `\n${trace}` : ''
-              }`;
-            }),
-          ),
-        }),
+        ...(loggingConfig.console.enabled ? [
+          new transports.Console({
+            format: format.combine(
+              format.timestamp(),
+              format.colorize(),
+              format.printf(({ timestamp, level, message, context, trace }) => {
+                return `${timestamp} [${context}] ${level}: ${message}${
+                  trace ? `\n${trace}` : ''
+                }`;
+              }),
+            ),
+          }),
+        ] : []),
         /**
          * File Transport Configuration
          * 
          * Writes all logs to a file in JSON format for persistent storage.
          * Includes timestamp and structured metadata for better log analysis.
          */
-        new transports.File({
-          filename: 'logs/application.log',
-          format: format.combine(
-            format.timestamp(),
-            format.json(),
-          ),
-        }),
-        /**
-         * Error File Transport Configuration
-         * 
-         * Writes only error-level logs to a separate file for easier error tracking.
-         * Uses JSON format for structured error logging.
-         */
-        new transports.File({
-          filename: 'logs/error.log',
-          level: 'error',
-          format: format.combine(
-            format.timestamp(),
-            format.json(),
-          ),
-        }),
+        ...(loggingConfig.file.enabled ? [
+          new transports.File({
+            filename: loggingConfig.file.path,
+            maxsize: loggingConfig.file.maxSize,
+            maxFiles: loggingConfig.file.maxFiles,
+            format: format.combine(
+              format.timestamp(),
+              format.json(),
+            ),
+          }),
+          /**
+           * Error File Transport Configuration
+           * 
+           * Writes only error-level logs to a separate file for easier error tracking.
+           * Uses JSON format for structured error logging.
+           */
+          new transports.File({
+            filename: 'logs/error.log',
+            level: 'error',
+            maxsize: loggingConfig.file.maxSize,
+            maxFiles: loggingConfig.file.maxFiles,
+            format: format.combine(
+              format.timestamp(),
+              format.json(),
+            ),
+          }),
+        ] : []),
       ],
     }),
   ],
-  providers: [LoggerService],
+  providers: [
+    LoggerService,
+    {
+      provide: 'LOGGING_CONFIG',
+      useValue: loggingConfig,
+    },
+  ],
   exports: [LoggerService],
 })
 export class LoggerModule {} 

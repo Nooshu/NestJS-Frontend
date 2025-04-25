@@ -125,6 +125,15 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Largest contentful paint tracking
 - Time to interactive monitoring
 - Total blocking time tracking
+- Comprehensive performance configuration
+- Configurable static asset caching
+- Optimized compression settings
+- Browser caching strategies
+- API performance monitoring
+- Connection pooling
+- Request batching
+- Response compression
+- Cache control headers
 
 ## Security Features
 - CSRF protection with secure cookies
@@ -137,6 +146,14 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Token validation
 - API route exclusions
 - Automatic token generation
+- Helmet.js security headers
+- Cross-Origin policies
+- DNS prefetch control
+- Frame guard
+- HSTS settings
+- XSS protection
+- Type-safe configuration
+- Environment-based security settings
 
 ## Dependency Management
 

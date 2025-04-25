@@ -55,23 +55,23 @@ The application implements a comprehensive Content Security Policy using Helmet.
 
 ### Configuration
 ```typescript
-contentSecurityPolicy: {
-  directives: {
-    defaultSrc: ["'self'"],
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
     scriptSrc: isProd 
       ? ["'self'", "'nonce-${nonce}'"] 
       : ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-    styleSrc: ["'self'", "'unsafe-inline'"],
-    imgSrc: ["'self'", 'data:', 'https:'],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'data:', 'https:'],
     fontSrc: ["'self'", 'data:'],
     connectSrc: ["'self'", 'https://api.your-service.com'],
-    objectSrc: ["'none'"],
-    mediaSrc: ["'self'"],
-    frameSrc: ["'none'"],
+        objectSrc: ["'none'"],
+        mediaSrc: ["'self'"],
+        frameSrc: ["'none'"],
     frameAncestors: ["'none'"],
     formAction: ["'self'"],
-    baseUri: ["'self'"],
-    upgradeInsecureRequests: [],
+        baseUri: ["'self'"],
+        upgradeInsecureRequests: [],
     manifestSrc: ["'self'"],
     workerSrc: ["'self'"],
     reportUri: '/api/csp-report'
@@ -105,12 +105,12 @@ The application sets various security headers:
 The application implements a strict permissions policy:
 
 ```typescript
-permissionsPolicy: {
-  policy: {
-    'geolocation': ['self'],
-    'camera': ['none'],
-    'microphone': ['none'],
-    'payment': ['self'],
+  permissionsPolicy: {
+    policy: {
+      'geolocation': ['self'],
+      'camera': ['none'],
+      'microphone': ['none'],
+      'payment': ['self'],
     'accelerometer': ['none'],
     'ambient-light-sensor': ['none'],
     'autoplay': ['none'],

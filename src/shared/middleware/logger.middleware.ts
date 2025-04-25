@@ -9,6 +9,8 @@
 
 import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
+import { LoggerService } from '../../logger/logger.service';
+import { loggingConfig } from '../config/logging.config';
 
 /**
  * Request logging middleware.
@@ -18,7 +20,12 @@ import { Request, Response, NextFunction } from 'express';
  */
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  private readonly logger = new Logger(LoggerMiddleware.name);
+  private readonly logger: LoggerService;
+
+  constructor(private readonly loggerService: LoggerService) {
+    this.logger = loggerService;
+    this.logger.setContext('LoggerMiddleware');
+  }
 
   /**
    * Log request and response information.
@@ -31,21 +38,70 @@ export class LoggerMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const { method, originalUrl, ip } = req;
     const userAgent = req.get('user-agent') || '';
+    const start = Date.now();
 
     // Log request
-    this.logger.log(`${method} ${originalUrl} - ${ip} - ${userAgent}`);
+    this.logger.info('Incoming request', {
+      method,
+      url: originalUrl,
+      ip,
+      userAgent,
+      requestId: req.id,
+    });
 
     // Capture response data
-    const start = Date.now();
     res.on('finish', () => {
       const duration = Date.now() - start;
       const { statusCode } = res;
       const contentLength = res.get('content-length');
 
       // Log response
-      this.logger.log(
-        `${method} ${originalUrl} ${statusCode} ${duration}ms - ${contentLength || 0}b`,
-      );
+      this.logger.info('Request completed', {
+        method,
+        url: originalUrl,
+        status: statusCode,
+        duration: `${duration}ms`,
+        contentLength: contentLength || 0,
+        requestId: req.id,
+      });
+
+      // Check monitoring thresholds
+      if (loggingConfig.monitoring.enabled && loggingConfig.monitoring.alerting.enabled) {
+        // Check error rate
+        if (statusCode >= 500) {
+          this.logger.warn('High error rate detected', {
+            method,
+            url: originalUrl,
+            status: statusCode,
+            requestId: req.id,
+          });
+        }
+
+        // Check response time
+        if (duration > loggingConfig.monitoring.alerting.thresholds.responseTime) {
+          this.logger.warn('Slow response detected', {
+            method,
+            url: originalUrl,
+            duration: `${duration}ms`,
+            threshold: `${loggingConfig.monitoring.alerting.thresholds.responseTime}ms`,
+            requestId: req.id,
+          });
+        }
+      }
+
+      // Log audit event if enabled
+      if (loggingConfig.audit.enabled) {
+        this.logger.audit('HTTP Request', {
+          method,
+          url: originalUrl,
+          status: statusCode,
+          duration: `${duration}ms`,
+          ip,
+          userAgent,
+          requestId: req.id,
+          user: req.user?.id || 'anonymous',
+        });
+      }
     });
 
     next();

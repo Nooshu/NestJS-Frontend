@@ -21,10 +21,12 @@ import { Injectable, Scope, LoggerService as NestLoggerService } from '@nestjs/c
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Inject } from '@nestjs/common';
+import type { LoggingConfiguration } from '../shared/config/logging.config';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService implements NestLoggerService {
   private context?: string;
+  private readonly config: LoggingConfiguration;
 
   /**
    * Creates an instance of LoggerService.
@@ -33,17 +35,48 @@ export class LoggerService implements NestLoggerService {
    */
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {}
+    @Inject('LOGGING_CONFIG') private readonly loggingConfig: LoggingConfiguration,
+  ) {
+    this.config = loggingConfig;
+  }
 
   /**
-   * Sets the logging context for this logger instance.
-   * The context is included in all log messages to help identify
-   * which part of the application generated the log.
+   * Sets the context for the logger instance.
+   * This is useful for identifying which part of the application is logging.
    * 
    * @param {string} context - The context name (e.g., 'UserService', 'AuthController')
    */
   setContext(context: string) {
     this.context = context;
+    return this;
+  }
+
+  /**
+   * Logs a message with the 'error' level.
+   * 
+   * @param {string} message - The error message
+   * @param {string} [trace] - Optional stack trace
+   * @param {Record<string, any>} [meta] - Optional metadata to include with the log
+   */
+  error(message: string, trace?: string, meta?: Record<string, any>) {
+    this.logger.error(message, {
+      context: this.context,
+      trace,
+      ...meta,
+    });
+  }
+
+  /**
+   * Logs a message with the 'warn' level.
+   * 
+   * @param {string} message - The warning message
+   * @param {Record<string, any>} [meta] - Optional metadata to include with the warning
+   */
+  warn(message: string, meta?: Record<string, any>) {
+    this.logger.warn(message, {
+      context: this.context,
+      ...meta,
+    });
   }
 
   /**
@@ -58,38 +91,10 @@ export class LoggerService implements NestLoggerService {
   }
 
   /**
-   * Logs an error message with optional stack trace and metadata.
+   * Logs a message with the 'info' level.
    * 
-   * @param {string} message - The error message
-   * @param {string} [trace] - Optional stack trace
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the error
-   */
-  error(message: string, trace?: string, meta?: Record<string, any>) {
-    this.logger.error(message, {
-      context: this.context,
-      trace,
-      ...meta,
-    });
-  }
-
-  /**
-   * Logs a warning message with optional metadata.
-   * 
-   * @param {string} message - The warning message
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the warning
-   */
-  warn(message: string, meta?: Record<string, any>) {
-    this.logger.warn(message, {
-      context: this.context,
-      ...meta,
-    });
-  }
-
-  /**
-   * Logs an informational message with optional metadata.
-   * 
-   * @param {string} message - The informational message
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the info
+   * @param {string} message - The message to log
+   * @param {Record<string, any>} [meta] - Optional metadata to include with the log
    */
   info(message: string, meta?: Record<string, any>) {
     this.logger.info(message, {
@@ -99,12 +104,10 @@ export class LoggerService implements NestLoggerService {
   }
 
   /**
-   * Logs a debug message with optional metadata.
-   * Debug messages are typically used during development
-   * and are not enabled in production by default.
+   * Logs a message with the 'debug' level.
    * 
    * @param {string} message - The debug message
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the debug info
+   * @param {Record<string, any>} [meta] - Optional metadata to include with the debug log
    */
   debug(message: string, meta?: Record<string, any>) {
     this.logger.debug(message, {
@@ -114,17 +117,70 @@ export class LoggerService implements NestLoggerService {
   }
 
   /**
-   * Logs a verbose message with optional metadata.
-   * Verbose messages provide the most detailed level of logging
-   * and are typically used for tracing application flow.
+   * Logs a message with the 'verbose' level.
    * 
    * @param {string} message - The verbose message
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the verbose info
+   * @param {Record<string, any>} [meta] - Optional metadata to include with the verbose log
    */
   verbose(message: string, meta?: Record<string, any>) {
     this.logger.verbose(message, {
       context: this.context,
       ...meta,
     });
+  }
+
+  /**
+   * Logs an audit event.
+   * 
+   * @param {string} action - The action being audited
+   * @param {Record<string, any>} data - The audit data
+   */
+  audit(action: string, data: Record<string, any>) {
+    if (!this.config.audit.enabled) return;
+
+    const auditData = this.maskSensitiveData(data);
+    this.logger.info(`AUDIT: ${action}`, {
+      context: this.context,
+      type: 'audit',
+      action,
+      ...auditData,
+    });
+  }
+
+  /**
+   * Logs a performance metric.
+   * 
+   * @param {string} metric - The metric name
+   * @param {number} value - The metric value
+   * @param {Record<string, any>} [meta] - Optional metadata to include with the metric
+   */
+  metric(metric: string, value: number, meta?: Record<string, any>) {
+    if (!this.config.monitoring.enabled) return;
+
+    this.logger.info(`METRIC: ${metric}`, {
+      context: this.context,
+      type: 'metric',
+      metric,
+      value,
+      ...meta,
+    });
+  }
+
+  /**
+   * Masks sensitive data in the audit log.
+   * 
+   * @param {Record<string, any>} data - The data to mask
+   * @returns {Record<string, any>} The masked data
+   */
+  private maskSensitiveData(data: Record<string, any>): Record<string, any> {
+    if (!this.config.audit.maskSensitiveData) return data;
+
+    const maskedData = { ...data };
+    for (const field of this.config.audit.sensitiveFields) {
+      if (field in maskedData) {
+        maskedData[field] = '********';
+      }
+    }
+    return maskedData;
   }
 } 

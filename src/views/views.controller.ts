@@ -9,12 +9,12 @@ import { Controller, Get, Render } from '@nestjs/common';
  * 
  * @example
  * // Accessing routes
- * GET /                 // Renders the home page
- * GET /second-page     // Renders the second page
- * GET /third-page      // Renders the third page
- * GET /form-components // Renders form components demo
+ * GET /views                 // Renders the home page
+ * GET /views/second-page     // Renders the second page
+ * GET /views/third-page      // Renders the third page
+ * GET /views/form-components // Renders form components demo
  */
-@Controller()
+@Controller('views')
 export class ViewsController {
   /**
    * Renders the home page

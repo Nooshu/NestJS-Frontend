@@ -10,7 +10,11 @@
 
 import { Module } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { securityConfig } from '../config/security.config';
+import { SecurityConfig, SecurityConfigModule } from '../config/security.config';
+import { SecurityErrorFilter } from '../filters/security-error.filter';
+import { ConfigModule } from '@nestjs/config';
+import configuration from '../config/configuration';
+import { configurationSchema } from '../config/configuration.schema';
 
 /**
  * Module that provides security features including rate limiting.
@@ -22,7 +26,28 @@ import { securityConfig } from '../config/security.config';
  */
 @Module({
   imports: [
-    ThrottlerModule.forRoot(securityConfig.throttler),
+    ConfigModule.forRoot({
+      load: [configuration],
+      validationSchema: configurationSchema,
+      validationOptions: {
+        abortEarly: true,
+        allowUnknown: true,
+      },
+      isGlobal: true,
+    }),
+    SecurityConfigModule,
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 10,
+    }]),
+  ],
+  providers: [
+    SecurityConfig,
+    SecurityErrorFilter,
+  ],
+  exports: [
+    SecurityConfig,
+    SecurityErrorFilter,
   ],
 })
 export class SecurityModule {} 

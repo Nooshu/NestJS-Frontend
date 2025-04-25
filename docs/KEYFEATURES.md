@@ -108,6 +108,27 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Largest contentful paint tracking
 - Time to interactive monitoring
 - Total blocking time tracking
+- Comprehensive performance configuration
+- Configurable static asset caching
+- Optimized compression settings
+- Browser caching strategies
+- API performance monitoring
+- Connection pooling
+- Request batching
+- Response compression
+- Cache control headers
+- Optimized view engine configuration
+  - Autoescaping for security
+  - Environment-based caching
+  - Template optimization
+  - Memory usage optimization
+  - Error handling
+- Efficient route handling
+  - Logical route organization
+  - Middleware optimization
+  - Route-specific middleware
+  - Performance monitoring
+  - Error handling
 
 ## Frontend Performance Features
 
@@ -127,6 +148,10 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Cache versioning and cleanup
 - Automatic cache updates
 - Efficient asset caching
+- Configurable cache settings
+- Browser cache control
+- Static asset caching
+- API response caching
 
 ### 3. Performance Monitoring
 - Comprehensive performance metrics
@@ -160,6 +185,9 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Asset versioning
 - Efficient asset delivery
 - Cache control headers
+- Compression settings
+- Browser caching
+- Static asset serving
 
 ## Security Features
 
@@ -192,6 +220,9 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Permissions-Policy
 - Cross-Origin Policies
 - DNS Prefetch Control
+- Helmet.js integration
+- Type-safe configuration
+- Environment-based settings
 
 ### 4. CORS Configuration
 - Configurable origins
