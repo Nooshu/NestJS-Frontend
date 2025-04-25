@@ -211,20 +211,17 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ## Use Cases
 This framework is particularly well-suited for:
-- UK government digital services requiring high security standards
-- Public sector applications needing GOV.UK design system compliance
-- Services requiring maintainable and scalable architecture
-- Applications with complex business logic
-- Projects needing comprehensive documentation
-- Services requiring integration with other government systems
-- Applications needing robust error handling and logging
-- Services requiring high performance and scalability
-- Applications needing offline support and caching
-- Services requiring comprehensive performance monitoring
-- Applications needing real-time performance tracking
-- Services requiring user interaction monitoring
-- Applications needing visual performance metrics
-- Services requiring CSRF protection
-- Applications needing Content Security Policy
-- Services requiring comprehensive security headers
-- Applications needing strict permissions policy 
+
+- UK government digital services requiring:
+  - [High security standards and compliance](https://www.security.gov.uk/policy-and-guidance/standards/)
+  - [GOV.UK design system integration](https://design-system.service.gov.uk/)
+  - [Accessibility compliance (WCAG 2.2)](https://design-system.service.gov.uk/accessibility/wcag-2.2/)
+  - [Integration with other government systems](https://www.sign-in.service.gov.uk/)
+- Applications needing:
+  - Scalable and maintainable architecture
+  - Complex business logic handling
+  - Comprehensive documentation
+  - Robust error handling and logging
+  - High performance and offline capabilities
+  - Real-time performance monitoring
+  - Advanced security features (CSRF, CSP, etc.) 
