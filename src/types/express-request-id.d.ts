@@ -10,4 +10,4 @@ declare module 'express-request-id' {
 
   function requestId(options?: RequestIdOptions): RequestHandler;
   export = requestId;
-} 
+}

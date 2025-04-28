@@ -1,4 +1,4 @@
-import { fork, ChildProcess } from 'child_process';
+import { ChildProcess, fork } from 'child_process';
 import { cpus } from 'os';
 
 class ProcessManager {
@@ -14,7 +14,7 @@ class ProcessManager {
 
     for (let i = 0; i < this.numCPUs; i++) {
       const worker = fork('./src/process-isolation/worker-process.ts');
-      
+
       worker.on('message', (message) => {
         console.log(`Received from worker ${i}:`, message);
       });
@@ -38,8 +38,8 @@ class ProcessManager {
   }
 
   public shutdown() {
-    this.workers.forEach(worker => worker.kill());
+    this.workers.forEach((worker) => worker.kill());
   }
 }
 
-export default ProcessManager; 
+export default ProcessManager;

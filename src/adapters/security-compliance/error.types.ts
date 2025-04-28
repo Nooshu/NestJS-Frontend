@@ -22,7 +22,7 @@ export enum SecurityErrorCode {
   /** Error when CORS policy is violated */
   CORS_VIOLATION = 'CORS_VIOLATION',
   /** Error when request is invalid */
-  INVALID_REQUEST = 'INVALID_REQUEST'
+  INVALID_REQUEST = 'INVALID_REQUEST',
 }
 
 /**
@@ -88,7 +88,7 @@ export class SecurityError extends Error {
       code,
       message,
       timestamp: new Date().toISOString(),
-      ...details
+      ...details,
     };
   }
 
@@ -101,9 +101,9 @@ export class SecurityError extends Error {
       error: {
         code: this.code,
         message: this.message,
-        details: this.details.metadata
+        details: this.details.metadata ?? {},
       },
-      timestamp: this.details.timestamp
+      timestamp: this.details.timestamp,
     };
   }
-} 
+}

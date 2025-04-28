@@ -1,8 +1,8 @@
 import express from 'express';
+import type { Logger } from 'pino';
 import request from 'supertest';
 import { applyLoggingAndMonitoring } from '../logging.middleware';
 import { mockLoggingConfig } from './test.config';
-import { Logger } from 'pino';
 
 describe('Logging Middleware', () => {
   let app: express.Application;
@@ -11,7 +11,7 @@ describe('Logging Middleware', () => {
   beforeEach(() => {
     app = express();
     logs = [];
-    
+
     // Mock logger
     const mockLogger: Logger = {
       info: jest.fn(),
@@ -28,7 +28,7 @@ describe('Logging Middleware', () => {
       setBindings: jest.fn(),
       flush: jest.fn(),
     } as unknown as Logger;
-    
+
     // Apply logging middleware with mock logger
     applyLoggingAndMonitoring(app, {
       ...mockLoggingConfig,
@@ -37,13 +37,13 @@ describe('Logging Middleware', () => {
         logger: mockLogger,
       },
     });
-    
+
     // Add test routes
-    app.get('/test', (req, res) => {
+    app.get('/test', (_req, res) => {
       res.json({ message: 'test' });
     });
-    
-    app.get('/error', (req, res, next) => {
+
+    app.get('/error', (_req, _res, next) => {
       next(new Error('Test error'));
     });
   });
@@ -51,8 +51,8 @@ describe('Logging Middleware', () => {
   describe('Request Logging', () => {
     it('should log request details', async () => {
       await request(app).get('/test');
-      
-      const requestLog = logs.find(log => log.type === 'request');
+
+      const requestLog = logs.find((log) => log.type === 'request');
       expect(requestLog).toBeDefined();
       expect(requestLog.method).toBe('GET');
       expect(requestLog.url).toBe('/test');
@@ -60,8 +60,8 @@ describe('Logging Middleware', () => {
 
     it('should log response details', async () => {
       await request(app).get('/test');
-      
-      const responseLog = logs.find(log => log.type === 'response');
+
+      const responseLog = logs.find((log) => log.type === 'response');
       expect(responseLog).toBeDefined();
       expect(responseLog.method).toBe('GET');
       expect(responseLog.url).toBe('/test');
@@ -73,8 +73,8 @@ describe('Logging Middleware', () => {
   describe('Error Logging', () => {
     it('should log error details', async () => {
       await request(app).get('/error');
-      
-      const errorLog = logs.find(log => log.type === 'error');
+
+      const errorLog = logs.find((log) => log.type === 'error');
       expect(errorLog).toBeDefined();
       expect(errorLog.error).toBe('Test error');
       expect(errorLog.stack).toBeDefined();
@@ -84,8 +84,8 @@ describe('Logging Middleware', () => {
   describe('Audit Logging', () => {
     it('should log audit events', async () => {
       await request(app).get('/test');
-      
-      const auditLog = logs.find(log => log.type === 'audit');
+
+      const auditLog = logs.find((log) => log.type === 'audit');
       expect(auditLog).toBeDefined();
       expect(auditLog.user).toBe('anonymous');
       expect(auditLog.action).toBe('GET /test');
@@ -93,13 +93,13 @@ describe('Logging Middleware', () => {
     });
 
     it('should mask sensitive data', async () => {
-      app.post('/sensitive', (req, res) => {
+      app.post('/sensitive', (_req, res) => {
         res.json({ password: 'secret123' });
       });
-      
+
       await request(app).post('/sensitive');
-      
-      const auditLog = logs.find(log => log.type === 'audit');
+
+      const auditLog = logs.find((log) => log.type === 'audit');
       expect(auditLog.password).toBe('********');
     });
   });
@@ -107,37 +107,39 @@ describe('Logging Middleware', () => {
   describe('Monitoring', () => {
     it('should log system metrics', async () => {
       // Wait for metrics interval
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const metricsLog = logs.find(log => log.type === 'system_metrics');
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      const metricsLog = logs.find((log) => log.type === 'system_metrics');
       expect(metricsLog).toBeDefined();
       expect(metricsLog.memoryUsage).toBeDefined();
     });
 
     it('should log slow responses', async () => {
-      app.get('/slow', (req, res) => {
+      app.get('/slow', (_req, res) => {
         setTimeout(() => {
           res.json({ message: 'slow' });
         }, mockLoggingConfig.monitoring.alerting.thresholds.responseTime + 100);
       });
-      
+
       await request(app).get('/slow');
-      
-      const slowLog = logs.find(log => log.type === 'slow_response');
+
+      const slowLog = logs.find((log) => log.type === 'slow_response');
       expect(slowLog).toBeDefined();
-      expect(slowLog.duration).toBeGreaterThan(mockLoggingConfig.monitoring.alerting.thresholds.responseTime);
+      expect(slowLog.duration).toBeGreaterThan(
+        mockLoggingConfig.monitoring.alerting.thresholds.responseTime
+      );
     });
 
     it('should log high error rates', async () => {
-      app.get('/error500', (req, res) => {
+      app.get('/error500', (_req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
       });
-      
+
       await request(app).get('/error500');
-      
-      const errorLog = logs.find(log => log.type === 'error_rate');
+
+      const errorLog = logs.find((log) => log.type === 'error_rate');
       expect(errorLog).toBeDefined();
       expect(errorLog.status).toBe(500);
     });
   });
-}); 
+});

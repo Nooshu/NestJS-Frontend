@@ -63,4 +63,4 @@ export const configurationSchema = Joi.object({
   PERFORMANCE_SAMPLING_RATE: Joi.number().default(1),
   PERFORMANCE_MAX_ENTRIES: Joi.number().default(100),
   PERFORMANCE_REPORT_ON_UNLOAD: Joi.boolean().default(true),
-}); 
+});

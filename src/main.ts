@@ -3,7 +3,7 @@
  * Configures the application with Nunjucks templating, static assets, and Swagger documentation.
  * This module initialises the NestJS application with necessary middleware,
  * view engine configuration, and static asset serving.
- * 
+ *
  * @module Main
  * @requires @nestjs/core
  * @requires @nestjs/platform-express
@@ -15,19 +15,20 @@
  * @requires compression
  */
 
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
-import helmet from 'helmet';
-import compression from 'compression';
-import { AppModule } from './app.module';
-import { ViewEngineService } from './views/view-engine.service';
-import { SecurityConfig } from './shared/config/security.config';
-import { performanceConfig } from './shared/config/performance.config';
-import { SecurityErrorFilter } from './shared/filters/security-error.filter';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { type NestExpressApplication } from '@nestjs/platform-express';
+import type { ServeStaticOptions } from '@nestjs/platform-express/interfaces/serve-static-options.interface';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import compression from 'compression';
+import helmet from 'helmet';
+import { join } from 'path';
+import { AppModule } from './app.module';
 import { LoggerService } from './logger/logger.service';
+import { performanceConfig } from './shared/config/performance.config';
+import { SecurityConfig } from './shared/config/security.config';
+import { SecurityErrorFilter } from './shared/filters/security-error.filter';
+import { ViewEngineService } from './views/view-engine.service';
 
 /**
  * Bootstrap function that creates and configures the NestJS application.
@@ -39,18 +40,18 @@ import { LoggerService } from './logger/logger.service';
  * - Performance optimizations (Compression, Caching)
  * - Request validation using class-validator and class-transformer
  * - Winston-based logging system
- * 
+ *
  * @async
  * @function bootstrap
  * @returns {Promise<void>} A promise that resolves when the application is ready
- * 
+ *
  * @example
  * // Start the application
  * bootstrap().catch(err => {
  *   console.error('Failed to start application:', err);
  *   process.exit(1);
  * });
- * 
+ *
  * @throws {Error} If the application fails to start
  */
 async function bootstrap() {
@@ -62,11 +63,11 @@ async function bootstrap() {
 
   /**
    * Logger Initialization
-   * 
+   *
    * The LoggerService is marked as a transient-scoped provider, which means a new instance
    * is created for each injection. In the bootstrap phase, we need to use app.resolve()
    * instead of app.get() to properly instantiate the logger.
-   * 
+   *
    * @see https://docs.nestjs.com/fundamentals/injection-scopes
    */
   const logger = await app.resolve(LoggerService);
@@ -77,17 +78,17 @@ async function bootstrap() {
 
   /**
    * Global Validation Pipe Configuration
-   * 
+   *
    * The ValidationPipe is a built-in NestJS pipe that uses class-validator and class-transformer
    * to validate and transform incoming request data. It provides automatic validation
    * of all incoming client payloads against DTO classes.
-   * 
+   *
    * Configuration options:
    * - transform: true - Automatically transform payloads to DTO instances
    * - whitelist: true - Strip properties that don't have any decorators
    * - forbidNonWhitelisted: true - Throw an error if non-whitelisted properties are present
    * - transformOptions.enableImplicitConversion: true - Automatically convert primitive types
-   * 
+   *
    * @see https://docs.nestjs.com/techniques/validation
    * @see https://github.com/typestack/class-validator
    * @see https://github.com/typestack/class-transformer
@@ -97,7 +98,7 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   // Add this line to apply the global error filter
@@ -105,19 +106,19 @@ async function bootstrap() {
 
   /**
    * Security Middleware Configuration
-   * 
+   *
    * Helmet helps secure Express apps by setting various HTTP headers.
    * It's not a silver bullet, but it can help!
-   * 
+   *
    * @see https://helmetjs.github.io/
    */
   app.use(helmet(securityConfig.helmet));
 
   /**
    * Performance Middleware Configuration
-   * 
+   *
    * Compression middleware compresses response bodies for all requests that traverse through the middleware.
-   * 
+   *
    * @see https://github.com/expressjs/compression
    */
   app.use(compression(performanceConfig.compression));
@@ -127,30 +128,37 @@ async function bootstrap() {
 
   /**
    * Nunjucks View Engine Configuration
-   * 
+   *
    * Configures Nunjucks as the template engine with error handling.
    * The view engine service is used to render templates, and any errors
    * during rendering are logged using our Winston logger.
-   * 
+   *
    * @param {string} filePath - The path to the template file
    * @param {Record<string, any>} options - The options to pass to the template
    * @param {Function} callback - The callback function to call with the rendered template or error
    */
-  app.engine('njk', (filePath: string, options: Record<string, any>, callback: (e: any, rendered?: string) => void) => {
-    try {
-      const html = viewEngineService.render(filePath, options);
-      callback(null, html);
-    } catch (error) {
-      logger.error('Error rendering template', error.stack, { filePath });
-      callback(error);
+  app.engine(
+    'njk',
+    (
+      filePath: string,
+      options: Record<string, any>,
+      callback: (e: any, rendered?: string) => void
+    ) => {
+      try {
+        const html = viewEngineService.render(filePath, options);
+        callback(null, html);
+      } catch (error) {
+        logger.error('Error rendering template', (error as Error).stack, { filePath });
+        callback(error);
+      }
     }
-  });
+  );
   app.setViewEngine('njk');
   app.setBaseViewsDir(join(process.cwd(), 'src', 'views'));
 
   /**
    * Static Asset Configuration
-   * 
+   *
    * Configures static asset serving with performance optimizations:
    * - maxAge: How long the browser should cache the assets
    * - immutable: Whether the assets are immutable
@@ -158,30 +166,33 @@ async function bootstrap() {
    * - lastModified: Whether to use Last-Modified headers
    * - setHeaders: Custom headers to set on static assets
    */
-  const staticOptions = {
-    maxAge: performanceConfig.staticAssets.maxAge,
-    immutable: performanceConfig.staticAssets.immutable,
-    etag: performanceConfig.staticAssets.etag,
-    lastModified: performanceConfig.staticAssets.lastModified,
-    setHeaders: performanceConfig.staticAssets.setHeaders,
+  const staticOptions: ServeStaticOptions = {
+    maxAge: performanceConfig.staticAssets.maxAge ?? 0,
+    immutable: performanceConfig.staticAssets.immutable ?? false,
+    etag: performanceConfig.staticAssets.etag ?? false,
+    lastModified: performanceConfig.staticAssets.lastModified ?? true,
+    setHeaders: performanceConfig.staticAssets.setHeaders ?? (() => {}),
   };
 
   app.useStaticAssets(join(process.cwd(), 'src', 'public'), staticOptions);
   app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'), {
     ...staticOptions,
-    prefix: '/govuk'
+    prefix: '/govuk',
   });
-  app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'), {
-    ...staticOptions,
-    prefix: '/assets'
-  });
+  app.useStaticAssets(
+    join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'),
+    {
+      ...staticOptions,
+      prefix: '/assets',
+    }
+  );
 
   /**
    * Swagger (OpenAPI) Configuration
    * Sets up API documentation with detailed information about the API endpoints.
-   * 
+   *
    * The documentation will be available at: http://localhost:3000/api-docs
-   * 
+   *
    * @swagger
    * - Title: Name of the API documentation
    * - Description: Detailed description of what the API provides
@@ -205,10 +216,10 @@ async function bootstrap() {
 
   /**
    * CORS Configuration
-   * 
+   *
    * Configures Cross-Origin Resource Sharing (CORS) for the application.
    * Only enabled if specified in the security configuration.
-   * 
+   *
    * @see https://docs.nestjs.com/security/cors
    */
   if (securityConfig.cors.enabled) {
@@ -230,4 +241,4 @@ async function bootstrap() {
 bootstrap().catch((err) => {
   console.error('Failed to start application:', err);
   process.exit(1);
-}); 
+});

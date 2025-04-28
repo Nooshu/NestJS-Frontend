@@ -1,12 +1,12 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { Injectable, type NestMiddleware } from '@nestjs/common';
+import type { NextFunction, Request, Response } from 'express';
 import { SecurityConfig } from '../../config/security.config';
 
 @Injectable()
 export class CspMiddleware implements NestMiddleware {
   constructor(private securityConfig: SecurityConfig) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
+  use(_req: Request, res: Response, next: NextFunction) {
     if (!this.securityConfig.csp.enabled) {
       return next();
     }
@@ -20,4 +20,4 @@ export class CspMiddleware implements NestMiddleware {
     res.setHeader('Content-Security-Policy', cspHeader);
     next();
   }
-} 
+}

@@ -2,7 +2,7 @@
  * Configuration object for API settings.
  * Contains settings for API base URL, timeouts, retry attempts, and caching.
  * All values can be configured through environment variables.
- * 
+ *
  * @module ApiConfig
  * @description API configuration settings
  */
@@ -56,5 +56,5 @@ export const apiConfig = {
      */
     users: '/api/users',
     // Add other endpoints as needed
-  }
+  },
 };

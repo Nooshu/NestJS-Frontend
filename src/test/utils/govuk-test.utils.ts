@@ -1,5 +1,4 @@
 import { readFileSync, readdirSync } from 'fs';
-import { join } from 'path';
 import { govukTestConfig } from '../govuk-components.test.config';
 
 export class GovukTestUtils {
@@ -15,7 +14,9 @@ export class GovukTestUtils {
     try {
       return readFileSync(fixturePath, 'utf8');
     } catch (error) {
-      throw new Error(`Failed to load fixture for ${componentName}/${scenarioName}: ${error.message}`);
+      throw new Error(
+        `Failed to load fixture for ${componentName}/${scenarioName}: ${(error as Error).message}`
+      );
     }
   }
 
@@ -30,10 +31,10 @@ export class GovukTestUtils {
     try {
       const files = readdirSync(fixturesDir);
       return files
-        .filter(file => file.endsWith('.html'))
-        .map(file => file.replace('.html', ''));
+        .filter((file) => file.endsWith('.html'))
+        .map((file) => file.replace('.html', ''));
     } catch (error) {
-      throw new Error(`Failed to get scenarios for ${componentName}: ${error.message}`);
+      throw new Error(`Failed to get scenarios for ${componentName}: ${(error as Error).message}`);
     }
   }
 
@@ -46,10 +47,7 @@ export class GovukTestUtils {
   static compareHtml(rendered: string, fixture: string): boolean {
     // Normalize whitespace and line endings
     const normalize = (html: string) => {
-      return html
-        .replace(/\s+/g, ' ')
-        .replace(/>\s+</g, '><')
-        .trim();
+      return html.replace(/\s+/g, ' ').replace(/>\s+</g, '><').trim();
     };
 
     const normalizedRendered = normalize(rendered);
@@ -108,4 +106,4 @@ export class GovukTestUtils {
 
     return differences;
   }
-} 
+}

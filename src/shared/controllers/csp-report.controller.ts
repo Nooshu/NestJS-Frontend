@@ -1,10 +1,8 @@
-import { Controller, Post, Body, Logger } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { LoggerService } from '../../logger/logger.service';
 
 @Controller('api')
 export class CspReportController {
-  private readonly logger = new Logger(CspReportController.name);
-
   constructor(private readonly loggerService: LoggerService) {}
 
   @Post('csp-report')
@@ -19,4 +17,4 @@ export class CspReportController {
 
     return { status: 'received' };
   }
-} 
+}

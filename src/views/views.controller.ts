@@ -3,10 +3,10 @@ import { Controller, Get, Render } from '@nestjs/common';
 /**
  * Controller for handling view rendering requests.
  * This controller manages all routes that render Nunjucks templates using the GOV.UK Frontend components.
- * 
+ *
  * @module ViewsController
  * @description Controller for handling view rendering with GOV.UK Frontend
- * 
+ *
  * @example
  * // Accessing routes
  * GET /views                 // Renders the home page
@@ -18,7 +18,7 @@ import { Controller, Get, Render } from '@nestjs/common';
 export class ViewsController {
   /**
    * Renders the home page
-   * 
+   *
    * @method home
    * @returns {Object} Template data with page title
    */
@@ -30,7 +30,7 @@ export class ViewsController {
 
   /**
    * Renders the second page
-   * 
+   *
    * @method secondPage
    * @returns {Object} Template data with page title
    */
@@ -42,7 +42,7 @@ export class ViewsController {
 
   /**
    * Renders the third page
-   * 
+   *
    * @method thirdPage
    * @returns {Object} Template data with page title
    */
@@ -54,7 +54,7 @@ export class ViewsController {
 
   /**
    * Renders the form components demo page
-   * 
+   *
    * @method formComponents
    * @returns {Object} Template data with page title
    */
@@ -66,7 +66,7 @@ export class ViewsController {
 
   /**
    * Renders the layout components demo page
-   * 
+   *
    * @method layoutComponents
    * @returns {Object} Template data with page title
    */
@@ -78,7 +78,7 @@ export class ViewsController {
 
   /**
    * Renders the feedback components demo page
-   * 
+   *
    * @method feedbackComponents
    * @returns {Object} Template data with page title
    */
@@ -90,7 +90,7 @@ export class ViewsController {
 
   /**
    * Renders the missing components demo page
-   * 
+   *
    * @method missingComponents
    * @returns {Object} Template data with page title
    */
@@ -99,4 +99,4 @@ export class ViewsController {
   missingComponents() {
     return { title: 'Missing Components' };
   }
-} 
+}

@@ -1,11 +1,8 @@
+import type { Application, NextFunction, Request, Response } from 'express';
 import express from 'express';
-import request from 'supertest';
 import { applyGovernmentSecurity, securityMiddleware } from '../security.middleware';
+import type { SecurityConfig } from '../security.types';
 import { testConfig } from '../test.config';
-import { Request, Response, NextFunction, Application } from 'express';
-import { SecurityConfig } from '../security.types';
-import { rateLimit } from 'express-rate-limit';
-import { rateLimitMiddleware, auditMiddleware, dataProtectionMiddleware } from '../security.middleware';
 
 describe('Security Middleware', () => {
   let app: Application;
@@ -17,7 +14,7 @@ describe('Security Middleware', () => {
     app = express();
     // Mock the app.use method
     jest.spyOn(app, 'use').mockImplementation(() => app);
-    
+
     // Create a new object for each test to avoid readonly property issues
     mockRequest = {
       body: {},
@@ -43,8 +40,9 @@ describe('Security Middleware', () => {
   describe('securityMiddleware', () => {
     it('should handle password validation', () => {
       const middlewares = securityMiddleware(testConfig as Required<SecurityConfig>);
-      const passwordMiddleware = middlewares.find((m: (req: Request, res: Response, next: NextFunction) => void) => 
-        m.toString().includes('password')
+      const passwordMiddleware = middlewares.find(
+        (m: (req: Request, res: Response, next: NextFunction) => void) =>
+          m.toString().includes('password')
       );
 
       if (!passwordMiddleware) {
@@ -77,8 +75,9 @@ describe('Security Middleware', () => {
 
     it('should handle data protection', () => {
       const middlewares = securityMiddleware(testConfig as Required<SecurityConfig>);
-      const dataProtectionMiddleware = middlewares.find((m: (req: Request, res: Response, next: NextFunction) => void) => 
-        m.toString().includes('data')
+      const dataProtectionMiddleware = middlewares.find(
+        (m: (req: Request, res: Response, next: NextFunction) => void) =>
+          m.toString().includes('data')
       );
 
       if (!dataProtectionMiddleware) {
@@ -99,8 +98,9 @@ describe('Security Middleware', () => {
 
     it('should handle audit logging', () => {
       const middlewares = securityMiddleware(testConfig as Required<SecurityConfig>);
-      const auditMiddleware = middlewares.find((m: (req: Request, res: Response, next: NextFunction) => void) => 
-        m.toString().includes('audit')
+      const auditMiddleware = middlewares.find(
+        (m: (req: Request, res: Response, next: NextFunction) => void) =>
+          m.toString().includes('audit')
       );
 
       if (!auditMiddleware) {
@@ -132,4 +132,4 @@ describe('Security Middleware', () => {
       consoleSpy.mockRestore();
     });
   });
-}); 
+});

@@ -1,6 +1,6 @@
-import { SecurityConfig } from '../security.types';
-import { GovukConfig } from '../govuk.config';
-import { LoggingConfig } from '../logging.config';
+import type { GovukConfig } from '../govuk.config';
+import type { LoggingConfig } from '../logging.config';
+import type { SecurityConfig } from '../security.types';
 
 /**
  * Mock security configuration for testing
@@ -11,7 +11,7 @@ export const mockSecurityConfig: SecurityConfig = {
     requireUppercase: true,
     requireLowercase: true,
     requireNumbers: true,
-    requireSpecialChars: true
+    requireSpecialChars: true,
   },
   rateLimit: {
     enabled: true,
@@ -20,34 +20,34 @@ export const mockSecurityConfig: SecurityConfig = {
   },
   audit: {
     enabled: true,
-    excludeFields: ['password', 'token']
+    excludeFields: ['password', 'token'],
   },
   dataProtection: {
     enabled: true,
     encryptionKey: 'test-key-12345',
     masking: {
       enabled: true,
-      fields: ['password', 'ssn', 'creditCard']
-    }
+      fields: ['password', 'ssn', 'creditCard'],
+    },
   },
   helmet: {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"]
-      }
-    }
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+      },
+    },
   },
   cors: {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization'],
   },
   headers: {
     'X-Content-Type-Options': 'nosniff',
     'X-Frame-Options': 'DENY',
-    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains'
-  }
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  },
 };
 
 /**
@@ -119,4 +119,4 @@ export const mockLoggingConfig: LoggingConfig = {
       },
     },
   },
-}; 
+};

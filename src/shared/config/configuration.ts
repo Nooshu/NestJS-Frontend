@@ -1,15 +1,15 @@
 /**
  * Default application configuration.
  * Provides centralized configuration management with environment variable support.
- * 
+ *
  * @module Configuration
  * @description Application configuration settings
- * 
+ *
  * @example
  * // Import and use configuration
  * import configuration from './configuration';
  * const config = configuration();
- * 
+ *
  * @returns {Object} Configuration object with application settings
  */
 export default () => ({
@@ -280,13 +280,17 @@ export default () => ({
      * Performance sampling rate
      * @default 1
      */
-    samplingRate: process.env.PERFORMANCE_SAMPLING_RATE ? parseFloat(process.env.PERFORMANCE_SAMPLING_RATE) : 1,
+    samplingRate: process.env.PERFORMANCE_SAMPLING_RATE
+      ? parseFloat(process.env.PERFORMANCE_SAMPLING_RATE)
+      : 1,
 
     /**
      * Maximum number of performance entries
      * @default 100
      */
-    maxEntries: process.env.PERFORMANCE_MAX_ENTRIES ? parseInt(process.env.PERFORMANCE_MAX_ENTRIES, 10) : 100,
+    maxEntries: process.env.PERFORMANCE_MAX_ENTRIES
+      ? parseInt(process.env.PERFORMANCE_MAX_ENTRIES, 10)
+      : 100,
 
     /**
      * Whether to report on page unload
@@ -305,4 +309,4 @@ export default () => ({
    * NPM package version
    */
   npmPackageVersion: process.env.npm_package_version,
-}); 
+});

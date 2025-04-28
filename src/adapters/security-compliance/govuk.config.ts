@@ -11,28 +11,28 @@ export interface GovukConfig {
      * The service name to display in the header
      */
     serviceName: string;
-    
+
     /**
      * The service URL for the header link
      */
     serviceUrl: string;
-    
+
     /**
      * Whether to show the phase banner
      */
     showPhaseBanner: boolean;
-    
+
     /**
      * The phase of the service (alpha, beta, live)
      */
     phase: 'alpha' | 'beta' | 'live';
-    
+
     /**
      * Feedback link URL
      */
     feedbackLink: string;
   };
-  
+
   /**
    * Header configuration
    */
@@ -41,7 +41,7 @@ export interface GovukConfig {
      * Whether to show the navigation
      */
     showNavigation: boolean;
-    
+
     /**
      * Navigation items
      */
@@ -51,7 +51,7 @@ export interface GovukConfig {
       active?: boolean;
     }>;
   };
-  
+
   /**
    * Footer configuration
    */
@@ -60,7 +60,7 @@ export interface GovukConfig {
      * Whether to show the footer
      */
     showFooter: boolean;
-    
+
     /**
      * Footer navigation items
      */
@@ -68,7 +68,7 @@ export interface GovukConfig {
       text: string;
       href: string;
     }>;
-    
+
     /**
      * Meta navigation items
      */
@@ -77,7 +77,7 @@ export interface GovukConfig {
       href: string;
     }>;
   };
-  
+
   /**
    * Cookie banner configuration
    */
@@ -86,7 +86,7 @@ export interface GovukConfig {
      * Whether to show the cookie banner
      */
     showCookieBanner: boolean;
-    
+
     /**
      * Cookie policy URL
      */
@@ -105,7 +105,7 @@ export const govukConfig: GovukConfig = {
     phase: (process.env.SERVICE_PHASE as 'alpha' | 'beta' | 'live') || 'beta',
     feedbackLink: process.env.FEEDBACK_LINK || '/feedback',
   },
-  
+
   header: {
     showNavigation: true,
     navigationItems: [
@@ -124,7 +124,7 @@ export const govukConfig: GovukConfig = {
       },
     ],
   },
-  
+
   footer: {
     showFooter: true,
     navigationItems: [
@@ -152,9 +152,9 @@ export const govukConfig: GovukConfig = {
       },
     ],
   },
-  
+
   cookieBanner: {
     showCookieBanner: true,
     cookiePolicyUrl: '/cookies',
   },
-}; 
+};

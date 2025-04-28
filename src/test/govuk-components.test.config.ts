@@ -1,10 +1,10 @@
-import { join } from 'path';
 import { readdirSync, readFileSync } from 'fs';
+import { join } from 'path';
 
 export const govukTestConfig = {
   // Path to GOV.UK Frontend package
   govukFrontendPath: join(process.cwd(), 'node_modules', 'govuk-frontend'),
-  
+
   // Components to test
   components: [
     'accordion',
@@ -60,10 +60,10 @@ export const govukTestConfig = {
   // Path to component fixtures
   getFixturePath: (componentName: string, scenarioName: string) => {
     // Remove 'template-' prefix if it exists in the scenario name
-    const cleanScenarioName = scenarioName.startsWith('template-') 
+    const cleanScenarioName = scenarioName.startsWith('template-')
       ? scenarioName.substring('template-'.length)
       : scenarioName;
-    
+
     return join(
       process.cwd(),
       'node_modules',
@@ -94,13 +94,13 @@ export const govukTestConfig = {
     const scenariosDir = govukTestConfig.getScenariosPath(componentName);
     const files = readdirSync(scenariosDir);
     return files
-      .filter(file => file.startsWith('template-') && file.endsWith('.html'))
-      .map(file => file.replace('template-', '').replace('.html', ''));
+      .filter((file) => file.startsWith('template-') && file.endsWith('.html'))
+      .map((file) => file.replace('template-', '').replace('.html', ''));
   },
 
   // Get template content directly
   getTemplateContent: (componentName: string, scenarioName: string): string => {
     const templatePath = govukTestConfig.getFixturePath(componentName, scenarioName);
     return readFileSync(templatePath, 'utf8');
-  }
-}; 
+  },
+};

@@ -30,7 +30,7 @@ export interface CacheStore {
    * @returns The cached value or null if not found
    */
   get(key: string): Promise<string | null>;
-  
+
   /**
    * Stores a value in the cache.
    * @param key - The cache key
@@ -38,13 +38,13 @@ export interface CacheStore {
    * @param ttl - Time-to-live in seconds
    */
   set(key: string, value: string, ttl?: number): Promise<void>;
-  
+
   /**
    * Deletes a value from the cache.
    * @param key - The cache key to delete
    */
   del(key: string): Promise<void>;
-  
+
   /**
    * Clears all entries from the cache.
    */
@@ -62,4 +62,4 @@ export interface CacheKey {
   identifier: string;
   /** Optional timestamp for time-based caching */
   timestamp?: number;
-} 
+}

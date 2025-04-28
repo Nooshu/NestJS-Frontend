@@ -1,5 +1,5 @@
 import express from 'express';
-import request, { Response } from 'supertest';
+import request, { type Response } from 'supertest';
 import { applyGovukFrontend } from '../govuk.middleware';
 import { mockGovukConfig } from './test.config';
 
@@ -35,9 +35,9 @@ describe('GOV.UK Frontend Middleware', () => {
   beforeEach(() => {
     app = express();
     applyGovukFrontend(app, mockGovukConfig);
-    
+
     // Add a test route
-    app.get('/test', (req, res) => {
+    app.get('/test', (_req, res) => {
       res.render('test', { title: 'Test Page' });
     });
   });
@@ -45,7 +45,7 @@ describe('GOV.UK Frontend Middleware', () => {
   describe('Configuration', () => {
     it('should add GOV.UK configuration to response locals', async () => {
       const response = asResponse(await request(app).get('/test'));
-      
+
       expect(response.locals.govuk).toBeDefined();
       expect(response.locals.govuk.base).toEqual(mockGovukConfig.base);
       expect(response.locals.govuk.header).toEqual(mockGovukConfig.header);
@@ -56,10 +56,12 @@ describe('GOV.UK Frontend Middleware', () => {
   describe('Phase Banner', () => {
     it('should add phase banner when enabled', async () => {
       const response = asResponse(await request(app).get('/test'));
-      
+
       expect(response.locals.govuk.phaseBanner).toBeDefined();
       expect(response.locals.govuk.phaseBanner.phase).toBe(mockGovukConfig.base.phase);
-      expect(response.locals.govuk.phaseBanner.feedbackLink).toBe(mockGovukConfig.base.feedbackLink);
+      expect(response.locals.govuk.phaseBanner.feedbackLink).toBe(
+        mockGovukConfig.base.feedbackLink
+      );
     });
 
     it('should not add phase banner when disabled', async () => {
@@ -70,10 +72,10 @@ describe('GOV.UK Frontend Middleware', () => {
           showPhaseBanner: false,
         },
       };
-      
+
       app = express();
       applyGovukFrontend(app, disabledConfig);
-      
+
       const response = asResponse(await request(app).get('/test'));
       expect(response.locals.govuk.phaseBanner).toBeUndefined();
     });
@@ -82,17 +84,17 @@ describe('GOV.UK Frontend Middleware', () => {
   describe('Cookie Banner', () => {
     it('should show cookie banner when cookies not accepted', async () => {
       const response = asResponse(await request(app).get('/test'));
-      
+
       expect(response.locals.govuk.cookieConsent).toBeDefined();
       expect(response.locals.govuk.cookieConsent.showBanner).toBe(true);
       expect(response.locals.govuk.cookieConsent.accepted).toBe(false);
     });
 
     it('should not show cookie banner when cookies accepted', async () => {
-      const response = asResponse(await request(app)
-        .get('/test')
-        .set('Cookie', 'cookies_policy=accept'));
-      
+      const response = asResponse(
+        await request(app).get('/test').set('Cookie', 'cookies_policy=accept')
+      );
+
       expect(response.locals.govuk.cookieConsent.showBanner).toBe(false);
       expect(response.locals.govuk.cookieConsent.accepted).toBe(true);
     });
@@ -105,12 +107,12 @@ describe('GOV.UK Frontend Middleware', () => {
           showCookieBanner: false,
         },
       };
-      
+
       app = express();
       applyGovukFrontend(app, disabledConfig);
-      
+
       const response = asResponse(await request(app).get('/test'));
       expect(response.locals.govuk.cookieConsent).toBeUndefined();
     });
   });
-}); 
+});

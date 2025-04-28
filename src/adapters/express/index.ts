@@ -1,36 +1,32 @@
+import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
-import { AppModule } from '../../app.module';
-import { SecurityConfig } from '../../shared/config/security.config';
-import { performanceConfig } from '../../shared/config/performance.config';
-import { join } from 'path';
-import helmet from 'helmet';
 import compression from 'compression';
+import express from 'express';
+import helmet from 'helmet';
 import nunjucks from 'nunjucks';
-import { setupRoutes } from './routes';
+import { join } from 'path';
+import { AppModule } from '../../app.module';
+import { performanceConfig } from '../../shared/config/performance.config';
+import { SecurityConfig } from '../../shared/config/security.config';
 import { setupErrorHandling } from './error-handling';
 import { setupGovUKFrontend } from './govuk';
 import { setupLogger } from './logger';
-import { INestApplication } from '@nestjs/common';
-import express from 'express';
+import { setupRoutes } from './routes';
 
 /**
  * Creates and configures a NestJS application with Express.js adapter.
  * This adapter provides a compatibility layer for government departments using Express.js.
- * 
+ *
  * @returns {Promise<INestApplication>} Configured NestJS application
  */
 export async function createExpressApp(): Promise<INestApplication> {
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(),
-    {
-      cors: {
-        origin: true,
-        credentials: true,
-      },
-    }
-  );
+  const app = await NestFactory.create(AppModule, new ExpressAdapter(), {
+    cors: {
+      origin: true,
+      credentials: true,
+    },
+  });
 
   const securityConfig = app.get(SecurityConfig);
 
@@ -59,10 +55,10 @@ export async function createExpressApp(): Promise<INestApplication> {
   // Setup middleware
   expressApp.use(express.json());
   expressApp.use(express.urlencoded({ extended: true }));
-  
+
   // Security middleware
   expressApp.use(helmet());
-  
+
   // Performance middleware
   expressApp.use(compression());
 
@@ -76,8 +72,20 @@ export async function createExpressApp(): Promise<INestApplication> {
   };
 
   expressApp.use('/public', express.static(join(process.cwd(), 'src', 'public'), staticOptions));
-  expressApp.use('/govuk', express.static(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'), staticOptions));
-  expressApp.use('/assets', express.static(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'), staticOptions));
+  expressApp.use(
+    '/govuk',
+    express.static(
+      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'),
+      staticOptions
+    )
+  );
+  expressApp.use(
+    '/assets',
+    express.static(
+      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'),
+      staticOptions
+    )
+  );
 
   // Setup logging
   setupLogger(expressApp);
@@ -92,4 +100,4 @@ export async function createExpressApp(): Promise<INestApplication> {
   setupErrorHandling(expressApp);
 
   return app;
-} 
+}
