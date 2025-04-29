@@ -14,29 +14,29 @@ export class PageResponseDto {
    * The title of the page
    * @swagger
    * @ApiProperty - Defines the property metadata for Swagger documentation
-   * 
+   *
    * @property {string} title
    * @example 'NestJS GOV.UK Frontend'
    */
   @ApiProperty({
     description: 'The page title displayed in the browser and page header',
     example: 'NestJS GOV.UK Frontend',
-    required: true
+    required: true,
   })
-  title: string;
+  title!: string;
 
   /**
    * The welcome message displayed on the page
    * @swagger
    * @ApiProperty - Defines the property metadata for Swagger documentation
-   * 
+   *
    * @property {string} message
    * @example 'Welcome to the NestJS GOV.UK Frontend application'
    */
   @ApiProperty({
     description: 'The welcome message displayed on the page',
     example: 'Welcome to the NestJS GOV.UK Frontend application',
-    required: true
+    required: true,
   })
-  message: string;
-} 
+  message!: string;
+}

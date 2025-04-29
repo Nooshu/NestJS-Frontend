@@ -1,4 +1,4 @@
-import { Logger } from 'pino';
+import type { Logger } from 'pino';
 
 /**
  * Logging configuration interface
@@ -12,28 +12,28 @@ export interface LoggingConfig {
      * Application name for logging
      */
     appName: string;
-    
+
     /**
      * Environment (development, staging, production)
      */
     environment: string;
-    
+
     /**
      * Log level (trace, debug, info, warn, error, fatal)
      */
     level: 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'fatal';
-    
+
     /**
      * Whether to enable pretty printing in development
      */
     prettyPrint: boolean;
-    
+
     /**
      * Logger instance
      */
     logger?: Logger;
   };
-  
+
   /**
    * Audit logging configuration
    */
@@ -42,28 +42,28 @@ export interface LoggingConfig {
      * Whether to enable audit logging
      */
     enabled: boolean;
-    
+
     /**
      * Fields to include in audit logs
      */
     include: string[];
-    
+
     /**
      * Fields to exclude from audit logs
      */
     exclude: string[];
-    
+
     /**
      * Whether to mask sensitive data
      */
     maskSensitiveData: boolean;
-    
+
     /**
      * Fields to mask in audit logs
      */
     sensitiveFields: string[];
   };
-  
+
   /**
    * Monitoring configuration
    */
@@ -72,7 +72,7 @@ export interface LoggingConfig {
      * Whether to enable monitoring
      */
     enabled: boolean;
-    
+
     /**
      * Metrics to collect
      */
@@ -81,18 +81,18 @@ export interface LoggingConfig {
        * Whether to collect HTTP metrics
        */
       http: boolean;
-      
+
       /**
        * Whether to collect system metrics
        */
       system: boolean;
-      
+
       /**
        * Whether to collect business metrics
        */
       business: boolean;
     };
-    
+
     /**
      * Alerting configuration
      */
@@ -101,7 +101,7 @@ export interface LoggingConfig {
        * Whether to enable alerting
        */
       enabled: boolean;
-      
+
       /**
        * Alert thresholds
        */
@@ -110,12 +110,12 @@ export interface LoggingConfig {
          * Error rate threshold (percentage)
          */
         errorRate: number;
-        
+
         /**
          * Response time threshold (milliseconds)
          */
         responseTime: number;
-        
+
         /**
          * Memory usage threshold (percentage)
          */
@@ -135,30 +135,15 @@ export const loggingConfig: LoggingConfig = {
     level: (process.env.LOG_LEVEL as LoggingConfig['base']['level']) || 'info',
     prettyPrint: process.env.NODE_ENV === 'development',
   },
-  
+
   audit: {
     enabled: true,
-    include: [
-      'timestamp',
-      'user',
-      'action',
-      'resource',
-      'status',
-      'ip',
-      'userAgent',
-      'requestId',
-    ],
+    include: ['timestamp', 'user', 'action', 'resource', 'status', 'ip', 'userAgent', 'requestId'],
     exclude: ['password', 'token'],
     maskSensitiveData: true,
-    sensitiveFields: [
-      'password',
-      'token',
-      'secret',
-      'apiKey',
-      'authorization',
-    ],
+    sensitiveFields: ['password', 'token', 'secret', 'apiKey', 'authorization'],
   },
-  
+
   monitoring: {
     enabled: true,
     metrics: {
@@ -175,4 +160,4 @@ export const loggingConfig: LoggingConfig = {
       },
     },
   },
-}; 
+};

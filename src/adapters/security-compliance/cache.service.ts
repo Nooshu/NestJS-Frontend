@@ -1,5 +1,5 @@
-import { CacheConfig, CacheStore, CacheKey } from './cache.types';
 import Redis from 'ioredis';
+import type { CacheConfig, CacheKey, CacheStore } from './cache.types';
 
 /**
  * In-memory cache store implementation.
@@ -67,8 +67,8 @@ class RedisCacheStore implements CacheStore {
     this.client = new Redis({
       host: config.redis?.host || 'localhost',
       port: config.redis?.port || 6379,
-      password: config.redis?.password,
-      db: config.redis?.db || 0
+      password: config.redis?.password || '',
+      db: config.redis?.db || 0,
     });
   }
 
@@ -125,9 +125,7 @@ export class CacheService {
    */
   constructor(config: CacheConfig) {
     this.prefix = config.prefix || 'gov-security';
-    this.store = config.store === 'redis' 
-      ? new RedisCacheStore(config)
-      : new MemoryCacheStore();
+    this.store = config.store === 'redis' ? new RedisCacheStore(config) : new MemoryCacheStore();
   }
 
   /**
@@ -170,11 +168,7 @@ export class CacheService {
     if (!this.store) return;
 
     try {
-      await this.store.set(
-        this.buildKey(key),
-        JSON.stringify(value),
-        ttl
-      );
+      await this.store.set(this.buildKey(key), JSON.stringify(value), ttl);
     } catch (error) {
       console.error('Cache set error:', error);
     }
@@ -206,4 +200,4 @@ export class CacheService {
       console.error('Cache clear error:', error);
     }
   }
-} 
+}

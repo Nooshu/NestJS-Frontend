@@ -1,5 +1,6 @@
-import { JavaApiClient, JavaApiClientConfig } from '../java-api.client';
+import { AxiosError } from 'axios';
 import { Logger } from 'winston';
+import { JavaApiClient, type JavaApiClientConfig } from '../java-api.client';
 
 /**
  * Example service demonstrating how to use the Java API client
@@ -20,7 +21,7 @@ export class UserService {
       return await this.apiClient.get(`/api/users/${id}`);
     } catch (error) {
       // Handle specific error cases
-      if (error.statusCode === 404) {
+      if (error instanceof AxiosError && error.status === 404) {
         throw new Error(`User with ID ${id} not found`);
       }
       throw error;
@@ -35,8 +36,8 @@ export class UserService {
       return await this.apiClient.post('/api/users', userData);
     } catch (error) {
       // Handle validation errors
-      if (error.statusCode === 400) {
-        throw new Error(`Invalid user data: ${error.details}`);
+      if (error instanceof AxiosError && error.status === 400) {
+        throw new Error(`Invalid user data: ${error.message}`);
       }
       throw error;
     }
@@ -50,7 +51,7 @@ export class UserService {
       return await this.apiClient.put(`/api/users/${id}`, userData);
     } catch (error) {
       // Handle specific error cases
-      if (error.statusCode === 404) {
+      if (error instanceof AxiosError && error.status === 404) {
         throw new Error(`User with ID ${id} not found`);
       }
       throw error;
@@ -65,10 +66,10 @@ export class UserService {
       return await this.apiClient.delete(`/api/users/${id}`);
     } catch (error) {
       // Handle specific error cases
-      if (error.statusCode === 404) {
+      if (error instanceof AxiosError && error.status === 404) {
         throw new Error(`User with ID ${id} not found`);
       }
       throw error;
     }
   }
-} 
+}

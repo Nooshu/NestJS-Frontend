@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import { SecurityError, SecurityErrorCode } from './error.types';
 
 /**
@@ -9,13 +9,13 @@ export class SecurityErrorHandler {
   /**
    * Handles security errors and unexpected errors in the application.
    * Converts errors to appropriate HTTP responses with consistent formatting.
-   * 
+   *
    * @param error - The error that occurred
    * @param req - The Express request object
    * @param res - The Express response object
    * @param next - The Express next function
    */
-  static handle(error: Error, req: Request, res: Response, next: NextFunction): void {
+  static handle(error: Error, req: Request, res: Response, _next: NextFunction): void {
     if (error instanceof SecurityError) {
       const response = error.toResponse();
       res.status(this.getStatusCode(error.code)).json(response);
@@ -28,10 +28,10 @@ export class SecurityErrorHandler {
       'An unexpected error occurred',
       {
         path: req.path,
-        ip: req.ip,
+        ip: req.ip ?? req.socket.remoteAddress ?? '',
         metadata: {
-          originalError: error.message
-        }
+          originalError: error.message,
+        },
       }
     );
 
@@ -42,7 +42,7 @@ export class SecurityErrorHandler {
   /**
    * Maps security error codes to appropriate HTTP status codes.
    * Ensures consistent status code usage across the application.
-   * 
+   *
    * @param code - The security error code
    * @returns The corresponding HTTP status code
    */
@@ -57,7 +57,7 @@ export class SecurityErrorHandler {
       [SecurityErrorCode.CACHE_ERROR]: 500,
       [SecurityErrorCode.SECURITY_HEADER_ERROR]: 500,
       [SecurityErrorCode.CORS_VIOLATION]: 403,
-      [SecurityErrorCode.INVALID_REQUEST]: 400
+      [SecurityErrorCode.INVALID_REQUEST]: 400,
     };
 
     return statusCodeMap[code] || 500;
@@ -67,7 +67,7 @@ export class SecurityErrorHandler {
 /**
  * Express middleware function for handling security errors.
  * Wraps the SecurityErrorHandler.handle method for use in Express applications.
- * 
+ *
  * @param error - The error that occurred
  * @param req - The Express request object
  * @param res - The Express response object
@@ -80,4 +80,4 @@ export const securityErrorHandler = (
   next: NextFunction
 ): void => {
   SecurityErrorHandler.handle(error, req, res, next);
-}; 
+};

@@ -1,6 +1,5 @@
-import { Application, Request, Response, NextFunction } from 'express';
-import express from 'express';
-import { GovukConfig } from './govuk.config';
+import express, { type Application, type NextFunction, type Request, type Response } from 'express';
+import { type GovukConfig } from './govuk.config';
 
 /**
  * Applies GOV.UK Frontend configuration to the Express application
@@ -8,9 +7,9 @@ import { GovukConfig } from './govuk.config';
 export function applyGovukFrontend(app: Application, config: GovukConfig): void {
   // Add GOV.UK Frontend assets
   app.use('/assets', express.static('node_modules/govuk-frontend/govuk/assets'));
-  
+
   // Add GOV.UK Frontend configuration to all responses
-  app.use((req: Request, res: Response, next: NextFunction) => {
+  app.use((_req: Request, res: Response, next: NextFunction) => {
     // Add GOV.UK Frontend configuration to locals
     res.locals.govuk = {
       base: config.base,
@@ -18,7 +17,7 @@ export function applyGovukFrontend(app: Application, config: GovukConfig): void 
       footer: config.footer,
       cookieBanner: config.cookieBanner,
     };
-    
+
     // Add phase banner if enabled
     if (config.base.showPhaseBanner) {
       res.locals.govuk.phaseBanner = {
@@ -26,10 +25,10 @@ export function applyGovukFrontend(app: Application, config: GovukConfig): void 
         feedbackLink: config.base.feedbackLink,
       };
     }
-    
+
     next();
   });
-  
+
   // Add cookie consent middleware
   app.use(cookieConsent(config));
 }
@@ -42,7 +41,7 @@ function cookieConsent(config: GovukConfig) {
     if (config.cookieBanner.showCookieBanner) {
       // Check if user has accepted cookies
       const cookiesAccepted = req.cookies['cookies_policy'] === 'accept';
-      
+
       // Add cookie consent to locals
       res.locals.govuk.cookieConsent = {
         showBanner: !cookiesAccepted,
@@ -50,7 +49,7 @@ function cookieConsent(config: GovukConfig) {
         policyUrl: config.cookieBanner.cookiePolicyUrl,
       };
     }
-    
+
     next();
   };
-} 
+}

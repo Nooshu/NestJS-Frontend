@@ -1,12 +1,10 @@
-import { Test } from '@nestjs/testing';
-import { Request, Response } from 'express';
-import { CsrfMiddleware } from './csrf.middleware';
 import { ConfigService } from '@nestjs/config';
-import { createTestApp } from '../../test/helpers';
+import { Test } from '@nestjs/testing';
+import type { Request, Response } from 'express';
+import { CsrfMiddleware } from './csrf.middleware';
 
 describe('CsrfMiddleware', () => {
   let middleware: CsrfMiddleware;
-  let configService: ConfigService;
   let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response>;
   let nextFunction: jest.Mock;
@@ -36,7 +34,6 @@ describe('CsrfMiddleware', () => {
     }).compile();
 
     middleware = moduleRef.get<CsrfMiddleware>(CsrfMiddleware);
-    configService = moduleRef.get<ConfigService>(ConfigService);
 
     mockRequest = {
       method: 'GET',
@@ -65,7 +62,7 @@ describe('CsrfMiddleware', () => {
           httpOnly: true,
           secure: true,
           sameSite: 'strict',
-        }),
+        })
       );
       expect(nextFunction).toHaveBeenCalled();
     });
@@ -141,4 +138,4 @@ describe('CsrfMiddleware', () => {
       });
     });
   });
-}); 
+});

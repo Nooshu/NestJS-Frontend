@@ -1,9 +1,6 @@
-import { CorsOptions } from 'cors';
-import { Options } from 'express-rate-limit';
-import { HelmetOptions } from 'helmet';
-import { Request, Response } from 'express';
-import { Application } from 'express';
-import { CacheConfig } from './cache.types';
+import type { CorsOptions } from 'cors';
+import type { Request, Response } from 'express';
+import type { HelmetOptions } from 'helmet';
 
 /**
  * Interface defining the structure of a request with user information.
@@ -105,4 +102,4 @@ export interface SecurityConfig {
   passwordPolicy?: PasswordPolicy;
   dataProtection?: DataProtectionConfig;
   headers?: Record<string, string>;
-} 
+}

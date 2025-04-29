@@ -16,4 +16,4 @@ import { configurationSchema } from './configuration.schema';
     }),
   ],
 })
-export class ConfigModule {} 
+export class ConfigModule {}

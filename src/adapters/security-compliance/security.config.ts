@@ -1,7 +1,7 @@
-import { HelmetOptions } from 'helmet';
-import { CorsOptions } from 'cors';
-import { Options as RateLimitOptions } from 'express-rate-limit';
+import type { CorsOptions } from 'cors';
+import type { Options as RateLimitOptions } from 'express-rate-limit';
 import { MemoryStore } from 'express-rate-limit';
+import type { HelmetOptions } from 'helmet';
 
 /**
  * Environment-specific configuration types
@@ -61,8 +61,8 @@ export interface SecurityConfig {
  */
 function validateEnvironment(): void {
   const requiredEnvVars = ['NODE_ENV', 'SESSION_SECRET', 'CORS_ORIGIN'];
-  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
-  
+  const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
+
   if (missingVars.length > 0) {
     throw new Error(`Missing required environment variables: ${missingVars.join(', ')}`);
   }
@@ -86,7 +86,7 @@ function getEnvironment(): Environment {
  */
 export const governmentSecurityConfig: SecurityConfig = {
   environment: getEnvironment(),
-  
+
   /**
    * Helmet security headers configuration
    * Based on government security requirements
@@ -97,7 +97,7 @@ export const governmentSecurityConfig: SecurityConfig = {
         defaultSrc: ["'self'"],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", "data:", "https:"],
+        imgSrc: ["'self'", 'data:', 'https:'],
         connectSrc: ["'self'"],
         fontSrc: ["'self'"],
         objectSrc: ["'none'"],
@@ -151,16 +151,16 @@ export const governmentSecurityConfig: SecurityConfig = {
     skipFailedRequests: false,
     skipSuccessfulRequests: false,
     keyGenerator: (req) => req.ip || 'unknown',
-    handler: (req, res) => {
+    handler: (_req, res) => {
       res.status(429).json({ message: 'Too many requests from this IP, please try again later' });
     },
     identifier: 'rate-limit',
     requestPropertyName: 'rateLimit',
     skip: () => false,
-    requestWasSuccessful: (req, res) => res.statusCode < 400,
+    requestWasSuccessful: (_req, res) => res.statusCode < 400,
     store: new MemoryStore(),
     validate: true,
-    passOnStoreError: false
+    passOnStoreError: false,
   },
 
   /**
@@ -185,15 +185,7 @@ export const governmentSecurityConfig: SecurityConfig = {
     enabled: true,
     level: 'info',
     format: 'json',
-    include: [
-      'timestamp',
-      'user',
-      'action',
-      'resource',
-      'status',
-      'ip',
-      'userAgent',
-    ],
+    include: ['timestamp', 'user', 'action', 'resource', 'status', 'ip', 'userAgent'],
   },
 
   /**
@@ -238,4 +230,4 @@ export const governmentSecurityConfig: SecurityConfig = {
 };
 
 // Validate environment variables on startup
-validateEnvironment(); 
+validateEnvironment();

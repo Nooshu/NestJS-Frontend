@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { type AxiosInstance, type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { Logger } from 'winston';
 
 /**
@@ -12,11 +12,11 @@ export interface JavaApiClientConfig {
   auth?: {
     type: 'basic' | 'bearer' | 'oauth2';
     credentials: {
-      username?: string;
-      password?: string;
-      token?: string;
-      clientId?: string;
-      clientSecret?: string;
+      username?: string | undefined;
+      password?: string | undefined;
+      token?: string | undefined;
+      clientId?: string | undefined;
+      clientSecret?: string | undefined;
     };
   };
 }
@@ -46,15 +46,15 @@ export class JavaApiClient {
 
   constructor(config: JavaApiClientConfig, logger: Logger) {
     this.logger = logger;
-    
+
     // Create axios instance with base configuration
     this.client = axios.create({
       baseURL: config.baseUrl,
       timeout: config.timeout || 30000,
       headers: {
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
+        Accept: 'application/json',
+      },
     });
 
     // Setup authentication
@@ -74,7 +74,7 @@ export class JavaApiClient {
       case 'basic':
         this.client.defaults.auth = {
           username: auth.credentials.username || '',
-          password: auth.credentials.password || ''
+          password: auth.credentials.password || '',
         };
         break;
       case 'bearer':
@@ -90,7 +90,7 @@ export class JavaApiClient {
   /**
    * Setup OAuth2 authentication with token management
    */
-  private setupOAuth2(credentials: NonNullable<JavaApiClientConfig['auth']>['credentials']) {
+  private setupOAuth2(_credentials: NonNullable<JavaApiClientConfig['auth']>['credentials']) {
     // Implement OAuth2 token management
     // This would typically involve:
     // 1. Getting initial token
@@ -101,14 +101,14 @@ export class JavaApiClient {
   /**
    * Setup request/response interceptors
    */
-  private setupInterceptors(retryAttempts: number, retryDelay: number) {
+  private setupInterceptors(_retryAttempts: number, _retryDelay: number) {
     // Request interceptor for logging
     this.client.interceptors.request.use(
       (config) => {
         this.logger.debug('Java API Request', {
           method: config.method,
           url: config.url,
-          headers: config.headers
+          headers: config.headers,
         });
         return config;
       },
@@ -123,7 +123,7 @@ export class JavaApiClient {
       (response) => {
         this.logger.debug('Java API Response', {
           status: response.status,
-          url: response.config.url
+          url: response.config.url,
         });
         return response;
       },
@@ -202,4 +202,4 @@ export class JavaApiClient {
       throw error;
     }
   }
-} 
+}

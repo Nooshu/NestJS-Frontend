@@ -1,17 +1,17 @@
 /**
  * Test helper utilities for GOV.UK Frontend component testing.
  * Provides functions to load and compare component fixtures.
- * 
+ *
  * @module FixturesTestHelper
  */
 
 import * as fs from 'fs';
+import { parse } from 'node-html-parser';
 import * as path from 'path';
-import { parse, HTMLElement } from 'node-html-parser';
 
 /**
  * Interface representing a GOV.UK Frontend component fixture.
- * 
+ *
  * @interface GovukFixture
  */
 export interface GovukFixture {
@@ -27,7 +27,7 @@ export interface GovukFixture {
 
 /**
  * Interface representing a collection of GOV.UK Frontend component fixtures.
- * 
+ *
  * @interface GovukComponentFixtures
  */
 export interface GovukComponentFixtures {
@@ -39,7 +39,7 @@ export interface GovukComponentFixtures {
 
 /**
  * Loads fixtures for a GOV.UK Frontend component.
- * 
+ *
  * @function loadFixtures
  * @param {string} componentName - Name of the component to load fixtures for
  * @returns {GovukComponentFixtures} The loaded fixtures
@@ -66,7 +66,7 @@ export function loadFixtures(componentName: string): GovukComponentFixtures {
 
 /**
  * Normalizes HTML by removing extra whitespace and normalizing text content.
- * 
+ *
  * @function normalizeHtml
  * @param {string} html - The HTML to normalize
  * @returns {string} The normalized HTML
@@ -74,53 +74,55 @@ export function loadFixtures(componentName: string): GovukComponentFixtures {
 export function normalizeHtml(html: string): string {
   // Parse the HTML
   const root = parse(html);
-  
+
   // Normalize text content
   const normalizeText = (node: any) => {
-    if (node.nodeType === 3) { // Text node
+    if (node.nodeType === 3) {
+      // Text node
       node.textContent = node.textContent.trim();
     }
     if (node.childNodes) {
       node.childNodes.forEach(normalizeText);
     }
   };
-  
+
   normalizeText(root);
-  
+
   // Get the normalized HTML
   const normalizedHtml = root.outerHTML;
-  
+
   // Normalize attribute order by parsing and rebuilding the HTML
   const normalizedRoot = parse(normalizedHtml);
   const rebuildNode = (node: any): string => {
-    if (node.nodeType === 3) { // Text node
+    if (node.nodeType === 3) {
+      // Text node
       return node.textContent;
     }
-    
+
     const tagName = node.tagName?.toLowerCase() || '';
     const attributes = node.attributes || {};
-    
+
     // Sort attributes by name
     const sortedAttributes = Object.entries(attributes)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, value]) => `${key}="${value}"`)
       .join(' ');
-    
+
     const children = node.childNodes.map(rebuildNode).join('');
-    
+
     if (tagName) {
       return `<${tagName}${sortedAttributes ? ' ' + sortedAttributes : ''}>${children}</${tagName}>`;
     }
-    
+
     return children;
   };
-  
+
   return rebuildNode(normalizedRoot);
 }
 
 /**
  * Compares two HTML strings for equality after normalization.
- * 
+ *
  * @function compareHtml
  * @param {string} actual - The actual HTML output
  * @param {string} expected - The expected HTML output
@@ -129,7 +131,7 @@ export function normalizeHtml(html: string): string {
 export function compareHtml(actual: string, expected: string): boolean {
   const normalizedActual = normalizeHtml(actual);
   const normalizedExpected = normalizeHtml(expected);
-  
+
   // Compare the normalized HTML
   return normalizedActual === normalizedExpected;
-} 
+}

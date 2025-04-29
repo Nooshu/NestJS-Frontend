@@ -1,9 +1,8 @@
-import { INestApplication } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { Logger } from '@nestjs/common';
 
 /**
  * Creates a test application instance
@@ -21,7 +20,7 @@ export const createTestApp = async (): Promise<INestApplication> => {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   // Setup Swagger
@@ -92,14 +91,12 @@ export const customMatchers = {
     const pass = received >= floor && received <= ceiling;
     if (pass) {
       return {
-        message: () =>
-          `expected ${received} not to be within range ${floor} - ${ceiling}`,
+        message: () => `expected ${received} not to be within range ${floor} - ${ceiling}`,
         pass: true,
       };
     } else {
       return {
-        message: () =>
-          `expected ${received} to be within range ${floor} - ${ceiling}`,
+        message: () => `expected ${received} to be within range ${floor} - ${ceiling}`,
         pass: false,
       };
     }
@@ -133,4 +130,4 @@ export const cleanupTestEnvironment = () => {
   jest.clearAllMocks();
   jest.resetAllMocks();
   jest.restoreAllMocks();
-}; 
+};

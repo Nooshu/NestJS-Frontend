@@ -1,6 +1,6 @@
 /**
  * View engine service that provides Nunjucks template rendering functionality.
- * 
+ *
  * @module ViewEngineService
  * @requires @nestjs/common
  * @requires nunjucks
@@ -13,7 +13,7 @@ import configuration from '../shared/config/configuration';
 
 /**
  * Service that provides Nunjucks template rendering functionality.
- * 
+ *
  * @class ViewEngineService
  * @description Handles template rendering with Nunjucks
  */
@@ -27,10 +27,7 @@ export class ViewEngineService {
     const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist');
 
     // Create a FileSystemLoader with the paths
-    const loader = new nunjucks.FileSystemLoader([
-      viewsPath,
-      govukPath
-    ], {
+    const loader = new nunjucks.FileSystemLoader([viewsPath, govukPath], {
       noCache: config.nodeEnv !== 'production',
       watch: config.nodeEnv !== 'test',
     });
@@ -49,7 +46,7 @@ export class ViewEngineService {
 
   /**
    * Render a template with the given data.
-   * 
+   *
    * @method render
    * @param {string} template - The template name
    * @param {any} data - The data to render
@@ -61,11 +58,11 @@ export class ViewEngineService {
 
   /**
    * Get the Nunjucks environment.
-   * 
+   *
    * @method getEnv
    * @returns {nunjucks.Environment} The Nunjucks environment
    */
   getEnv(): nunjucks.Environment {
     return this.env;
   }
-} 
+}

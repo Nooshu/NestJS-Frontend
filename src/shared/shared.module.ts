@@ -3,13 +3,13 @@
  * This module exports components that can be used across the application.
  * It is marked as @Global() to make its exports available throughout the application
  * without needing to import it in each module.
- * 
+ *
  * @module SharedModule
  * @requires @nestjs/common
  * @requires @nestjs/terminus
  * @requires @nestjs/axios
  * @requires ../logger/logger.module
- * 
+ *
  * @example
  * // The module is automatically available in other modules due to @Global()
  * @Injectable()
@@ -18,13 +18,13 @@
  * }
  */
 
-import { Module, Global } from '@nestjs/common';
+import { HttpModule } from '@nestjs/axios';
+import { Global, Module } from '@nestjs/common';
+import { TerminusModule } from '@nestjs/terminus';
+import { LoggerModule } from '../logger/logger.module';
 import { HealthController } from './health/health.controller';
 import { ErrorMiddleware } from './middleware/error.middleware';
 import { LoggerMiddleware } from './middleware/logger.middleware';
-import { TerminusModule } from '@nestjs/terminus';
-import { HttpModule } from '@nestjs/axios';
-import { LoggerModule } from '../logger/logger.module';
 
 /**
  * Shared module that exports common components.
@@ -34,10 +34,10 @@ import { LoggerModule } from '../logger/logger.module';
  * - Logging services
  * - Error handling middleware
  * - Request logging middleware
- * 
+ *
  * @class SharedModule
  * @description Provides shared components and services
- * 
+ *
  * @property {TerminusModule} TerminusModule - Health check functionality
  * @property {HttpModule} HttpModule - HTTP client functionality
  * @property {LoggerModule} LoggerModule - Logging functionality
@@ -47,13 +47,9 @@ import { LoggerModule } from '../logger/logger.module';
  */
 @Global()
 @Module({
-  imports: [
-    TerminusModule,
-    HttpModule,
-    LoggerModule,
-  ],
+  imports: [TerminusModule, HttpModule, LoggerModule],
   controllers: [HealthController],
   providers: [ErrorMiddleware, LoggerMiddleware],
   exports: [ErrorMiddleware, LoggerMiddleware],
 })
-export class SharedModule {} 
+export class SharedModule {}

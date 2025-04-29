@@ -1,5 +1,5 @@
+import type { NextFunction, Request, Response } from 'express';
 import { createExpressApp } from './index';
-import { Request, Response, NextFunction } from 'express';
 
 /**
  * Example usage of the Express.js adapter in a government department's project.
@@ -14,18 +14,18 @@ async function startServer() {
   const expressApp = app.getHttpAdapter().getInstance();
 
   // Example routes
-  expressApp.get('/example', (req: Request, res: Response) => {
+  expressApp.get('/example', (_req: Request, res: Response) => {
     res.send('Hello from NestJS with Express!');
   });
 
-  expressApp.get('/api/data', (req: Request, res: Response) => {
+  expressApp.get('/api/data', (_req: Request, res: Response) => {
     res.json({
       message: 'This is an example API endpoint',
       timestamp: new Date().toISOString(),
     });
   });
 
-  expressApp.get('/error', (req: Request, res: Response, next: NextFunction) => {
+  expressApp.get('/error', (_req: Request, _res: Response, next: NextFunction) => {
     next(new Error('This is an example error'));
   });
 
@@ -37,4 +37,4 @@ async function startServer() {
 startServer().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
-}); 
+});

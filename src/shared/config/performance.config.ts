@@ -1,27 +1,26 @@
 /**
  * Performance configuration for the application.
  * Provides settings for compression, caching, and other performance optimizations.
- * 
+ *
  * @module PerformanceConfig
  * @description Application performance configuration
- * 
+ *
  * @example
  * // Import and use performance configuration
  * import { performanceConfig } from './performance.config';
- * 
+ *
  * // Apply compression middleware
  * app.use(compression(performanceConfig.compression));
  */
 
-import { CompressionOptions } from 'compression';
-import { Request, Response } from 'express';
-import { ServeStaticOptions } from 'serve-static';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from './config.service';
+import type { CompressionOptions } from 'compression';
+import type { Request, Response } from 'express';
+import type { ServeStaticOptions } from 'serve-static';
 
 @Injectable()
 export class PerformanceConfig {
-  constructor(private configService: ConfigService) {}
+  constructor() {}
 
   get staticAssets() {
     return {
@@ -45,7 +44,7 @@ export class PerformanceConfig {
 
 /**
  * Main performance configuration object
- * 
+ *
  * @type {Object}
  * @property {CompressionOptions} compression - Response compression settings
  * @property {ServeStaticOptions} staticAssets - Static file serving settings
@@ -60,7 +59,7 @@ export const performanceConfig = {
   compression: {
     level: 6, // Compression level (0-9)
     threshold: 1024, // Only compress responses larger than 1kb
-    filter: (req: Request, res: Response) => {
+    filter: (req: Request, _res: Response) => {
       if (req.headers['x-no-compression']) {
         return false;
       }
@@ -106,7 +105,7 @@ export const performanceConfig = {
 
 /**
  * API-specific performance configuration
- * 
+ *
  * @type {Object}
  * @property {Object} connection - Connection settings
  * @property {Object} retry - Retry settings
@@ -141,7 +140,7 @@ export const apiPerformanceConfig = {
    */
   cache: {
     standard: 300000, // 5 minutes
-    short: 60000,    // 1 minute
-    long: 3600000,   // 1 hour
-  }
+    short: 60000, // 1 minute
+    long: 3600000, // 1 hour
+  },
 };

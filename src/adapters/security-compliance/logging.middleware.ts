@@ -1,7 +1,7 @@
-import { Application, Request, Response, NextFunction } from 'express';
-import pino from 'pino';
-import { LoggingConfig } from './logging.config';
+import type { Application, NextFunction, Request, Response } from 'express';
 import requestId from 'express-request-id';
+import pino, { type LoggerOptions } from 'pino';
+import type { LoggingConfig } from './logging.config';
 
 // Extend Express Request type
 declare global {
@@ -19,35 +19,45 @@ declare global {
  * Creates a logger instance
  */
 function createLogger(config: LoggingConfig['base']): pino.Logger {
-  return pino({
+  const options: LoggerOptions = {
     name: config.appName,
     level: config.level,
-    transport: config.prettyPrint ? {
+    base: {
+      env: config.environment,
+    },
+  };
+
+  if (config.prettyPrint) {
+    options.transport = {
       target: 'pino-pretty',
       options: {
         colorize: true,
         translateTime: true,
       },
-    } : undefined,
-    base: {
-      env: config.environment,
-    },
-  });
+    };
+  }
+  if (config.logger?.level) {
+    options.level = config.logger.level;
+  }
+  return pino(options);
 }
 
 /**
  * Masks sensitive data in the log object
  */
-function maskSensitiveData(obj: Record<string, unknown>, fields: string[]): Record<string, unknown> {
+function maskSensitiveData(
+  obj: Record<string, unknown>,
+  fields: string[]
+): Record<string, unknown> {
   const masked = { ...obj };
-  
+
   for (const field of fields) {
     if (field in masked) {
       const value = String(masked[field]);
       masked[field] = '*'.repeat(value.length);
     }
   }
-  
+
   return masked;
 }
 
@@ -56,14 +66,14 @@ function maskSensitiveData(obj: Record<string, unknown>, fields: string[]): Reco
  */
 export function applyLoggingAndMonitoring(app: Application, config: LoggingConfig): void {
   const logger = createLogger(config.base);
-  
+
   // Add request ID middleware
   app.use(requestId());
-  
+
   // Request logging middleware
   app.use((req: Request, res: Response, next: NextFunction) => {
     const start = Date.now();
-    
+
     // Log request
     logger.info({
       type: 'request',
@@ -72,11 +82,11 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
       ip: req.ip,
       userAgent: req.get('user-agent'),
     });
-    
+
     // Response logging
     res.on('finish', () => {
       const duration = Date.now() - start;
-      
+
       logger.info({
         type: 'response',
         method: req.method,
@@ -84,7 +94,7 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
         status: res.statusCode,
         duration,
       });
-      
+
       // Check monitoring thresholds
       if (config.monitoring.enabled && config.monitoring.alerting.enabled) {
         if (res.statusCode >= 500) {
@@ -95,7 +105,7 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
             status: res.statusCode,
           });
         }
-        
+
         if (duration > config.monitoring.alerting.thresholds.responseTime) {
           logger.warn({
             type: 'slow_response',
@@ -106,12 +116,12 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
         }
       }
     });
-    
+
     next();
   });
-  
+
   // Error logging middleware
-  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  app.use((err: Error, req: Request, _res: Response, next: NextFunction) => {
     logger.error({
       type: 'error',
       error: err.message,
@@ -119,10 +129,10 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
       method: req.method,
       url: req.url,
     });
-    
+
     next(err);
   });
-  
+
   // Audit logging middleware
   if (config.audit.enabled) {
     app.use((req: Request, res: Response, next: NextFunction) => {
@@ -136,26 +146,26 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
         userAgent: req.get('user-agent'),
         requestId: req.id,
       };
-      
+
       // Mask sensitive data if enabled
       const maskedData = config.audit.maskSensitiveData
         ? maskSensitiveData(auditData, config.audit.sensitiveFields)
         : auditData;
-      
+
       logger.info({
         type: 'audit',
         ...maskedData,
       });
-      
+
       next();
     });
   }
-  
+
   // System metrics middleware
   if (config.monitoring.enabled && config.monitoring.metrics.system) {
     setInterval(() => {
       const memoryUsage = process.memoryUsage();
-      
+
       logger.info({
         type: 'system_metrics',
         memoryUsage: {
@@ -165,11 +175,11 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
           rss: memoryUsage.rss,
         },
       });
-      
+
       // Check memory threshold
       if (config.monitoring.alerting.enabled) {
         const memoryPercentage = (memoryUsage.heapUsed / memoryUsage.heapTotal) * 100;
-        
+
         if (memoryPercentage > config.monitoring.alerting.thresholds.memoryUsage) {
           logger.warn({
             type: 'high_memory_usage',
@@ -179,4 +189,4 @@ export function applyLoggingAndMonitoring(app: Application, config: LoggingConfi
       }
     }, 60000); // Every minute
   }
-} 
+}

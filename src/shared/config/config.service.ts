@@ -59,7 +59,8 @@ export class ConfigService {
         cookieOptions: {
           httpOnly: this.configService.get<boolean>('security.csrf.cookieOptions.httpOnly') ?? true,
           secure: this.configService.get<boolean>('security.csrf.cookieOptions.secure') ?? true,
-          sameSite: this.configService.get<string>('security.csrf.cookieOptions.sameSite') ?? 'strict',
+          sameSite:
+            this.configService.get<string>('security.csrf.cookieOptions.sameSite') ?? 'strict',
         },
       },
       csp: {
@@ -123,28 +124,38 @@ export class ConfigService {
         enabled: this.configService.get<boolean>('LOG_FILE') || loggingConfig.file.enabled,
         path: this.configService.get<string>('LOG_FILE_PATH') || loggingConfig.file.path,
         maxSize: this.configService.get<number>('LOG_FILE_MAX_SIZE') || loggingConfig.file.maxSize,
-        maxFiles: this.configService.get<number>('LOG_FILE_MAX_FILES') || loggingConfig.file.maxFiles,
+        maxFiles:
+          this.configService.get<number>('LOG_FILE_MAX_FILES') || loggingConfig.file.maxFiles,
       },
       console: {
         enabled: this.configService.get<boolean>('LOG_CONSOLE') ?? loggingConfig.console.enabled,
         colors: this.configService.get<string>('NODE_ENV') === 'development',
       },
       audit: {
-        enabled: this.configService.get<boolean>('LOG_AUDIT_ENABLED') ?? loggingConfig.audit.enabled,
+        enabled:
+          this.configService.get<boolean>('LOG_AUDIT_ENABLED') ?? loggingConfig.audit.enabled,
         include: loggingConfig.audit.include,
         exclude: loggingConfig.audit.exclude,
         maskSensitiveData: loggingConfig.audit.maskSensitiveData,
         sensitiveFields: loggingConfig.audit.sensitiveFields,
       },
       monitoring: {
-        enabled: this.configService.get<boolean>('LOG_MONITORING_ENABLED') ?? loggingConfig.monitoring.enabled,
+        enabled:
+          this.configService.get<boolean>('LOG_MONITORING_ENABLED') ??
+          loggingConfig.monitoring.enabled,
         metrics: loggingConfig.monitoring.metrics,
         alerting: {
           enabled: loggingConfig.monitoring.alerting.enabled,
           thresholds: {
-            errorRate: this.configService.get<number>('LOG_MONITORING_ERROR_RATE_THRESHOLD') || loggingConfig.monitoring.alerting.thresholds.errorRate,
-            responseTime: this.configService.get<number>('LOG_MONITORING_RESPONSE_TIME_THRESHOLD') || loggingConfig.monitoring.alerting.thresholds.responseTime,
-            memoryUsage: this.configService.get<number>('LOG_MONITORING_MEMORY_USAGE_THRESHOLD') || loggingConfig.monitoring.alerting.thresholds.memoryUsage,
+            errorRate:
+              this.configService.get<number>('LOG_MONITORING_ERROR_RATE_THRESHOLD') ||
+              loggingConfig.monitoring.alerting.thresholds.errorRate,
+            responseTime:
+              this.configService.get<number>('LOG_MONITORING_RESPONSE_TIME_THRESHOLD') ||
+              loggingConfig.monitoring.alerting.thresholds.responseTime,
+            memoryUsage:
+              this.configService.get<number>('LOG_MONITORING_MEMORY_USAGE_THRESHOLD') ||
+              loggingConfig.monitoring.alerting.thresholds.memoryUsage,
           },
         },
       },
@@ -176,4 +187,4 @@ export class ConfigService {
   get npmPackageVersion(): string {
     return this.configService.get<string>('npmPackageVersion') ?? '0.0.0';
   }
-} 
+}

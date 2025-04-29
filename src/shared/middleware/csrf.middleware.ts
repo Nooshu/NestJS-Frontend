@@ -1,8 +1,8 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
-import csrf from 'csurf';
-import { LoggerService } from '../../logger/logger.service';
+import { Injectable, type NestMiddleware } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
+import csrf from 'csurf';
+import type { NextFunction, Request, Response } from 'express';
+import { LoggerService } from '../../logger/logger.service';
 
 @Injectable()
 export class CsrfMiddleware implements NestMiddleware {
@@ -13,7 +13,7 @@ export class CsrfMiddleware implements NestMiddleware {
     // First, set up cookie parser
     const cookieSecret = process.env.COOKIE_SECRET || 'your-secret-key';
     this.cookieMiddleware = cookieParser(cookieSecret);
-    
+
     // Then set up CSRF protection
     this.csrfProtection = csrf({
       cookie: {
@@ -56,7 +56,8 @@ export class CsrfMiddleware implements NestMiddleware {
         }
 
         next();
+        return;
       });
     });
   }
-} 
+}

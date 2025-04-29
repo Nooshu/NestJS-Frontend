@@ -1,4 +1,4 @@
-import { SecurityConfig } from './security.types';
+import type { SecurityConfig } from './security.types';
 
 /**
  * Mock security configuration for testing purposes.
@@ -12,27 +12,27 @@ export const testConfig: SecurityConfig = {
   },
   audit: {
     enabled: true,
-    excludeFields: ['password', 'token']
+    excludeFields: ['password', 'token'],
   },
   dataProtection: {
     enabled: true,
     encryptionKey: 'test-key-12345',
     masking: {
       enabled: true,
-      fields: ['password', 'ssn', 'creditCard']
-    }
+      fields: ['password', 'ssn', 'creditCard'],
+    },
   },
   helmet: {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"]
-      }
-    }
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+      },
+    },
   },
   cors: {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-  }
-}; 
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  },
+};

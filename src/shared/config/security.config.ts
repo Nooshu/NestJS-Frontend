@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { HelmetOptions } from 'helmet';
-import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { Injectable, Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import type { HelmetOptions } from 'helmet';
 
 @Injectable()
 export class SecurityConfig {
@@ -23,7 +21,8 @@ export class SecurityConfig {
       cookieOptions: {
         httpOnly: this.configService.get<boolean>('security.csrf.cookieOptions.httpOnly') ?? true,
         secure: this.configService.get<boolean>('security.csrf.cookieOptions.secure') ?? true,
-        sameSite: this.configService.get<string>('security.csrf.cookieOptions.sameSite') ?? 'strict',
+        sameSite:
+          this.configService.get<string>('security.csrf.cookieOptions.sameSite') ?? 'strict',
       },
     };
   }
@@ -47,9 +46,11 @@ export class SecurityConfig {
 
   get helmet(): HelmetOptions {
     return {
-      contentSecurityPolicy: this.csp.enabled ? {
-        directives: this.csp.directives,
-      } : false,
+      contentSecurityPolicy: this.csp.enabled
+        ? {
+            directives: this.csp.directives,
+          }
+        : false,
       crossOriginEmbedderPolicy: true,
       crossOriginOpenerPolicy: true,
       crossOriginResourcePolicy: { policy: 'same-site' },
@@ -76,4 +77,4 @@ export class SecurityConfig {
   providers: [SecurityConfig],
   exports: [SecurityConfig],
 })
-export class SecurityConfigModule {} 
+export class SecurityConfigModule {}

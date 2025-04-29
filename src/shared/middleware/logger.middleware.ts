@@ -1,35 +1,32 @@
 /**
  * Request logging middleware.
  * Logs information about incoming requests and responses.
- * 
+ *
  * @module LoggerMiddleware
  * @requires @nestjs/common
  * @requires express
  */
 
-import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
-import { Request, Response, NextFunction } from 'express';
+import { Injectable, type NestMiddleware } from '@nestjs/common';
+import type { NextFunction, Request, Response } from 'express';
 import { LoggerService } from '../../logger/logger.service';
 import { loggingConfig } from '../config/logging.config';
 
 /**
  * Request logging middleware.
- * 
+ *
  * @class LoggerMiddleware
  * @description Logs request and response information
  */
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
-  private readonly logger: LoggerService;
-
-  constructor(private readonly loggerService: LoggerService) {
-    this.logger = loggerService;
+  constructor(private readonly logger: LoggerService) {
     this.logger.setContext('LoggerMiddleware');
   }
 
   /**
    * Log request and response information.
-   * 
+   *
    * @method use
    * @param {Request} req - The request object
    * @param {Response} res - The response object
@@ -106,4 +103,4 @@ export class LoggerMiddleware implements NestMiddleware {
 
     next();
   }
-} 
+}

@@ -1,13 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from '../app.module';
-import { ViewEngineService } from '../views/view-engine.service';
-import { GovukTestUtils } from './utils/govuk-test.utils';
-import { govukTestConfig } from './govuk-components.test.config';
-import { writeFileSync, mkdirSync } from 'fs';
+import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { AppModule } from '../app.module';
+import { govukTestConfig } from './govuk-components.test.config';
+import { GovukTestUtils } from './utils/govuk-test.utils';
 
 describe('GOV.UK Components', () => {
-  let viewEngineService: ViewEngineService;
   let testResults: any[] = [];
   let module: TestingModule;
 
@@ -15,8 +13,6 @@ describe('GOV.UK Components', () => {
     module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
-
-    viewEngineService = module.get<ViewEngineService>(ViewEngineService);
   });
 
   afterAll(async () => {
@@ -34,11 +30,11 @@ describe('GOV.UK Components', () => {
   });
 
   describe('Component Tests', () => {
-    govukTestConfig.components.forEach(componentName => {
+    govukTestConfig.components.forEach((componentName) => {
       describe(componentName, () => {
         const scenarios = GovukTestUtils.getComponentScenarios(componentName);
 
-        scenarios.forEach(scenarioName => {
+        scenarios.forEach((scenarioName) => {
           it(`should match fixture for scenario: ${scenarioName}`, () => {
             // Load the fixture
             const fixture = GovukTestUtils.loadFixture(componentName, scenarioName);
@@ -66,4 +62,4 @@ describe('GOV.UK Components', () => {
       });
     });
   });
-}); 
+});

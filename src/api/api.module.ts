@@ -1,13 +1,13 @@
-import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
-import { ApiService } from '../shared/services/api.service';
 import { CacheModule } from '@nestjs/cache-manager';
+import { Module } from '@nestjs/common';
 import { apiConfig } from '../shared/config/api.config';
+import { ApiService } from '../shared/services/api.service';
 
 /**
  * API Module for handling HTTP requests and caching.
  * This module configures the HTTP client and caching for API requests.
- * 
+ *
  * @module ApiModule
  * @description Module for API communication and caching
  */

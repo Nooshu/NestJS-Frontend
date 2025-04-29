@@ -13,10 +13,10 @@ function processTask(task: any) {
   for (let i = 0; i < 1000000; i++) {
     result += Math.sqrt(i);
   }
-  
+
   return {
     taskId: task.id,
     result: result,
-    processedBy: process.pid
+    processedBy: process.pid,
   };
-} 
+}

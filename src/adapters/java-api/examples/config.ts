@@ -1,4 +1,4 @@
-import { JavaApiClientConfig } from '../java-api.client';
+import type { JavaApiClientConfig } from '../java-api.client';
 
 /**
  * Configuration examples for different environments
@@ -14,9 +14,9 @@ export const devConfig: JavaApiClientConfig = {
     type: 'basic',
     credentials: {
       username: process.env.JAVA_API_DEV_USERNAME,
-      password: process.env.JAVA_API_DEV_PASSWORD
-    }
-  }
+      password: process.env.JAVA_API_DEV_PASSWORD,
+    },
+  },
 };
 
 // Staging environment configuration
@@ -29,9 +29,9 @@ export const stagingConfig: JavaApiClientConfig = {
     type: 'oauth2',
     credentials: {
       clientId: process.env.JAVA_API_STAGING_CLIENT_ID,
-      clientSecret: process.env.JAVA_API_STAGING_CLIENT_SECRET
-    }
-  }
+      clientSecret: process.env.JAVA_API_STAGING_CLIENT_SECRET,
+    },
+  },
 };
 
 // Production environment configuration
@@ -44,9 +44,9 @@ export const prodConfig: JavaApiClientConfig = {
     type: 'oauth2',
     credentials: {
       clientId: process.env.JAVA_API_PROD_CLIENT_ID,
-      clientSecret: process.env.JAVA_API_PROD_CLIENT_SECRET
-    }
-  }
+      clientSecret: process.env.JAVA_API_PROD_CLIENT_SECRET,
+    },
+  },
 };
 
 /**
@@ -63,4 +63,4 @@ export function getConfig(env: string): JavaApiClientConfig {
     default:
       throw new Error(`Unknown environment: ${env}`);
   }
-} 
+}
