@@ -1,3 +1,18 @@
+/**
+ * Jest setup file for configuring testing environment.
+ * Sets up jest-dom and other testing utilities.
+ */
+
+import '@testing-library/jest-dom';
+
+// Mock the document object for Node.js environment
+if (typeof document === 'undefined') {
+  const { JSDOM } = require('jsdom');
+  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
+  global.document = dom.window.document;
+  global.window = dom.window;
+}
+
 import type { INestApplication } from '@nestjs/common';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
