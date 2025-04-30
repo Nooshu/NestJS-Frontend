@@ -12,23 +12,15 @@ jest.mock('cookie-parser', () => {
   };
 });
 
-jest.mock('csurf', () => {
-  return () => (req: any, res: any, next: any) => {
-    if (req.method === 'GET') {
-      req.csrfToken = () => 'test-csrf-token';
-    }
-    next();
-  };
-});
-
 // Import the middleware after setting up mocks
 import { CsrfMiddleware } from './csrf.middleware';
 
 describe('CsrfMiddleware', () => {
   let middleware: CsrfMiddleware;
-  let mockRequest: Partial<Request> & { csrfToken?: () => string };
+  let mockRequest: Partial<Request>;
   let mockResponse: Partial<Response> & { locals: Record<string, any> };
   let nextFunction: jest.Mock;
+  let mockCsrfProtection: jest.Mock;
 
   beforeEach(async () => {
     const mockWinstonLogger = {
@@ -110,6 +102,15 @@ describe('CsrfMiddleware', () => {
 
     middleware = moduleRef.get<CsrfMiddleware>(CsrfMiddleware);
 
+    // Create a mock CSRF protection function that can be configured per test
+    mockCsrfProtection = jest.fn((req: any, res: any, next: any) => {
+      req.csrfToken = () => 'test-csrf-token';
+      next();
+    });
+
+    // Set the mock as the CSRF protection
+    (middleware as any).csrfProtection = mockCsrfProtection;
+
     mockRequest = {
       method: 'GET',
       path: '/test',
@@ -168,11 +169,9 @@ describe('CsrfMiddleware', () => {
       mockRequest.cookies = { '_csrf': 'test-token' };
       mockRequest.headers = { 'csrf-token': 'invalid-token' };
 
-      // Override the csurf mock for this test
-      jest.doMock('csurf', () => {
-        return () => (req: any, res: any, next: any) => {
-          next(new Error('Invalid CSRF token'));
-        };
+      // Configure the mock to simulate an error
+      mockCsrfProtection.mockImplementationOnce((req: any, res: any, next: any) => {
+        next(new Error('Invalid CSRF token'));
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -201,11 +200,9 @@ describe('CsrfMiddleware', () => {
       mockRequest.cookies = {};
       mockRequest.headers = {};
 
-      // Override the csurf mock for this test
-      jest.doMock('csurf', () => {
-        return () => (req: any, res: any, next: any) => {
-          next(new Error('CSRF token missing'));
-        };
+      // Configure the mock to simulate a missing token error
+      mockCsrfProtection.mockImplementationOnce((req: any, res: any, next: any) => {
+        next(new Error('CSRF token missing'));
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
@@ -226,11 +223,9 @@ describe('CsrfMiddleware', () => {
       mockRequest.cookies = { '_csrf': 'test-token' };
       mockRequest.headers = { 'csrf-token': 'test-token' };
 
-      // Override the csurf mock for this test
-      jest.doMock('csurf', () => {
-        return () => (req: any, res: any, next: any) => {
-          next(new Error('Test error'));
-        };
+      // Configure the mock to simulate an error
+      mockCsrfProtection.mockImplementationOnce((req: any, res: any, next: any) => {
+        next(new Error('Test error'));
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
