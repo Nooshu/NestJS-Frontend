@@ -50,6 +50,7 @@ export function loadFixtures(componentName: string): GovukComponentFixtures {
     process.cwd(),
     'node_modules',
     'govuk-frontend',
+    'dist',
     'govuk',
     'components',
     componentName,
@@ -102,9 +103,28 @@ export function normalizeHtml(html: string): string {
     const tagName = node.tagName?.toLowerCase() || '';
     const attributes = node.attributes || {};
 
-    // Sort attributes by name
+    // Define attribute order for specific elements
+    const attributeOrder: Record<string, string[]> = {
+      a: ['href', 'role', 'draggable', 'class', 'data-module', 'name', 'type', 'value', 'data-prevent-double-click'],
+      button: ['type', 'name', 'disabled', 'aria-disabled', 'class', 'data-module', 'data-prevent-double-click', 'value'],
+      input: ['type', 'name', 'disabled', 'aria-disabled', 'class', 'data-module', 'data-prevent-double-click', 'value']
+    };
+
+    // Get the ordered attributes for this element type
+    const orderedAttributes = attributeOrder[tagName] || [];
+
+    // Sort attributes based on the defined order
     const sortedAttributes = Object.entries(attributes)
-      .sort(([a], [b]) => a.localeCompare(b))
+      .sort(([a], [b]) => {
+        const aIndex = orderedAttributes.indexOf(a);
+        const bIndex = orderedAttributes.indexOf(b);
+        if (aIndex === -1 && bIndex === -1) {
+          return a.localeCompare(b);
+        }
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+        return aIndex - bIndex;
+      })
       .map(([key, value]) => `${key}="${value}"`)
       .join(' ');
 
@@ -131,6 +151,25 @@ export function normalizeHtml(html: string): string {
 export function compareHtml(actual: string, expected: string): boolean {
   const normalizedActual = normalizeHtml(actual);
   const normalizedExpected = normalizeHtml(expected);
+
+  // Add detailed logging
+  console.log('\nComparing HTML:');
+  console.log('Expected:', JSON.stringify(expected));
+  console.log('Actual:', JSON.stringify(actual));
+  console.log('Normalized Expected:', JSON.stringify(normalizedExpected));
+  console.log('Normalized Actual:', JSON.stringify(normalizedActual));
+  
+  // Compare character by character
+  for (let i = 0; i < Math.max(normalizedExpected.length, normalizedActual.length); i++) {
+    if (normalizedExpected[i] !== normalizedActual[i]) {
+      console.log('\nFirst difference at position', i);
+      console.log('Expected char:', JSON.stringify(normalizedExpected[i] || 'EOF'));
+      console.log('Actual char:', JSON.stringify(normalizedActual[i] || 'EOF'));
+      console.log('Context (expected):', JSON.stringify(normalizedExpected.substring(Math.max(0, i - 20), i + 20)));
+      console.log('Context (actual):', JSON.stringify(normalizedActual.substring(Math.max(0, i - 20), i + 20)));
+      break;
+    }
+  }
 
   // Compare the normalized HTML
   return normalizedActual === normalizedExpected;
