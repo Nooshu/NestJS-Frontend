@@ -24,7 +24,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ![NestJS Popularity Trends](./assets/nestjs-popularity-graph.png)
 
 ### 3. GOV.UK Frontend Integration
-- Seamless integration with the [latest version of GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) components
+- Seamless integration with GOV.UK Frontend v5.9.0 components
 - Pre-configured Nunjucks templating engine with error handling
 - Built-in support for [GOV.UK Design System patterns](https://design-system.service.gov.uk/)
 - [WCAG 2.2 Accessibility compliance](https://design-system.service.gov.uk/accessibility/wcag-2.2/) built into the codebase
@@ -70,16 +70,16 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Built-in validation and transformation
 - Clear error messages and debugging support
 - Supertest v7.1.0 for API testing
-- Node.js v20+ support with modern features
-- Webpack for efficient frontend development
-- PostCSS for modern CSS processing
-- Babel for JavaScript transpilation
+- Node.js v22.15.0+ support with modern features
+- Webpack v5.99.7 for efficient frontend development
+- PostCSS v8.4.35 for modern CSS processing
+- Babel v7.24.0 for JavaScript transpilation
 
 ### 6. Performance Optimisation
 - Redis caching support with cache-manager v6.4.2
 - Static file serving optimisation with custom headers
 - Compression middleware with configurable options
-- Axios v1.8.4 HTTP client for efficient API calls
+- Axios v1.9.0 HTTP client for efficient API calls
 - Request batching support
 - Connection pooling
 - Response compression

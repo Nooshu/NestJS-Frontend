@@ -55,46 +55,46 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 ## Dependencies
 
 ### Core Dependencies
-- [NestJS](https://nestjs.com/) v11.0.0+
+- [NestJS](https://nestjs.com/) v11.1.0+
 - [Express](https://expressjs.com/) v5.1.0+
 - [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.9.0+
 - [TypeScript](https://www.typescriptlang.org/) v5.1.3+
-- [Node.js](https://github.com/nodejs/release#release-schedule) v20+
+- [Node.js](https://github.com/nodejs/release#release-schedule) v22.15.0+
 
 ### Key Features
 - Axios HTTP client for API integration
-- Redis caching with cache-manager
+- Redis caching with cache-manager v6.4.2
 - Winston logging with structured output
 - Swagger/OpenAPI documentation
-- Rate limiting with @nestjs/throttler
+- Rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware
-- Helmet.js security headers
+- Helmet.js security headers v8.1.0
 - Nunjucks templating engine
-- Class-validator for request validation
-- Class-transformer for object transformation
+- Class-validator v0.14.1 for request validation
+- Class-transformer v0.5.1 for object transformation
 - TypeORM for database operations
 - Prisma ORM support
 - Process isolation for CPU-intensive tasks
-- Webpack for frontend optimization
+- Webpack v5.99.7 for frontend optimization
 - Service worker for offline support
 - Performance monitoring and metrics
-- CSRF protection with csurf
+- CSRF protection with csurf v1.2.2
 - Content Security Policy
 - Comprehensive security headers
 - Permissions policy
 - CORS configuration
 
 ### Development Tools
-- Jest for testing with comprehensive performance API mocking
-- Prettier for code formatting
+- Jest v29.7.0 for testing with comprehensive performance API mocking
+- Prettier v3.0.0 for code formatting
 - ESLint for code linting
 - TypeScript strict mode enabled
-- SASS for CSS preprocessing
-- Supertest for API testing
+- SASS v1.71.1 for CSS preprocessing
+- Supertest v7.1.0 for API testing
 - Renovate bot for dependency updates
-- Webpack for frontend bundling
-- PostCSS for CSS optimization
-- Babel for JavaScript transpilation
+- Webpack v5.99.7 for frontend bundling
+- PostCSS v8.4.35 for CSS optimization
+- Babel v7.24.0 for JavaScript transpilation
 
 ## Dependency Management
 
