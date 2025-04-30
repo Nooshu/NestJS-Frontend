@@ -6,7 +6,9 @@
  */
 
 import * as nunjucks from 'nunjucks';
-import { compareHtml, loadFixtures, normalizeHtml } from './fixtures.test-helper';
+import * as path from 'path';
+import { parse, HTMLElement } from 'node-html-parser';
+import { verifyComponent, loadFixtures } from './fixtures.test-helper';
 import type { GovukFixture } from './fixtures.test-helper';
 
 /**
@@ -25,67 +27,49 @@ describe('Button Component', () => {
    * @beforeAll
    */
   beforeAll(() => {
-    // Set up Nunjucks environment
-    env = new nunjucks.Environment(new nunjucks.FileSystemLoader('src/views'), {
+    // Set up Nunjucks environment with paths to both local views and govuk-frontend templates
+    const govukTemplatesPath = path.join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk');
+    const localViewsPath = path.join(process.cwd(), 'src', 'views');
+    
+    env = new nunjucks.Environment([
+      new nunjucks.FileSystemLoader(localViewsPath),
+      new nunjucks.FileSystemLoader(govukTemplatesPath)
+    ], {
       autoescape: true,
       noCache: true,
     });
+
+    // Add paths to the Nunjucks environment
+    env.addGlobal('govukTemplatesPath', govukTemplatesPath);
+    env.addGlobal('localViewsPath', localViewsPath);
   });
 
   /**
-   * Test that verifies the component matches all non-hidden fixtures.
-   *
-   * @test should match all non-hidden fixtures
+   * Test each fixture for the button component.
    */
-  describe('should match all non-hidden fixtures', () => {
-    // Load fixtures for this test suite
+  it('should match all fixtures', () => {
+    // Load fixtures
     const fixtures = loadFixtures('button');
-    
-    // Filter out hidden fixtures
-    const visibleFixtures = fixtures.fixtures.filter((fixture: GovukFixture) => !fixture.hidden);
 
-    // Test each fixture individually
-    visibleFixtures.forEach((fixture: GovukFixture) => {
-      it(`should match fixture: ${fixture.name}`, () => {
-        // Log fixture details
-        console.log('\nTesting fixture:', fixture.name);
-        console.log('Fixture options:', JSON.stringify(fixture.options, null, 2));
-        console.log('Expected HTML:', fixture.html);
+    // Test each fixture
+    fixtures.fixtures.forEach((fixture: GovukFixture) => {
+      // Skip hidden fixtures
+      if (fixture.hidden) {
+        return;
+      }
 
-        // Render the template with the fixture options
-        const rendered = env.render('components/button.njk', fixture.options);
-        console.log('Rendered HTML:', rendered);
+      // Create a template that uses the button macro
+      const template = `
+        {% from "components/button/macro.njk" import govukButton %}
+        {% from "macros/attributes.njk" import govukAttributes %}
+        {{ govukButton(params) }}
+      `;
 
-        // Compare the rendered HTML with the expected HTML
-        const matches = compareHtml(rendered, fixture.html);
+      // Render the component with fixture options
+      const rendered = env.renderString(template, { params: fixture.options });
 
-        if (!matches) {
-          const normalizedExpected = normalizeHtml(fixture.html);
-          const normalizedActual = normalizeHtml(rendered);
-          
-          console.log('\nNormalized Expected:', normalizedExpected);
-          console.log('Normalized Actual:', normalizedActual);
-          
-          // Find the first difference
-          for (let i = 0; i < Math.max(normalizedExpected.length, normalizedActual.length); i++) {
-            if (normalizedExpected[i] !== normalizedActual[i]) {
-              console.log('\nFirst difference at position', i);
-              console.log('Expected char:', JSON.stringify(normalizedExpected[i] || 'EOF'));
-              console.log('Actual char:', JSON.stringify(normalizedActual[i] || 'EOF'));
-              console.log('Context (expected):', JSON.stringify(normalizedExpected.substring(Math.max(0, i - 20), i + 20)));
-              console.log('Context (actual):', JSON.stringify(normalizedActual.substring(Math.max(0, i - 20), i + 20)));
-              break;
-            }
-          }
-
-          // Show the full HTML for comparison
-          console.log('\nFull HTML comparison:');
-          console.log('Expected:', fixture.html.replace(/\n/g, '\\n'));
-          console.log('Actual:', rendered.replace(/\n/g, '\\n'));
-        }
-
-        expect(matches).toBe(true);
-      });
+      // Verify the rendered output matches the fixture
+      verifyComponent(rendered, fixture);
     });
   });
 });

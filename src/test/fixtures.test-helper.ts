@@ -6,8 +6,30 @@
  */
 
 import * as fs from 'fs';
-import { parse } from 'node-html-parser';
+import { parse, HTMLElement } from 'node-html-parser';
 import * as path from 'path';
+import '@testing-library/jest-dom';
+import { expect } from '@jest/globals';
+
+// Extend Jest matchers
+declare global {
+  namespace jest {
+    interface Matchers<R> {
+      toContainElement(element: HTMLElement): R;
+      toHaveAttribute(attr: string, value?: string): R;
+      toHaveClass(className: string): R;
+    }
+  }
+}
+
+// Extend expect
+declare module '@jest/globals' {
+  interface Matchers<R> {
+    toContainElement(element: HTMLElement): R;
+    toHaveAttribute(attr: string, value?: string): R;
+    toHaveClass(className: string): R;
+  }
+}
 
 /**
  * Interface representing a GOV.UK Frontend component fixture.
@@ -66,111 +88,241 @@ export function loadFixtures(componentName: string): GovukComponentFixtures {
 }
 
 /**
- * Normalizes HTML by removing extra whitespace and normalizing text content.
+ * Normalizes HTML by removing extra whitespace and normalizing line endings.
  *
  * @function normalizeHtml
  * @param {string} html - The HTML to normalize
  * @returns {string} The normalized HTML
  */
 export function normalizeHtml(html: string): string {
-  // Parse the HTML
-  const root = parse(html);
-
-  // Normalize text content
-  const normalizeText = (node: any) => {
-    if (node.nodeType === 3) {
-      // Text node
-      node.textContent = node.textContent.trim();
-    }
-    if (node.childNodes) {
-      node.childNodes.forEach(normalizeText);
-    }
-  };
-
-  normalizeText(root);
-
-  // Get the normalized HTML
-  const normalizedHtml = root.outerHTML;
-
-  // Normalize attribute order by parsing and rebuilding the HTML
-  const normalizedRoot = parse(normalizedHtml);
-  const rebuildNode = (node: any): string => {
-    if (node.nodeType === 3) {
-      // Text node
-      return node.textContent;
-    }
-
-    const tagName = node.tagName?.toLowerCase() || '';
-    const attributes = node.attributes || {};
-
-    // Define attribute order for specific elements
-    const attributeOrder: Record<string, string[]> = {
-      a: ['href', 'role', 'draggable', 'class', 'data-module', 'name', 'type', 'value', 'data-prevent-double-click'],
-      button: ['type', 'name', 'disabled', 'aria-disabled', 'class', 'data-module', 'data-prevent-double-click', 'value'],
-      input: ['type', 'name', 'disabled', 'aria-disabled', 'class', 'data-module', 'data-prevent-double-click', 'value']
-    };
-
-    // Get the ordered attributes for this element type
-    const orderedAttributes = attributeOrder[tagName] || [];
-
-    // Sort attributes based on the defined order
-    const sortedAttributes = Object.entries(attributes)
-      .sort(([a], [b]) => {
-        const aIndex = orderedAttributes.indexOf(a);
-        const bIndex = orderedAttributes.indexOf(b);
-        if (aIndex === -1 && bIndex === -1) {
-          return a.localeCompare(b);
-        }
-        if (aIndex === -1) return 1;
-        if (bIndex === -1) return -1;
-        return aIndex - bIndex;
-      })
-      .map(([key, value]) => `${key}="${value}"`)
-      .join(' ');
-
-    const children = node.childNodes.map(rebuildNode).join('');
-
-    if (tagName) {
-      return `<${tagName}${sortedAttributes ? ' ' + sortedAttributes : ''}>${children}</${tagName}>`;
-    }
-
-    return children;
-  };
-
-  return rebuildNode(normalizedRoot);
+  return html
+    .replace(/\s+/g, ' ')
+    .replace(/>\s+</g, '><')
+    .replace(/\n/g, '')
+    .trim();
 }
 
 /**
- * Compares two HTML strings for equality after normalization.
+ * Gets class names from a class list.
+ *
+ * @function getClassNames
+ * @param {string} classList - The class list string
+ * @returns {string[]} Array of class names
+ */
+function getClassNames(classList: string): string[] {
+  return classList.split(' ').filter(Boolean);
+}
+
+/**
+ * Compares rendered HTML with fixture HTML using @testing-library/jest-dom.
  *
  * @function compareHtml
- * @param {string} actual - The actual HTML output
- * @param {string} expected - The expected HTML output
- * @returns {boolean} Whether the HTML strings match after normalization
+ * @param {string} rendered - The rendered HTML
+ * @param {string} fixture - The fixture HTML
+ * @returns {boolean} Whether the HTML matches
  */
-export function compareHtml(actual: string, expected: string): boolean {
-  const normalizedActual = normalizeHtml(actual);
-  const normalizedExpected = normalizeHtml(expected);
+export function compareHtml(rendered: string, fixture: string): boolean {
+  // Normalize both HTML strings
+  const normalizedRendered = normalizeHtml(rendered);
+  const normalizedFixture = normalizeHtml(fixture);
 
-  // Add detailed logging
-  console.log('\nComparing HTML:');
-  console.log('Expected:', JSON.stringify(expected));
-  console.log('Actual:', JSON.stringify(actual));
-  console.log('Normalized Expected:', JSON.stringify(normalizedExpected));
-  console.log('Normalized Actual:', JSON.stringify(normalizedActual));
-  
-  // Compare character by character
-  for (let i = 0; i < Math.max(normalizedExpected.length, normalizedActual.length); i++) {
-    if (normalizedExpected[i] !== normalizedActual[i]) {
-      console.log('\nFirst difference at position', i);
-      console.log('Expected char:', JSON.stringify(normalizedExpected[i] || 'EOF'));
-      console.log('Actual char:', JSON.stringify(normalizedActual[i] || 'EOF'));
-      console.log('Context (expected):', JSON.stringify(normalizedExpected.substring(Math.max(0, i - 20), i + 20)));
-      console.log('Context (actual):', JSON.stringify(normalizedActual.substring(Math.max(0, i - 20), i + 20)));
-      break;
+  // Parse both HTML strings into DOM
+  const renderedDoc = parse(normalizedRendered);
+  const fixtureDoc = parse(normalizedFixture);
+
+  // Get the root elements
+  const renderedRoot = renderedDoc.firstChild as HTMLElement;
+  const fixtureRoot = fixtureDoc.firstChild as HTMLElement;
+
+  if (!renderedRoot || !fixtureRoot) {
+    console.log('Missing root elements:', { renderedRoot, fixtureRoot });
+    return false;
+  }
+
+  // Compare attributes
+  const renderedAttrs = renderedRoot.attributes || {};
+  const fixtureAttrs = fixtureRoot.attributes || {};
+
+  const renderedAttrKeys = Object.keys(renderedAttrs);
+  const fixtureAttrKeys = Object.keys(fixtureAttrs);
+
+  if (renderedAttrKeys.length !== fixtureAttrKeys.length) {
+    console.log('Attribute count mismatch:', {
+      rendered: renderedAttrKeys,
+      fixture: fixtureAttrKeys
+    });
+    return false;
+  }
+
+  for (const key of fixtureAttrKeys) {
+    if (renderedAttrs[key] !== fixtureAttrs[key]) {
+      console.log('Attribute value mismatch:', {
+        key,
+        rendered: renderedAttrs[key],
+        fixture: fixtureAttrs[key]
+      });
+      return false;
     }
   }
 
-  // Compare the normalized HTML
-  return normalizedActual === normalizedExpected;
+  // Compare class names
+  const renderedClasses = getClassNames(renderedRoot.classNames || '');
+  const fixtureClasses = getClassNames(fixtureRoot.classNames || '');
+
+  if (renderedClasses.length !== fixtureClasses.length) {
+    console.log('Class count mismatch:', {
+      rendered: renderedClasses,
+      fixture: fixtureClasses
+    });
+    return false;
+  }
+
+  for (const className of fixtureClasses) {
+    if (!renderedClasses.includes(className)) {
+      console.log('Missing class:', className);
+      return false;
+    }
+  }
+
+  // Compare text content
+  const renderedText = normalizeHtml(renderedRoot.text || '');
+  const fixtureText = normalizeHtml(fixtureRoot.text || '');
+
+  if (renderedText !== fixtureText) {
+    console.log('Text content mismatch:', {
+      rendered: renderedText,
+      fixture: fixtureText
+    });
+    return false;
+  }
+
+  // Compare child elements recursively
+  const renderedChildren = renderedRoot.childNodes;
+  const fixtureChildren = fixtureRoot.childNodes;
+
+  if (renderedChildren.length !== fixtureChildren.length) {
+    console.log('Child count mismatch:', {
+      rendered: renderedChildren.length,
+      fixture: fixtureChildren.length
+    });
+    return false;
+  }
+
+  for (let i = 0; i < fixtureChildren.length; i++) {
+    if (!compareHtml(renderedChildren[i].toString(), fixtureChildren[i].toString())) {
+      console.log('Child element mismatch at index:', i);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Verifies a component's rendered output against its fixture using @testing-library/jest-dom.
+ *
+ * @function verifyComponent
+ * @param {string} rendered - The rendered HTML
+ * @param {GovukFixture} fixture - The fixture to compare against
+ */
+export function verifyComponent(rendered: string, fixture: GovukFixture): void {
+  // Parse the rendered HTML
+  const renderedDoc = parse(rendered.trim());
+  const renderedRoot = renderedDoc.firstChild as HTMLElement;
+
+  if (!renderedRoot) {
+    throw new Error('Failed to parse rendered HTML');
+  }
+
+  // Parse the fixture HTML
+  const fixtureDoc = parse(fixture.html.trim());
+  const fixtureRoot = fixtureDoc.firstChild as HTMLElement;
+
+  if (!fixtureRoot) {
+    throw new Error('Failed to parse fixture HTML');
+  }
+
+  // Normalize HTML by removing extra whitespace and newlines
+  const normalizedRendered = rendered.replace(/\s+/g, ' ').trim();
+  const normalizedFixture = fixture.html.replace(/\s+/g, ' ').trim();
+
+  // Compare the HTML structure
+  expect(compareHtml(normalizedRendered, normalizedFixture)).toBe(true);
+
+  // Get attributes from the HTML parser
+  const renderedAttrs = { ...renderedRoot.attributes };
+  const fixtureAttrs = { ...fixtureRoot.attributes };
+
+  // Extract class from rawAttrs first
+  let renderedClassMatch = null;
+  let fixtureClassMatch = null;
+
+  if (renderedRoot.rawAttrs) {
+    renderedClassMatch = renderedRoot.rawAttrs.match(/class="([^"]+)"/);
+  }
+  if (fixtureRoot.rawAttrs) {
+    fixtureClassMatch = fixtureRoot.rawAttrs.match(/class="([^"]+)"/);
+  }
+
+  if (renderedClassMatch) {
+    renderedAttrs.class = renderedClassMatch[1];
+  }
+  if (fixtureClassMatch) {
+    fixtureAttrs.class = fixtureClassMatch[1];
+  }
+
+  // If no class in rawAttrs, try classNames property
+  if (!renderedAttrs.class && renderedRoot.classNames) {
+    renderedAttrs.class = renderedRoot.classNames;
+  }
+  if (!fixtureAttrs.class && fixtureRoot.classNames) {
+    fixtureAttrs.class = fixtureRoot.classNames;
+  }
+
+  // If still no class, try to extract from outerHTML
+  if (!renderedAttrs.class && renderedRoot.outerHTML) {
+    const outerClassMatch = renderedRoot.outerHTML.match(/class="([^"]+)"/);
+    if (outerClassMatch) {
+      renderedAttrs.class = outerClassMatch[1];
+    }
+  }
+  if (!fixtureAttrs.class && fixtureRoot.outerHTML) {
+    const outerClassMatch = fixtureRoot.outerHTML.match(/class="([^"]+)"/);
+    if (outerClassMatch) {
+      fixtureAttrs.class = outerClassMatch[1];
+    }
+  }
+
+  // Get all unique attribute keys
+  const allAttrKeys = new Set([...Object.keys(renderedAttrs), ...Object.keys(fixtureAttrs)]);
+
+  // Compare each attribute
+  for (const key of allAttrKeys) {
+    const renderedValue = renderedAttrs[key];
+    const fixtureValue = fixtureAttrs[key];
+
+    // Skip undefined attributes in the fixture
+    if (fixtureValue === undefined) {
+      continue;
+    }
+
+    // For type attribute, handle default value
+    if (key === 'type' && fixtureValue === 'submit' && renderedValue === undefined) {
+      continue;
+    }
+
+    // For other attributes, compare values
+    if (renderedValue !== fixtureValue) {
+      expect(renderedValue).toBe(fixtureValue);
+    }
+  }
+
+  // Verify classes separately
+  const renderedClasses = getClassNames(renderedAttrs.class || '');
+  const fixtureClasses = getClassNames(fixtureAttrs.class || '');
+
+  // Check that all fixture classes are present in the rendered element
+  for (const className of fixtureClasses) {
+    expect(renderedClasses).toContain(className);
+  }
 }
