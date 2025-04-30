@@ -7,7 +7,6 @@
 
 import * as nunjucks from 'nunjucks';
 import * as path from 'path';
-import { parse, HTMLElement } from 'node-html-parser';
 import { verifyComponent, loadFixtures } from './fixtures.test-helper';
 import type { GovukFixture } from './fixtures.test-helper';
 

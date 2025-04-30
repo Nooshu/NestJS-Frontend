@@ -7,7 +7,7 @@ import { Logger } from 'winston';
 
 // Mock the middleware modules before importing the middleware
 jest.mock('cookie-parser', () => {
-  return () => (req: any, res: any, next: any) => {
+  return () => (_req: any, _res: any, next: any) => {
     next();
   };
 });
@@ -103,8 +103,8 @@ describe('CsrfMiddleware', () => {
     middleware = moduleRef.get<CsrfMiddleware>(CsrfMiddleware);
 
     // Create a mock CSRF protection function that can be configured per test
-    mockCsrfProtection = jest.fn((req: any, res: any, next: any) => {
-      req.csrfToken = () => 'test-csrf-token';
+    mockCsrfProtection = jest.fn((_req: any, _res: any, next: any) => {
+      _req.csrfToken = () => 'test-csrf-token';
       next();
     });
 
@@ -170,7 +170,7 @@ describe('CsrfMiddleware', () => {
       mockRequest.headers = { 'csrf-token': 'invalid-token' };
 
       // Configure the mock to simulate an error
-      mockCsrfProtection.mockImplementationOnce((req: any, res: any, next: any) => {
+      mockCsrfProtection.mockImplementationOnce((_req: any, _res: any, next: any) => {
         next(new Error('Invalid CSRF token'));
       });
 
@@ -201,7 +201,7 @@ describe('CsrfMiddleware', () => {
       mockRequest.headers = {};
 
       // Configure the mock to simulate a missing token error
-      mockCsrfProtection.mockImplementationOnce((req: any, res: any, next: any) => {
+      mockCsrfProtection.mockImplementationOnce((_req: any, _res: any, next: any) => {
         next(new Error('CSRF token missing'));
       });
 
@@ -224,7 +224,7 @@ describe('CsrfMiddleware', () => {
       mockRequest.headers = { 'csrf-token': 'test-token' };
 
       // Configure the mock to simulate an error
-      mockCsrfProtection.mockImplementationOnce((req: any, res: any, next: any) => {
+      mockCsrfProtection.mockImplementationOnce((_req: any, _res: any, next: any) => {
         next(new Error('Test error'));
       });
 
