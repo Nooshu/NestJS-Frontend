@@ -40,7 +40,7 @@ module.exports = {
       statements: 80,
     },
   },
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
@@ -163,6 +163,15 @@ npm run test:cov
 
 # Run E2E tests
 npm run test:e2e
+
+# Run GOV.UK component tests
+npm run test:govuk
+
+# Run GOV.UK component tests in watch mode
+npm run test:govuk:watch
+
+# Run GOV.UK component tests with coverage
+npm run test:govuk:cov
 ```
 
 ## Test Documentation

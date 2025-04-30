@@ -18,13 +18,16 @@ The configuration is organized into several sections:
 ### 1. Application
 - `PORT`: Application port number (default: 3000)
 - `NODE_ENV`: Application environment (development, production, test)
+- `NODE_VERSION`: Required Node.js version (>=22.15.0)
 
 ### 2. Views
 - `VIEWS_DIRECTORY`: Directory containing view templates
 - `VIEWS_CACHE`: Whether to cache compiled templates
+- `GOVUK_FRONTEND_VERSION`: Version of GOV.UK Frontend (5.9.0)
 
 ### 3. Public Assets
 - `PUBLIC_DIRECTORY`: Directory containing public assets
+- `ASSETS_CACHE`: Whether to cache static assets
 
 ### 4. Security
 #### CORS
@@ -43,30 +46,20 @@ The configuration is organized into several sections:
 - `CSP_ENABLED`: Whether CSP is enabled
 - CSP directives are configured in the application code
 
-### 5. Database
-- `DB_TYPE`: Database type (postgres, mysql, sqlite)
-- `DB_HOST`: Database host
-- `DB_PORT`: Database port
-- `DB_USERNAME`: Database username
-- `DB_PASSWORD`: Database password
-- `DB_NAME`: Database name
-- `DB_SYNCHRONIZE`: Whether to synchronize database schema
-- `DB_LOGGING`: Whether to log database queries
-
-### 6. Redis
+### 5. Redis
 - `REDIS_ENABLED`: Whether Redis is enabled
 - `REDIS_HOST`: Redis host
 - `REDIS_PORT`: Redis port
 - `REDIS_PASSWORD`: Redis password
 - `REDIS_DB`: Redis database number
 
-### 7. Logging
+### 6. Logging
 - `LOG_LEVEL`: Log level (error, warn, info, debug)
 - `LOG_CONSOLE`: Whether to log to console
 - `LOG_FILE`: Whether to log to file
 - `LOG_FILE_PATH`: Log file path
 
-### 8. Performance Monitoring
+### 7. Performance Monitoring
 - `PERFORMANCE_ENABLED`: Whether performance monitoring is enabled
 - `PERFORMANCE_SAMPLING_RATE`: Performance sampling rate
 - `PERFORMANCE_MAX_ENTRIES`: Maximum number of performance entries
@@ -82,6 +75,10 @@ Set environment variables in your `.env` file:
 # Application
 PORT=3000
 NODE_ENV=development
+NODE_VERSION=22.15.0
+
+# Views
+GOVUK_FRONTEND_VERSION=5.9.0
 
 # Security
 CORS_ENABLED=true
@@ -93,16 +90,6 @@ CSRF_COOKIE_HTTP_ONLY=true
 CSRF_COOKIE_SECURE=true
 CSRF_COOKIE_SAME_SITE=strict
 CSP_ENABLED=true
-
-# Database
-DB_TYPE=postgres
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=postgres
-DB_NAME=nestjs_frontend
-DB_SYNCHRONIZE=false
-DB_LOGGING=false
 
 # Redis
 REDIS_ENABLED=false
