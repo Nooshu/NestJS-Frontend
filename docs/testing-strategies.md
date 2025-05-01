@@ -50,7 +50,7 @@ npm run test:govuk
 
 ## Testing Best Practices
 
-### Code Organization
+### Code Organisation
 - Test files alongside source files
 - Separate test directories for different test types
 - Clear test naming conventions

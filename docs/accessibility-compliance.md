@@ -96,7 +96,7 @@ This document outlines the accessibility standards and practices for the NestJS 
    ```markdown
    - [ ] Keyboard navigation
    - [ ] Screen reader compatibility
-   - [ ] Color contrast
+   - [ ] Colour contrast
    - [ ] Focus management
    - [ ] Form accessibility
    - [ ] Image alternatives
@@ -107,7 +107,7 @@ This document outlines the accessibility standards and practices for the NestJS 
 2. **Testing Methods**
    - Keyboard testing
    - Screen reader testing
-   - Color contrast testing
+   - Colour contrast testing
    - Form testing
 
 ## Inclusive Design
@@ -136,7 +136,7 @@ This document outlines the accessibility standards and practices for the NestJS 
    ```
 
 2. **Design Rules**
-   - Color contrast
+   - Colour contrast
    - Typography
    - Spacing
    - Layout

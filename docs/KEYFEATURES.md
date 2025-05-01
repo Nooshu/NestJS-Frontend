@@ -85,9 +85,9 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Response compression
 - Asset versioning and caching
 - ioredis v5.6.1 for Redis operations
-- Webpack optimization for frontend assets
+- Webpack optimisation for frontend assets
 - Code splitting and lazy loading
-- CSS optimization with PostCSS
+- CSS optimisation with PostCSS
 - Service worker for offline support
 - Performance monitoring and metrics
 - Resource timing tracking
@@ -104,22 +104,22 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Total blocking time tracking
 - Comprehensive performance configuration
 - Configurable static asset caching
-- Optimized compression settings
+- Optimised compression settings
 - Browser caching strategies
 - API performance monitoring
 - Connection pooling
 - Request batching
 - Response compression
 - Cache control headers
-- Optimized view engine configuration
+- Optimised view engine configuration
   - Autoescaping for security
   - Environment-based caching
-  - Template optimization
-  - Memory usage optimization
+  - Template optimisation
+  - Memory usage optimisation
   - Error handling
 - Efficient route handling
-  - Logical route organization
-  - Middleware optimization
+  - Logical route organisation
+  - Middleware optimisation
   - Route-specific middleware
   - Performance monitoring
   - Error handling
@@ -150,7 +150,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Automatic handling of peak loads
 - Efficient static asset delivery
 - Support for multiple environments (development, staging, production)
-- Advanced frontend optimization
+- Advanced frontend optimisation
 - Offline support and caching
 - Performance monitoring and metrics
 - Real-time performance tracking
@@ -195,7 +195,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Request Batching**: Support for batching multiple API calls to reduce network overhead
 - **Response Compression**: Built-in compression for efficient data transfer
 - **Connection Pooling**: Optimised HTTP client configuration for Java API connections
-- **Frontend Optimization**: Advanced frontend optimization for better user experience
+- **Frontend Optimisation**: Advanced frontend optimisation for better user experience
 - **Offline Support**: Service worker for offline access to cached resources
 - **Performance Monitoring**: Comprehensive performance metrics collection
 - **Real-time Tracking**: Real-time performance tracking and monitoring
@@ -207,7 +207,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Mocking Support**: Built-in tools for mocking Java API responses during development
 - **Error Handling**: Consistent error handling patterns between Java and TypeScript
 - **Logging Integration**: Winston logging can be configured to match Java logging patterns
-- **Frontend Tooling**: Modern frontend development tools and optimization
+- **Frontend Tooling**: Modern frontend development tools and optimisation
 
 ## Use Cases
 This framework is particularly well-suited for:

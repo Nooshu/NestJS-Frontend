@@ -4,15 +4,15 @@ This document outlines the performance configuration options and best practices 
 
 ## Overview
 
-The application implements comprehensive performance optimizations including:
+The application implements comprehensive performance optimisations including:
 - Static asset caching
 - Response compression
 - Browser caching
 - API performance monitoring
 - Resource timing tracking
 - Performance metrics collection
-- View engine optimization
-- Route handling optimization
+- View engine optimisation
+- Route handling optimisation
 
 ## Configuration Structure
 
@@ -83,7 +83,7 @@ viewEngine: {
 ### 6. Route Handling
 ```typescript
 routeHandling: {
-  globalPrefix: '', // No global prefix for better route organization
+  globalPrefix: '', // No global prefix for better route organisation
   excludeRoutes: ['api', 'health'], // Routes to exclude from certain middleware
   middlewareOrder: [
     'error',
@@ -183,10 +183,10 @@ VIEW_ENGINE_WATCH=true
 - Configure appropriate caching based on environment
 - Use trim and lstrip blocks for cleaner output
 - Implement proper error handling
-- Optimize template loading
+- Optimise template loading
 
 ### 6. Route Handling
-- Organize routes logically without global prefixes
+- Organise routes logically without global prefixes
 - Exclude appropriate routes from middleware
 - Order middleware for optimal performance
 - Implement proper error handling
@@ -248,7 +248,7 @@ VIEW_ENGINE_WATCH=true
    - Check memory usage
 
 5. **Route Handling Issues**
-   - Verify route organization
+   - Verify route organisation
    - Check middleware order
    - Monitor route performance
    - Check error handling
@@ -275,7 +275,7 @@ VIEW_ENGINE_WATCH=true
 
 # Recent Performance Improvements
 
-## View Engine Optimization
+## View Engine Optimisation
 The application has been optimized for better view engine performance:
 
 1. **Template Caching**
@@ -284,11 +284,11 @@ The application has been optimized for better view engine performance:
    - Development mode caching disabled for easier debugging
    - Test mode caching disabled for consistent testing
 
-2. **Template Optimization**
+2. **Template Optimisation**
    - Autoescaping enabled for security
    - Trim and lstrip blocks for cleaner output
    - Optimized template loading
-   - Memory usage optimization
+   - Memory usage optimisation
 
 3. **Error Handling**
    - Comprehensive error logging
@@ -296,16 +296,16 @@ The application has been optimized for better view engine performance:
    - Rendering error handling
    - Memory leak prevention
 
-## Route Handling Optimization
+## Route Handling Optimisation
 The application's route handling has been optimized for better performance:
 
-1. **Route Organization**
+1. **Route Organisation**
    - Logical route grouping
-   - No global prefix for better organization
+   - No global prefix for better organisation
    - Clear route hierarchy
    - Efficient route matching
 
-2. **Middleware Optimization**
+2. **Middleware Optimisation**
    - Optimized middleware order
    - Route-specific middleware
    - Performance-focused middleware configuration
@@ -378,7 +378,7 @@ Common issues and solutions:
    - Review error logs
 
 2. **Route Handling Issues**
-   - Verify route organization
+   - Verify route organisation
    - Check middleware order
    - Monitor route performance
    - Check error handling

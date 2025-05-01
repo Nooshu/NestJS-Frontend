@@ -4,7 +4,7 @@ This document provides guidance on how to integrate the frontend application wit
 
 ## Overview
 
-The frontend application uses a standardized API client configuration for making HTTP requests to backend APIs. The configuration includes built-in error handling, timeout management, logging, and authentication support.
+The frontend application uses a standardised API client configuration for making HTTP requests to backend APIs. The configuration includes built-in error handling, timeout management, logging, and authentication support.
 
 ## Configuration
 

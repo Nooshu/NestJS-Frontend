@@ -343,4 +343,56 @@ describe('HealthController', () => {
    - [ ] Migrate remaining routes
    - [ ] Remove Express.js application
    - [ ] Update documentation
-   - [ ] Archive old codebase 
+   - [ ] Archive old codebase
+
+### Development Workflow
+Security considerations for development:
+
+1. Use development-specific security settings
+2. Monitor security headers in development
+3. Test security features regularly
+4. Keep security documentation updated
+5. Follow security best practices
+
+## Troubleshooting
+
+### Common Issues
+Solutions for common security issues:
+
+1. CSRF token validation failures
+   - Check cookie settings
+   - Verify token generation
+   - Check form implementation
+   - Review middleware configuration
+
+2. CSP violations
+   - Check resource origins
+   - Verify nonce implementation
+   - Review inline script usage
+   - Check style restrictions
+
+3. CORS issues
+   - Verify origin configuration
+   - Check method allowances
+   - Review header settings
+   - Test credential handling
+
+4. Security header problems
+   - Check header configuration
+   - Verify header values
+   - Review browser compatibility
+   - Test header effectiveness
+
+## Additional Resources
+
+### Documentation
+- [OWASP Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Nodejs_Security_Cheat_Sheet.html)
+- [Helmet.js Documentation](https://helmetjs.github.io/)
+- [CSP Documentation](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)
+- [CSRF Protection Guide](https://owasp.org/www-community/attacks/csrf)
+
+### Tools
+- [Security Headers](https://securityheaders.com)
+- [CSP Evaluator](https://csp-evaluator.withgoogle.com/)
+- [OWASP ZAP](https://www.zaproxy.org/)
+- [Burp Suite](https://portswigger.net/burp) 

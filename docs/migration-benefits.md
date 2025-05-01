@@ -5,7 +5,7 @@ This document outlines the specific benefits of migrating from the [HMCTS Expres
 ## Current Express.js Template Issues
 
 ### 1. Architectural Limitations
-- **Loose Structure**: The Express.js template lacks a strict architectural pattern, leading to inconsistent code organization across projects
+- **Loose Structure**: The Express.js template lacks a strict architectural pattern, leading to inconsistent code organisation across projects
 - **Middleware Management**: Complex middleware chains can become difficult to maintain and debug
 - **Dependency Management**: No built-in dependency injection system, making testing and maintenance more challenging
 - **Type Safety**: Limited TypeScript integration, leading to potential runtime errors
@@ -14,10 +14,10 @@ This document outlines the specific benefits of migrating from the [HMCTS Expres
 - **Boilerplate Code**: Requires manual setup of common patterns and configurations
 - **Testing Setup**: Complex setup required for unit and integration testing
 - **Documentation**: No built-in API documentation system
-- **Code Organization**: No standardized way to organize business logic and controllers
+- **Code Organisation**: No standardised way to organise business logic and controllers
 
 ### 3. Performance and Scalability
-- **Memory Management**: No built-in memory optimization features
+- **Memory Management**: No built-in memory optimisation features
 - **Process Management**: Limited support for handling CPU-intensive tasks
 - **Caching**: No built-in caching mechanisms
 - **Request Validation**: Manual implementation required for request validation
@@ -31,7 +31,7 @@ This document outlines the specific benefits of migrating from the [HMCTS Expres
 ## Benefits of NestJS Migration
 
 ### 1. Enhanced Architecture
-- **Modular Design**: Built-in support for modules, making code organization more maintainable
+- **Modular Design**: Built-in support for modules, making code organisation more maintainable
 - **Dependency Injection**: First-class support for dependency injection, improving testability
 - **TypeScript First**: Full TypeScript support with strict type checking
 - **Decorator-based**: Clean and maintainable code through decorators
@@ -49,7 +49,7 @@ This document outlines the specific benefits of migrating from the [HMCTS Expres
 - **Caching**: Integrated caching system with Redis support
 - **Compression**: Built-in compression middleware
 - **Request Throttling**: Integrated rate limiting
-- **Memory Optimization**: Better memory management through proper garbage collection
+- **Memory Optimisation**: Better memory management through proper garbage collection
 
 ### 4. Enhanced Security
 - **CSRF Protection**: Improved CSRF protection implementation
@@ -82,8 +82,8 @@ This document outlines the specific benefits of migrating from the [HMCTS Expres
 
 ## Specific Improvements Over Express.js Template
 
-1. **Code Organization**
-   - Express.js: Manual organization of routes, middleware, and business logic
+1. **Code Organisation**
+   - Express.js: Manual organisation of routes, middleware, and business logic
    - NestJS: Structured modules, controllers, and services with clear separation of concerns
 
 2. **Testing**

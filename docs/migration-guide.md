@@ -49,7 +49,7 @@ This approach involves a complete switch from Express.js to NestJS in one deploy
 1. **Preparation**
    - Complete migration of all services in development
    - Comprehensive testing of all endpoints
-   - Performance testing and optimization
+   - Performance testing and optimisation
    - Documentation updates
 
 2. **Deployment**
@@ -116,10 +116,10 @@ This approach maintains both systems but routes different types of traffic to ea
    - Regular testing and validation
    - Performance monitoring
 
-4. **Stabilization Phase** (2-4 weeks)
+4. **Stabilisation Phase** (2-4 weeks)
    - Monitor system performance
    - Address any issues
-   - Optimize as needed
+   - Optimise as needed
 
 ## Risk Mitigation
 
@@ -150,10 +150,10 @@ This approach maintains both systems but routes different types of traffic to ea
 3. **User Experience**
    - No disruption to user workflows
    - Maintained or improved accessibility
-   - Consistent behavior across all services
+   - Consistent behaviour across all services
 
 4. **Developer Experience and Maintainability**
-   - Improved code organization and modularity
+   - Improved code organisation and modularity
    - Enhanced debugging capabilities
    - Comprehensive documentation
    - Streamlined development workflow
