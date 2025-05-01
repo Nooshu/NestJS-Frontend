@@ -2,6 +2,8 @@
 
 A proof of concept for a HMCTS NestJS application with GOV.UK Frontend integration, designed to replace the existing [HMCTS Express.js template](https://github.com/hmcts/expressjs-template).
 
+:rotating_light: **Note**: This PoC is not intended for use with ExUI at this stage; its application is envisioned as a future goal. :rotating_light:
+
 ## Project Overview
 
 This application is a modern web application built with NestJS and GOV.UK Frontend, providing a robust foundation for government digital services. It includes:
