@@ -1,6 +1,6 @@
 # PoC: NestJS Frontend Application
 
-A proof of concept for a HMCTS NestJS application with GOV.UK Frontend integration.
+A proof of concept for a HMCTS NestJS application with GOV.UK Frontend integration, designed to replace the existing [HMCTS Express.js template](https://github.com/hmcts/expressjs-template).
 
 ## Project Overview
 
@@ -23,6 +23,24 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Enhanced security features
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
+
+## Migration Guide
+
+We provide comprehensive documentation for migrating from the [HMCTS Express.js template](https://github.com/hmcts/expressjs-template) to this NestJS-based solution:
+
+- [Migration Guide](./docs/migration-guide.md) - Step-by-step migration strategies and considerations
+- [Migration Benefits](./docs/migration-benefits.md) - Detailed analysis of benefits and improvements over the Express.js template
+- [Technical Examples](./docs/technical-migration-examples.md) - Code comparisons and parallel running strategies
+
+The migration documentation includes:
+- Multiple migration strategies
+- Technical considerations
+- Risk mitigation approaches
+- Timeline planning
+- Success criteria
+- Specific benefits and improvements
+- Code comparison examples
+- Parallel running implementation
 
 ## Documentation
 
@@ -47,7 +65,6 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - [TypeORM Migration Guide](./docs/typeorm-migration.md)
 - [Prisma Migration Guide](./docs/prisma-migration.md)
 - [Process Isolation](./docs/process-isolation.md)
-- [Express.js to NestJS Migration Guide](./docs/express-migration.md)
 - [Monorepo Architecture](./docs/monorepo-architecture.md)
 - [React Integration Guide](./docs/react-nestjs-integration.md) - **Not Recommended for Government Services**
 - [TypeScript and Babel Setup](./docs/typescript-babel-setup.md)
