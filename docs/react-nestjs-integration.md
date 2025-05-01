@@ -27,8 +27,8 @@
 > - Simpler development and maintenance
 > - Easier integration with existing government services
 > - Reduced complexity in the codebase
-> - Automatic HTML updates with each GOV.UK Frontend release
-> - No need to manually update HTML markup when GOV.UK Frontend is updated
+> - Automatic HTML updates with each [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) release
+> - No need to manually update HTML markup when [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) is updated
 
 This guide demonstrates how to integrate React with NestJS, focusing on server-side rendering (SSR) and testing best practices.
 

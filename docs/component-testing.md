@@ -171,4 +171,10 @@ Test results are saved in `test-output/govuk-components/test-results.json`:
 
 - [GOV.UK Frontend Documentation](https://design-system.service.gov.uk/)
 - [Jest Documentation](https://jestjs.io/)
-- [NestJS Testing](https://docs.nestjs.com/fundamentals/testing) 
+- [NestJS Testing](https://docs.nestjs.com/fundamentals/testing)
+
+### Component Testing Setup
+- Verify Nunjucks configuration - ensuring proper setup of the default [GOV.UK Design System](https://design-system.service.gov.uk/) templating language for accurate component rendering and testing
+- Configure test environment
+- Set up test utilities
+- Create test helpers 

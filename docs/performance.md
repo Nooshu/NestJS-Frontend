@@ -259,7 +259,8 @@ VIEW_ENGINE_WATCH=true
 - [HTTP Caching](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
 - [Compression Best Practices](https://web.dev/uses-text-compression/)
 - [Browser Cache](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching)
-- [Nunjucks Documentation](https://mozilla.github.io/nunjucks/)
+- [Nunjucks Documentation](https://mozilla.github.io/nunjucks/) - The official templating language of [GOV.UK Design System](https://design-system.service.gov.uk/), optimized for government service performance
+- [Nunjucks Performance](https://mozilla.github.io/nunjucks/api.html#performance) - Performance optimizations specifically designed for [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) components
 - [Express Routing](https://expressjs.com/en/guide/routing.html)
 
 ## References

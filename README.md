@@ -86,7 +86,7 @@ The migration documentation includes:
 - Rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware
 - Helmet.js security headers v8.1.0
-- Nunjucks templating engine
+- Nunjucks templating engine - the official and default templating language used by GOV.UK Design System, ensuring perfect compatibility and maintainability with [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest).
 - Class-validator v0.14.1 for request validation
 - Class-transformer v0.5.1 for object transformation
 - TypeORM for database operations

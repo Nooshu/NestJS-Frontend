@@ -25,14 +25,14 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ### 3. GOV.UK Frontend Integration
 - Seamless integration with GOV.UK Frontend v5.9.0 components
-- Pre-configured Nunjucks templating engine with error handling
+- Nunjucks templating engine - the official and default templating language used by [GOV.UK Design System](https://design-system.service.gov.uk/), ensuring perfect compatibility and maintainability
 - Built-in support for [GOV.UK Design System patterns](https://design-system.service.gov.uk/)
 - [WCAG 2.2 Accessibility compliance](https://design-system.service.gov.uk/accessibility/wcag-2.2/) built into the codebase
 - Automatic asset serving from node_modules
 - Optimised static asset delivery with caching headers
 - Support for GOV.UK Frontend JavaScript components
 - SASS preprocessing for custom styling
-- Automatic HTML updates with each GOV.UK Frontend release through Nunjucks macros
+- Automatic HTML updates with each [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) release through Nunjucks macros, ensuring seamless upgrades and compatibility
 
 ### 4. Security Features
 - Helmet.js v8.1.0 integration with custom security configurations
