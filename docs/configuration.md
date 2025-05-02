@@ -23,7 +23,7 @@ The configuration is organized into several sections:
 ### 2. Views
 - `VIEWS_DIRECTORY`: Directory containing view templates
 - `VIEWS_CACHE`: Whether to cache compiled templates
-- `GOVUK_FRONTEND_VERSION`: Version of GOV.UK Frontend (5.9.0)
+- `GOVUK_FRONTEND_VERSION`: Version of GOV.UK Frontend (5.10.0)
 
 ### 3. Public Assets
 - `PUBLIC_DIRECTORY`: Directory containing public assets
@@ -78,7 +78,7 @@ NODE_ENV=development
 NODE_VERSION=22.15.0
 
 # Views
-GOVUK_FRONTEND_VERSION=5.9.0
+GOVUK_FRONTEND_VERSION=5.10.0
 
 # Security
 CORS_ENABLED=true
