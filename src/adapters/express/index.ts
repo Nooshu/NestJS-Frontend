@@ -17,7 +17,20 @@ import { setupRoutes } from './routes';
 /**
  * Creates and configures a NestJS application with Express.js adapter.
  * This adapter provides a compatibility layer for government departments using Express.js.
- *
+ * 
+ * Key features:
+ * - Express.js compatibility layer
+ * - Security middleware configuration
+ * - View engine setup with Nunjucks
+ * - CORS and compression settings
+ * - Error handling middleware
+ * 
+ * Security considerations:
+ * - Helmet.js for security headers
+ * - CORS configuration
+ * - Request body parsing limits
+ * - View engine security settings
+ * 
  * @returns {Promise<INestApplication>} Configured NestJS application
  */
 export async function createExpressApp(): Promise<INestApplication> {
@@ -45,18 +58,18 @@ export async function createExpressApp(): Promise<INestApplication> {
   expressApp.set('view engine', 'njk');
   expressApp.set('views', join(process.cwd(), 'src', 'views'));
 
-  // Setup Nunjucks
+  // Setup Nunjucks with security-focused configuration
   const nunjucksEnv = nunjucks.configure(join(process.cwd(), 'src', 'views'), {
-    autoescape: true,
-    watch: process.env.NODE_ENV !== 'production',
-    noCache: process.env.NODE_ENV !== 'production',
+    autoescape: true, // Prevents XSS attacks
+    watch: process.env.NODE_ENV !== 'production', // Disable in production for performance
+    noCache: process.env.NODE_ENV !== 'production', // Disable in production for performance
   });
 
-  // Setup middleware
-  expressApp.use(express.json());
-  expressApp.use(express.urlencoded({ extended: true }));
+  // Setup middleware with security considerations
+  expressApp.use(express.json({ limit: '1mb' })); // Limit JSON payload size
+  expressApp.use(express.urlencoded({ extended: true, limit: '1mb' })); // Limit form data size
 
-  // Security middleware
+  // Security middleware with Helmet.js
   expressApp.use(helmet());
 
   // Performance middleware

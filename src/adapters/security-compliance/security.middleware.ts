@@ -168,11 +168,27 @@ const excludeFields = (
 };
 
 /**
- * Creates an array of security middleware functions with error handling.
- * Each middleware function is wrapped in a try-catch block to ensure proper error handling.
- *
- * @param config - The security configuration object
- * @returns An array of Express middleware functions
+ * Security middleware factory for creating a comprehensive security middleware stack.
+ * Implements multiple security layers including rate limiting, CORS protection,
+ * security headers, and audit logging.
+ * 
+ * Security features:
+ * - Rate limiting with configurable windows
+ * - CORS protection with strict origin validation
+ * - Security headers via Helmet.js
+ * - Audit logging with sensitive data masking
+ * - Request validation
+ * - Error handling
+ * 
+ * Configuration options:
+ * - Rate limit settings
+ * - CORS policy
+ * - Security headers
+ * - Audit logging
+ * - Cache settings
+ * 
+ * @param {SecurityConfig} config - Security configuration object
+ * @returns {RequestHandler[]} Array of security middleware functions
  */
 export const securityMiddleware = (config: SecurityConfig) => {
   const cacheConfig: CacheConfig = {
@@ -319,17 +335,20 @@ export const securityMiddleware = (config: SecurityConfig) => {
   if (config.audit?.enabled) {
     middleware.push(async (req: Request, _res: Response, next: NextFunction) => {
       try {
+        // Create cache key for audit log deduplication
         const key: CacheKey = {
           type: 'audit-log',
           identifier: `${req.method}:${req.path}`,
-          timestamp: Math.floor(Date.now() / 60000),
+          timestamp: Math.floor(Date.now() / 60000), // Round to minute
         };
 
+        // Check cache to prevent duplicate logs
         const cachedLog = await cache.get<boolean>(key);
         if (cachedLog) {
           return next();
         }
 
+        // Prepare audit log data with sensitive data handling
         const logData = {
           timestamp: new Date(),
           method: req.method,
@@ -340,10 +359,12 @@ export const securityMiddleware = (config: SecurityConfig) => {
             : {}),
         };
 
-        await cache.set(key, true, 60);
+        // Cache audit log entry to prevent duplicates
+        await cache.set(key, true, 60); // Cache for 1 minute
         console.log('Audit Log:', logData);
         next();
       } catch (error) {
+        // Handle audit logging errors with proper error context
         next(
           new SecurityError(SecurityErrorCode.AUDIT_LOG_FAILURE, 'Failed to log audit entry', {
             path: req.path,

@@ -13,10 +13,26 @@ import { LoggerService } from '../../logger/logger.service';
 import { loggingConfig } from '../config/logging.config';
 
 /**
- * Request logging middleware.
- *
+ * Logger middleware for request/response logging and monitoring.
+ * Provides comprehensive logging of HTTP requests and responses,
+ * including performance monitoring and audit logging capabilities.
+ * 
+ * Features:
+ * - Request/response logging
+ * - Performance monitoring
+ * - Error rate detection
+ * - Response time tracking
+ * - Audit logging
+ * - Request ID tracking
+ * 
+ * Monitoring thresholds:
+ * - Error rate monitoring (500+ status codes)
+ * - Response time monitoring
+ * - Content length tracking
+ * - User agent logging
+ * 
  * @class LoggerMiddleware
- * @description Logs request and response information
+ * @implements {NestMiddleware}
  */
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -26,7 +42,18 @@ export class LoggerMiddleware implements NestMiddleware {
 
   /**
    * Log request and response information.
-   *
+   * Implements comprehensive request tracking including:
+   * - Request details (method, URL, IP, user agent)
+   * - Response metrics (status, duration, content length)
+   * - Performance monitoring
+   * - Audit logging
+   * 
+   * Security considerations:
+   * - IP address logging
+   * - User agent logging
+   * - Request ID tracking
+   * - Sensitive data masking
+   * 
    * @method use
    * @param {Request} req - The request object
    * @param {Response} res - The response object
@@ -37,7 +64,7 @@ export class LoggerMiddleware implements NestMiddleware {
     const userAgent = req.get('user-agent') || '';
     const start = Date.now();
 
-    // Log request
+    // Log request with security context
     this.logger.info('Incoming request', {
       method,
       url: originalUrl,
@@ -46,13 +73,13 @@ export class LoggerMiddleware implements NestMiddleware {
       requestId: req.id,
     });
 
-    // Capture response data
+    // Capture response data with performance monitoring
     res.on('finish', () => {
       const duration = Date.now() - start;
       const { statusCode } = res;
       const contentLength = res.get('content-length');
 
-      // Log response
+      // Log response with performance metrics
       this.logger.info('Request completed', {
         method,
         url: originalUrl,
@@ -62,9 +89,9 @@ export class LoggerMiddleware implements NestMiddleware {
         requestId: req.id,
       });
 
-      // Check monitoring thresholds
+      // Performance monitoring with alerting
       if (loggingConfig.monitoring.enabled && loggingConfig.monitoring.alerting.enabled) {
-        // Check error rate
+        // Monitor error rates
         if (statusCode >= 500) {
           this.logger.warn('High error rate detected', {
             method,
@@ -74,7 +101,7 @@ export class LoggerMiddleware implements NestMiddleware {
           });
         }
 
-        // Check response time
+        // Monitor response times
         if (duration > loggingConfig.monitoring.alerting.thresholds.responseTime) {
           this.logger.warn('Slow response detected', {
             method,
@@ -86,7 +113,7 @@ export class LoggerMiddleware implements NestMiddleware {
         }
       }
 
-      // Log audit event if enabled
+      // Audit logging with security context
       if (loggingConfig.audit.enabled) {
         this.logger.audit('HTTP Request', {
           method,
