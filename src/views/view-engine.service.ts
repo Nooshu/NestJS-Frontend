@@ -44,7 +44,20 @@ export class ViewEngineService {
     // Add any custom filters or globals here if needed
     this.env.addGlobal('asset_path', '/assets');
     
-    // Add asset fingerprinting extension
+    /**
+     * Add asset fingerprinting function for templates
+     * 
+     * The 'assetPath' function is available in templates to resolve paths to fingerprinted assets.
+     * This function calls FingerprintService.getAssetPath() to lookup the original path
+     * in the asset manifest and return the fingerprinted path.
+     * 
+     * Example usage in templates:
+     * <link href="{{ assetPath('/css/main.css') }}" rel="stylesheet">
+     * <img src="{{ assetPath('/images/logo.png') }}" alt="Logo">
+     * <script src="{{ assetPath('/js/app.js') }}"></script>
+     * 
+     * If the manifest doesn't exist or the asset isn't found, the original path is returned.
+     */
     this.env.addGlobal('assetPath', (path: string) => this.fingerprintService.getAssetPath(path));
   }
 

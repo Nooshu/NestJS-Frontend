@@ -25,6 +25,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Enhanced security features
 - Response compression and browser caching
 - Optimized middleware chain
+- **Static asset fingerprinting** for optimal cache performance
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
@@ -62,6 +63,7 @@ The migration documentation includes:
 - [GOV.UK Frontend Integration](./docs/readme/govuk-frontend.md)
 - [Frontend Performance](./docs/readme/frontend-performance.md)
 - [Security Features](./docs/security.md)
+- [Asset Fingerprinting](./docs/asset-fingerprinting.md) - Content-based fingerprinting for optimal browser caching
 
 ### Additional Documentation
 - [Dependency Injection Best Practices](./docs/dependency-injection.md)
@@ -74,6 +76,45 @@ The migration documentation includes:
 - [Monorepo Architecture](./docs/monorepo-architecture.md)
 - [React Integration Guide](./docs/react-nestjs-integration.md) - **Not Recommended for Government Services**
 - [TypeScript and Babel Setup](./docs/typescript-babel-setup.md)
+
+## Building frontend assets
+
+```bash
+# build all frontend assets (SCSS, copy assets, fingerprint)
+npm run build:frontend
+
+# build SCSS only
+npm run build:scss
+
+# watch SCSS for changes
+npm run build:scss:watch
+
+# copy static assets only
+npm run copy:assets
+
+# fingerprint assets only
+npm run fingerprint:assets
+```
+
+## Asset Fingerprinting
+
+This project implements static asset fingerprinting without using bundlers like Webpack. Fingerprinting adds a content hash to filenames (e.g., `main.a1b2c3d4.css`), which enables efficient browser caching while ensuring users always get the latest version when files change.
+
+In templates, use the `assetPath` function to resolve paths to fingerprinted assets:
+
+```nunjucks
+<link href="{{ assetPath('/css/main.css') }}" rel="stylesheet">
+<img src="{{ assetPath('/images/logo.png') }}" alt="Logo">
+<script src="{{ assetPath('/js/app.js') }}"></script>
+```
+
+Key benefits:
+- Long-term caching (1 year) with immutable flag for optimal performance
+- No revalidation requests when users refresh the page
+- Automatic cache busting when content changes
+- No complex bundler configuration required
+
+Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 
 ## Dependencies
 
@@ -106,6 +147,7 @@ The migration documentation includes:
 - Comprehensive security headers
 - Permissions policy
 - CORS configuration
+- Asset fingerprinting with immutable caching
 
 ### Development Tools
 - Jest v29.7.0 for testing with comprehensive performance API mocking

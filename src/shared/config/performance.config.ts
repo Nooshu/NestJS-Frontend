@@ -24,12 +24,12 @@ export class PerformanceConfig {
 
   get staticAssets() {
     return {
-      maxAge: 86400000, // 24 hours
-      immutable: false,
+      maxAge: 31536000, // 1 year in milliseconds (365 days)
+      immutable: true,
       etag: true,
       lastModified: true,
       setHeaders: (res: any) => {
-        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       },
     };
   }
@@ -72,12 +72,12 @@ export const performanceConfig = {
    * @type {ServeStaticOptions}
    */
   staticAssets: {
-    maxAge: 86400000, // 24 hours
-    immutable: false,
+    maxAge: 31536000, // 1 year in milliseconds (365 days)
+    immutable: true,
     etag: true,
     lastModified: true,
     setHeaders: (res: any) => {
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
     },
   } as ServeStaticOptions,
 

@@ -1,9 +1,21 @@
 /**
  * Fingerprinting service for static assets.
  * 
- * This service generates content-based hashes for static assets like CSS, JS, and images,
- * creating a manifest file that maps original filenames to their fingerprinted versions.
- * This enables proper cache busting without using bundlers like Webpack.
+ * This service implements content-based fingerprinting for static assets (CSS, JS, images)
+ * without relying on bundler tools like Webpack. The fingerprinting process involves:
+ * 
+ * 1. Generating an MD5 hash of each file's content
+ * 2. Appending the hash to the filename before the extension (e.g., main.a1b2c3d4.css)
+ * 3. Creating a manifest file that maps original filenames to fingerprinted versions
+ * 4. Providing a lookup function to resolve original paths to fingerprinted paths at runtime
+ * 
+ * Fingerprinting enables efficient browser caching while ensuring users always get
+ * the latest version when content changes. When a file changes, its hash changes,
+ * resulting in a new URL that bypasses the browser cache.
+ * 
+ * Special cases:
+ * - Font files (*.woff, *.woff2) are excluded from fingerprinting as they already include hashes
+ * - CSS source maps are processed to maintain the link between CSS and map files
  */
 
 import { Injectable, Logger } from '@nestjs/common';
@@ -12,6 +24,9 @@ import { createHash } from 'crypto';
 import { join, dirname, basename, extname, relative } from 'path';
 import * as glob from 'glob';
 
+/**
+ * Interface for the asset manifest that maps original paths to fingerprinted paths
+ */
 interface AssetManifest {
   [key: string]: string;
 }
@@ -26,6 +41,7 @@ export class FingerprintService {
   private govukDir: string;
 
   constructor() {
+    // Configure paths for asset processing
     this.publicDir = join(process.cwd(), 'dist', 'public');
     this.assetsDir = join(process.cwd(), 'src', 'frontend');
     this.govukDir = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk');
@@ -34,8 +50,10 @@ export class FingerprintService {
 
   /**
    * Generate a content hash for a file
+   * Creates an MD5 hash of the file's content and returns a shortened version (8 characters)
+   * 
    * @param filePath Path to the file
-   * @returns Hash string
+   * @returns Shortened MD5 hash of the file content (8 characters)
    */
   private generateHash(filePath: string): string {
     const fileContent = readFileSync(filePath);
@@ -44,8 +62,10 @@ export class FingerprintService {
 
   /**
    * Create a fingerprinted filename based on the file's content
+   * Takes the original filename, generates a hash, and inserts it before the extension
+   * 
    * @param filePath Path to the file
-   * @returns Fingerprinted filename
+   * @returns Object containing original and fingerprinted filenames
    */
   private fingerprintFilename(filePath: string): { original: string; fingerprinted: string } {
     const hash = this.generateHash(filePath);
@@ -61,11 +81,14 @@ export class FingerprintService {
 
   /**
    * Process a file by creating a fingerprinted copy
-   * @param filePath Path to the file
-   * @returns The fingerprinted file path
+   * Reads the file, creates a fingerprinted copy, and updates the manifest
+   * 
+   * @param filePath Path to the file to process
+   * @returns The path to the fingerprinted file
    */
   private processFile(filePath: string): string {
     try {
+      // Determine output directory in dist/public that matches the source structure
       const outputDir = dirname(
         join(this.publicDir, relative(this.assetsDir, filePath))
       );
@@ -75,6 +98,7 @@ export class FingerprintService {
         mkdirSync(outputDir, { recursive: true });
       }
       
+      // Generate fingerprinted filename
       const { original: _, fingerprinted } = this.fingerprintFilename(filePath);
       const content = readFileSync(filePath);
       
@@ -82,7 +106,8 @@ export class FingerprintService {
       const fingerprintedPath = join(outputDir, fingerprinted);
       writeFileSync(fingerprintedPath, content);
       
-      // Update manifest
+      // Update manifest with path mapping
+      // Strip the section prefix (scss/js/images) for cleaner paths
       const assetPath = relative(this.assetsDir, filePath);
       const publicPath = assetPath.replace(/^(scss|js|images)\//, '');
       this.manifest[publicPath] = fingerprinted;
@@ -97,9 +122,43 @@ export class FingerprintService {
 
   /**
    * Process GOV.UK Frontend assets
-   * @param filePath Path to the file
+   * Handles the fingerprinting of JS files from the GOV.UK Frontend package
+   * 
+   * @param filePath Path to the file to process
    */
   private processGovukFile(filePath: string): void {
+    try {
+      // Determine the relative path and create output directory
+      const relPath = relative(this.govukDir, filePath);
+      const outputDir = dirname(join(this.publicDir, 'govuk', relPath));
+      
+      if (!existsSync(outputDir)) {
+        mkdirSync(outputDir, { recursive: true });
+      }
+      
+      // Generate fingerprinted filename
+      const { original: _, fingerprinted } = this.fingerprintFilename(filePath);
+      const content = readFileSync(filePath);
+      
+      // Write the fingerprinted file
+      const fingerprintedPath = join(outputDir, fingerprinted);
+      writeFileSync(fingerprintedPath, content);
+      
+      // Update manifest with path mapping
+      this.manifest[`govuk/${relPath}`] = `govuk/${dirname(relPath)}/${fingerprinted}`;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error(`Failed to process GOV.UK file ${filePath}: ${errorMessage}`);
+    }
+  }
+
+  /**
+   * Process GOV.UK Frontend CSS assets ensuring source maps are properly linked
+   * Special handling for CSS files to maintain source map references
+   * 
+   * @param filePath Path to the CSS file
+   */
+  private processGovukCssFile(filePath: string): void {
     try {
       // Create destination directory in our public directory
       const relPath = relative(this.govukDir, filePath);
@@ -109,24 +168,45 @@ export class FingerprintService {
         mkdirSync(outputDir, { recursive: true });
       }
       
-      const { original: _, fingerprinted } = this.fingerprintFilename(filePath);
-      const content = readFileSync(filePath);
+      // Get fingerprinted filename
+      const { original, fingerprinted } = this.fingerprintFilename(filePath);
+      let content = readFileSync(filePath, 'utf8');
       
-      // Write the fingerprinted file
+      // Check for source map reference and handle it specially
+      const sourceMapFile = `${filePath}.map`;
+      if (existsSync(sourceMapFile)) {
+        // Get fingerprinted name for the source map
+        const { fingerprinted: fingerprintedMap } = this.fingerprintFilename(sourceMapFile);
+        
+        // Update source map reference in CSS to point to the fingerprinted map file
+        content = content.replace(/\/\*# sourceMappingURL=.*? \*\//, `/*# sourceMappingURL=${fingerprintedMap} */`);
+        
+        // Copy and fingerprint the source map file
+        const mapContent = readFileSync(sourceMapFile);
+        const mapOutputPath = join(outputDir, fingerprintedMap);
+        writeFileSync(mapOutputPath, mapContent);
+        
+        // Add source map to manifest
+        this.manifest[`govuk/${original}.map`] = `govuk/${fingerprintedMap}`;
+      }
+      
+      // Write the fingerprinted CSS file
       const fingerprintedPath = join(outputDir, fingerprinted);
       writeFileSync(fingerprintedPath, content);
       
-      // Update manifest with path relative to the govuk directory
-      this.manifest[`govuk/${relPath}`] = `govuk/${dirname(relPath)}/${fingerprinted}`;
+      // Update manifest
+      this.manifest[`govuk/${original}`] = `govuk/${fingerprinted}`;
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
-      this.logger.error(`Failed to process GOV.UK file ${filePath}: ${errorMessage}`);
+      this.logger.error(`Failed to process GOV.UK CSS file ${filePath}: ${errorMessage}`);
     }
   }
 
   /**
    * Process GOV.UK assets (fonts, images, etc.)
-   * @param file Path to the file
+   * Special handling for font files which are already fingerprinted
+   * 
+   * @param file Path to the file to process
    */
   private processGovukAssetFile(file: string): void {
     try {
@@ -147,7 +227,7 @@ export class FingerprintService {
         return;
       }
       
-      // Create destination directory in our public directory
+      // For other assets, apply normal fingerprinting
       const relPath = relative(join(this.govukDir, 'assets'), file);
       const outputDir = dirname(join(this.publicDir, 'assets', relPath));
       
@@ -172,6 +252,7 @@ export class FingerprintService {
 
   /**
    * Fingerprint all static assets and generate a manifest
+   * This is the main method called by the CLI script to process all assets
    */
   public fingerprint(): void {
     this.logger.log('Starting asset fingerprinting');
@@ -199,10 +280,11 @@ export class FingerprintService {
     const imageFiles = glob.sync(join(this.assetsDir, 'images', '**', '*.*'));
     imageFiles.forEach(file => this.processFile(file));
     
-    // Process GOV.UK Frontend assets
+    // Process GOV.UK Frontend CSS files (with special handling for source maps)
     const govukCssFiles = glob.sync(join(this.govukDir, '*.css'));
-    govukCssFiles.forEach(file => this.processGovukFile(file));
+    govukCssFiles.forEach(file => this.processGovukCssFile(file));
     
+    // Process GOV.UK Frontend JS files
     const govukJsFiles = glob.sync(join(this.govukDir, '*.js'));
     govukJsFiles.forEach(file => this.processGovukFile(file));
     
@@ -215,14 +297,17 @@ export class FingerprintService {
       mkdirSync(dirname(this.manifestPath), { recursive: true });
     }
     
+    // Write the manifest file as formatted JSON for readability
     writeFileSync(this.manifestPath, JSON.stringify(this.manifest, null, 2));
     this.logger.log(`Asset manifest created at ${this.manifestPath}`);
   }
 
   /**
    * Get the fingerprinted path for an asset
+   * This method is used at runtime to resolve asset paths in templates
+   * 
    * @param assetPath Original asset path
-   * @returns Fingerprinted asset path
+   * @returns Fingerprinted asset path if it exists, otherwise the original path
    */
   public getAssetPath(assetPath: string): string {
     // Make sure the manifest exists

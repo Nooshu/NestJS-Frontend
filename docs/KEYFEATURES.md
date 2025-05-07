@@ -122,6 +122,29 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
   - Performance monitoring
   - Error handling
 
+### 7. Asset Fingerprinting
+- Content-based fingerprinting without Webpack or other bundlers
+- Automatic hash generation based on file content
+- Manifest file for mapping original paths to fingerprinted versions
+- Nunjucks integration via `assetPath` template function
+- Immutable caching for maximum performance:
+  - Cache-Control headers with immutable flag
+  - One-year cache duration for fingerprinted assets
+  - No revalidation requests on page refresh
+- Special handling for different asset types:
+  - CSS with source map preservation
+  - JavaScript files
+  - Images
+  - Font files
+- Built-in handling for GOV.UK Frontend assets
+- Simple build process integration
+- Clear documentation and usage examples
+- Significant performance benefits:
+  - Reduced bandwidth usage
+  - Faster repeat visits
+  - Lower server load
+  - Automatic cache busting when content changes
+
 ## Government Service Benefits
 
 ### 1. Security and Compliance
@@ -146,7 +169,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Optimised for high-traffic government services
 - Built-in caching for improved performance
 - Automatic handling of peak loads
-- Efficient static asset delivery
+- Efficient static asset delivery with fingerprinting
 - Support for multiple environments (development, staging, production)
 - Advanced frontend optimisation
 - Offline support and caching
@@ -154,6 +177,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Real-time performance tracking
 - User interaction monitoring
 - Visual performance metrics
+- Immutable asset caching for maximum performance
 
 ### 4. Development and Maintenance
 - Reduced development time through built-in features
@@ -164,6 +188,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Built-in testing support
 - Modern frontend tooling
 - Efficient development workflow
+- No complex bundler configuration needed
 
 ## Java API Integration Advantages
 
@@ -199,6 +224,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Real-time Tracking**: Real-time performance tracking and monitoring
 - **User Interaction**: User interaction monitoring and analysis
 - **Visual Metrics**: Visual performance metrics and analysis
+- **Asset Fingerprinting**: Content-based fingerprinting for optimal caching
 
 ### 5. Development Workflow
 - **Environment Configuration**: Easy configuration management for different Java API environments
@@ -248,85 +274,27 @@ Browser-side caching is implemented to improve performance and reduce server loa
 - **Cache Middleware**
   - Configurable cache duration
   - Automatic cache invalidation for authenticated routes
-  - Cache headers optimization
-  - Skip caching for API routes
-  - Configurable through the ConfigService
 
-- **Cache Headers**
-  - `Cache-Control`: Configurable max-age
-  - `Vary`: Accept-Encoding for proper compression handling
+### Asset Fingerprinting
+Content-based fingerprinting for static assets enables optimal browser caching:
+
+- **Implementation**
+  - Generates MD5 hashes based on file content
+  - Appends hash to filename before extension (e.g., `main.a1b2c3d4.css`)
+  - Creates manifest file mapping original paths to fingerprinted paths
+  - Template function for resolving paths
+  - Special handling for various asset types
+
+- **Caching Strategy**
+  - Cache-Control: public, max-age=31536000, immutable
+  - One-year cache duration
+  - Immutable flag prevents revalidation
+  - ETags and Last-Modified headers for conditional requests
 
 - **Benefits**
-  - Reduced server load
-  - Faster subsequent page loads
-  - Better resource utilization
-  - Improved user experience
-
-### Middleware Optimization
-The middleware chain is optimized for maximum performance:
-
-1. **Error Handling**
-   - Catches and handles errors consistently
-   - Prevents application crashes
-   - Provides meaningful error messages
-
-2. **Logging**
-   - Winston-based logging system
-   - Request/response logging
-   - Performance metrics logging
-
-3. **Compression**
-   - Response body compression
-   - Configurable compression settings
-   - Automatic content-type detection
-
-4. **Caching**
-   - Browser-side caching
-   - Configurable cache settings
-   - Smart cache invalidation
-
-5. **Security**
-   - CSRF protection
-   - Rate limiting
-   - Security headers
-
-### Configuration
-Performance settings are configurable through the ConfigService:
-
-```typescript
-// Performance configuration
-{
-  compression: {
-    level: 6,
-    threshold: 1024
-  },
-  browserCache: {
-    maxAge: 3600
-  }
-}
-```
-
-## Security Features
-
-### Content Security Policy
-Configurable CSP directives to prevent XSS and other injection attacks.
-
-### CSRF Protection
-Built-in CSRF protection for all non-GET requests.
-
-### Rate Limiting
-Configurable rate limiting to prevent abuse.
-
-## Development Features
-
-### TypeScript Support
-Full TypeScript support for better development experience.
-
-### API Documentation
-Swagger/OpenAPI documentation available at `/api-docs`.
-
-### Logging
-Winston-based logging system with configurable log levels.
-
-### Templating
-Nunjucks templating engine with GOV.UK Frontend integration. 
+  - Significantly faster repeat visits
+  - Reduced bandwidth usage
+  - Lower server load
+  - Automatic cache invalidation when content changes
+  - No complex bundler configuration needed
+  - Transparent integration in templates 

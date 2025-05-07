@@ -159,19 +159,33 @@ async function bootstrap() {
   /**
    * Static Asset Configuration
    *
-   * Configures static asset serving with performance optimizations:
-   * - maxAge: How long the browser should cache the assets
-   * - immutable: Whether the assets are immutable
-   * - etag: Whether to use ETags for caching
-   * - lastModified: Whether to use Last-Modified headers
-   * - setHeaders: Custom headers to set on static assets
+   * Configures static asset serving with performance optimizations for fingerprinted assets:
+   * 
+   * - maxAge: 1 year (31,536,000 seconds) - Long cache duration is safe with fingerprinted assets
+   *   since the URL changes when the content changes
+   * 
+   * - immutable: true - The immutable directive tells browsers that the asset will never
+   *   change as long as the URL remains the same, which is guaranteed with fingerprinting.
+   *   This prevents unnecessary revalidation requests even when users press the refresh button.
+   * 
+   * - etag: true - Provides a validator for conditional requests, allowing efficient 
+   *   304 Not Modified responses
+   * 
+   * - lastModified: true - Another validator for conditional requests
+   * 
+   * - setHeaders: Sets 'Cache-Control: public, max-age=31536000, immutable' which instructs
+   *   browsers to cache the asset for a year and never revalidate it during that time,
+   *   significantly improving load times for returning visitors
    */
   const staticOptions: ServeStaticOptions = {
-    maxAge: performanceConfig.staticAssets.maxAge ?? 0,
-    immutable: performanceConfig.staticAssets.immutable ?? false,
-    etag: performanceConfig.staticAssets.etag ?? false,
-    lastModified: performanceConfig.staticAssets.lastModified ?? true,
-    setHeaders: performanceConfig.staticAssets.setHeaders ?? (() => {}),
+    maxAge: performanceConfig.staticAssets.maxAge ?? 31536000, // 1 year in milliseconds
+    immutable: true, // Assets are immutable due to fingerprinting
+    etag: true,
+    lastModified: true,
+    setHeaders: (res: any) => {
+      // Set Cache-Control with immutable flag for fingerprinted assets
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    },
   };
 
   // Serve all static assets from dist/public
