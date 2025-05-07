@@ -67,4 +67,22 @@ npm run start:dev
 - `npm run lint` - Run ESLint
   - Lints all TypeScript files
   - Automatically fixes fixable issues
-  - Checks code style and potential problems 
+  - Checks code style and potential problems
+
+### Frontend Build
+- `npm run build:frontend` - Build frontend assets
+  - Compiles SCSS to CSS
+  - Copies static assets to dist/public
+- `npm run build:frontend:watch` - Watch and build frontend assets
+  - Continuously watches for SCSS changes
+  - Automatically rebuilds on file changes
+- `npm run build:scss` - Compile SCSS to CSS
+  - Compiles main.scss to main.css
+  - Uses compressed output style
+  - Includes node_modules in load path
+- `npm run build:scss:watch` - Watch and compile SCSS
+  - Continuously watches for SCSS changes
+  - Automatically recompiles on file changes
+- `npm run copy:assets` - Copy static assets
+  - Copies images from src/frontend/images to dist/public/images
+  - Copies GOV.UK Frontend assets to dist/public/assets 

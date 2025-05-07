@@ -52,3 +52,33 @@ For detailed information about component testing, see [Component Testing Documen
 2. Make your changes
 3. Run tests
 4. Submit a pull request 
+
+## Frontend Development
+
+### Build Process
+
+The frontend build process is handled through several npm scripts:
+
+1. For development with live reload:
+```bash
+npm run build:frontend:watch
+```
+
+2. For production builds:
+```bash
+npm run build:frontend
+```
+
+### Asset Management
+
+- SCSS files are located in `src/frontend/scss/`
+- Images and other static assets are in `src/frontend/images/`
+- Built assets are output to `dist/public/`
+- GOV.UK Frontend assets are automatically copied to `dist/public/assets/`
+
+### Best Practices
+
+- Use SCSS for styling to maintain consistency with GOV.UK Frontend
+- Keep images optimized and in appropriate formats
+- Follow the GOV.UK Design System guidelines for components and patterns
+- Test frontend changes across different browsers and devices 

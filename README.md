@@ -96,7 +96,6 @@ The migration documentation includes:
 - TypeORM for database operations
 - Prisma ORM support
 - Process isolation for CPU-intensive tasks
-- Webpack v5.99.7 for frontend optimisation
 - Service worker for offline support
 - Performance monitoring and metrics
 - CSRF protection with csurf v1.2.2
@@ -113,7 +112,6 @@ The migration documentation includes:
 - SASS v1.71.1 for CSS preprocessing
 - Supertest v7.1.0 for API testing
 - Renovate bot for dependency updates
-- Webpack v5.99.7 for frontend bundling
 - PostCSS v8.4.35 for CSS optimisation
 - Babel v7.24.0 for JavaScript transpilation
 

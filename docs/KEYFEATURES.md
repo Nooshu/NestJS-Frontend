@@ -71,7 +71,6 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Clear error messages and debugging support
 - Supertest v7.1.0 for API testing
 - Node.js v22.15.0+ support with modern features
-- Webpack v5.99.7 for efficient frontend development
 - PostCSS v8.4.35 for modern CSS processing
 - Babel v7.24.0 for JavaScript transpilation
 
@@ -85,7 +84,6 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Response compression
 - Asset versioning and caching
 - ioredis v5.6.1 for Redis operations
-- Webpack optimisation for frontend assets
 - Code splitting and lazy loading
 - CSS optimisation with PostCSS
 - Service worker for offline support
