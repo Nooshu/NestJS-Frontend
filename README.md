@@ -78,9 +78,9 @@ The migration documentation includes:
 ### Core Dependencies
 - [NestJS](https://nestjs.com/) v11.1.0+
 - [Express](https://expressjs.com/) v5.1.0+
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.9.0+
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.10.0+
 - [TypeScript](https://www.typescriptlang.org/) v5.1.3+
-- [Node.js](https://github.com/nodejs/release#release-schedule) v22.15.0+
+- [Node.js](https://github.com/nodejs/release#release-schedule) v20.12.2+
 
 ### Key Features
 - Axios HTTP client for API integration

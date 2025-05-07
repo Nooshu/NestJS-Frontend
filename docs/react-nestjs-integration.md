@@ -60,7 +60,7 @@ This guide demonstrates how to integrate React with NestJS, focusing on server-s
 ## Prerequisites
 
 Before starting, ensure you have the following installed:
-- Node.js (v22.15.0 or higher)
+- Node.js (v20.12.2 or higher)
 - npm or yarn
 - NestJS CLI (`npm install -g @nestjs/cli`)
 
