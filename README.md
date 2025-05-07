@@ -77,24 +77,64 @@ The migration documentation includes:
 - [React Integration Guide](./docs/react-nestjs-integration.md) - **Not Recommended for Government Services**
 - [TypeScript and Babel Setup](./docs/typescript-babel-setup.md)
 
-## Building frontend assets
+## Building and Running the Application
+
+### Quick Start
 
 ```bash
-# build all frontend assets (SCSS, copy assets, fingerprint)
-npm run build:frontend
+# Install dependencies
+npm install
 
-# build SCSS only
-npm run build:scss
+# Build backend and frontend
+npm run build && npm run build:frontend
 
-# watch SCSS for changes
-npm run build:scss:watch
-
-# copy static assets only
-npm run copy:assets
-
-# fingerprint assets only
-npm run fingerprint:assets
+# Start the application
+npm run start:prod
 ```
+
+### Development Mode
+
+```bash
+# Start backend with auto-reload (in one terminal)
+npm run start:dev
+
+# Watch frontend assets (in another terminal)
+npm run build:frontend:watch
+```
+
+### Available Build Scripts
+
+The project includes various build scripts for different purposes:
+
+```bash
+# NestJS application build
+npm run build                 # Compile the application
+npm run start                 # Start the compiled application
+npm run start:dev             # Start with auto-reload
+npm run start:debug           # Start in debug mode
+npm run start:prod            # Run production build
+
+# Frontend assets
+npm run build:frontend        # Build all frontend assets (SCSS, copy assets, fingerprint)
+npm run build:frontend:watch  # Watch and rebuild frontend assets
+npm run build:scss            # Compile SCSS to CSS
+npm run build:scss:watch      # Watch and compile SCSS
+npm run copy:assets           # Copy static assets to output directory
+npm run fingerprint:assets    # Generate fingerprinted assets
+
+# Code quality
+npm run format                # Format code with Prettier
+npm run lint                  # Lint code with ESLint
+
+# Testing
+npm run test                  # Run all tests
+npm run test:watch            # Run tests in watch mode
+npm run test:cov              # Run tests with coverage report
+npm run test:e2e              # Run end-to-end tests
+npm run test:govuk            # Run GOV.UK component tests
+```
+
+For detailed information about all build scripts, see the [Build Scripts Documentation](docs/build-scripts.md).
 
 ## Asset Fingerprinting
 

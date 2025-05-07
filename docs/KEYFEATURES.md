@@ -62,6 +62,15 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
   - Custom test matchers for common assertions
   - Global test configuration and setup
   - Mock utilities for common browser APIs
+- Comprehensive build system with task-specific scripts
+  - Backend compilation and running in various modes
+  - Frontend asset building with separate concerns
+  - Watch modes for development with hot-reload
+  - Production-ready builds with optimizations
+  - Asset fingerprinting and management
+  - Incremental builds for faster development
+  - Code quality scripts for formatting and linting
+  - Testing scripts for various testing strategies
 - Swagger/OpenAPI documentation with automatic generation
 - Winston v3.17.0 logging integration with structured logging
 - Prettier v3.0.0 and ESLint for code quality
@@ -184,6 +193,8 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Easier onboarding for new developers
 - Better code quality through enforced patterns
 - Simplified maintenance through modular design
+- Comprehensive build scripts for all development tasks
+- Well-documented build and deployment processes
 - Automatic documentation generation
 - Built-in testing support
 - Modern frontend tooling
