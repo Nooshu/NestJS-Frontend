@@ -222,4 +222,111 @@ This framework is particularly well-suited for:
   - Robust error handling and logging
   - High performance and offline capabilities
   - Real-time performance monitoring
-  - Advanced security features (CSRF, CSP, etc.) 
+  - Advanced security features (CSRF, CSP, etc.)
+
+## Performance Optimizations
+
+### Response Compression
+The application implements response compression to reduce bandwidth usage and improve load times:
+
+- **Compression Middleware**
+  - Uses the `compression` package for efficient response compression
+  - Configurable compression level (default: 6)
+  - Threshold-based compression (default: 1kb)
+  - Automatic content-type detection
+  - Configurable through the ConfigService
+
+- **Benefits**
+  - Reduced bandwidth usage
+  - Faster page loads
+  - Lower server load
+  - Better user experience
+
+### Browser Caching
+Browser-side caching is implemented to improve performance and reduce server load:
+
+- **Cache Middleware**
+  - Configurable cache duration
+  - Automatic cache invalidation for authenticated routes
+  - Cache headers optimization
+  - Skip caching for API routes
+  - Configurable through the ConfigService
+
+- **Cache Headers**
+  - `Cache-Control`: Configurable max-age
+  - `Vary`: Accept-Encoding for proper compression handling
+
+- **Benefits**
+  - Reduced server load
+  - Faster subsequent page loads
+  - Better resource utilization
+  - Improved user experience
+
+### Middleware Optimization
+The middleware chain is optimized for maximum performance:
+
+1. **Error Handling**
+   - Catches and handles errors consistently
+   - Prevents application crashes
+   - Provides meaningful error messages
+
+2. **Logging**
+   - Winston-based logging system
+   - Request/response logging
+   - Performance metrics logging
+
+3. **Compression**
+   - Response body compression
+   - Configurable compression settings
+   - Automatic content-type detection
+
+4. **Caching**
+   - Browser-side caching
+   - Configurable cache settings
+   - Smart cache invalidation
+
+5. **Security**
+   - CSRF protection
+   - Rate limiting
+   - Security headers
+
+### Configuration
+Performance settings are configurable through the ConfigService:
+
+```typescript
+// Performance configuration
+{
+  compression: {
+    level: 6,
+    threshold: 1024
+  },
+  browserCache: {
+    maxAge: 3600
+  }
+}
+```
+
+## Security Features
+
+### Content Security Policy
+Configurable CSP directives to prevent XSS and other injection attacks.
+
+### CSRF Protection
+Built-in CSRF protection for all non-GET requests.
+
+### Rate Limiting
+Configurable rate limiting to prevent abuse.
+
+## Development Features
+
+### TypeScript Support
+Full TypeScript support for better development experience.
+
+### API Documentation
+Swagger/OpenAPI documentation available at `/api-docs`.
+
+### Logging
+Winston-based logging system with configurable log levels.
+
+### Templating
+Nunjucks templating engine with GOV.UK Frontend integration. 

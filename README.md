@@ -23,6 +23,8 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Service worker for offline support
 - Comprehensive performance monitoring and metrics
 - Enhanced security features
+- Response compression and browser caching
+- Optimized middleware chain
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
@@ -88,7 +90,8 @@ The migration documentation includes:
 - Winston logging with structured output
 - Swagger/OpenAPI documentation
 - Rate limiting with @nestjs/throttler v6.4.0
-- Compression middleware
+- Compression middleware with configurable settings
+- Browser-side caching with smart invalidation
 - Helmet.js security headers v8.1.0
 - Nunjucks templating engine - the official and default templating language used by GOV.UK Design System, ensuring perfect compatibility and maintainability with [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest).
 - Class-validator v0.14.1 for request validation

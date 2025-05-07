@@ -16,6 +16,8 @@ import { AppCacheModule } from './cache/cache.module';
 import { CoreModule } from './core/core.module';
 import { LoggerModule } from './logger/logger.module';
 import { CspReportController } from './shared/controllers/csp-report.controller';
+import { CacheMiddleware } from './shared/middleware/cache.middleware';
+import { CompressionMiddleware } from './shared/middleware/compression.middleware';
 import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
 import { ErrorMiddleware } from './shared/middleware/error.middleware';
 import { LoggerMiddleware } from './shared/middleware/logger.middleware';
@@ -65,7 +67,9 @@ export class AppModule {
    * // The middleware is applied in the following order:
    * // 1. Error handling middleware (all routes)
    * // 2. Logging middleware (all routes)
-   * // 3. CSRF protection (all routes except API and health check)
+   * // 3. Compression middleware (all routes)
+   * // 4. Cache middleware (all GET routes)
+   * // 5. CSRF protection (all routes except API and health check)
    */
   configure(consumer: MiddlewareConsumer) {
     /**
@@ -79,6 +83,20 @@ export class AppModule {
      * Applied to all routes to log request/response information
      */
     consumer.apply(LoggerMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
+
+    /**
+     * Compression Middleware
+     * Applied to all routes to compress response bodies
+     */
+    consumer.apply(CompressionMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
+
+    /**
+     * Cache Middleware
+     * Applied to all GET routes to enable response caching
+     */
+    consumer
+      .apply(CacheMiddleware)
+      .forRoutes({ path: '*path', method: RequestMethod.GET });
 
     /**
      * CSRF Protection Middleware
