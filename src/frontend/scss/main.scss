@@ -1,5 +1,11 @@
+// Suppress GOV.UK Frontend warnings
+$govuk-suppressed-warnings: (
+  "legacy-organisation-colours",
+  "import-using-all"
+);
+
 // Import GOV.UK Frontend
-@import "govuk-frontend/govuk/all";
+@use "govuk-frontend/dist/govuk/index" as govuk;
 
 // Custom styles
 .govuk-header {
@@ -13,13 +19,13 @@
 // Custom components
 .app-header {
   &__container {
-    @include govuk-clearfix;
-    padding: govuk-spacing(3) 0;
+    @include govuk.govuk-clearfix;
+    padding: govuk.govuk-spacing(3) 0;
   }
 
   &__logo {
     float: left;
-    margin-right: govuk-spacing(3);
+    margin-right: govuk.govuk-spacing(3);
   }
 
   &__content {
@@ -34,7 +40,7 @@
   }
 
   &--visually-hidden {
-    @include govuk-visually-hidden;
+    @include govuk.govuk-visually-hidden;
   }
 }
 

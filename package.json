@@ -25,9 +25,11 @@
     "test:govuk": "jest --testPathPattern=govuk-components",
     "test:govuk:watch": "jest --testPathPattern=govuk-components --watch",
     "test:govuk:cov": "jest --testPathPattern=govuk-components --coverage",
-    "build:frontend": "webpack --config webpack.config.js",
-    "build:frontend:watch": "webpack --config webpack.config.js --watch",
-    "build:frontend:prod": "NODE_ENV=production webpack --config webpack.config.js"
+    "build:frontend": "npm run build:scss && npm run copy:assets",
+    "build:frontend:watch": "npm run build:scss:watch",
+    "build:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --style=compressed --load-path=node_modules",
+    "build:scss:watch": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
+    "copy:assets": "cpy 'src/frontend/images/**/*' 'dist/public/images' && cpy 'node_modules/govuk-frontend/govuk/assets/**/*' 'dist/public/assets'"
   },
   "keywords": [
     "nestjs",
@@ -94,30 +96,20 @@
     "@types/serve-static": "^1.15.7",
     "@types/supertest": "^6.0.3",
     "autoprefixer": "^10.4.18",
-    "babel-loader": "^10.0.0",
-    "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^13.0.0",
-    "css-loader": "^7.1.2",
-    "css-minimizer-webpack-plugin": "^7.0.2",
+    "cpy-cli": "^4.2.0",
     "jest": "^29.7.0",
     "jsdom": "^26.1.0",
-    "mini-css-extract-plugin": "^2.8.1",
     "node-html-parser": "^7.0.0",
     "nunjucks": "^3.2.4",
     "postcss": "^8.4.35",
-    "postcss-loader": "^8.1.1",
     "prettier": "^3.0.0",
     "rimraf": "^6.0.0",
     "sass": "^1.71.1",
-    "sass-loader": "^16.0.5",
     "supertest": "^7.1.0",
-    "terser-webpack-plugin": "^5.3.10",
     "ts-jest": "^29.3.2",
-    "typescript": "^5.1.3",
-    "webpack": "^5.99.7",
-    "webpack-cli": "^6.0.1"
+    "typescript": "^5.1.3"
   },
   "engines": {
-    "node": ">=22.15.0"
+    "node": ">=20.12.2"
   }
 }
