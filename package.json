@@ -27,7 +27,7 @@
     "test:govuk:cov": "jest --testPathPattern=govuk-components --coverage",
     "build:frontend": "npm run build:scss && npm run copy:assets",
     "build:frontend:watch": "npm run build:scss:watch",
-    "build:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --style=compressed --load-path=node_modules",
+    "build:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --style=compressed --load-path=node_modules --update",
     "build:scss:watch": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
     "copy:assets": "cpy 'src/frontend/images/**/*' 'dist/public/images' && cpy 'node_modules/govuk-frontend/govuk/assets/**/*' 'dist/public/assets'"
   },
