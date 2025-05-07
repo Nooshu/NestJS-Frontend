@@ -174,18 +174,8 @@ async function bootstrap() {
     setHeaders: performanceConfig.staticAssets.setHeaders ?? (() => {}),
   };
 
-  app.useStaticAssets(join(process.cwd(), 'src', 'public'), staticOptions);
-  app.useStaticAssets(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'), {
-    ...staticOptions,
-    prefix: '/govuk',
-  });
-  app.useStaticAssets(
-    join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'),
-    {
-      ...staticOptions,
-      prefix: '/assets',
-    }
-  );
+  // Serve all static assets from dist/public
+  app.useStaticAssets(join(process.cwd(), 'dist', 'public'), staticOptions);
 
   /**
    * Swagger (OpenAPI) Configuration

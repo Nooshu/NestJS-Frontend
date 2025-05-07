@@ -9,6 +9,7 @@
 
 import { type DynamicModule, Module } from '@nestjs/common';
 import { ViewEngineService } from './view-engine.service';
+import { SharedServicesModule } from '../shared/services/shared-services.module';
 
 /**
  * Views module that provides template rendering functionality.
@@ -28,6 +29,7 @@ export class ViewsModule {
   static forRoot(): DynamicModule {
     return {
       module: ViewsModule,
+      imports: [SharedServicesModule],
       providers: [ViewEngineService],
       exports: [ViewEngineService],
     };

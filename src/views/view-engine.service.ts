@@ -10,6 +10,7 @@ import { Injectable } from '@nestjs/common';
 import * as nunjucks from 'nunjucks';
 import { join } from 'path';
 import configuration from '../shared/config/configuration';
+import { FingerprintService } from '../shared/services/fingerprint.service';
 
 /**
  * Service that provides Nunjucks template rendering functionality.
@@ -21,7 +22,7 @@ import configuration from '../shared/config/configuration';
 export class ViewEngineService {
   private readonly env: nunjucks.Environment;
 
-  constructor() {
+  constructor(private readonly fingerprintService: FingerprintService) {
     const config = configuration();
     const viewsPath = join(process.cwd(), 'src', 'views');
     const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist');
@@ -42,6 +43,9 @@ export class ViewEngineService {
 
     // Add any custom filters or globals here if needed
     this.env.addGlobal('asset_path', '/assets');
+    
+    // Add asset fingerprinting extension
+    this.env.addGlobal('assetPath', (path: string) => this.fingerprintService.getAssetPath(path));
   }
 
   /**
