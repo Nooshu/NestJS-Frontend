@@ -260,6 +260,36 @@ This framework is particularly well-suited for:
   - High performance and offline capabilities
   - Real-time performance monitoring
   - Advanced security features (CSRF, CSP, etc.)
+  - Microservices architecture implementation
+
+## Microservices Architecture Support
+
+The project includes comprehensive support for implementing microservices architecture:
+
+### 1. Built-in Microservices Capabilities
+- **Transport-agnostic messaging**: Support for TCP, Redis, MQTT, NATS, RabbitMQ, Kafka, and gRPC
+- **Message patterns**: Request-response, event-based, and hybrid approaches
+- **Multiple server instances**: Run HTTP and microservice servers simultaneously
+- **Serialization support**: JSON, MessagePack, and protocol-specific serializers
+
+### 2. Microservices Implementation Patterns
+- **Backend-for-Frontend (BFF)**: Optimized frontend services for specific clients
+- **API Gateway**: Route and transform requests to appropriate services
+- **Event-driven architecture**: Publish and subscribe to events across services
+- **Service discovery**: Integration with service registries and load balancers
+- **Circuit breakers**: Prevent cascading failures across services
+- **Distributed tracing**: Track requests across multiple services
+
+### 3. Microservices Benefits
+- **Independent deployability**: Update services without affecting others
+- **Team autonomy**: Different teams can own different services
+- **Technology flexibility**: Use optimal technologies for each service
+- **Scalability**: Scale individual services based on demand
+- **Resilience**: Failure in one service doesn't affect the entire system
+- **Enhanced security**: Secure service-to-service communication
+- **Optimized development**: Focused codebases for easier maintenance
+
+See our [Microservices Architecture Guide](./microservices-architecture.md) for detailed implementation guidance.
 
 ## Performance Optimizations
 

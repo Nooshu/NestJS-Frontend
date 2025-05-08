@@ -26,6 +26,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Response compression and browser caching
 - Optimized middleware chain
 - Static asset fingerprinting for optimal cache performance
+- Microservices architecture support
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
@@ -64,6 +65,7 @@ The migration documentation includes:
 - [Frontend Performance](./docs/readme/frontend-performance.md)
 - [Security Features](./docs/security.md)
 - [Asset Fingerprinting](./docs/asset-fingerprinting.md) - Content-based fingerprinting for optimal browser caching
+- [Microservices Architecture](./docs/microservices-architecture.md) - Guide to using this project in a microservice architecture
 
 ### Additional Documentation
 - [Dependency Injection Best Practices](./docs/dependency-injection.md)
