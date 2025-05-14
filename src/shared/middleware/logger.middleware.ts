@@ -41,6 +41,26 @@ export class LoggerMiddleware implements NestMiddleware {
   }
 
   /**
+   * Check if a path should be excluded from logging
+   */
+  private shouldExcludePath(path: string): boolean {
+    return loggingConfig.base.excludePaths.some(pattern => {
+      // Handle exact matches
+      if (!pattern.includes('*')) {
+        return path === pattern;
+      }
+      
+      // Handle *.extension patterns
+      if (pattern.startsWith('*.')) {
+        const extension = pattern.slice(1); // Remove the *
+        return path.endsWith(extension);
+      }
+
+      return false;
+    });
+  }
+
+  /**
    * Log request and response information.
    * Implements comprehensive request tracking including:
    * - Request details (method, URL, IP, user agent)
@@ -61,6 +81,12 @@ export class LoggerMiddleware implements NestMiddleware {
    */
   use(req: Request, res: Response, next: NextFunction) {
     const { method, originalUrl, ip } = req;
+
+    // Skip logging for excluded paths
+    if (this.shouldExcludePath(originalUrl)) {
+      return next();
+    }
+
     const userAgent = req.get('user-agent') || '';
     const start = Date.now();
 
@@ -78,6 +104,11 @@ export class LoggerMiddleware implements NestMiddleware {
       const duration = Date.now() - start;
       const { statusCode } = res;
       const contentLength = res.get('content-length');
+
+      // Skip logging for excluded paths
+      if (this.shouldExcludePath(originalUrl)) {
+        return;
+      }
 
       // Log response with performance metrics
       this.logger.info('Request completed', {

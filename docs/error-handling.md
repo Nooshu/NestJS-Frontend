@@ -73,6 +73,69 @@ This document outlines the standards and practices for error handling in the Nes
    }
    ```
 
+3. **404 Not Found Handling**
+   The application includes an intelligent `NotFoundExceptionFilter` that provides sophisticated handling of 404 errors:
+   
+   ```typescript
+   @Catch(NotFoundException)
+   export class NotFoundExceptionFilter implements ExceptionFilter {
+     private shouldExcludePath(path: string): boolean {
+       return loggingConfig.base.excludePaths.some(pattern => {
+         // Handle exact matches (e.g., '/favicon.ico')
+         if (!pattern.includes('*')) {
+           return path === pattern;
+         }
+         
+         // Handle *.extension patterns (e.g., '*.js.map')
+         if (pattern.startsWith('*.')) {
+           const extension = pattern.slice(1);
+           return path.endsWith(extension);
+         }
+         return false;
+       });
+     }
+
+     catch(_: NotFoundException, host: ArgumentsHost) {
+       const ctx = host.switchToHttp();
+       const request = ctx.getRequest<Request>();
+       const response = ctx.getResponse<Response>();
+
+       if (this.shouldExcludePath(request.path)) {
+         return response.status(404).send();
+       }
+
+       return response.status(404).json({
+         statusCode: 404,
+         timestamp: new Date().toISOString(),
+         path: request.url,
+         message: 'Not Found',
+       });
+     }
+   }
+   ```
+
+   Key features:
+   - Intelligent handling of browser-generated requests
+   - Pattern-based path exclusions
+   - Support for exact matches and extension wildcards
+   - Clean console output by silently handling known 404s
+   - Detailed error responses for legitimate 404s
+
+   Configuration in `logging.config.ts`:
+   ```typescript
+   export const loggingConfig = {
+     base: {
+       excludePaths: [
+         '/favicon.ico',
+         '*.js.map',
+         '*.css.map',
+         '/.well-known/appspecific/*',
+         // Add more patterns as needed
+       ]
+     }
+   };
+   ```
+
 ## Error Handling Strategies
 
 ### Global Error Handling

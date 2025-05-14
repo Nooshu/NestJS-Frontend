@@ -22,11 +22,12 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Advanced frontend performance optimisations
 - Service worker for offline support
 - Comprehensive performance monitoring and metrics
-- Enhanced security features
+- Enhanced security features including custom CSRF protection
 - Response compression and browser caching
 - Optimized middleware chain
 - Static asset fingerprinting for optimal cache performance
 - Microservices architecture support
+- Intelligent 404 error handling with pattern-based exclusions
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
@@ -195,7 +196,7 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 - Compression middleware with configurable settings
 - Browser-side caching with smart invalidation
 - Helmet.js security headers v8.1.0
-- Nunjucks templating engine - the official and default templating language used by GOV.UK Design System, ensuring perfect compatibility and maintainability with [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest).
+- Nunjucks templating engine - the official and default templating language used by GOV.UK Design System
 - Class-validator v0.14.1 for request validation
 - Class-transformer v0.5.1 for object transformation
 - TypeORM for database operations
@@ -203,12 +204,13 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 - Process isolation for CPU-intensive tasks
 - Service worker for offline support
 - Performance monitoring and metrics
-- CSRF protection with csurf v1.2.2
+- Custom CSRF protection with cryptographic token generation
 - Content Security Policy
 - Comprehensive security headers
 - Permissions policy
 - CORS configuration
 - Asset fingerprinting with immutable caching
+- Intelligent 404 error handling with pattern-based exclusions
 
 ### Development Tools
 - Jest v29.7.0 for unit and integration testing

@@ -28,6 +28,7 @@ import { LoggerService } from './logger/logger.service';
 import { performanceConfig } from './shared/config/performance.config';
 import { SecurityConfig } from './shared/config/security.config';
 import { SecurityErrorFilter } from './shared/filters/security-error.filter';
+import { NotFoundExceptionFilter } from './shared/filters/not-found.filter';
 import { ViewEngineService } from './views/view-engine.service';
 
 /**
@@ -102,7 +103,10 @@ async function bootstrap() {
   );
 
   // Add this line to apply the global error filter
-  app.useGlobalFilters(new SecurityErrorFilter());
+  app.useGlobalFilters(
+    new SecurityErrorFilter(),
+    new NotFoundExceptionFilter()
+  );
 
   /**
    * Security Middleware Configuration

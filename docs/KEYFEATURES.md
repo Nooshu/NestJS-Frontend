@@ -39,16 +39,19 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Built-in rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware for optimised performance
 - Environment-based configuration management
-- CSRF protection with secure cookies
+- Custom CSRF protection with cryptographic token generation:
+  - No external dependencies for enhanced security
+  - Cryptographically secure random token generation
+  - Timing-safe token comparison
+  - Automatic token rotation
+  - Secure cookie settings with HttpOnly and SameSite flags
+  - Configurable token expiration
+  - Path-based protection rules
 - Content Security Policy with nonce-based script security
 - Comprehensive security headers
 - Strict permissions policy
 - CORS configuration
 - CSP violation reporting
-- Secure cookie settings
-- Token validation
-- API route exclusions
-- Automatic token generation
 - Request validation using class-validator v0.14.1
 - Security error filtering and logging
 - Session management
@@ -72,6 +75,19 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
     - Mobile device emulation
     - Network request interception
     - Built-in test reporting
+- Advanced Error Handling
+  - Intelligent 404 error handling with pattern-based exclusions:
+    - Clean console output by filtering browser-generated requests
+    - Support for exact matches and extension wildcards
+    - Configurable path exclusion patterns
+    - Detailed error responses for legitimate 404s
+    - Automatic handling of source map and favicon requests
+  - Structured error handling with custom error filters
+  - Comprehensive error logging and monitoring
+  - User-friendly error messages
+  - Error recovery strategies
+  - Error boundary implementation
+  - Error state management
 - Comprehensive build system with task-specific scripts
   - Backend compilation and running in various modes
   - Frontend asset building with separate concerns

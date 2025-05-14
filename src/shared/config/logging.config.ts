@@ -25,6 +25,11 @@ export interface LoggingConfiguration {
      * Whether to enable pretty printing in development
      */
     prettyPrint: boolean;
+
+    /**
+     * Paths to exclude from logging
+     */
+    excludePaths: string[];
   };
 
   /**
@@ -167,6 +172,12 @@ export const loggingConfig: LoggingConfiguration = {
     environment: process.env.NODE_ENV || 'development',
     level: (process.env.LOG_LEVEL as 'error' | 'warn' | 'info' | 'debug' | 'verbose') || 'info',
     prettyPrint: process.env.NODE_ENV === 'development',
+    excludePaths: [
+      '/.well-known/appspecific/com.chrome.devtools.json',
+      '/favicon.ico',
+      '*.js.map',
+      '*.css.map'
+    ],
   },
 
   file: {

@@ -9,31 +9,44 @@ The application implements comprehensive security measures to protect against co
 ## CSRF Protection
 
 ### Implementation
-The application uses the `csurf` middleware to protect against Cross-Site Request Forgery attacks. The implementation includes:
+The application implements a custom CSRF protection middleware using Node's native `crypto` module. This implementation provides:
 
-- Secure cookie settings
-- Token validation
-- Proper error handling
-- API route exclusions
-- Automatic token generation
+- Secure token generation using cryptographically strong random values
+- Robust token verification
+- Secure cookie handling with HttpOnly and SameSite flags
+- Configurable token expiration
+- Path-based protection rules
+- Automatic token refresh
 
 ### Configuration
 ```typescript
-// CSRF middleware configuration
+// Custom CSRF middleware configuration
 {
   cookie: {
+    name: '_csrf',
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    key: '_csrf',
     path: '/',
+    maxAge: 86400 // 24 hours
   },
-  ignoreMethods: ['GET', 'HEAD', 'OPTIONS'],
+  ignorePaths: ['/api/health', '/metrics'],
+  headerName: 'X-CSRF-Token',
+  tokenLength: 32 // Length in bytes
 }
 ```
 
+### Token Generation
+The middleware uses cryptographically secure random values:
+
+```typescript
+const generateToken = () => {
+  return crypto.randomBytes(32).toString('hex');
+};
+```
+
 ### Usage
-To use CSRF protection in forms:
+To protect your forms:
 
 ```html
 <form method="POST" action="/submit">
@@ -41,6 +54,27 @@ To use CSRF protection in forms:
   <!-- form fields -->
 </form>
 ```
+
+For API requests, include the token in the `X-CSRF-Token` header:
+
+```typescript
+fetch('/api/endpoint', {
+  method: 'POST',
+  headers: {
+    'X-CSRF-Token': csrfToken
+  },
+  // ... other options
+});
+```
+
+### Security Considerations
+The custom implementation provides several security advantages:
+
+1. No external dependencies (removed vulnerable `cookie` package)
+2. Cryptographically secure token generation
+3. Timing-safe token comparison
+4. Automatic token rotation
+5. Protection against token theft through secure cookie settings
 
 ## Content Security Policy (CSP)
 

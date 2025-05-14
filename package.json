@@ -29,7 +29,7 @@
     "build:frontend:watch": "npm run build:scss:watch",
     "build:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --style=compressed --load-path=node_modules --update",
     "build:scss:watch": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
-    "copy:assets": "cpy 'src/frontend/images/**/*' 'dist/public/images' && cpy 'node_modules/govuk-frontend/govuk/assets/**/*' 'dist/public/assets' && cpy 'node_modules/govuk-frontend/dist/govuk/*.css' 'dist/public/govuk' && cpy 'node_modules/govuk-frontend/dist/govuk/*.css.map' 'dist/public/govuk' && cpy 'node_modules/govuk-frontend/dist/govuk/*.js' 'dist/public/govuk'",
+    "copy:assets": "cpy 'src/frontend/images/**/*' 'dist/public/images' && cpy 'node_modules/govuk-frontend/govuk/assets/**/*' 'dist/public/assets' && cpy 'node_modules/govuk-frontend/dist/govuk/*.{css,js,css.map,js.map}' 'dist/public/govuk'",
     "fingerprint:assets": "ts-node -r tsconfig-paths/register src/cli/fingerprint-assets.ts",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
