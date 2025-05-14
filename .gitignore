@@ -3,3 +3,9 @@ dist
 .DS_store
 test-results.json
 logs/*
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

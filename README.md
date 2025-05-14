@@ -66,6 +66,7 @@ The migration documentation includes:
 - [Security Features](./docs/security.md)
 - [Asset Fingerprinting](./docs/asset-fingerprinting.md) - Content-based fingerprinting for optimal browser caching
 - [Microservices Architecture](./docs/microservices-architecture.md) - Guide to using this project in a microservice architecture
+- [End-to-End Testing](./docs/playwright-testing.md) - Comprehensive guide to E2E testing with Playwright
 
 ### Additional Documentation
 - [Dependency Injection Best Practices](./docs/dependency-injection.md)
@@ -134,9 +135,27 @@ npm run test:watch            # Run tests in watch mode
 npm run test:cov              # Run tests with coverage report
 npm run test:e2e              # Run end-to-end tests
 npm run test:govuk            # Run GOV.UK component tests
+
+# Unit and Integration Tests
+npm run test                  # Run all unit tests
+npm run test:watch            # Run tests in watch mode
+npm run test:cov              # Run tests with coverage report
+npm run test:govuk            # Run GOV.UK component tests
+
+# End-to-End Tests with Playwright
+npm run test:e2e:ui          # Run E2E tests with UI mode
+npm run test:e2e:debug       # Run E2E tests in debug mode
+npm run test:e2e:chromium    # Run E2E tests in Chrome
+npm run test:e2e:firefox     # Run E2E tests in Firefox
+npm run test:e2e:webkit      # Run E2E tests in Safari
 ```
 
 For detailed information about all build scripts, see the [Build Scripts Documentation](docs/build-scripts.md).
+
+For detailed information about testing:
+- [Unit Testing Guide](docs/unit-testing.md)
+- [End-to-End Testing with Playwright](docs/playwright-testing.md)
+- [GOV.UK Component Testing](docs/govuk-testing.md)
 
 ## Asset Fingerprinting
 
@@ -192,7 +211,8 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 - Asset fingerprinting with immutable caching
 
 ### Development Tools
-- Jest v29.7.0 for testing with comprehensive performance API mocking
+- Jest v29.7.0 for unit and integration testing
+- Playwright v1.52.0 for end-to-end testing
 - Prettier v3.0.0 for code formatting
 - ESLint for code linting
 - TypeScript strict mode enabled

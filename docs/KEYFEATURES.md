@@ -56,12 +56,22 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Express v5.1.0 with enhanced security features
 
 ### 5. Developer Experience
-- Comprehensive testing setup with Jest v29.7.0
-  - Full Performance API mocking for accurate performance testing
-  - Type-safe test utilities with TypeScript
-  - Custom test matchers for common assertions
-  - Global test configuration and setup
-  - Mock utilities for common browser APIs
+- Comprehensive testing setup
+  - Jest v29.7.0 for unit and integration testing
+    - Full Performance API mocking for accurate performance testing
+    - Type-safe test utilities with TypeScript
+    - Custom test matchers for common assertions
+    - Global test configuration and setup
+    - Mock utilities for common browser APIs
+  - Playwright v1.52.0 for end-to-end testing
+    - Cross-browser testing (Chrome, Firefox, Safari)
+    - Automatic waiting and retry mechanisms
+    - Screenshot and video capture
+    - Interactive debugging with UI mode
+    - Parallel test execution
+    - Mobile device emulation
+    - Network request interception
+    - Built-in test reporting
 - Comprehensive build system with task-specific scripts
   - Backend compilation and running in various modes
   - Frontend asset building with separate concerns
@@ -71,6 +81,10 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
   - Incremental builds for faster development
   - Code quality scripts for formatting and linting
   - Testing scripts for various testing strategies
+    - Unit and integration testing with Jest
+    - End-to-end testing with Playwright
+    - Component testing for GOV.UK Frontend
+    - Coverage reporting and analysis
 - Swagger/OpenAPI documentation with automatic generation
 - Winston v3.17.0 logging integration with structured logging
 - Prettier v3.0.0 and ESLint for code quality
