@@ -4,6 +4,15 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 
 :rotating_light: **Note**: This PoC is not intended for use with ExUI at this stage; its application is envisioned as a future goal of the project. :rotating_light:
 
+## Super Quick Start guide
+```bash
+# Install dependencies
+npm install
+
+# Build backend and frontend
+npm run build && npm run build:frontend && npm run start:prod
+```
+
 ## Project Overview
 
 This application is a modern web application built with NestJS and GOV.UK Frontend, providing a robust foundation for government digital services. It includes:
