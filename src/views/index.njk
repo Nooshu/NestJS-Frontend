@@ -18,18 +18,20 @@
     <div class="govuk-grid-column-two-thirds">
       <h1 class="govuk-heading-xl">{{ title }}</h1>
       <p class="govuk-body">{{ message }}</p>
-      
-      <h2 class="govuk-heading-m">Pages</h2>
-      <ul class="govuk-list">
-        <li>
-          <a class="govuk-link" href="/second-page">Second Page</a>
-        </li>
-        <li>
-          <a class="govuk-link" href="/third-page">Third Page</a>
-        </li>
+
+      <h2 class="govuk-heading-m">Components on this page</h2>
+      <p class="govuk-body">This page demonstrates the following GOV.UK components:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>Header</li>
+        <li>Footer</li>
+        <li>Button</li>
+        <li>Warning text</li>
+        <li>Tag</li>
+        <li>Details</li>
+        <li>Inset text</li>
       </ul>
 
-      <h2 class="govuk-heading-m">Component Examples</h2>
+      <h2 class="govuk-heading-m">Other Component Examples</h2>
       <ul class="govuk-list">
         <li>
           <a class="govuk-link" href="/form-components">Form Components</a>
@@ -45,17 +47,7 @@
         </li>
       </ul>
 
-      <h2 class="govuk-heading-m">Components on this page</h2>
-      <p class="govuk-body">This page demonstrates the following GOV.UK components:</p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>Header</li>
-        <li>Footer</li>
-        <li>Button</li>
-        <li>Warning text</li>
-        <li>Tag</li>
-        <li>Details</li>
-        <li>Inset text</li>
-      </ul>
+      
 
       <div class="govuk-warning-text">
         <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
@@ -79,16 +71,6 @@
       </div>
 
       <hr class="govuk-section-break govuk-section-break--visible">
-
-      <h2 class="govuk-heading-m">Navigation</h2>
-      <ul class="govuk-list">
-        <li>
-          <a href="/second-page" class="govuk-link">Go to second page</a>
-        </li>
-        <li>
-          <a href="/third-page" class="govuk-link">Go to third page</a>
-        </li>
-      </ul>
 
       {{ pagination(allPages, currentPagePath) }}
     </div>
