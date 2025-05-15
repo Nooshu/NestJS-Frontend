@@ -214,16 +214,27 @@ async function bootstrap() {
    *   browsers to cache the asset for a year and never revalidate it during that time,
    *   significantly improving load times for returning visitors
    */
-  const staticOptions: ServeStaticOptions = {
-    maxAge: performanceConfig.staticAssets.maxAge ?? 31536000, // 1 year in milliseconds
-    immutable: true, // Assets are immutable due to fingerprinting
-    etag: true,
-    lastModified: true,
-    setHeaders: (res: any) => {
-      // Set Cache-Control with immutable flag for fingerprinted assets
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-    },
-  };
+  const staticOptions: ServeStaticOptions = 
+    process.env.NODE_ENV === 'development'
+      ? {
+          maxAge: 0,
+          immutable: false,
+          etag: false,
+          lastModified: false,
+          setHeaders: (res: any) => {
+            res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+          },
+        }
+      : {
+          maxAge: performanceConfig.staticAssets.maxAge ?? 31536000, // 1 year in milliseconds
+          immutable: true, // Assets are immutable due to fingerprinting
+          etag: true,
+          lastModified: true,
+          setHeaders: (res: any) => {
+            // Set Cache-Control with immutable flag for fingerprinted assets
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          },
+        };
 
   // Serve all static assets from dist/public
   app.useStaticAssets(join(process.cwd(), 'dist', 'public'), staticOptions);

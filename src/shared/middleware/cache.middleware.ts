@@ -52,16 +52,30 @@ export class CacheMiddleware implements NestMiddleware {
       return next();
     }
 
-    // Skip caching for authenticated routes
-    if (req.isAuthenticated?.()) {
-      return next();
+    const currentEnv = this.configService.get<string>('environment');
+
+    // Development mode: NO CACHING for any non-API GET routes (HTML pages, etc.)
+    if (currentEnv === 'development') {
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache'); // HTTP/1.0 backward compatibility
+      res.setHeader('Expires', '0'); // Proxies
+    } else {
+      // Production or other non-development modes:
+      // Skip caching for authenticated routes to prevent caching sensitive user-specific content
+      if (req.isAuthenticated?.()) {
+        // For authenticated routes in non-development environments, 
+        // we won't set specific cache headers here, allowing other mechanisms or browser defaults.
+        return next(); 
+      }
+
+      // For public (unauthenticated), non-API GET requests in non-development environments, apply caching.
+      // The fallback to 3600 is used if 'performance.browserCache.maxAge' is not found in config.
+      const cacheDuration = this.configService.get<number>('performance.browserCache.maxAge') || 3600;
+      res.setHeader('Cache-Control', `public, max-age=${cacheDuration}`);
     }
 
-    // Get cache duration from config or use default (1 hour)
-    const cacheDuration = this.configService.get('performance.browserCache.maxAge') || 3600;
-
-    // Set cache headers
-    res.setHeader('Cache-Control', `public, max-age=${cacheDuration}`);
+    // Vary header is important for content negotiation (e.g., compression)
+    // Set for all relevant GET requests that pass through this point.
     res.setHeader('Vary', 'Accept-Encoding');
 
     next();
