@@ -61,7 +61,6 @@
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/testing": "^11.1.1",
     "@nestjs/throttler": "^6.4.0",
-    "@tekuconcept/nestjs-csrf": "^1.1.1",
     "@types/compression": "^1.7.5",
     "@types/cookie-parser": "^1.4.8",
     "axios": "^1.9.0",
@@ -80,6 +79,7 @@
     "helmet": "^8.1.0",
     "ioredis": "^5.6.1",
     "joi": "^17.13.3",
+    "ncsrf": "^1.1.0",
     "nest-winston": "^1.10.2",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
@@ -116,6 +116,23 @@
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
+  },
+  "overrides": {
+    "chokidar@^2": {
+      "glob-parent": "^5"
+    },
+    "glob-stream@^6": {
+      "glob-parent": "^5"
+    },
+    "latest-version@^5": {
+      "package-json": "^7"
+    },
+    "sass-convert": {
+      "semver-regex": "^3"
+    },
+    "sassdoc-extras@^2": {
+      "marked": "^0.8.2"
+    }
   },
   "engines": {
     "node": ">=20.12.2"
