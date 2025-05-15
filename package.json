@@ -55,7 +55,7 @@
     "@nestjs/common": "^11.1.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.1",
-    "@nestjs/csrf": "^3.0.1",
+    "@tekuconcept/nestjs-csrf": "^1.1.1",
     "@nestjs/platform-express": "^11.1.1",
     "@nestjs/serve-static": "^5.0.3",
     "@nestjs/swagger": "^11.1.4",
