@@ -1,0 +1,51 @@
+{% macro pagination(pages, currentPagePath) %}
+  <div class="govuk-pagination">
+    {% if currentPagePath != pages[0].path %}
+      <div class="govuk-pagination__prev">
+        {% for page in pages %}
+          {% if page.path == currentPagePath %}
+            {% set prevPageIndex = loop.index0 - 1 %}
+            {% if prevPageIndex >= 0 %}
+              <a class="govuk-link govuk-pagination__link" href="{{ pages[prevPageIndex].path }}" rel="prev">
+                <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                  <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+                </svg>
+                <span class="govuk-pagination__link-title">Previous page</span>
+                <span class="govuk-visually-hidden">: {{ pages[prevPageIndex].title }}</span>
+              </a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <ul class="govuk-pagination__list">
+      {% for page in pages %}
+        <li class="govuk-pagination__item {% if page.path == currentPagePath %}govuk-pagination__item--current{% endif %}">
+          <a class="govuk-link govuk-pagination__link" href="{{ page.path }}" aria-label="Page {{ loop.index }}" {% if page.path == currentPagePath %}aria-current="page"{% endif %}>
+            {{ loop.index }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    {% if currentPagePath != pages[-1].path %}
+      <div class="govuk-pagination__next">
+        {% for page in pages %}
+          {% if page.path == currentPagePath %}
+            {% set nextPageIndex = loop.index0 + 1 %}
+            {% if nextPageIndex < pages | length %}
+              <a class="govuk-link govuk-pagination__link" href="{{ pages[nextPageIndex].path }}" rel="next">
+                <span class="govuk-pagination__link-title">Next page</span>
+                <span class="govuk-visually-hidden">: {{ pages[nextPageIndex].title }}</span>
+                <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                  <path d="m8.4062 0.0078125 6.7266 6.7266-6.7441 6.4062-1.377-1.4492 4.1856-3.9766h-12.896v-2h12.984l-4.2931-4.293z"></path>
+                </svg>
+              </a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+{% endmacro %} 

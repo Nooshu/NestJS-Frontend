@@ -1,4 +1,17 @@
 {% extends "layout.njk" %}
+{% from "components/pagination.njk" import pagination %}
+
+{% set allPages = [
+  { path: "/", title: "Home" },
+  { path: "/second-page", title: "Second Page" },
+  { path: "/third-page", title: "Third Page" },
+  { path: "/form-components", title: "Form Components" },
+  { path: "/layout-components", title: "Layout Components" },
+  { path: "/feedback-components", title: "Feedback Components" },
+  { path: "/missing-components", title: "Additional Components" }
+] %}
+
+{% set currentPagePath = "/missing-components" %}
 
 {% block content %}
   <div class="govuk-grid-row">
@@ -92,18 +105,7 @@
         </ul>
       </div>
 
-      <div class="govuk-pagination">
-        <div class="govuk-pagination__prev">
-          <a class="govuk-link govuk-pagination__link" href="/feedback-components" rel="prev">
-            <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
-              <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
-            </svg>
-            <span class="govuk-pagination__link-title">Previous page</span>
-            <span class="govuk-visually-hidden">:</span>
-            <span class="govuk-pagination__link-label">Feedback</span>
-          </a>
-        </div>
-      </div>
+      {{ pagination(allPages, currentPagePath) }}
     </div>
   </div>
 {% endblock %}
