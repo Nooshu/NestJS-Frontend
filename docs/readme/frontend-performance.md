@@ -4,7 +4,7 @@ This document outlines the frontend performance features and optimizations imple
 
 ## Overview
 
-The application includes comprehensive frontend performance optimizations to ensure fast loading times, efficient resource usage, and a great user experience. These optimizations are implemented through various tools and techniques, including Webpack, PostCSS, Service Workers, and performance monitoring.
+The application includes comprehensive frontend performance optimizations to ensure fast loading times, efficient resource usage, and a great user experience. These optimizations are implemented through various tools and techniques, including PostCSS, Service Workers, and performance monitoring.
 
 ## Performance Monitoring
 
@@ -92,28 +92,6 @@ performanceMonitor.addObserver((type, data) => {
 
 ## Build Optimization
 
-### Webpack Configuration
-The application uses Webpack for efficient bundling and optimization of frontend assets. Key features include:
-
-- Code splitting for better performance
-- CSS optimization with PostCSS
-- Asset optimization and minification
-- Automatic asset versioning
-- Development and production builds
-- Source maps for debugging
-- Optimized view engine configuration
-  - Autoescaping for security
-  - Environment-based caching
-  - Template optimization
-  - Memory usage optimization
-  - Error handling
-- Efficient route handling
-  - Logical route organization
-  - Middleware optimization
-  - Route-specific middleware
-  - Performance monitoring
-  - Error handling
-
 ### CSS Optimization
 CSS is optimized using PostCSS with the following features:
 
@@ -191,7 +169,6 @@ npm run build:frontend:watch
 ### Development Tools
 The following tools are used for frontend development:
 
-- Webpack for bundling
 - PostCSS for CSS processing
 - Babel for JavaScript transpilation
 - ESLint for code linting
@@ -259,13 +236,11 @@ Solutions for common performance issues:
 ## Additional Resources
 
 ### Documentation
-- [Webpack Documentation](https://webpack.js.org/)
 - [PostCSS Documentation](https://postcss.org/)
 - [Service Worker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API)
 - [Performance API](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API)
 
 ### Tools
-- [Webpack Bundle Analyzer](https://github.com/webpack-contrib/webpack-bundle-analyzer)
 - [Lighthouse](https://developers.google.com/web/tools/lighthouse)
 - [WebPageTest](https://www.webpagetest.org/)
 - [Chrome DevTools](https://developer.chrome.com/docs/devtools/) 
