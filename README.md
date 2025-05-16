@@ -5,13 +5,61 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 :rotating_light: **Note**: This PoC is not intended for use with ExUI at this stage; its application is envisioned as a future goal of the project. :rotating_light:
 
 ## Super Quick Start guide
+
+### Development Mode
 ```bash
 # Install dependencies
 npm install
 
-# Build backend and frontend
-npm run build && npm run build:frontend && npm run start:prod
+# Start development server with hot reload (includes frontend asset watching)
+npm run start:dev
 ```
+
+### Production Build
+```bash
+# Install dependencies
+npm install
+
+# Build for production (includes frontend assets)
+npm run build:prod
+
+# Start production server
+npm run start:prod
+```
+
+### Testing
+```bash
+# Run all tests (unit, e2e, and GOV.UK components)
+npm run test:all
+
+# Run end-to-end tests in all browsers
+npm run test:e2e:browsers
+```
+
+### Available Scripts
+
+#### Development
+- `npm run start:dev` - Start development server with hot reload and frontend asset watching
+- `npm run start:debug` - Start in debug mode with watch enabled
+- `npm run build:frontend:watch` - Watch and rebuild frontend assets
+
+#### Building
+- `npm run build` - Build the backend application
+- `npm run build:prod` - Build both backend and frontend for production
+- `npm run build:frontend` - Build frontend assets (SCSS, copy assets, fingerprint)
+
+#### Testing
+- `npm run test:all` - Run all tests (unit, e2e, and GOV.UK components)
+- `npm run test:e2e:browsers` - Run end-to-end tests in all browsers
+- `npm run test:e2e:ui` - Run end-to-end tests with UI mode
+- `npm run test:e2e:debug` - Run end-to-end tests in debug mode
+
+#### Code Quality
+- `npm run format` - Format code with Prettier
+- `npm run lint` - Lint code with ESLint
+- `npm run lint:check` - Check code style without fixing
+
+For detailed information about all available scripts, see the [Build Scripts Documentation](docs/build-scripts.md).
 
 ## Project Overview
 
@@ -99,10 +147,7 @@ The migration documentation includes:
 npm install
 
 # Build backend and frontend
-npm run build && npm run build:frontend
-
-# Start the application
-npm run start:prod
+npm run build && npm run build:frontend && npm run start:prod
 ```
 
 ### Development Mode
