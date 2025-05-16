@@ -1,11 +1,23 @@
+# Dependencies
 node_modules
 dist
+
+# OS
 .DS_store
-test-results.json
+
+# Logs
 logs/*
+test-results.json
 
 # Playwright
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Coverage
+/coverage/
+.nyc_output/
+*.lcov
+coverage-final.json
+coverage-summary.json

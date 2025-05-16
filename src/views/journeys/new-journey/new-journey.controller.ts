@@ -1,17 +1,45 @@
+/**
+ * Controller responsible for handling the new journey user flow.
+ * This controller manages the multi-step journey process including:
+ * - Initial welcome page
+ * - Journey start form (collecting user details)
+ * - Journey details form (collecting journey specifics)
+ * - Confirmation page
+ * 
+ * The journey follows a sequential flow with data persistence between steps.
+ * @class NewJourneyController
+ */
+
 import { Controller, Get, Post, Body, Render, Redirect, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+/**
+ * Interface representing the data collected in the journey start form.
+ * @interface StartFormData
+ */
 interface StartFormData {
+  /** User's full name */
   fullName: string;
+  /** User's email address */
   email: string;
+  /** Type of journey being undertaken */
   journeyType: 'personal' | 'business' | 'other';
 }
 
+/**
+ * Interface representing the data collected in the journey details form.
+ * @interface DetailsFormData
+ */
 interface DetailsFormData {
+  /** Day component of the journey start date */
   'journeyDate-day': string;
+  /** Month component of the journey start date */
   'journeyDate-month': string;
+  /** Year component of the journey start date */
   'journeyDate-year': string;
+  /** Duration of the journey */
   journeyDuration: string;
+  /** Detailed description of the journey */
   journeyDescription: string;
 }
 
@@ -21,11 +49,19 @@ export class NewJourneyController {
 
   constructor(private readonly configService: ConfigService) {}
 
+  /**
+   * In-memory storage for form data between journey steps.
+   * Note: In a production environment, this should be replaced with a proper database.
+   */
   private formData: {
     start?: StartFormData;
     details?: DetailsFormData;
   } = {};
 
+  /**
+   * Renders the welcome page for the new journey.
+   * @returns {Object} View model containing page title and navigation data
+   */
   @Get()
   @Render('journeys/new-journey/index')
   index() {
@@ -36,6 +72,10 @@ export class NewJourneyController {
     };
   }
 
+  /**
+   * Renders the journey start form page.
+   * @returns {Object} View model containing page title and navigation data
+   */
   @Get('start')
   @Render('journeys/new-journey/start')
   start() {
@@ -46,6 +86,12 @@ export class NewJourneyController {
     };
   }
 
+  /**
+   * Handles the submission of the journey start form.
+   * Stores the form data and redirects to the details page.
+   * @param {StartFormData} formData - The submitted form data
+   * @returns {Object} Empty object (redirect handled by decorator)
+   */
   @Post('start')
   @Redirect('/new-journey/details')
   handleStart(@Body() formData: StartFormData) {
@@ -53,6 +99,11 @@ export class NewJourneyController {
     return {};
   }
 
+  /**
+   * Renders the journey details form page.
+   * Redirects to start page if no start form data exists.
+   * @returns {Object} View model containing page title, navigation data, and environment info
+   */
   @Get('details')
   @Render('journeys/new-journey/details')
   details() {
@@ -67,6 +118,14 @@ export class NewJourneyController {
     };
   }
 
+  /**
+   * Handles the submission of the journey details form.
+   * Stores the form data and redirects to the confirmation page.
+   * Includes detailed logging for debugging purposes.
+   * @param {DetailsFormData} formData - The submitted form data
+   * @returns {Object} Empty object (redirect handled by decorator)
+   * @throws {Error} If there's an error processing the form data
+   */
   @Post('details')
   @Redirect('/new-journey/confirmation')
   handleDetails(@Body() formData: DetailsFormData) {
@@ -88,6 +147,12 @@ export class NewJourneyController {
     }
   }
 
+  /**
+   * Renders the journey confirmation page.
+   * Shows a summary of all collected journey information.
+   * Redirects to start if required form data is missing.
+   * @returns {Object} View model containing page title, navigation data, and formatted journey details
+   */
   @Get('confirmation')
   @Render('journeys/new-journey/confirmation')
   confirmation() {

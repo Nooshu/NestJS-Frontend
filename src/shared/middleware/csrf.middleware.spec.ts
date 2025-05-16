@@ -4,6 +4,12 @@ import type { Request, Response } from 'express';
 import { LoggerService } from '../../logger/logger.service';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
+import { SecurityConfigModule } from '../config/security.config';
+
+// Extend the Request type to include csrfToken
+interface RequestWithCsrf extends Request {
+  csrfToken?: () => string;
+}
 
 // Mock the middleware modules before importing the middleware
 jest.mock('cookie-parser', () => {
@@ -17,7 +23,7 @@ import { CsrfMiddleware } from './csrf.middleware';
 
 describe('CsrfMiddleware', () => {
   let middleware: CsrfMiddleware;
-  let mockRequest: Partial<Request>;
+  let mockRequest: Partial<RequestWithCsrf>;
   let mockResponse: Partial<Response> & { locals: Record<string, any> };
   let nextFunction: jest.Mock;
   let mockCsrfProtection: jest.Mock;
@@ -47,6 +53,7 @@ describe('CsrfMiddleware', () => {
     } as unknown as Logger;
 
     const moduleRef = await Test.createTestingModule({
+      imports: [SecurityConfigModule],
       providers: [
         CsrfMiddleware,
         {
@@ -61,6 +68,11 @@ describe('CsrfMiddleware', () => {
                   secure: true,
                   sameSite: 'strict',
                 },
+                'security.csrf.enabled': true,
+                'security.csrf.cookieName': 'XSRF-TOKEN',
+                'security.csrf.cookieOptions.httpOnly': true,
+                'security.csrf.cookieOptions.secure': true,
+                'security.csrf.cookieOptions.sameSite': 'strict',
               };
               return config[key];
             }),
@@ -104,7 +116,6 @@ describe('CsrfMiddleware', () => {
 
     // Create a mock CSRF protection function that can be configured per test
     mockCsrfProtection = jest.fn((_req: any, _res: any, next: any) => {
-      _req.csrfToken = () => 'test-csrf-token';
       next();
     });
 
@@ -116,6 +127,7 @@ describe('CsrfMiddleware', () => {
       path: '/test',
       headers: {},
       cookies: {},
+      csrfToken: () => 'test-csrf-token'
     };
 
     mockResponse = {
@@ -148,7 +160,7 @@ describe('CsrfMiddleware', () => {
 
   describe('use', () => {
     it('should set CSRF token in locals for GET requests', () => {
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
 
       expect(mockResponse.locals.csrfToken).toBe('test-csrf-token');
       expect(nextFunction).toHaveBeenCalled();
@@ -156,10 +168,13 @@ describe('CsrfMiddleware', () => {
 
     it('should validate CSRF token for non-GET requests', () => {
       mockRequest.method = 'POST';
-      mockRequest.cookies = { '_csrf': 'test-token' };
-      mockRequest.headers = { 'csrf-token': 'test-token' };
+      const testToken = 'test-csrf-token';
+      // Use the cookie name from config
+      mockRequest.cookies = { 'XSRF-TOKEN': testToken };
+      // Set the token in the request body instead of headers
+      mockRequest.body = { _csrf: testToken };
 
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
 
       expect(nextFunction).toHaveBeenCalled();
     });
@@ -174,7 +189,7 @@ describe('CsrfMiddleware', () => {
         next(new Error('Invalid CSRF token'));
       });
 
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(403);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -189,7 +204,7 @@ describe('CsrfMiddleware', () => {
       (mockRequest as any).path = '/api/test';
       mockRequest.method = 'POST';
 
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
 
       expect(nextFunction).toHaveBeenCalled();
       expect(mockResponse.locals.csrfToken).toBeUndefined();
@@ -205,7 +220,7 @@ describe('CsrfMiddleware', () => {
         next(new Error('CSRF token missing'));
       });
 
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(403);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -228,7 +243,7 @@ describe('CsrfMiddleware', () => {
         next(new Error('Test error'));
       });
 
-      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
 
       expect(mockResponse.status).toHaveBeenCalledWith(403);
       expect(mockResponse.json).toHaveBeenCalledWith({
