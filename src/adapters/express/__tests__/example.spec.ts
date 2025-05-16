@@ -87,8 +87,10 @@ describe('example.ts', () => {
 
       // Verify Express instance was retrieved
       expect(createExpressApp).toHaveBeenCalled();
-      expect(mockNestApp.getHttpAdapter).toHaveBeenCalled();
-      expect(mockNestApp.getHttpAdapter().getInstance).toHaveBeenCalled();
+      const getHttpAdapterSpy = mockNestApp.getHttpAdapter as jest.Mock;
+      expect(getHttpAdapterSpy).toHaveBeenCalled();
+      const httpAdapter = getHttpAdapterSpy.mock.results[0].value;
+      expect(httpAdapter.getInstance).toHaveBeenCalled();
     });
 
     it('should start the server successfully', async () => {
