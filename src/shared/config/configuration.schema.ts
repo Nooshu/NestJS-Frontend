@@ -22,7 +22,6 @@ export const configurationSchema = Joi.object({
   CORS_ORIGIN: Joi.string().default('*'),
   CSRF_ENABLED: Joi.boolean().default(true),
   CSRF_COOKIE_NAME: Joi.string().default('XSRF-TOKEN'),
-  CSRF_HEADER_NAME: Joi.string().default('X-XSRF-TOKEN'),
   CSRF_COOKIE_HTTP_ONLY: Joi.boolean().default(true),
   CSRF_COOKIE_SECURE: Joi.boolean().default(true),
   CSRF_COOKIE_SAME_SITE: Joi.string().valid('strict', 'lax', 'none').default('strict'),

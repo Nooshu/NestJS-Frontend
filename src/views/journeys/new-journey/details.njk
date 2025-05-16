@@ -1,0 +1,104 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/date-input/macro.njk" import govukDateInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "journeys/shared/navigation.njk" import journeyNavigation %}
+
+{% block content %}
+  {{ journeyNavigation(journey, currentPage) }}
+
+  <h1 class="govuk-heading-xl">Journey details</h1>
+
+  <div id="error-summary" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" style="display: none;">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      There is a problem
+    </h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li id="error-message"></li>
+      </ul>
+    </div>
+  </div>
+
+  <form method="POST" action="/new-journey/details" novalidate id="detailsForm">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukDateInput({
+      id: "journeyDate",
+      namePrefix: "journeyDate",
+      fieldset: {
+        legend: {
+          text: "When do you want to start your journey?",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      hint: {
+        text: "For example, 27 3 2024"
+      }
+    }) }}
+
+    {{ govukSelect({
+      id: "journeyDuration",
+      name: "journeyDuration",
+      label: {
+        text: "How long will your journey last?",
+        classes: "govuk-label--m"
+      },
+      items: [
+        {
+          value: "1-week",
+          text: "1 week"
+        },
+        {
+          value: "2-weeks",
+          text: "2 weeks"
+        },
+        {
+          value: "1-month",
+          text: "1 month"
+        },
+        {
+          value: "3-months",
+          text: "3 months"
+        },
+        {
+          value: "6-months",
+          text: "6 months"
+        },
+        {
+          value: "1-year",
+          text: "1 year"
+        }
+      ]
+    }) }}
+
+    {{ govukTextarea({
+      name: "journeyDescription",
+      id: "journeyDescription",
+      label: {
+        text: "Describe your journey",
+        classes: "govuk-label--m"
+      },
+      hint: {
+        text: "Tell us about what you plan to do during your journey"
+      }
+    }) }}
+
+    {{ govukButton({
+      text: "Continue",
+      attributes: {
+        "data-module": "govuk-button",
+        "id": "submit-button"
+      }
+    }) }}
+  </form>
+
+  {% if isDevelopment %}
+  <div class="govuk-inset-text">
+    <h2 class="govuk-heading-s">Debug Information</h2>
+    <p>CSRF Token: <code>{{ csrfToken }}</code></p>
+    <p>Cookie Name: <code>XSRF-TOKEN</code></p>
+    <p>Current Cookies: <code>{{ cookies | dump }}</code></p>
+  </div>
+  {% endif %}
+{% endblock %} 

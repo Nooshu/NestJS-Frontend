@@ -33,7 +33,6 @@ import { SecurityErrorFilter } from './shared/filters/security-error.filter';
 import { NotFoundExceptionFilter } from './shared/filters/not-found.filter';
 import { ViewEngineService } from './views/view-engine.service';
 import cookieParser from 'cookie-parser';
-import { doubleCsrf } from 'csrf-csrf';
 
 /**
  * Bootstrap function that creates and configures the NestJS application.
@@ -131,34 +130,8 @@ async function bootstrap() {
    */
   app.use(compression(performanceConfig.compression));
 
-  // Add cookie-parser middleware, required for csrf-csrf token storage
+  // Add cookie-parser middleware, required for csrf token storage
   app.use(cookieParser());
-
-  // Initialize CSRF protection using csrf-csrf (Double Submit Cookie Pattern)
-  // IMPORTANT: Replace 'VERY_SECRET_KEY_REPLACE_ME' with a strong, randomly generated secret key.
-  // Generate one using: require('crypto').randomBytes(32).toString('hex')
-  // The getSecret function provides the secret for HMAC generation.
-  // cookieName specifies the name of the cookie storing the CSRF secret.
-  // cookieOptions configure security aspects of the cookie (secure, httpOnly, sameSite).
-  // getSessionIdentifier is required by the library; for stateless (Double Submit Cookie),
-  // if req.session.id is not available/used, ensure a suitable placeholder or alternative is provided.
-  const { doubleCsrfProtection } = doubleCsrf({
-    getSecret: () => 'VERY_SECRET_KEY_REPLACE_ME', // Replace with your actual secret
-    cookieName: '__Host-psifi.x-csrf-token', // Using __Host- prefix for security (requires HTTPS)
-                                               // Change for local HTTP development if needed (e.g., 'psifi.x-csrf-token')
-    cookieOptions: {
-      secure: process.env.NODE_ENV === 'production', // Transmit cookie only over HTTPS in production
-      httpOnly: true, // Prevent client-side JavaScript access to the cookie
-      sameSite: 'strict', // Mitigates CSRF by ensuring the cookie is only sent for same-site requests
-    },
-    // For Double Submit Cookie pattern, if not using server-side sessions for req.session.id,
-    // this identifier might be a constant or a request-specific ID not tied to a session.
-    // Consult csrf-csrf documentation for best practices in such scenarios.
-    getSessionIdentifier: (req: any) => req.session?.id || 'not_available', 
-  });
-
-  // Apply CSRF protection middleware to all relevant routes
-  app.use(doubleCsrfProtection);
 
   // Get the view engine service
   const viewEngineService = app.get(ViewEngineService);

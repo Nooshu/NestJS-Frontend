@@ -1,0 +1,30 @@
+{% macro journeyNavigation(journey, currentPage) %}
+  {% if journey == 'new-journey' %}
+    {% set pages = [
+      { path: "/new-journey", title: "Welcome" },
+      { path: "/new-journey/start", title: "Start" },
+      { path: "/new-journey/details", title: "Details" },
+      { path: "/new-journey/confirmation", title: "Confirmation" }
+    ] %}
+  {% else %}
+    {% set pages = [
+      { path: "/", title: "Home" },
+      { path: "/second-page", title: "Second Page" },
+      { path: "/third-page", title: "Third Page" }
+    ] %}
+  {% endif %}
+
+  <nav class="govuk-breadcrumbs" aria-label="Breadcrumbs">
+    <ol class="govuk-breadcrumbs__list">
+      {% for page in pages %}
+        <li class="govuk-breadcrumbs__list-item {% if page.path == currentPagePath %}govuk-breadcrumbs__list-item--active{% endif %}">
+          {% if page.path == currentPagePath %}
+            {{ page.title }}
+          {% else %}
+            <a class="govuk-breadcrumbs__link" href="{{ page.path }}">{{ page.title }}</a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+  </nav>
+{% endmacro %} 

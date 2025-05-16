@@ -1,0 +1,215 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "journeys/shared/navigation.njk" import journeyNavigation %}
+
+{% block content %}
+  {{ journeyNavigation(journey, currentPage) }}
+
+  <h1 class="govuk-heading-xl">Start your journey</h1>
+
+  {% if process.env.NODE_ENV === 'development' %}
+  <div class="govuk-inset-text">
+    <h2 class="govuk-heading-s">Debug Information</h2>
+    <p>CSRF Token: <code>{{ csrfToken }}</code></p>
+    <p>Cookie Name: <code>XSRF-TOKEN</code></p>
+    <p>Header Name: <code>X-XSRF-TOKEN</code></p>
+  </div>
+  {% endif %}
+
+  <div id="error-summary" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" style="display: none;">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+      There is a problem
+    </h2>
+    <div class="govuk-error-summary__body">
+      <ul class="govuk-list govuk-error-summary__list">
+        <li id="error-message"></li>
+      </ul>
+    </div>
+  </div>
+
+  <form method="POST" action="/new-journey/start" novalidate id="startForm">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    {{ govukInput({
+      label: {
+        text: "Full name",
+        classes: "govuk-label--m"
+      },
+      id: "fullName",
+      name: "fullName",
+      autocomplete: "name",
+      classes: "govuk-input--width-20"
+    }) }}
+
+    {{ govukInput({
+      label: {
+        text: "Email address",
+        classes: "govuk-label--m"
+      },
+      id: "email",
+      name: "email",
+      type: "email",
+      autocomplete: "email",
+      classes: "govuk-input--width-20"
+    }) }}
+
+    {{ govukRadios({
+      name: "journeyType",
+      fieldset: {
+        legend: {
+          text: "What type of journey is this?",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: [
+        {
+          value: "personal",
+          text: "Personal journey"
+        },
+        {
+          value: "business",
+          text: "Business journey"
+        },
+        {
+          value: "other",
+          text: "Other"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Continue",
+      attributes: {
+        "data-module": "govuk-button",
+        "id": "submit-button"
+      }
+    }) }}
+  </form>
+
+  <script>
+    document.getElementById('startForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const submitButton = document.getElementById('submit-button');
+      const errorSummary = document.getElementById('error-summary');
+      const errorMessage = document.getElementById('error-message');
+      
+      // Reset any previous error state
+      errorSummary.style.display = 'none';
+      errorMessage.textContent = '';
+      
+      // Disable the submit button and show loading state
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-busy', 'true');
+      
+      try {
+        // Convert form data to URLSearchParams
+        const formData = new FormData(form);
+        const searchParams = new URLSearchParams();
+        
+        // Handle special case for journeyType radio buttons
+        const journeyType = formData.get('journeyType');
+        if (journeyType) {
+          searchParams.append('journeyType', journeyType.toString());
+        }
+        
+        // Add other form fields
+        for (const [key, value] of formData.entries()) {
+          if (key !== 'journeyType') {
+            searchParams.append(key, value.toString());
+          }
+        }
+
+        // Validate required fields before submission
+        const fullName = formData.get('fullName');
+        const email = formData.get('email');
+        const journeyType = formData.get('journeyType');
+
+        if (!fullName) {
+          throw new Error('Please enter your full name');
+        }
+        if (!email) {
+          throw new Error('Please enter your email address');
+        }
+        if (!journeyType) {
+          throw new Error('Please select a journey type');
+        }
+
+        // Validate email format
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email.toString())) {
+          throw new Error('Please enter a valid email address');
+        }
+
+        // Debug logging in development
+        if (process.env.NODE_ENV === 'development') {
+          console.debug('Submitting form with CSRF token:', {
+            tokenPrefix: formData.get('_csrf')?.toString().substring(0, 8) + '...',
+            cookieName: 'XSRF-TOKEN',
+            headerName: 'X-XSRF-TOKEN',
+            cookies: document.cookie,
+            formData: Object.fromEntries(formData.entries())
+          });
+        }
+
+        const response = await fetch(form.action, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Accept': 'application/json'
+          },
+          body: searchParams.toString(),
+          credentials: 'same-origin'
+        });
+
+        // Log the response headers
+        if (process.env.NODE_ENV === 'development') {
+          console.debug('Response headers:', {
+            headers: Object.fromEntries(response.headers.entries()),
+            headerNames: Array.from(response.headers.keys())
+          });
+        }
+
+        if (response.redirected) {
+          window.location.href = response.url;
+          return;
+        }
+
+        if (!response.ok) {
+          let errorText = 'An error occurred while submitting the form';
+          try {
+            const data = await response.json();
+            errorText = data.message || errorText;
+            if (data.details) {
+              console.error('CSRF validation error details:', data.details);
+            }
+          } catch (e) {
+            // If we can't parse the JSON, use the status text
+            errorText = response.statusText || errorText;
+          }
+          throw new Error(errorText);
+        }
+
+        // If we get here, the submission was successful
+        window.location.href = response.url;
+      } catch (error) {
+        console.error('Error:', error);
+        // Show error message to user
+        errorMessage.textContent = error.message || 'An error occurred while submitting the form. Please try again.';
+        errorSummary.style.display = 'block';
+        errorSummary.focus();
+
+        // If it's a network error, provide more specific guidance
+        if (error.message === 'Failed to fetch') {
+          errorMessage.textContent = 'Unable to connect to the server. Please check your internet connection and try again.';
+        }
+      } finally {
+        // Re-enable the submit button
+        submitButton.disabled = false;
+        submitButton.removeAttribute('aria-busy');
+      }
+    });
+  </script>
+{% endblock %} 

@@ -1,0 +1,88 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+{% from "journeys/shared/navigation.njk" import journeyNavigation %}
+
+{% block content %}
+  {{ journeyNavigation(journey, currentPage) }}
+
+  {{ govukPanel({
+    titleText: "Journey details submitted",
+    html: "Your reference number<br><strong>HDJ2123F</strong>"
+  }) }}
+
+  <h2 class="govuk-heading-m">What happens next</h2>
+
+  <p class="govuk-body">We've sent you a confirmation email with your journey details.</p>
+  <p class="govuk-body">We'll review your journey details and contact you within 2 working days.</p>
+
+  <h2 class="govuk-heading-m">Journey summary</h2>
+
+  {{ govukSummaryList({
+    rows: [
+      {
+        key: {
+          text: "Full name"
+        },
+        value: {
+          text: formData.fullName
+        }
+      },
+      {
+        key: {
+          text: "Email address"
+        },
+        value: {
+          text: formData.email
+        }
+      },
+      {
+        key: {
+          text: "Journey type"
+        },
+        value: {
+          text: formData.journeyType | capitalize
+        }
+      },
+      {
+        key: {
+          text: "Start date"
+        },
+        value: {
+          text: formData.startDate
+        }
+      },
+      {
+        key: {
+          text: "Duration"
+        },
+        value: {
+          text: formData.duration | replace("-", " ") | capitalize
+        }
+      },
+      {
+        key: {
+          text: "Description"
+        },
+        value: {
+          text: formData.description
+        }
+      }
+    ]
+  }) }}
+
+  <div class="govuk-button-group">
+    {{ govukButton({
+      text: "Start a new journey",
+      href: "/new-journey",
+      classes: "govuk-button--secondary"
+    }) }}
+
+    {{ govukButton({
+      text: "Return to home",
+      href: "/",
+      classes: "govuk-button--secondary"
+    }) }}
+  </div>
+{% endblock %} 

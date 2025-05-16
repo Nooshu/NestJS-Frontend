@@ -17,7 +17,6 @@ export class SecurityConfig {
     return {
       enabled: this.configService.get<boolean>('security.csrf.enabled') ?? true,
       cookieName: this.configService.get<string>('security.csrf.cookieName') ?? 'XSRF-TOKEN',
-      headerName: this.configService.get<string>('security.csrf.headerName') ?? 'X-XSRF-TOKEN',
       cookieOptions: {
         httpOnly: this.configService.get<boolean>('security.csrf.cookieOptions.httpOnly') ?? true,
         secure: this.configService.get<boolean>('security.csrf.cookieOptions.secure') ?? true,

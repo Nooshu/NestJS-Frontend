@@ -1,0 +1,28 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "journeys/shared/navigation.njk" import journeyNavigation %}
+
+{% block content %}
+  {{ journeyNavigation(journey, currentPage) }}
+
+  {{ govukPanel({
+    titleText: "Welcome to the New Journey",
+    html: "This is a new user journey example using GOV.UK Frontend components"
+  }) }}
+
+  <h2 class="govuk-heading-m">Before you start</h2>
+  <p class="govuk-body">You'll need:</p>
+  <ul class="govuk-list govuk-list--bullet">
+    <li>Your personal details</li>
+    <li>Your contact information</li>
+    <li>Any relevant documents</li>
+  </ul>
+
+  {{ govukButton({
+    text: "Start now",
+    href: "/new-journey/start",
+    isStartButton: true,
+    classes: "govuk-!-margin-top-2"
+  }) }}
+{% endblock %} 

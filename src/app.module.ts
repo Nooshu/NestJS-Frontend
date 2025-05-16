@@ -24,6 +24,7 @@ import { LoggerMiddleware } from './shared/middleware/logger.middleware';
 import { SecurityModule } from './shared/security/security.module';
 import { ViewsController } from './views/views.controller';
 import { ViewsModule } from './views/views.module';
+import { NewJourneyModule } from './views/journeys/new-journey/new-journey.module';
 
 /**
  * Root module class that bootstraps the application.
@@ -50,6 +51,7 @@ import { ViewsModule } from './views/views.module';
     SecurityModule,
     AppCacheModule,
     LoggerModule,
+    NewJourneyModule,
   ],
   controllers: [AppController, ViewsController, CspReportController],
   providers: [],
