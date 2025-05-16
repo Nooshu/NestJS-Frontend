@@ -1,5 +1,8 @@
 {% extends "layout.njk" %}
 {% from "components/pagination.njk" import pagination %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/notification-banner/macro.njk" import govukNotificationBanner %}
 
 {% set allPages = [
   { path: "/", title: "Home" },
@@ -21,54 +24,50 @@
 
       <h2 class="govuk-heading-m">Feedback Components</h2>
 
-      <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-        <h2 class="govuk-error-summary__title" id="error-summary-title">
-          There is a problem
-        </h2>
-        <div class="govuk-error-summary__body">
-          <ul class="govuk-list govuk-error-summary__list">
-            <li>
-              <a href="#name">Enter your full name</a>
-            </li>
-            <li>
-              <a href="#email">Enter an email address in the correct format</a>
-            </li>
-          </ul>
-        </div>
-      </div>
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: [
+          {
+            text: "Enter your full name",
+            href: "#name"
+          },
+          {
+            text: "Enter an email address in the correct format",
+            href: "#email"
+          }
+        ]
+      }) }}
 
-      <div class="govuk-form-group govuk-form-group--error">
-        <label class="govuk-label" for="name">
-          Name
-        </label>
-        <span id="name-error" class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error:</span> Enter your full name
-        </span>
-        <input class="govuk-input govuk-input--error" id="name" name="name" type="text" aria-describedby="name-error">
-      </div>
+      {{ govukInput({
+        label: {
+          text: "Name"
+        },
+        id: "name",
+        name: "name",
+        errorMessage: {
+          text: "Enter your full name"
+        },
+        classes: "govuk-input--error"
+      }) }}
 
-      <div class="govuk-form-group govuk-form-group--error">
-        <label class="govuk-label" for="email">
-          Email
-        </label>
-        <span id="email-error" class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error:</span> Enter an email address in the correct format
-        </span>
-        <input class="govuk-input govuk-input--error" id="email" name="email" type="email" aria-describedby="email-error">
-      </div>
+      {{ govukInput({
+        label: {
+          text: "Email"
+        },
+        id: "email",
+        name: "email",
+        type: "email",
+        errorMessage: {
+          text: "Enter an email address in the correct format"
+        },
+        classes: "govuk-input--error"
+      }) }}
 
-      <div class="govuk-notification-banner govuk-notification-banner--success" role="alert" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-        <div class="govuk-notification-banner__header">
-          <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-            Success
-          </h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-          <p class="govuk-notification-banner__heading">
-            Your application has been submitted successfully.
-          </p>
-        </div>
-      </div>
+      {{ govukNotificationBanner({
+        type: "success",
+        titleText: "Success",
+        text: "Your application has been submitted successfully."
+      }) }}
 
       {{ pagination(allPages, currentPagePath) }}
     </div>

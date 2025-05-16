@@ -1,5 +1,12 @@
 {% extends "layout.njk" %}
 {% from "components/pagination.njk" import pagination %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/checkboxes/macro.njk" import govukCheckboxes %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/file-upload/macro.njk" import govukFileUpload %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% set allPages = [
   { path: "/", title: "Home" },
@@ -22,78 +29,79 @@
       <h2 class="govuk-heading-m">Form Components</h2>
 
       <form class="govuk-form-group">
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="input-example">
-            Text input
-          </label>
-          <input class="govuk-input" id="input-example" name="input-example" type="text">
-        </div>
+        {{ govukInput({
+          label: {
+            text: "Text input"
+          },
+          id: "input-example",
+          name: "input-example"
+        }) }}
 
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="textarea-example">
-            Textarea
-          </label>
-          <textarea class="govuk-textarea" id="textarea-example" name="textarea-example" rows="5"></textarea>
-        </div>
+        {{ govukTextarea({
+          label: {
+            text: "Textarea"
+          },
+          id: "textarea-example",
+          name: "textarea-example",
+          rows: "5"
+        }) }}
 
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-              <h3 class="govuk-fieldset__heading">
-                Checkboxes
-              </h3>
-            </legend>
-            <div class="govuk-checkboxes" data-module="govuk-checkboxes">
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="checkbox-1" name="checkbox" type="checkbox" value="checkbox-1">
-                <label class="govuk-label govuk-checkboxes__label" for="checkbox-1">
-                  Checkbox 1
-                </label>
-              </div>
-              <div class="govuk-checkboxes__item">
-                <input class="govuk-checkboxes__input" id="checkbox-2" name="checkbox" type="checkbox" value="checkbox-2">
-                <label class="govuk-label govuk-checkboxes__label" for="checkbox-2">
-                  Checkbox 2
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
+        {{ govukFieldset({
+          legend: {
+            text: "Checkboxes",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) }}
+        {{ govukCheckboxes({
+          name: "checkbox",
+          items: [
+            {
+              value: "checkbox-1",
+              text: "Checkbox 1"
+            },
+            {
+              value: "checkbox-2",
+              text: "Checkbox 2"
+            }
+          ]
+        }) }}
 
-        <div class="govuk-form-group">
-          <fieldset class="govuk-fieldset">
-            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-              <h3 class="govuk-fieldset__heading">
-                Radios
-              </h3>
-            </legend>
-            <div class="govuk-radios" data-module="govuk-radios">
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="radio-1" name="radio" type="radio" value="radio-1">
-                <label class="govuk-label govuk-radios__label" for="radio-1">
-                  Radio 1
-                </label>
-              </div>
-              <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="radio-2" name="radio" type="radio" value="radio-2">
-                <label class="govuk-label govuk-radios__label" for="radio-2">
-                  Radio 2
-                </label>
-              </div>
-            </div>
-          </fieldset>
-        </div>
+        {{ govukFieldset({
+          legend: {
+            text: "Radios",
+            classes: "govuk-fieldset__legend--m",
+            isPageHeading: false
+          }
+        }) }}
+        {{ govukRadios({
+          name: "radio",
+          items: [
+            {
+              value: "radio-1",
+              text: "Radio 1"
+            },
+            {
+              value: "radio-2",
+              text: "Radio 2"
+            }
+          ]
+        }) }}
 
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="file-upload">
-            File upload
-          </label>
-          <input class="govuk-file-upload" id="file-upload" name="file-upload" type="file">
-        </div>
+        {{ govukFileUpload({
+          id: "file-upload",
+          name: "file-upload",
+          label: {
+            text: "File upload"
+          }
+        }) }}
 
-        <button class="govuk-button" data-module="govuk-button">
-          Submit form
-        </button>
+        {{ govukButton({
+          text: "Submit form",
+          attributes: {
+            "data-module": "govuk-button"
+          }
+        }) }}
       </form>
 
       {{ pagination(allPages, currentPagePath) }}

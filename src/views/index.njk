@@ -1,5 +1,12 @@
 {% extends "layout.njk" %}
 {% from "components/pagination.njk" import pagination %}
+{% from "govuk/components/header/macro.njk" import govukHeader %}
+{% from "govuk/components/footer/macro.njk" import govukFooter %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/warning-text/macro.njk" import govukWarningText %}
+{% from "govuk/components/tag/macro.njk" import govukTag %}
+{% from "govuk/components/details/macro.njk" import govukDetails %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% set allPages = [
   { path: "/", title: "Home" },
@@ -47,27 +54,29 @@
         </li>
       </ul>
 
-      
+      {{ govukWarningText({
+        text: "This is a warning message",
+        iconFallbackText: "Warning"
+      }) }}
 
-      <div class="govuk-warning-text">
-        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-        <strong class="govuk-warning-text__text">
-          <span class="govuk-warning-text__assistive">Warning</span>
-          This is a warning message
-        </strong>
-      </div>
-
-      <div class="govuk-inset-text">
-        This is an inset text component
-      </div>
+      {{ govukInsetText({
+        text: "This is an inset text component"
+      }) }}
 
       <div class="govuk-button-group">
-        <button class="govuk-button" data-module="govuk-button">
-          Save and continue
-        </button>
-        <button class="govuk-button govuk-button--secondary" data-module="govuk-button">
-          Find address
-        </button>
+        {{ govukButton({
+          text: "Save and continue",
+          attributes: {
+            "data-module": "govuk-button"
+          }
+        }) }}
+        {{ govukButton({
+          text: "Find address",
+          classes: "govuk-button--secondary",
+          attributes: {
+            "data-module": "govuk-button"
+          }
+        }) }}
       </div>
 
       <hr class="govuk-section-break govuk-section-break--visible">

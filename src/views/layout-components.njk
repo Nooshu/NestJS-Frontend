@@ -1,5 +1,9 @@
 {% extends "layout.njk" %}
 {% from "components/pagination.njk" import pagination %}
+{% from "govuk/components/panel/macro.njk" import govukPanel %}
+{% from "govuk/components/phase-banner/macro.njk" import govukPhaseBanner %}
+{% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+{% from "govuk/components/table/macro.njk" import govukTable %}
 
 {% set allPages = [
   { path: "/", title: "Home" },
@@ -23,42 +27,40 @@
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-half">
-          <div class="govuk-panel govuk-panel--confirmation">
-            <h1 class="govuk-panel__title">
-              Application complete
-            </h1>
-            <div class="govuk-panel__body">
-              Your reference number<br><strong>HDJ2123F</strong>
-            </div>
-          </div>
+          {{ govukPanel({
+            titleText: "Application complete",
+            html: "Your reference number<br><strong>HDJ2123F</strong>",
+            classes: "govuk-panel--confirmation"
+          }) }}
         </div>
         <div class="govuk-grid-column-one-half">
-          <div class="govuk-phase-banner">
-            <p class="govuk-phase-banner__content">
-              <strong class="govuk-tag govuk-phase-banner__content__tag">
-                alpha
-              </strong>
-              <span class="govuk-phase-banner__text">
-                This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.
-              </span>
-            </p>
-          </div>
+          {{ govukPhaseBanner({
+            tag: {
+              text: "alpha"
+            },
+            html: 'This is a new service – your <a class="govuk-link" href="#">feedback</a> will help us to improve it.'
+          }) }}
         </div>
       </div>
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-          <div class="govuk-breadcrumbs">
-            <ol class="govuk-breadcrumbs__list">
-              <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="/">Home</a>
-              </li>
-              <li class="govuk-breadcrumbs__list-item">
-                <a class="govuk-breadcrumbs__link" href="/form-components">Form components</a>
-              </li>
-              <li class="govuk-breadcrumbs__list-item" aria-current="page">Layout components</li>
-            </ol>
-          </div>
+          {{ govukBreadcrumbs({
+            items: [
+              {
+                text: "Home",
+                href: "/"
+              },
+              {
+                text: "Form components",
+                href: "/form-components"
+              },
+              {
+                text: "Layout components",
+                href: "/layout-components"
+              }
+            ]
+          }) }}
         </div>
       </div>
 
@@ -75,27 +77,36 @@
 
       <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
-          <div class="govuk-table">
-            <table class="govuk-table">
-              <caption class="govuk-table__caption govuk-table__caption--m">Table example</caption>
-              <thead class="govuk-table__head">
-                <tr class="govuk-table__row">
-                  <th scope="col" class="govuk-table__header">Name</th>
-                  <th scope="col" class="govuk-table__header">Status</th>
-                </tr>
-              </thead>
-              <tbody class="govuk-table__body">
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Item 1</td>
-                  <td class="govuk-table__cell">Active</td>
-                </tr>
-                <tr class="govuk-table__row">
-                  <td class="govuk-table__cell">Item 2</td>
-                  <td class="govuk-table__cell">Inactive</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          {{ govukTable({
+            caption: "Table example",
+            captionClasses: "govuk-table__caption--m",
+            head: [
+              {
+                text: "Name"
+              },
+              {
+                text: "Status"
+              }
+            ],
+            rows: [
+              [
+                {
+                  text: "Item 1"
+                },
+                {
+                  text: "Active"
+                }
+              ],
+              [
+                {
+                  text: "Item 2"
+                },
+                {
+                  text: "Inactive"
+                }
+              ]
+            ]
+          }) }}
         </div>
       </div>
 

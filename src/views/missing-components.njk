@@ -1,5 +1,10 @@
 {% extends "layout.njk" %}
 {% from "components/pagination.njk" import pagination %}
+{% from "govuk/components/back-link/macro.njk" import govukBackLink %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/textarea/macro.njk" import govukTextarea %}
+{% from "govuk/components/fieldset/macro.njk" import govukFieldset %}
 
 {% set allPages = [
   { path: "/", title: "Home" },
@@ -19,74 +24,101 @@
       <h1 class="govuk-heading-xl">Additional Components</h1>
       <p class="govuk-body">This page demonstrates additional GOV.UK components not shown on other pages.</p>
 
-      <a href="/" class="govuk-back-link">Back</a>
+      {{ govukBackLink({
+        text: "Back",
+        href: "/"
+      }) }}
 
       <h2 class="govuk-heading-m">Form Components</h2>
 
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="event-name">
-          What is the name of the event?
-        </label>
-        <div id="event-name-hint" class="govuk-hint">
-          The name you'll use on promotional material
-        </div>
-        <input class="govuk-input" id="event-name" name="event-name" type="text" aria-describedby="event-name-hint">
-      </div>
+      {{ govukInput({
+        label: {
+          text: "What is the name of the event?"
+        },
+        hint: {
+          text: "The name you'll use on promotional material"
+        },
+        id: "event-name",
+        name: "event-name"
+      }) }}
 
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="select-1">
-          Where do you live?
-        </label>
-        <select class="govuk-select" id="select-1" name="select-1">
-          <option value="england">England</option>
-          <option value="scotland">Scotland</option>
-          <option value="wales">Wales</option>
-          <option value="northern-ireland">Northern Ireland</option>
-        </select>
-      </div>
+      {{ govukSelect({
+        label: {
+          text: "Where do you live?"
+        },
+        id: "select-1",
+        name: "select-1",
+        items: [
+          {
+            value: "england",
+            text: "England"
+          },
+          {
+            value: "scotland",
+            text: "Scotland"
+          },
+          {
+            value: "wales",
+            text: "Wales"
+          },
+          {
+            value: "northern-ireland",
+            text: "Northern Ireland"
+          }
+        ]
+      }) }}
 
-      <div class="govuk-form-group">
-        <label class="govuk-label" for="more-detail">
-          Can you provide more detail?
-        </label>
-        <div id="more-detail-hint" class="govuk-hint">
-          Do not include personal or financial information, like your National Insurance number or credit card details.
-        </div>
-        <textarea class="govuk-textarea" id="more-detail" name="more-detail" rows="5" aria-describedby="more-detail-hint"></textarea>
-        <div id="more-detail-info" class="govuk-hint govuk-character-count__message" aria-live="polite">
-          You have 500 characters remaining
-        </div>
-      </div>
+      {{ govukTextarea({
+        label: {
+          text: "Can you provide more detail?"
+        },
+        hint: {
+          text: "Do not include personal or financial information, like your National Insurance number or credit card details."
+        },
+        id: "more-detail",
+        name: "more-detail",
+        rows: "5",
+        maxlength: 500,
+        countMessage: {
+          text: "You have 500 characters remaining"
+        }
+      }) }}
 
-      <div class="govuk-form-group govuk-form-group--error">
-        <label class="govuk-label" for="full-name">
-          Full name
-        </label>
-        <div id="full-name-error" class="govuk-error-message">
-          <span class="govuk-visually-hidden">Error:</span> Enter your full name
-        </div>
-        <input class="govuk-input govuk-input--error" id="full-name" name="full-name" type="text" aria-describedby="full-name-error">
-      </div>
+      {{ govukInput({
+        label: {
+          text: "Full name"
+        },
+        id: "full-name",
+        name: "full-name",
+        errorMessage: {
+          text: "Enter your full name"
+        },
+        classes: "govuk-input--error"
+      }) }}
 
-      <fieldset class="govuk-fieldset">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-          <h1 class="govuk-fieldset__heading">
-            What is your address?
-          </h1>
-        </legend>
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="address-line-1">
-            Address line 1
-          </label>
-          <input class="govuk-input" id="address-line-1" name="address-line-1" type="text" autocomplete="address-line1">
-        </div>
-        <div class="govuk-form-group">
-          <label class="govuk-label" for="address-line-2">
-            Address line 2 (optional)
-          </label>
-          <input class="govuk-input" id="address-line-2" name="address-line-2" type="text" autocomplete="address-line2">
-        </div>
-      </fieldset>
+      {{ govukFieldset({
+        legend: {
+          text: "What is your address?",
+          classes: "govuk-fieldset__legend--l",
+          isPageHeading: true
+        }
+      }) }}
+      {{ govukInput({
+        label: {
+          text: "Address line 1"
+        },
+        id: "address-line-1",
+        name: "address-line-1",
+        autocomplete: "address-line1"
+      }) }}
+      {{ govukInput({
+        label: {
+          text: "Address line 2 (optional)"
+        },
+        id: "address-line-2",
+        name: "address-line-2",
+        autocomplete: "address-line2"
+      }) }}
 
       <h2 class="govuk-heading-m">Task List</h2>
       <div class="govuk-task-list">
