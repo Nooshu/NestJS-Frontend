@@ -8,9 +8,9 @@ interface StartFormData {
 }
 
 interface DetailsFormData {
-  'journey-date-day': string;
-  'journey-date-month': string;
-  'journey-date-year': string;
+  'journeyDate-day': string;
+  'journeyDate-month': string;
+  'journeyDate-year': string;
   journeyDuration: string;
   journeyDescription: string;
 }
@@ -97,10 +97,19 @@ export class NewJourneyController {
 
     const { start, details } = this.formData;
     const startDate = new Date(
-      parseInt(details['journey-date-year']),
-      parseInt(details['journey-date-month']) - 1,
-      parseInt(details['journey-date-day'])
+      parseInt(details['journeyDate-year']),
+      parseInt(details['journeyDate-month']) - 1,
+      parseInt(details['journeyDate-day'])
     );
+
+    this.logger.debug('Rendering confirmation page:', {
+      startDate,
+      rawDate: {
+        year: details['journeyDate-year'],
+        month: details['journeyDate-month'],
+        day: details['journeyDate-day']
+      }
+    });
 
     return {
       title: 'New Journey - Confirmation',
