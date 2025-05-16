@@ -117,6 +117,7 @@ The migration documentation includes:
 
 ### Core Features
 - [API Documentation](./docs/readme/api-documentation.md)
+- [API Mocking and Prototypes](./docs/api-mocking-prototype.md) - Guide to creating and using mock APIs for development
 - [Caching](./docs/readme/caching.md)
 - [Request Validation](./docs/readme/validation.md)
 - [GOV.UK Frontend Integration](./docs/readme/govuk-frontend.md)
