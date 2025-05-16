@@ -158,8 +158,15 @@ export class JavaApiClient {
     try {
       const response = await this.client.get<T>(path, config);
       return response.data;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error('Java API GET Error', { path, error });
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          throw this.handleJavaApiError(error.response);
+        }
+        // For network errors without response, pass through the original error
+        throw error;
+      }
       throw error;
     }
   }
@@ -171,8 +178,15 @@ export class JavaApiClient {
     try {
       const response = await this.client.post<T>(path, data, config);
       return response.data;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error('Java API POST Error', { path, error });
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          throw this.handleJavaApiError(error.response);
+        }
+        // For network errors without response, pass through the original error
+        throw error;
+      }
       throw error;
     }
   }
@@ -184,8 +198,15 @@ export class JavaApiClient {
     try {
       const response = await this.client.put<T>(path, data, config);
       return response.data;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error('Java API PUT Error', { path, error });
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          throw this.handleJavaApiError(error.response);
+        }
+        // For network errors without response, pass through the original error
+        throw error;
+      }
       throw error;
     }
   }
@@ -197,8 +218,15 @@ export class JavaApiClient {
     try {
       const response = await this.client.delete<T>(path, config);
       return response.data;
-    } catch (error) {
+    } catch (error: unknown) {
       this.logger.error('Java API DELETE Error', { path, error });
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          throw this.handleJavaApiError(error.response);
+        }
+        // For network errors without response, pass through the original error
+        throw error;
+      }
       throw error;
     }
   }
