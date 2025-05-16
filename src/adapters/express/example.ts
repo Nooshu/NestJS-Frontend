@@ -6,7 +6,7 @@ import { createExpressApp } from './index';
  * This file demonstrates how to use the adapter with minimal configuration.
  */
 
-async function startServer() {
+export async function startServer() {
   const port = process.env.PORT || 3000;
   const app = await createExpressApp();
 
@@ -34,7 +34,10 @@ async function startServer() {
   console.log(`Server is running on port ${port}`);
 }
 
-startServer().catch((error) => {
-  console.error('Failed to start server:', error);
-  process.exit(1);
-});
+// Only start the server if this file is run directly
+if (require.main === module) {
+  startServer().catch((error) => {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  });
+}
