@@ -17,10 +17,25 @@
 
 import { FingerprintService } from '../shared/services/fingerprint.service';
 
-console.log('Starting asset fingerprinting...');
+async function main() {
+  try {
+    console.log('Starting asset fingerprinting...');
 
-// Create an instance of the fingerprint service and run the fingerprinting process
-const fingerprintService = new FingerprintService();
-fingerprintService.fingerprint();
+    // Create an instance of the fingerprint service and run the fingerprinting process
+    const fingerprintService = new FingerprintService();
+    await fingerprintService.fingerprint();
 
-console.log('Asset fingerprinting completed.'); 
+    console.log('Asset fingerprinting completed.');
+  } catch (error) {
+    console.error('Asset fingerprinting failed:', error instanceof Error ? error.message : String(error));
+    process.exit(1);
+  }
+}
+
+// Only run if this file is being executed directly (not imported)
+if (require.main === module) {
+  main();
+}
+
+// Export for testing
+export { main }; 
