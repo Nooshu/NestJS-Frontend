@@ -25,6 +25,7 @@ import { SecurityModule } from './shared/security/security.module';
 import { ViewsController } from './views/views.controller';
 import { ViewsModule } from './views/views.module';
 import { NewJourneyModule } from './views/journeys/new-journey/new-journey.module';
+import { FindCourtTribunalModule } from './views/journeys/find-a-court-or-tribunal/find-a-court-or-tribunal.module';
 
 /**
  * Root module class that bootstraps the application.
@@ -52,6 +53,7 @@ import { NewJourneyModule } from './views/journeys/new-journey/new-journey.modul
     AppCacheModule,
     LoggerModule,
     NewJourneyModule,
+    FindCourtTribunalModule,
   ],
   controllers: [AppController, ViewsController, CspReportController],
   providers: [],
@@ -96,9 +98,7 @@ export class AppModule {
      * Cache Middleware
      * Applied to all GET routes to enable response caching
      */
-    consumer
-      .apply(CacheMiddleware)
-      .forRoutes({ path: '*path', method: RequestMethod.GET });
+    consumer.apply(CacheMiddleware).forRoutes({ path: '*path', method: RequestMethod.GET });
 
     /**
      * CSRF Protection Middleware
