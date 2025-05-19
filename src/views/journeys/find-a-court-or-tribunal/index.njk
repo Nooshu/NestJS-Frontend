@@ -1,7 +1,7 @@
 {% extends "layout.njk" %}
-{% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "journeys/shared/navigation.njk" import journeyNavigation %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
 
 {% block content %}
   {{ journeyNavigation(journey, currentPage) }}
@@ -32,21 +32,21 @@
         html: "The online service is also available in Welsh (Cymraeg)."
       }) 
     }}
+    
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-    <p class="govuk-body">You cannot use this service if you live in Northern Ireland. Contact the <a class="govuk-link" href="https://www.justice-ni.gov.uk/topics/courts-and-tribunals" target="_blank">Northern Ireland Courts and Tribunals (opens in new tab)</a> for help.<p>
 
-    <p class="govuk-body">You cannot use this service to pay court fees.</p>
+        <p class="govuk-body">You cannot use this service if you live in Northern Ireland. Contact the <a class="govuk-link" href="https://www.justice-ni.gov.uk/topics/courts-and-tribunals" target="_blank">Northern Ireland Courts and Tribunals (opens in new tab)</a> for help.<p>
+        <p class="govuk-body">You cannot use this service to pay court fees.</p>
+        <p class="govuk-body">This service is limited in Scotland to:</p>
 
-    <p class="govuk-body">This service is limited in Scotland to:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>Immigration appeals</li>
+            <li>Benefit appeals</li>
+            <li>Employment claims appeals</li>
+        </ul>
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>Immigration appeals</li>
-        <li>Benefit appeals</li>
-        <li>Employment claims appeals</li>
-    </ul>
-
-    <p class="govuk-body">Contact the <a class="govuk-link" href="https://www.scotcourts.gov.uk/the-courts/the-tribunals" target="_blank">Scottish Courts and Tribunals (opens in new tab)</a> for other services.</p>
-</div>
+        <p class="govuk-body">Contact the <a class="govuk-link" href="https://www.scotcourts.gov.uk/the-courts/the-tribunals" target="_blank">Scottish Courts and Tribunals (opens in new tab)</a> for other services.</p>
+    </div>
 </div>
 {% endblock %}

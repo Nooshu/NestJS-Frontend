@@ -1,0 +1,42 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "journeys/shared/navigation.njk" import journeyNavigation %}
+
+{% block content %}
+  {{ journeyNavigation(journey, currentPage) }}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+  <h2 class="govuk-heading-l">What is the name or address of the court or tribunal?</h2>
+
+<p class="govuk-body">The name of the court or tribunal can be found on a letter, email or text from us.</p>
+  
+  </div>
+  </div>
+
+  <form method="POST" action="/find-a-court-or-tribunal/name-search" novalidate id="nameSearchForm">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    
+    {{ govukInput({
+      label: {
+        text: "Enter a court name, address, town or city",
+        classes: "govuk-label--m"
+      },
+       hint: {
+        text: "For example, 'Manchester Civil Justice Centre' or 'SW1H 9AJ'"
+      },
+      id: "fullName",
+      name: "fullName",
+      classes: "govuk-input--width-20"
+    }) }}
+
+    {{ govukButton({
+      text: "Continue",
+      attributes: {
+        "data-module": "govuk-button",
+        "id": "submit-button"
+      }
+    }) }}
+  </form>
+{% endblock %}
