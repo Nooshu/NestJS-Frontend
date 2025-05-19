@@ -1,4 +1,52 @@
 {% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "journeys/shared/navigation.njk" import journeyNavigation %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
+
 {% block content %}
-<h1>Find a court or tribunal</h1>
+  {{ journeyNavigation(journey, currentPage) }}
+
+  <h1 class="govuk-heading-xl govuk-!-margin-top-6">Find a court or tribunal</h1>
+  
+  <p class="govuk-body">Use this service to find a court or tribunal in England and Wales.</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>address</li>
+        <li>contact details</li>
+        <li>opening times</li>
+        <li>building information e.g. disabled access or parking</li>
+        <li>to help me get an update</li>
+    </ul>
+
+  {{ govukButton({
+    text: "Start journey",
+    href: "/find-a-court-or-tribunal/options",
+     isStartButton: true,
+    classes: "govuk-!-margin-top-4"
+  }) }}
+
+  <h2 class="govuk-heading-m govuk-!-margin-top-4">Before you search</h2>
+
+  {{ govukInsetText({
+        titleText: "Try our new journey",
+        html: "The online service is also available in Welsh (Cymraeg)."
+      }) 
+    }}
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+    <p class="govuk-body">You cannot use this service if you live in Northern Ireland. Contact the <a class="govuk-link" href="https://www.justice-ni.gov.uk/topics/courts-and-tribunals" target="_blank">Northern Ireland Courts and Tribunals (opens in new tab)</a> for help.<p>
+
+    <p class="govuk-body">You cannot use this service to pay court fees.</p>
+
+    <p class="govuk-body">This service is limited in Scotland to:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>Immigration appeals</li>
+        <li>Benefit appeals</li>
+        <li>Employment claims appeals</li>
+    </ul>
+
+    <p class="govuk-body">Contact the <a class="govuk-link" href="https://www.scotcourts.gov.uk/the-courts/the-tribunals" target="_blank">Scottish Courts and Tribunals (opens in new tab)</a> for other services.</p>
+</div>
+</div>
 {% endblock %}
