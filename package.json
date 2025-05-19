@@ -15,7 +15,7 @@
     "build:prod": "npm run build && npm run build:frontend",
     "format": "prettier --write \"src/**/*.{ts,js,json,njk}\"",
     "start": "cross-env NODE_ENV=production nest start",
-    "start:dev": "concurrently --kill-others-on-fail --handle-input \"cross-env NODE_ENV=development nest start --watch\" \"npm run watch:all\"",
+    "start:dev": "npm run build:frontend:dev && concurrently --kill-others-on-fail --handle-input \"cross-env NODE_ENV=development nest start --watch\" \"npm run watch:all\"",
     "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -44,7 +44,8 @@
     "test:e2e:browsers": "npm-run-all test:e2e:chromium test:e2e:firefox test:e2e:webkit",
     "test:e2e:chromium": "playwright test --project=chromium",
     "test:e2e:firefox": "playwright test --project=firefox",
-    "test:e2e:webkit": "playwright test --project=webkit"
+    "test:e2e:webkit": "playwright test --project=webkit",
+    "build:frontend:dev": "npm run build:scss && npm run copy:images && npm run copy:govuk-assets && npm run copy:govuk-dist"
   },
   "keywords": [
     "nestjs",
