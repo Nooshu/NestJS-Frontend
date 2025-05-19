@@ -1,0 +1,44 @@
+{% extends "layout.njk" %}
+{% from "journeys/shared/navigation.njk" import journeyNavigation %}
+{% from "govuk/components/radios/macro.njk" import govukRadios %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+
+{% block content %}
+
+<h2 class="govuk-heading-l govuk-!-margin-top-6">Do you know the name of the court or tribunal</h2>
+  
+<p class="govuk-body">The name of the court or tribunal can be found on a letter, email or text from us.</p>
+
+<form method="POST" action="/find-a-court-or-tribunal/options" novalidate id="optionsForm">
+    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+    
+    {{ govukRadios({
+      name: "courtOption",
+      fieldset: {
+        legend: {
+          text: "Choose one of the following options:",
+          classes: "govuk-fieldset__legend--m"
+        }
+      },
+      items: [
+        {
+          value: "option1",
+          text: "Find a court by name"
+        },
+        {
+          value: "option2",
+          text: "Find a court by location"
+        }
+      ]
+    }) }}
+
+    {{ govukButton({
+      text: "Continue",
+      href: "/find-a-court-or-tribunal/court-search",
+      attributes: {
+        "data-module": "govuk-button",
+        "id": "submit-button"
+      }
+    }) }}
+  </form>
+{% endblock %} 
