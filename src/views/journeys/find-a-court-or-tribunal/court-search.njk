@@ -39,21 +39,35 @@
       }
     }) }}
   </form>
-    <p class="govuk-body">We found 8 courts or tribunals matching your search for 'manchester'.</p> 
-    <p class="govuk-body">Most relevant results displayed.</p>
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds" id="courtResults" style="display: none;">
+      <p class="govuk-body">We found  courts or tribunals matching your search for 'manchester'.</p> 
+      <p class="govuk-body">Most relevant results displayed.</p>
 
      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-     <ul class="govuk-list">
-        <li>
+     <ul class="govuk-list govuk-heading-m">
+        <li class="govuk-!-margin-top-4">
           <a class="govuk-link" href="/">Manchester Civil Justice Centre (Civil and Family Courts)</a>
         </li>
-        <li>
+        <li class="govuk-!-margin-top-4">
           <a class="govuk-link" href="/">Manchester Crown Court (Crown Square)</a>
         </li>
-        <li>
+        <li class="govuk-!-margin-top-4">
           <a class="govuk-link" href="/">Manchester Crown Court (Minshull St)</a>
         </li>
-      </ul>
+    </ul>
+    </div>
+    </div>
      
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      const submitButton = document.getElementById('submit-button');
+      
+      submitButton.addEventListener('click', function(event) {
+      event.preventDefault();
+      document.getElementById('courtResults').style.display = 'block';
+      });
+    });
+    </script>
 {% endblock %}
