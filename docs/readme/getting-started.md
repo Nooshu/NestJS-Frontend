@@ -20,9 +20,11 @@ npm run start:dev
 ### Development
 - `npm run start` - Start the application in standard mode
 - `npm run start:dev` - Start development server with hot reload
-  - Automatically compiles TypeScript on the fly
+  - Automatically builds frontend assets optimized for development
+  - Compiles TypeScript on the fly
   - Watches for file changes and recompiles automatically
   - Provides hot reloading for faster development
+  - Watches and rebuilds frontend assets when they change
 - `npm run start:debug` - Start in debug mode with watch enabled
   - Enables Node.js debugging capabilities
   - Allows attaching debugger for step-through debugging
@@ -70,9 +72,14 @@ npm run start:dev
   - Checks code style and potential problems
 
 ### Frontend Build
-- `npm run build:frontend` - Build frontend assets
+- `npm run build:frontend` - Build frontend assets for production
   - Compiles SCSS to CSS
   - Copies static assets to dist/public
+  - Generates fingerprinted assets for optimal caching
+- `npm run build:frontend:dev` - Build frontend assets optimized for development
+  - Compiles SCSS to CSS
+  - Copies static assets to dist/public
+  - Skips asset fingerprinting for faster builds
 - `npm run build:frontend:watch` - Watch and build frontend assets
   - Continuously watches for SCSS changes
   - Automatically rebuilds on file changes

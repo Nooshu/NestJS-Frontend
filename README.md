@@ -11,7 +11,7 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 # Install dependencies
 npm install
 
-# Start development server with hot reload (includes frontend asset watching)
+# Start development server with hot reload (automatically builds and watches frontend assets)
 npm run start:dev
 ```
 
@@ -39,14 +39,15 @@ npm run test:e2e:browsers
 ### Available Scripts
 
 #### Development
-- `npm run start:dev` - Start development server with hot reload and frontend asset watching
+- `npm run start:dev` - Start development server with hot reload, automatically builds frontend assets and watches for changes
 - `npm run start:debug` - Start in debug mode with watch enabled
+- `npm run build:frontend:dev` - Build frontend assets optimized for development (skips fingerprinting)
 - `npm run build:frontend:watch` - Watch and rebuild frontend assets
 
 #### Building
 - `npm run build` - Build the backend application
 - `npm run build:prod` - Build both backend and frontend for production
-- `npm run build:frontend` - Build frontend assets (SCSS, copy assets, fingerprint)
+- `npm run build:frontend` - Build frontend assets for production (SCSS, copy assets, fingerprint)
 
 #### Testing
 - `npm run test:all` - Run all tests (unit, e2e, and GOV.UK components)
@@ -154,11 +155,8 @@ npm run build && npm run build:frontend && npm run start:prod
 ### Development Mode
 
 ```bash
-# Start backend with auto-reload (in one terminal)
+# Start development server (automatically builds and watches frontend assets)
 npm run start:dev
-
-# Watch frontend assets (in another terminal)
-npm run build:frontend:watch
 ```
 
 ### Available Build Scripts
@@ -169,12 +167,13 @@ The project includes various build scripts for different purposes:
 # NestJS application build
 npm run build                 # Compile the application
 npm run start                 # Start the compiled application
-npm run start:dev             # Start with auto-reload
+npm run start:dev             # Start with auto-reload and frontend asset watching
 npm run start:debug           # Start in debug mode
 npm run start:prod            # Run production build
 
 # Frontend assets
-npm run build:frontend        # Build all frontend assets (SCSS, copy assets, fingerprint)
+npm run build:frontend        # Build all frontend assets for production (SCSS, copy assets, fingerprint)
+npm run build:frontend:dev    # Build frontend assets optimized for development (skips fingerprinting)
 npm run build:frontend:watch  # Watch and rebuild frontend assets
 npm run build:scss            # Compile SCSS to CSS
 npm run build:scss:watch      # Watch and compile SCSS
