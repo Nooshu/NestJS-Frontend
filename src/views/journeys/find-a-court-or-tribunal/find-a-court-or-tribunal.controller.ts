@@ -31,4 +31,14 @@ export class FindCourtTribunalController {
       currentPage: 'court-search',
     };
   }
+
+  @Get('court-page')
+  @Render('journeys/find-a-court-or-tribunal/court-page')
+  courtPage() {
+    return {
+      title: 'Find a Court or Tribunal - Court Page',
+      journey: 'find-a-court-or-tribunal',
+      currentPage: 'court-page',
+    };
+  }
 }
