@@ -1,4 +1,5 @@
 import { Controller, Get, Render } from '@nestjs/common';
+import { courtsData } from './dto/courtData';
 
 @Controller('find-a-court-or-tribunal')
 export class FindCourtTribunalController {
@@ -25,10 +26,12 @@ export class FindCourtTribunalController {
   @Get('court-search')
   @Render('journeys/find-a-court-or-tribunal/court-search')
   courtSearch() {
+    const courts = Object.values(courtsData);
     return {
       title: 'Find a Court or Tribunal - Court Search',
       journey: 'find-a-court-or-tribunal',
       currentPage: 'court-search',
+      courts,
     };
   }
 
