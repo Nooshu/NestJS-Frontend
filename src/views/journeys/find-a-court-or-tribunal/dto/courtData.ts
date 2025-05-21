@@ -11,7 +11,7 @@ export interface Court {
   }[];
   emails: {
     key: { text: string };
-    value: { text: string };
+    value: { text: string; html?: string };
   }[];
   telephones: {
     key: { text: string };
@@ -19,7 +19,7 @@ export interface Court {
   }[];
   facilities: {
     key: { text: string };
-    value: { text: string };
+    value: { text: string; html?: string };
   }[];
   image: {
     url: string;
@@ -62,11 +62,29 @@ export const courtsData: Record<string, Court> = {
         key: { text: 'Enquiries' },
         value: {
           text: 'Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk\n(Accommodation)',
+          html: '<a href="mailto:Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk">Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk</a> (Accommodation)',
+        },
+      },
+      {
+        key: { text: 'Enquiries' },
+        value: {
+          text: 'courtclerks.manchesterminshullstreet.crowncourt@justice.gov.uk\n(Court Clerks)',
+          html: '<a href="mailto:courtclerks.manchesterminshullstreet.crowncourt@justice.gov.uk">courtclerks.manchesterminshullstreet.crowncourt@justice.gov.uk</a> (Court Clerks)',
         },
       },
       {
         key: { text: 'Crown court' },
-        value: { text: 'crownoffice.manchesterminshullstreet.crowncourt@justice.gov.uk' },
+        value: {
+          text: 'crownoffice.manchesterminshullstreet.crowncourt@justice.gov.uk',
+          html: '<a href="mailto:crownoffice.manchesterminshullstreet.crowncourt@justice.gov.uk">crownoffice.manchesterminshullstreet.crowncourt@justice.gov.uk</a>',
+        },
+      },
+      {
+        key: { text: 'Listings' },
+        value: {
+          text: 'listing.manchesterminshullstreet.crowncourt@justice.gov.uk',
+          html: '<a href="mailto:listing.manchesterminshullstreet.crowncourt@justice.gov.uk">listing.manchesterminshullstreet.crowncourt@justice.gov.uk</a>',
+        },
       },
     ],
     telephones: [
@@ -89,7 +107,8 @@ export const courtsData: Record<string, Court> = {
       {
         key: { text: 'Disabled access' },
         value: {
-          text: 'This is a grade 2* listed building and therefore access may be restricted, There is no access for wheelchair users to courtrooms 5, 6, 7 & 8. Access is restricted to the well of the Court for wheelchair users in courtrooms 1, 2, 3, 4, 9 & 10. Please contact us to discuss this on Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk or on 0161 954 7545. We do have a lift at the entrance and level access to most areas and some Courtrooms. We also have a lift to the first and second floors.',
+          text: 'This is a grade 2* listed building and therefore access may be restricted...', // Plain text version
+          html: 'This is a grade 2* listed building and therefore access may be restricted, There is no access for wheelchair users to courtrooms 5, 6, 7 & 8. Access is restricted to the well of the Court for wheelchair users in courtrooms 1, 2, 3, 4, 9 & 10. Please contact us to discuss this on <a href="mailto:Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk">Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk</a> or on 0161 954 7545. We do have a lift at the entrance and level access to most areas and some Courtrooms. We also have a lift to the first and second floors.',
         },
       },
       {
@@ -162,6 +181,7 @@ export const courtsData: Record<string, Court> = {
         key: { text: 'Video facilities' },
         value: {
           text: 'Court/hearing room video conferencing facilities and prison to court video link facilities are available (by prior arrangement). For queries please contact listing.manchesterminshullstreet.crowncourt@justice.gov.uk or 0161 954 7500.',
+          html: 'Court/hearing room video conferencing facilities and prison to court video link facilities are available (by prior arrangement). For queries please contact <a href="mailto:listing.manchesterminshullstreet.crowncourt@justice.gov.uk">listing.manchesterminshullstreet.crowncourt@justice.gov.uk</a> or 0161 954 7500.',
         },
       },
       {
@@ -202,17 +222,20 @@ export const courtsData: Record<string, Court> = {
     openingTimes: [
       {
         key: { text: 'Court open' },
-        value: { text: '9:00am to 5pm' },
+        value: { text: '9am to 5pm' },
       },
       {
         key: { text: 'Counter open' },
-        value: { text: '9:00am to 5pm' },
+        value: { text: '9am to 5pm' },
       },
     ],
     emails: [
       {
         key: { text: 'Enquiries' },
-        value: { text: 'enquiries.birmingham.crowncourt@justice.gov.uk' },
+        value: {
+          text: 'enquiries.birmingham.crowncourt@justice.gov.uk',
+          html: '<a href="mailto:enquiries.birmingham.crowncourt@justice.gov.uk">enquiries.birmingham.crowncourt@justice.gov.uk</a>',
+        },
       },
     ],
     telephones: [
@@ -292,11 +315,17 @@ export const courtsData: Record<string, Court> = {
     emails: [
       {
         key: { text: 'Enquiries' },
-        value: { text: 'innerlondoncrowncourt@justice.gov.uk' },
+        value: {
+          text: 'innerlondoncrowncourt@justice.gov.uk',
+          html: '<a href="mailto:innerlondoncrowncourt@justice.gov.uk">innerlondoncrowncourt@justice.gov.uk</a>',
+        },
       },
       {
         key: { text: 'Citizens advice' },
-        value: { text: 'innerlondon.cc@citizensadvice.org.uk' },
+        value: {
+          text: 'innerlondon.cc@citizensadvice.org.uk',
+          html: '<a href="mailto:innerlondon.cc@citizensadvice.org.uk">innerlondon.cc@citizensadvice.org.uk</a>',
+        },
       },
     ],
     telephones: [

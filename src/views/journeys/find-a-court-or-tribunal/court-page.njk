@@ -4,23 +4,22 @@
 {% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
 
 {% block content %}
-  <h2 class="govuk-heading-l">Manchester Crown Court (Minshull St)</h2>
+  <h2 class="govuk-heading-l">{{ court.name }}</h2>
 
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <h3 class="govuk-heading-l">Visit or contact us:</h3>
       <h3 class="govuk-heading-m">Address</h3>
       <ul class="govuk-list">
-        <li class="govuk-body govuk-!-margin-bottom-0">The Court House</li>
-        <li class="govuk-body govuk-!-margin-bottom-0">Aytoun Street</li>
-        <li class="govuk-body govuk-!-margin-bottom-0">Manchester</li>
-        <li class="govuk-body govuk-!-margin-bottom-0">M1 3FS</li>
+        {% for line in court.address.lines %}
+          <li class="govuk-body govuk-!-margin-bottom-0">{{ line }}</li>
+        {% endfor %}
       </ul>
       <ul class="govuk-list">
         <li>
-          <a class="govuk-link" href="https://www.google.com/maps?q=53.4809021085643,-2.25267283736438">Get directions (opens in new tab)</a>
+          <a class="govuk-link" href="{{ court.address.mapUrl }}">Get directions (opens in new tab)</a>
         </li>
-        <li>
+        <li class="govuk-!-margin-top-4">
           <a class="govuk-link" href="https://www.gov.uk/guidance/what-to-expect-coming-to-a-court-or-tribunal">What to expect coming to a court or tribunal (opens in new tab)</a>
         </li>
       </ul>
@@ -30,221 +29,23 @@
 
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Opening times</h3>
       {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Court open"
-            },
-            value: {
-              text: "Monday to Friday 7:30am to 5pm"
-            }
-          },
-          {
-            key: {
-              text: "Counter open"
-            },
-            value: {
-              text: "Monday to Friday 9am to 5pm"
-            }
-          },
-          {
-            key: {
-              text: "Telephone enquiries answered"
-            },
-            value: {
-              text: "Monday to Friday 8am to 5pm"
-            }
-          }
-        ]
+        rows: court.openingTimes
       }) }}
 
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Email</h3>
       {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Enquiries"
-            },
-            value: {
-              text: "Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk
-(Accommodation)"
-            }
-          },
-          {
-            key: {
-              text: "Enquiries"
-            },
-            value: {
-              text: "courtclerks.manchesterminshullstreet.crowncourt@justice.gov.uk
-(Court Clerks)"
-            }
-          },
-          {
-            key: {
-              text: "Crown court"
-            },
-            value: {
-              text: "crownoffice.manchesterminshullstreet.crowncourt@justice.gov.uk"
-            }
-          },
-          {
-            key: {
-              text: "Listing"
-            },
-            value: {
-              text: "listing.manchesterminshullstreet.crowncourt@justice.gov.uk"
-            }
-          }
-        ]
+        rows: court.emails
       }) }}
 
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Telephone</h3>
       {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "Enquiries"
-            },
-            value: {
-              text: "0161 954 7500"
-            }
-          },
-          {
-            key: {
-              text: "Witness service"
-            },
-            value: {
-              text: "0300 332 1000"
-            }
-          }
-        ]
+        rows: court.telephones
       }) }}
 
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Building facilities</h3>
-      <p class="govuk-body">If you have a disability and need help coming to a hearing, please contact 0161 954 7500.</p>
+      <p class="govuk-body">If you have a disability and need help coming to a hearing, please contact {{ court.telephones[0].value.text }}.</p>
       {{ govukSummaryList({
-        rows: [
-          {
-            key: {
-              text: "No parking"
-            },
-            value: {
-              text: "There are no parking facilities at this building, however public car parks are available nearby on Major Street, Bloom Street and Aurburn Street."
-            }
-          },
-          {
-            key: {
-              text: "Disabled access"
-            },
-            value: {
-              text: "This is a grade 2* listed building and therefore access may be restricted,  There is no access for wheelchair users to courtrooms 5, 6, 7 & 8.  Access is restricted to the well of the Court for wheelchair users in courtrooms 1, 2, 3, 4, 9 & 10. Please contact us to discuss this on Accommodation.manchesterminshullstreet.crowncourt@justice.gov.uk or on 0161 954 7545.  We do have a lift at the entrance and level access to most areas and some Courtrooms.  We also have a lift to the first and second floors."
-            }
-          },
-          {
-            key: {
-              text: "Hidden Disabilities Sunflower network"
-            },
-            value: {
-              text: "Lanyards available on request."
-            }
-          },
-          {
-            key: {
-              text: "Assistance dogs"
-            },
-            value: {
-              text: "Assistance dogs are welcome."
-            }
-          },
-          {
-            key: {
-              text: "Hearing Loop"
-            },
-            value: {
-              text: "The building has hearing enhancement facilities available in all courtrooms."
-            }
-          },
-          {
-            key: {
-              text: "Security arch"
-            },
-            value: {
-              text: "For safety and security all users and their possessions will be searched by security when they enter this building.  This court has a security arch.  Please alert a security officer if you have a pacemaker."
-            }
-          },
-          {
-            key: {
-              text: "Lift"
-            },
-            value: {
-              text: "Lifts are available in this building to access the first and second floors.  For those requiring wheelchair access, the width of the doors is 32 inches and the weight restriction is 630kg."
-            }
-          },
-          {
-            key: {
-              text: "Public toilets"
-            },
-            value: {
-              text: "Public toilets are available on the ground floor."
-            }
-          },
-          {
-            key: {
-              text: "Disabled toilet"
-            },
-            value: {
-              text: "An accessible toilet is available on the ground floor."
-            }
-          },
-          {
-            key: {
-              text: "Refreshments"
-            },
-            value: {
-              text: "Chilled water is available on the first floor. "
-            }
-          },
-          {
-            key: {
-              text: "Interview room"
-            },
-            value: {
-              text: "There are eleven interview/consultation rooms available in the building, located on the ground, first and second floors.  It may be possible to book some of these in advance.  Please contact us on 0161 954 7577."
-            }
-          },
-          {
-            key: {
-              text: "Waiting Room"
-            },
-            value: {
-              text: "This building has a public waiting area outside courtrooms on the ground floor, first floor and second floor.  There is a seperate waiting area for witnesses.  Please ask for details."
-            }
-          },
-          {
-            key: {
-              text: "Baby changing facility"
-            },
-            value: {
-              text: "Baby changing facilities are located in the disabled toilet on the ground floor."
-            }
-          },
-          {
-            key: {
-              text: "Video facilities"
-            },
-            value: {
-              text: "Court/hearing room video conferencing facilities and prison to court video link facilities are available (by prior arrangement).  For queries please contact listing.manchesterminshullstreet.crowncourt@justice.gov.uk or 0161 954 7500."
-            }
-          },
-          {
-            key: {
-              text: "Wireless network connection"
-            },
-            value: {
-              text: "Wi-Fi is available in all areas of the building and can be accessed via PCU or GOV Wi-Fi."
-            }
-          }
-        ]
+        rows: court.facilities,
       }) }}
 
       <h2 class="govuk-heading-s">Translators or Interpreters</h2>
@@ -254,24 +55,28 @@
 
     </div>
     <div class="govuk-grid-column-one-third">
-      <figure class="govuk-!-margin-bottom-6">
-        <img src="/assets/images/courtImages/manchesterCrownCourt.jpg" alt="Manchester Crown Court (Minshull St) exterior" class="govuk-!-width-full">
-        <figcaption class="govuk-body-s">Manchester Crown Court (Minshull St)</figcaption>
-      </figure>
+      <div class="govuk-grid-row ">
+        <img src="{{ court.image.url }}" alt="{{ court.image.alt }} class="govuk-!-width-full" style="width: 100%; max-width: 400px; object-fit: contain;">
+        <p class="govuk-body-s">{{ court.name }}</p>
+      </div>
 
       <h3 class="govuk-heading-m">This location handles</h3>
-      <p class="govuk-body">Crime</p>
-      <p class="govuk-body govuk-!-margin-bottom-4">
-        <a class="govuk-link" href="https://www.gov.uk/guidance/domestic-abuse-protection-notices-dapns-and-domestic-abuse-protection-orders-dapos" target="_blank">Domestic Abuse Protection Order (DAPOs)</a>
-      </p>
-      <p class="govuk-body">Single justice procedure</p>
+      {% for handle in court.handles %}
+        {% if handle.href and handle.text %}
+          <p class="govuk-body">
+            <a class="govuk-link" href="{{handle.href}}">{{ handle.text }}</a>
+          </p>
+        {% else %}
+          <p class="govuk-body">{{ handle.text }}</p>
+        {% endif %}
+      {% endfor %}
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Make a complaint</h3>
       <p class="govuk-body govuk-!-margin-bottom-4">
         <a class="govuk-link" href="https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure" target="_blank">Contact us to make a complaint</a>
       </p>
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Court codes for legal professionals</h3>
-      <p class="govuk-body">Crown Court location code: 436</p>
-      <p class="govuk-body">DX: 724860 Manchester 43</p>
+      <p class="govuk-body">Crown Court location code: {{ court.codes.crown }}</p>
+      <p class="govuk-body">DX: {{ court.codes.dx }}</p>
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Professional users’ court and tribunal access scheme</h3>
       <p class="govuk-body">This location participates in this scheme</p>
       <p class="govuk-body govuk-!-margin-bottom-4">

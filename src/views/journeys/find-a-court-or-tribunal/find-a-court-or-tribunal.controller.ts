@@ -1,4 +1,4 @@
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Param, Render } from '@nestjs/common';
 import { courtsData } from './dto/courtData';
 
 @Controller('find-a-court-or-tribunal')
@@ -35,13 +35,16 @@ export class FindCourtTribunalController {
     };
   }
 
-  @Get('court-page')
+  @Get('court-page/:courtId')
   @Render('journeys/find-a-court-or-tribunal/court-page')
-  courtPage() {
+  courtPage(@Param('courtId') courtId: string) {
+    const court = courtsData[courtId];
+
     return {
-      title: 'Find a Court or Tribunal - Court Page',
+      title: `${court?.name || 'Court Details'}`,
       journey: 'find-a-court-or-tribunal',
       currentPage: 'court-page',
+      court,
     };
   }
 }
