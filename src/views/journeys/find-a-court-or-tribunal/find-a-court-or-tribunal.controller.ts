@@ -35,15 +35,15 @@ export class FindCourtTribunalController {
     };
   }
 
-  @Get('court-page/:courtId')
-  @Render('journeys/find-a-court-or-tribunal/court-page')
-  courtPage(@Param('courtId') courtId: string) {
+  @Get('court-details/:courtId')
+  @Render('journeys/find-a-court-or-tribunal/court-details')
+  courtDetails(@Param('courtId') courtId: string) {
     const court = courtsData[courtId];
 
     return {
       title: `${court?.name || 'Court Details'}`,
       journey: 'find-a-court-or-tribunal',
-      currentPage: 'court-page',
+      currentPage: 'court-details',
       court,
     };
   }
