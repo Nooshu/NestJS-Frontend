@@ -45,7 +45,7 @@
       <h3 class="govuk-heading-m govuk-!-margin-top-4">Building facilities</h3>
       <p class="govuk-body">If you have a disability and need help coming to a hearing, please contact {{ court.telephones[0].value.text }}.</p>
       {{ govukSummaryList({
-        rows: court.facilities,
+        rows: court.facilities
       }) }}
 
       <h2 class="govuk-heading-s">Translators or Interpreters</h2>
@@ -55,8 +55,8 @@
 
     </div>
     <div class="govuk-grid-column-one-third">
-      <div class="govuk-grid-row ">
-        <img src="{{ court.image.url }}" alt="{{ court.image.alt }} class="govuk-!-width-full" style="width: 100%; max-width: 400px; object-fit: contain;">
+      <div class="govuk-grid-row govuk-!-padding-left-3">
+        <img src="{{ court.image.url }}" alt="{{ court.image.alt }} class="govuk-!-width-full" style="width: 100%; max-height: 400px; object-fit: contain;">
         <p class="govuk-body-s">{{ court.name }}</p>
       </div>
 
