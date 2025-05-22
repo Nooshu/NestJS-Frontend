@@ -19,7 +19,11 @@ npm run build:frontend       # Build all frontend assets (SCSS, copy assets, fin
 npm run build:frontend:watch # Watch and rebuild frontend assets
 npm run build:scss          # Compile SCSS to CSS
 npm run build:scss:watch    # Watch and compile SCSS
-npm run copy:assets         # Copy static assets to output directory
+npm run copy:assets         # Copy all static assets to output directory
+npm run copy:images         # Copy images from src/frontend/images to dist/public/images
+npm run copy:govuk-assets   # Copy GOV.UK Frontend assets to dist/public/assets
+npm run copy:govuk-dist     # Copy GOV.UK Frontend dist files to dist/public/govuk
+npm run copy:public-assets  # Copy all assets from src/public to dist/public
 npm run fingerprint:assets  # Generate fingerprinted assets
 ```
 
@@ -71,7 +75,15 @@ npm run lint              # Lint code with ESLint
 - `build:frontend:watch`: Watches frontend files and rebuilds on changes
 - `build:scss`: One-time SCSS compilation
 - `build:scss:watch`: Watches SCSS files and recompiles on changes
-- `copy:assets`: Copies static assets to the distribution directory
+- `copy:assets`: Copies all static assets to the distribution directory, including:
+  - Images from src/frontend/images
+  - GOV.UK Frontend assets
+  - GOV.UK Frontend dist files
+  - All assets from src/public
+- `copy:images`: Copies images from src/frontend/images to dist/public/images
+- `copy:govuk-assets`: Copies GOV.UK Frontend assets to dist/public/assets
+- `copy:govuk-dist`: Copies GOV.UK Frontend dist files to dist/public/govuk
+- `copy:public-assets`: Copies all assets from src/public to dist/public
 - `fingerprint:assets`: Generates content-based hashes for static assets
 
 ### Testing Scripts

@@ -37,8 +37,24 @@ npm run build:frontend
 
 This command:
 1. Compiles SCSS to CSS
-2. Copies static assets to the dist folder
+2. Copies static assets to the dist folder:
+   - Frontend images from `src/frontend/images/` to `dist/public/images/`
+   - Public assets from `src/public/` to `dist/public/`
+   - GOV.UK Frontend assets to `dist/public/assets/`
+   - GOV.UK Frontend dist files to `dist/public/govuk/`
 3. Fingerprints the assets and creates the manifest
+
+The application supports two types of static assets:
+1. Frontend-specific assets (`src/frontend/images/`):
+   - Used for frontend-specific images and assets
+   - Copied to `dist/public/images/`
+   - Fingerprinted for optimal caching
+
+2. Public static assets (`src/public/`):
+   - Used for general public assets
+   - Copied to `dist/public/` maintaining directory structure
+   - Fingerprinted for optimal caching
+   - Suitable for court images, documents, and other public resources
 
 ## Manual Fingerprinting
 

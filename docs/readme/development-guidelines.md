@@ -72,13 +72,31 @@ npm run build:frontend
 ### Asset Management
 
 - SCSS files are located in `src/frontend/scss/`
-- Images and other static assets are in `src/frontend/images/`
+- Frontend images and assets are in `src/frontend/images/`
+- Public static assets are in `src/public/`
 - Built assets are output to `dist/public/`
 - GOV.UK Frontend assets are automatically copied to `dist/public/assets/`
+
+The application supports two types of static assets:
+1. Frontend-specific assets (`src/frontend/images/`):
+   - Used for frontend-specific images and assets
+   - Copied to `dist/public/images/`
+   - Typically used for UI components and frontend-specific resources
+
+2. Public static assets (`src/public/`):
+   - Used for general public assets
+   - Copied to `dist/public/`
+   - Maintains the same directory structure in the dist folder
+   - Suitable for court images, documents, and other public resources
 
 ### Best Practices
 
 - Use SCSS for styling to maintain consistency with GOV.UK Frontend
 - Keep images optimized and in appropriate formats
+- Place frontend-specific assets in `src/frontend/images/`
+- Place general public assets in `src/public/`
+- Use appropriate subdirectories to organize assets
+- Follow naming conventions for assets
+- Document any special asset requirements
 - Follow the GOV.UK Design System guidelines for components and patterns
 - Test frontend changes across different browsers and devices 
