@@ -5,11 +5,11 @@
 
 {% block content %}
 
-<h2 class="govuk-heading-l govuk-!-margin-top-6">Do you know the name of the court or tribunal</h2>
+<h2 class="govuk-heading-l govuk-!-margin-top-6" id="court-name-question">Do you know the name of the court or tribunal</h2>
   
-<p class="govuk-body">The name of the court or tribunal can be found on a letter, email or text from us.</p>
+<p class="govuk-body" id="court-name-hint">The name of the court or tribunal can be found on a letter, email or text from us.</p>
 
-<form method="POST" action="/find-a-court-or-tribunal/options" novalidate id="optionsForm">
+<form method="POST" action="/find-a-court-or-tribunal/options" novalidate id="optionsForm" aria-labelledby="court-name-question">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     
     {{ govukRadios({
@@ -29,7 +29,8 @@
           value: "option2",
           text: "I do not have the name"
         }
-      ]
+      ],
+      describedBy: "court-name-hint"
     }) }}
 
     {{ govukButton({

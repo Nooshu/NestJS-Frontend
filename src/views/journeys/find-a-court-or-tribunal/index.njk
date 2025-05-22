@@ -2,6 +2,7 @@
 {% from "journeys/shared/navigation.njk" import journeyNavigation %}
 {% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
 
 {% block content %}
 
@@ -47,5 +48,31 @@
 
         <p class="govuk-body">Contact the <a class="govuk-link" href="https://www.scotcourts.gov.uk/the-courts/the-tribunals" target="_blank">Scottish Courts and Tribunals (opens in new tab)</a> for other services.</p>
     </div>
+</div>
+
+<form method="POST" action="/find-a-court-or-tribunal/name-search" novalidate id="nameSearchForm" role="search">
+  {{ govukInput({
+    label: {
+      text: "Enter a court name, address, town or city",
+      classes: "govuk-label--m"
+    },
+    hint: {
+      text: "For example, 'Manchester Civil Justice Centre' or 'SW1H 9AJ'"
+    },
+    id: "fullName",
+    name: "fullName",
+    classes: "govuk-input--width-20",
+    attributes: {
+      "aria-label": "Search for a court or tribunal by name, address, town or city"
+    }
+  }) }}
+</form>
+
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds" id="courtResults" style="display: none;" role="region" aria-live="polite" aria-label="Search results">
+    <ul class="govuk-list" aria-label="List of courts and tribunals matching your search">
+      <!-- ... -->
+    </ul>
+  </div>
 </div>
 {% endblock %}

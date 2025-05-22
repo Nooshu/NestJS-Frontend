@@ -14,7 +14,7 @@
     </div>
   </div>
 
-  <form method="POST" action="/find-a-court-or-tribunal/name-search" novalidate id="nameSearchForm">
+  <form method="POST" action="/find-a-court-or-tribunal/name-search" novalidate id="nameSearchForm" aria-label="Search for a court or tribunal">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
     {{ govukInput({
@@ -23,11 +23,15 @@
         classes: "govuk-label--m"
       },
        hint: {
-        text: "For example, 'Manchester Civil Justice Centre' or 'SW1H 9AJ'"
+        text: "For example, 'Manchester Civil Justice Centre' or 'SW1H 9AJ'",
+        id: "search-hint"
       },
       id: "fullName",
       name: "fullName",
-      classes: "govuk-input--width-20"
+      classes: "govuk-input--width-20",
+      attributes: {
+        "aria-describedby": "search-hint"
+      }
     }) }}
 
     {{ govukButton({
@@ -39,15 +43,15 @@
     }) }}
   </form>
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds" id="courtResults" style="display: none;">
-      <p class="govuk-body">We found  courts or tribunals matching your search for 'manchester'.</p>
+    <div class="govuk-grid-column-two-thirds" id="courtResults" style="display: none;" role="region" aria-live="polite" aria-label="Search results">
+      <p class="govuk-body" id="results-count">We found  courts or tribunals matching your search for 'manchester'.</p>
       <p class="govuk-body">Most relevant results displayed.</p>
 
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
       {% if courts and courts.length > 0 %}
-        <h2 class="govuk-heading-m">Search results</h2>
-        <ul class="govuk-list">
+        <h2 class="govuk-heading-m" id="results-heading">Search results</h2>
+        <ul class="govuk-list" aria-labelledby="results-heading" aria-describedby="results-count">
           {% for court in courts %}
             <li>
               <h3 class="govuk-heading-m">
@@ -65,13 +69,13 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const submitButton = document.getElementById('submit-button');
+      const courtResults = document.getElementById('courtResults');
 
       submitButton.addEventListener('click', function (event) {
         event.preventDefault();
-        document
-          .getElementById('courtResults')
-          .style
-          .display = 'block';
+        courtResults.style.display = 'block';
+        // Announce the results to screen readers
+        courtResults.setAttribute('aria-live', 'polite');
       });
     });
   </script>
