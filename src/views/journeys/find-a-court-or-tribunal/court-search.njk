@@ -4,19 +4,19 @@
 {% from "journeys/shared/navigation.njk" import journeyNavigation %}
 
 {% block content %}
-<div class="govuk-grid-row">
+  <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-  <h2 class="govuk-heading-l">What is the name or address of the court or tribunal?</h2>
+      <h2 class="govuk-heading-l">What is the name or address of the court or tribunal?</h2>
 
-<p class="govuk-body">The name of the court or tribunal can be found on a letter, email or text from us.</p>
-  
-  </div>
+      <p class="govuk-body">The name of the court or tribunal can be found on a letter, email or text from us.</p>
+
+    </div>
   </div>
 
   <form method="POST" action="/find-a-court-or-tribunal/name-search" novalidate id="nameSearchForm">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
-    
+
     {{ govukInput({
       label: {
         text: "Enter a court name, address, town or city",
@@ -40,33 +40,39 @@
   </form>
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds" id="courtResults" style="display: none;">
-      <p class="govuk-body">We found  courts or tribunals matching your search for 'manchester'.</p> 
+      <p class="govuk-body">We found  courts or tribunals matching your search for 'manchester'.</p>
       <p class="govuk-body">Most relevant results displayed.</p>
 
-     <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-     <ul class="govuk-list govuk-heading-m">
-        <li class="govuk-!-margin-top-4">
-          <a class="govuk-link" href="https://www.find-court-tribunal.service.gov.uk/courts/manchester-civil-justice-centre-civil-and-family-courts" target="_blank">Manchester Civil Justice Centre (Civil and Family Courts)</a>
-        </li>
-        <li class="govuk-!-margin-top-4">
-          <a class="govuk-link" href="https://www.find-court-tribunal.service.gov.uk/courts/manchester-crown-court-crown-square" target="_blank">Manchester Crown Court (Crown Square)</a>
-        </li>
-        <li class="govuk-!-margin-top-4">
-          <a class="govuk-link" href="https://www.find-court-tribunal.service.gov.uk/courts/manchester-crown-court-minshull-st" target="_blank">Manchester Crown Court (Minshull St)</a>
-        </li>
-    </ul>
+      {% if courts and courts.length > 0 %}
+        <h2 class="govuk-heading-m">Search results</h2>
+        <ul class="govuk-list">
+          {% for court in courts %}
+            <li>
+              <h3 class="govuk-heading-m">
+                <a href="/find-a-court-or-tribunal/court-details/{{ court.id }}" class="govuk-link">
+                  {{ court.name }}
+                </a>
+              </h3>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
     </div>
-    </div>
-     
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
       const submitButton = document.getElementById('submit-button');
-      
-      submitButton.addEventListener('click', function(event) {
-      event.preventDefault();
-      document.getElementById('courtResults').style.display = 'block';
+
+      submitButton.addEventListener('click', function (event) {
+        event.preventDefault();
+        document
+          .getElementById('courtResults')
+          .style
+          .display = 'block';
       });
     });
-    </script>
+  </script>
 {% endblock %}

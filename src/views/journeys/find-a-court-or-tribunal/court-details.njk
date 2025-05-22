@@ -1,0 +1,87 @@
+{% extends "layout.njk" %}
+{% from "govuk/components/input/macro.njk" import govukInput %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/summary-list/macro.njk" import govukSummaryList %}
+
+{% block content %}
+  <h2 class="govuk-heading-l">{{ court.name }}</h2>
+
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h3 class="govuk-heading-l">Visit or contact us:</h3>
+      <h3 class="govuk-heading-m">Address</h3>
+      <ul class="govuk-list">
+        {% for line in court.address.lines %}
+          <li class="govuk-body govuk-!-margin-bottom-0">{{ line }}</li>
+        {% endfor %}
+      </ul>
+      <ul class="govuk-list">
+        <li>
+          <a class="govuk-link" href="{{ court.address.mapUrl }}">Get directions (opens in new tab)</a>
+        </li>
+        <li class="govuk-!-margin-top-4">
+          <a class="govuk-link" href="https://www.gov.uk/guidance/what-to-expect-coming-to-a-court-or-tribunal">What to expect coming to a court or tribunal (opens in new tab)</a>
+        </li>
+      </ul>
+      <h3 class="govuk-heading-m">Additional information</h3>
+      <p class="govuk-body govuk-!-margin-bottom-0">
+        <a class="govuk-link" href="https://www.gov.uk/government/news/scammers-using-hmcts-telephone-numbers" target="_blank">Scammers are mimicking genuine HMCTS phone numbers and email addresses</a>. They may demand payment and claim to be from HMRC or enforcement. If you're unsure, do not pay anything and report the scam to <a class="govuk-link" href="https://www.actionfraud.police.uk/" target="_blank">Action Fraud</a>.</p>
+
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">Opening times</h3>
+      {{ govukSummaryList({
+        rows: court.openingTimes
+      }) }}
+
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">Email</h3>
+      {{ govukSummaryList({
+        rows: court.emails
+      }) }}
+
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">Telephone</h3>
+      {{ govukSummaryList({
+        rows: court.telephones
+      }) }}
+
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">Building facilities</h3>
+      <p class="govuk-body">If you have a disability and need help coming to a hearing, please contact {{ court.telephones[0].value.text }}.</p>
+      {{ govukSummaryList({
+        rows: court.facilities
+      }) }}
+
+      <h2 class="govuk-heading-s">Translators or Interpreters</h2>
+      <p class="govuk-body">
+        <a class="govuk-link" href="https://www.gov.uk/get-interpreter-at-court-or-tribunal" target="_blank">Get an interpreter at a court or tribunal. (opens in new tab)</a>
+      </p>
+
+    </div>
+    <div class="govuk-grid-column-one-third">
+      <div class="govuk-grid-row govuk-!-padding-left-3">
+        <img src="{{ court.image.url }}" alt="{{ court.image.alt }} class="govuk-!-width-full" style="width: 100%; max-height: 400px; object-fit: contain;">
+        <p class="govuk-body-s">{{ court.name }}</p>
+      </div>
+
+      <h3 class="govuk-heading-m">This location handles</h3>
+      {% for handle in court.handles %}
+        {% if handle.href and handle.text %}
+          <p class="govuk-body">
+            <a class="govuk-link" href="{{handle.href}}">{{ handle.text }}</a>
+          </p>
+        {% else %}
+          <p class="govuk-body">{{ handle.text }}</p>
+        {% endif %}
+      {% endfor %}
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">Make a complaint</h3>
+      <p class="govuk-body govuk-!-margin-bottom-4">
+        <a class="govuk-link" href="https://www.gov.uk/government/organisations/hm-courts-and-tribunals-service/about/complaints-procedure" target="_blank">Contact us to make a complaint</a>
+      </p>
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">Court codes for legal professionals</h3>
+      <p class="govuk-body">Crown Court location code: {{ court.codes.crown }}</p>
+      <p class="govuk-body">DX: {{ court.codes.dx }}</p>
+      <h3 class="govuk-heading-m govuk-!-margin-top-4">Professional users’ court and tribunal access scheme</h3>
+      <p class="govuk-body">This location participates in this scheme</p>
+      <p class="govuk-body govuk-!-margin-bottom-4">
+        <a class="govuk-link" href="https://www.gov.uk/guidance/professional-users-court-and-tribunal-access-scheme" target="_blank">Register for the scheme</a>
+      </p>
+    </div>
+  </div>
+{% endblock %}
