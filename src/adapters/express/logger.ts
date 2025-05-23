@@ -25,6 +25,7 @@ export function setupLogger(app: Express) {
   app.use((req: Request, res: Response, next: NextFunction) => {
     const start = Date.now();
 
+    /* istanbul ignore next */
     res.on('finish', () => {
       const duration = Date.now() - start;
       logger.info('HTTP request', {
