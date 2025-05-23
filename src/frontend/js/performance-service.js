@@ -1,6 +1,18 @@
 import { performanceMonitor } from './performance-monitor';
 
+/**
+ * PerformanceService class for managing and reporting performance metrics.
+ * Handles the collection, processing, and reporting of performance data to a backend service.
+ * 
+ * @class PerformanceService
+ */
 class PerformanceService {
+  /**
+   * Creates a new PerformanceService instance.
+   * Initializes the service with default configuration values.
+   * 
+   * @constructor
+   */
   constructor() {
     this.metrics = {};
     this.reportingEndpoint = process.env.PERFORMANCE_REPORTING_ENDPOINT || '/api/performance-metrics';
@@ -163,7 +175,18 @@ class PerformanceService {
     this.metrics = {};
   }
 
-  // Set configuration
+  /**
+   * Updates the service configuration with new settings.
+   * Allows dynamic modification of reporting endpoint, sample rate, and other parameters.
+   * 
+   * @method setConfig
+   * @public
+   * @param {Object} config - Configuration object
+   * @param {string} [config.reportingEndpoint] - Endpoint URL for reporting metrics
+   * @param {number} [config.sampleRate] - Rate at which to sample metrics (0-1)
+   * @param {number} [config.maxEntries] - Maximum number of entries to store
+   * @param {boolean} [config.isReportingEnabled] - Whether reporting is enabled
+   */
   setConfig(config) {
     this.reportingEndpoint = config.reportingEndpoint || this.reportingEndpoint;
     this.sampleRate = config.sampleRate || this.sampleRate;

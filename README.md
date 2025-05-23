@@ -286,7 +286,7 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 ### Core Dependencies
 - [NestJS](https://nestjs.com/) v11.1.1
 - [Express](https://expressjs.com/) v5.1.0+
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.10.0+
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.10.1
 - [TypeScript](https://www.typescriptlang.org/) v5.4.2
 - [Node.js](https://github.com/nodejs/release#release-schedule) v20.12.2+
 

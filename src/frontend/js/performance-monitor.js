@@ -1,4 +1,17 @@
+/**
+ * PerformanceMonitor class for tracking and reporting web performance metrics.
+ * Implements various performance observers to collect metrics like navigation timing,
+ * resource timing, long tasks, and Core Web Vitals.
+ * 
+ * @class PerformanceMonitor
+ */
 class PerformanceMonitor {
+  /**
+   * Creates a new PerformanceMonitor instance.
+   * Initializes the performance monitoring system with default configuration.
+   * 
+   * @constructor
+   */
   constructor() {
     this.metrics = {};
     this.observers = new Set();
@@ -10,7 +23,23 @@ class PerformanceMonitor {
     };
   }
 
-  // Initialize performance monitoring
+  /**
+   * Initializes all performance observers and starts collecting metrics.
+   * Sets up observers for:
+   * - Navigation timing
+   * - Resource timing
+   * - Long tasks
+   * - Layout shifts
+   * - First input delay
+   * - Largest contentful paint
+   * - Cumulative layout shift
+   * - First contentful paint
+   * - Time to interactive
+   * - Total blocking time
+   * 
+   * @method init
+   * @public
+   */
   init() {
     if (window.performance) {
       this.observeNavigationTiming();
