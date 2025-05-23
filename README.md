@@ -29,12 +29,42 @@ npm run start:prod
 
 ### Testing
 ```bash
-# Run all tests (unit, e2e, and GOV.UK components)
+# Run all tests (unit, integration, GOV.UK, and E2E)
 npm run test:all
+
+# Run unit tests
+npm run test:unit
+
+# Run integration tests
+npm run test:integration
+
+# Run GOV.UK component tests
+npm run test:govuk
 
 # Run end-to-end tests in all browsers
 npm run test:e2e:browsers
+
+# Run tests with coverage
+npm run test:cov
 ```
+
+The application uses a clear separation of test types:
+
+- **Unit and Integration Tests** (`test/` directory)
+  - Jest-based tests for individual components and their interactions
+  - Files must end with `.spec.ts`
+  - Run with `npm run test:unit` or `npm run test:integration`
+
+- **End-to-End Tests** (`tests/` directory)
+  - Playwright-based tests for complete user journeys
+  - Example tests in `tests/examples/`
+  - Run with `npm run test:e2e` or browser-specific commands
+
+For detailed information about testing:
+- [Testing Strategy](docs/testing.md) - Comprehensive testing documentation
+- [Unit Testing Guide](docs/unit-testing.md) - Guide for writing unit tests
+- [End-to-End Testing with Playwright](docs/playwright-testing.md) - Guide for E2E testing
+- [GOV.UK Component Testing](docs/govuk-testing.md) - Guide for component testing
 
 ### Available Scripts
 
@@ -50,10 +80,28 @@ npm run test:e2e:browsers
 - `npm run build:frontend` - Build frontend assets for production (SCSS, copy assets, fingerprint)
 
 #### Testing
-- `npm run test:all` - Run all tests (unit, e2e, and GOV.UK components)
-- `npm run test:e2e:browsers` - Run end-to-end tests in all browsers
+- `npm run test:unit` - Run all unit tests
+- `npm run test:integration` - Run all integration tests
+- `npm run test:unit:watch` - Run unit tests in watch mode
+- `npm run test:integration:watch` - Run integration tests in watch mode
+- `npm run test:unit:debug` - Run unit tests in debug mode
+- `npm run test:integration:debug` - Run integration tests in debug mode
+- `npm run test:govuk` - Run GOV.UK component tests
+- `npm run test:govuk:watch` - Run GOV.UK component tests in watch mode
+- `npm run test:govuk:debug` - Run GOV.UK component tests in debug mode
+- `npm run test:e2e` - Run all end-to-end tests
 - `npm run test:e2e:ui` - Run end-to-end tests with UI mode
 - `npm run test:e2e:debug` - Run end-to-end tests in debug mode
+- `npm run test:e2e:browsers` - Run end-to-end tests in all browsers
+- `npm run test:e2e:chromium` - Run end-to-end tests in Chrome
+- `npm run test:e2e:firefox` - Run end-to-end tests in Firefox
+- `npm run test:e2e:webkit` - Run end-to-end tests in Safari
+- `npm run test:cov` - Run all tests with coverage
+- `npm run test:cov:unit` - Run unit tests with coverage
+- `npm run test:cov:integration` - Run integration tests with coverage
+- `npm run test:cov:govuk` - Run GOV.UK component tests with coverage
+- `npm run test:all` - Run all tests (unit, integration, GOV.UK, and E2E)
+- `npm run test:all:watch` - Run all tests in watch mode (concurrently)
 
 #### Code Quality
 - `npm run format` - Format code with Prettier
@@ -208,6 +256,7 @@ npm run test:e2e:webkit      # Run E2E tests in Safari
 For detailed information about all build scripts, see the [Build Scripts Documentation](docs/build-scripts.md).
 
 For detailed information about testing:
+- [Testing Strategy](docs/testing.md)
 - [Unit Testing Guide](docs/unit-testing.md)
 - [End-to-End Testing with Playwright](docs/playwright-testing.md)
 - [GOV.UK Component Testing](docs/govuk-testing.md)

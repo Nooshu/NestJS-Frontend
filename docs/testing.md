@@ -6,6 +6,46 @@ This document outlines the testing strategy and best practices for the applicati
 
 The application implements a comprehensive testing strategy that includes unit tests, integration tests, and end-to-end tests. The testing setup is configured to ensure high code coverage and maintainable test suites.
 
+## Test Directory Structure
+
+The application uses a clear separation of test types with dedicated directories:
+
+```
+├── test/                  # Jest tests (unit and integration)
+│   ├── unit/             # Unit tests
+│   └── integration/      # Integration tests
+├── tests/                # Playwright E2E tests
+│   ├── examples/         # Example E2E tests
+│   └── ...              # Other E2E test suites
+└── tests-examples/       # Example tests (legacy, being migrated)
+```
+
+### Directory Purposes
+
+1. **`test/` Directory**
+   - Contains all Jest-based tests
+   - Unit tests for individual components
+   - Integration tests for component interactions
+   - Files must end with `.spec.ts`
+
+2. **`tests/` Directory**
+   - Contains all Playwright-based E2E tests
+   - End-to-end test suites
+   - Example tests in `tests/examples/`
+   - Files typically end with `.spec.ts`
+
+3. **`tests-examples/` Directory**
+   - Legacy directory for example tests
+   - Being migrated to `tests/examples/`
+   - Will be removed in future versions
+
+### Test File Naming
+
+- Jest tests: `*.spec.ts`
+- Playwright tests: `*.spec.ts`
+- Test utilities: `*.test-utils.ts`
+- Test fixtures: `*.fixture.ts`
+
 ## Test Configuration
 
 ### Jest Configuration
@@ -14,8 +54,14 @@ The application uses Jest as the testing framework with the following configurat
 ```javascript
 module.exports = {
   moduleFileExtensions: ['js', 'json', 'ts'],
-  rootDir: 'src',
+  rootDir: '.',
   testRegex: '.*\\.spec\\.ts$',
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/tests/',           // Ignore Playwright tests
+    '/e2e/',            // Ignore E2E tests
+    '/tests-examples/', // Ignore legacy example tests
+  ],
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
@@ -55,26 +101,58 @@ module.exports = {
 };
 ```
 
-### Test Setup
-The application includes a comprehensive test setup:
+### Playwright Configuration
+The application uses Playwright for E2E testing with the following configuration:
 
-1. **Global Configuration**
-   - Test timeout settings
-   - Console mocking
-   - Performance API mocking
-   - Custom matchers
+```typescript
+export default defineConfig({
+  testDir: './tests',  // Playwright tests directory
+  // ... other config ...
+});
+```
 
-2. **Test Utilities**
-   - Test application creation
-   - Test module creation
-   - Mock utilities
-   - Environment setup/cleanup
+### Running Tests
 
-3. **Test Hooks**
-   - Global beforeAll/afterAll
-   - Test-specific beforeEach/afterEach
-   - Mock cleanup
-   - Environment reset
+#### Jest Tests (Unit and Integration)
+```bash
+# Run all unit tests
+npm run test:unit
+
+# Run all integration tests
+npm run test:integration
+
+# Run specific test file
+npm run test:unit -- test/unit/path/to/test.spec.ts
+```
+
+#### Playwright Tests (E2E)
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run specific test file
+npm run test:e2e -- tests/examples/demo-todo-app.spec.ts
+
+# Run tests in specific browser
+npm run test:e2e:chromium
+```
+
+### Important Notes
+
+1. **Test Separation**
+   - Jest and Playwright tests must be kept in their respective directories
+   - Jest tests should not use Playwright APIs
+   - Playwright tests should not use Jest APIs
+
+2. **File Location**
+   - Place new Jest tests in `test/unit/` or `test/integration/`
+   - Place new Playwright tests in `tests/`
+   - Example tests should go in `tests/examples/`
+
+3. **Configuration**
+   - Jest automatically ignores Playwright test directories
+   - Playwright only looks for tests in the `tests/` directory
+   - Both frameworks use `.spec.ts` file extension
 
 ## Test Types
 
@@ -138,40 +216,90 @@ E2E tests verify the entire application flow:
 
 ## Test Commands
 
-### Development
+### Unit and Integration Tests
 ```bash
-# Run tests in watch mode
-npm run test:watch
+# Run all unit tests
+npm run test:unit
 
-# Run tests with coverage
-npm run test:cov
+# Run all integration tests
+npm run test:integration
 
-# Run specific test file
-npm run test -- path/to/test.spec.ts
+# Run unit tests in watch mode
+npm run test:unit:watch
 
-# Run tests in debug mode
-npm run test:debug
+# Run integration tests in watch mode
+npm run test:integration:watch
+
+# Run unit tests in debug mode
+npm run test:unit:debug
+
+# Run integration tests in debug mode
+npm run test:integration:debug
+
+# Run unit tests with coverage
+npm run test:cov:unit
+
+# Run integration tests with coverage
+npm run test:cov:integration
 ```
 
-### CI/CD
+### GOV.UK Component Tests
 ```bash
-# Run all tests
-npm run test
-
-# Run tests with coverage
-npm run test:cov
-
-# Run E2E tests
-npm run test:e2e
-
 # Run GOV.UK component tests
 npm run test:govuk
 
 # Run GOV.UK component tests in watch mode
 npm run test:govuk:watch
 
+# Run GOV.UK component tests in debug mode
+npm run test:govuk:debug
+
 # Run GOV.UK component tests with coverage
-npm run test:govuk:cov
+npm run test:cov:govuk
+```
+
+### End-to-End Tests (Playwright)
+```bash
+# Run all E2E tests
+npm run test:e2e
+
+# Run E2E tests with UI mode
+npm run test:e2e:ui
+
+# Run E2E tests in debug mode
+npm run test:e2e:debug
+
+# Run E2E tests in specific browsers
+npm run test:e2e:chromium    # Run in Chrome
+npm run test:e2e:firefox     # Run in Firefox
+npm run test:e2e:webkit      # Run in Safari
+
+# Run E2E tests in all browsers
+npm run test:e2e:browsers
+```
+
+### Combined Test Commands
+```bash
+# Run all tests (unit, integration, GOV.UK, and E2E)
+npm run test:all
+
+# Run all tests in watch mode (concurrently)
+npm run test:all:watch
+
+# Run all tests with coverage
+npm run test:cov
+
+# Run specific test file
+npm run test -- path/to/test.spec.ts
+```
+
+### Legacy Commands (Deprecated)
+```bash
+# These commands are maintained for backward compatibility
+npm run test              # Alias for test:unit
+npm run test:watch        # Alias for test:unit:watch
+npm run test:debug        # Alias for test:unit:debug
+npm run test:e2e:all      # Alias for test:e2e
 ```
 
 ## Test Documentation
