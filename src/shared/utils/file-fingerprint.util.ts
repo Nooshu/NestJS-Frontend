@@ -21,8 +21,15 @@ export function generateFileHash(filePath: string): string {
  */
 export function addHashToFilename(filePath: string): string {
   const hash = generateFileHash(filePath);
-  const ext = filePath.split('.').pop();
-  const baseName = filePath.slice(0, -(ext!.length + 1));
+  const lastDotIndex = filePath.lastIndexOf('.');
+  
+  if (lastDotIndex === -1) {
+    // No extension
+    return `${filePath}.${hash}`;
+  }
+  
+  const ext = filePath.slice(lastDotIndex + 1);
+  const baseName = filePath.slice(0, lastDotIndex);
   return `${baseName}.${hash}.${ext}`;
 }
 
