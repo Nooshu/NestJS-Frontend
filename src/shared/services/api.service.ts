@@ -90,6 +90,17 @@ export class ApiService {
   }
 
   /**
+   * Gets the timeout value for a request, respecting custom timeouts if provided
+   * 
+   * @private
+   * @param {Object} options - Request options
+   * @returns {number} The timeout value in milliseconds
+   */
+  private getTimeout(options: any): number {
+    return options.timeout ?? this.defaultTimeout;
+  }
+
+  /**
    * Makes a GET request to the specified endpoint
    *
    * @template T - The expected response type
@@ -98,13 +109,14 @@ export class ApiService {
    * @returns {Observable<T>} An observable that emits the response data
    */
   get<T>(endpoint: string, options = {}): Observable<T> {
+    const timeoutValue = this.getTimeout(options);
     return this.httpService
       .get<T>(`${this.baseUrl}${endpoint}`, {
         ...options,
-        timeout: this.defaultTimeout,
+        timeout: timeoutValue,
       })
       .pipe(
-        timeout(this.defaultTimeout),
+        timeout(timeoutValue),
         map((response: AxiosResponse<T>) => response.data),
         catchError((error: AxiosError) => this.handleError(error))
       );
@@ -120,13 +132,14 @@ export class ApiService {
    * @returns {Observable<T>} An observable that emits the response data
    */
   post<T>(endpoint: string, data: any, options = {}): Observable<T> {
+    const timeoutValue = this.getTimeout(options);
     return this.httpService
       .post<T>(`${this.baseUrl}${endpoint}`, data, {
         ...options,
-        timeout: this.defaultTimeout,
+        timeout: timeoutValue,
       })
       .pipe(
-        timeout(this.defaultTimeout),
+        timeout(timeoutValue),
         map((response: AxiosResponse<T>) => response.data),
         catchError((error: AxiosError) => this.handleError(error))
       );
@@ -142,13 +155,14 @@ export class ApiService {
    * @returns {Observable<T>} An observable that emits the response data
    */
   put<T>(endpoint: string, data: any, options = {}): Observable<T> {
+    const timeoutValue = this.getTimeout(options);
     return this.httpService
       .put<T>(`${this.baseUrl}${endpoint}`, data, {
         ...options,
-        timeout: this.defaultTimeout,
+        timeout: timeoutValue,
       })
       .pipe(
-        timeout(this.defaultTimeout),
+        timeout(timeoutValue),
         map((response: AxiosResponse<T>) => response.data),
         catchError((error: AxiosError) => this.handleError(error))
       );
@@ -163,13 +177,14 @@ export class ApiService {
    * @returns {Observable<T>} An observable that emits the response data
    */
   delete<T>(endpoint: string, options = {}): Observable<T> {
+    const timeoutValue = this.getTimeout(options);
     return this.httpService
       .delete<T>(`${this.baseUrl}${endpoint}`, {
         ...options,
-        timeout: this.defaultTimeout,
+        timeout: timeoutValue,
       })
       .pipe(
-        timeout(this.defaultTimeout),
+        timeout(timeoutValue),
         map((response: AxiosResponse<T>) => response.data),
         catchError((error: AxiosError) => this.handleError(error))
       );
