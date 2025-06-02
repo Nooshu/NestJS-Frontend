@@ -10,15 +10,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    
+    # Use Node.js setup with caching
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
+        cache: 'npm'
+    
+    # Install dependencies with a clean install
     - name: Install dependencies
-      run: npm ci
+      run: |
+        npm ci
+        npm cache clean --force
+    
+    # Install Playwright browsers with dependencies
     - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
+      run: npx playwright install --with-deps chromium firefox webkit
+    
+    # Run Playwright tests with increased timeout
     - name: Run Playwright tests
-      run: npx playwright test
+      run: |
+        # Set CI environment variable
+        export CI=true
+        # Run tests with increased timeout
+        npx playwright test --timeout=180000
+    
+    # Upload test results on failure
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:

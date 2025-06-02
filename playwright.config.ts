@@ -98,8 +98,8 @@ export default defineConfig({
 
   /* Configure the local development server to run during tests */
   webServer: {
-    /* Command to start the NestJS development server */
-    command: 'npm run start:dev',
+    /* Command to start the server - use production build in CI for faster startup */
+    command: process.env.CI ? 'npm run build:prod && npm run start:prod' : 'npm run start:dev',
     
     /* URL where the server will be running */
     url: 'http://localhost:3000',
@@ -107,7 +107,7 @@ export default defineConfig({
     /* Reuse the server instance if it's already running (except in CI) */
     reuseExistingServer: !process.env.CI,
     
-    /* Maximum time to wait for the server to start (2 minutes) */
-    timeout: 120 * 1000,
+    /* Maximum time to wait for the server to start (3 minutes in CI, 2 minutes locally) */
+    timeout: process.env.CI ? 180 * 1000 : 120 * 1000,
   },
 });
