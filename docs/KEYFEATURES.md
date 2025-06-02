@@ -52,7 +52,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Strict permissions policy
 - CORS configuration
 - CSP violation reporting
-- Request validation using class-validator v0.14.1
+- Request validation using class-validator v0.14.2
 - Security error filtering and logging
 - Session management
 - JWT support for authentication

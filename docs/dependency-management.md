@@ -6,10 +6,10 @@ This project uses npm for dependency management. The project requires Node.js ve
 ## Key Dependencies
 
 ### Core Dependencies
-- @nestjs/common: ^11.0.0
-- @nestjs/core: ^11.0.0
-- @nestjs/platform-express: ^11.0.0
-- govuk-frontend: ^5.9.0
+- @nestjs/common: ^11.1.2
+- @nestjs/core: ^11.1.2
+- @nestjs/platform-express: ^11.1.2
+- govuk-frontend: ^5.10.2
 - nunjucks: ^3.2.4
 
 ### Security Dependencies
@@ -18,13 +18,13 @@ This project uses npm for dependency management. The project requires Node.js ve
 
 ### API and Integration
 - @nestjs/axios: ^4.0.0
-- axios: ^1.8.4
+- axios: ^1.9.0
 - @nestjs/swagger: ^11.1.4
 - swagger-ui-express: ^5.0.1
 
 ### Caching
 - @nestjs/cache-manager: ^3.0.1
-- cache-manager: ^6.4.2
+- cache-manager: ^6.4.3
 - cache-manager-redis-store: ^3.0.1
 - ioredis: ^5.6.1
 
@@ -35,11 +35,11 @@ This project uses npm for dependency management. The project requires Node.js ve
 - pino-pretty: ^13.0.0
 
 ### Development Dependencies
-- @nestjs/cli: ^11.0.0
+- @nestjs/cli: ^11.0.7
 - jest: ^29.7.0
-- typescript: ^5.1.3
+- typescript: ^5.4.2
 - prettier: ^3.0.0
-- sass: ^1.69.5
+- sass: ^1.71.1
 
 ## Table of Contents
 

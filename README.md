@@ -137,6 +137,34 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
+## Package Versions
+
+This project uses the following key package versions:
+
+### Core Dependencies
+- NestJS Framework: v11.1.2
+- Express.js: v5.1.0
+- GOV.UK Frontend: v5.10.2
+- TypeScript: v5.4.2
+- Node.js: >=20.12.2
+
+### Key Features
+- NestJS Core: v11.1.2
+- NestJS Swagger: v11.1.4
+- NestJS Config: v4.0.2
+- NestJS Axios: v4.0.0
+- NestJS Cache Manager: v3.0.1
+- NestJS Terminus: v11.0.0
+- NestJS Throttler: v6.4.0
+
+### Testing & Development
+- Jest: v29.7.0
+- Playwright: v1.52.0
+- ESLint & Prettier: Latest versions
+- SASS: v1.71.1
+
+For a complete list of dependencies and their versions, please refer to the `package.json` file.
+
 ## Migration Guide
 
 :rotating_light: **Note**: This PoC is not intended for use with ExUI at this stage; its application is envisioned as a future goal of the project. :rotating_light:
