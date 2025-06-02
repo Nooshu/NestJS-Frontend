@@ -2,15 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { ApiService } from './api.service';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { AxiosError, AxiosResponse } from 'axios';
-import { of, throwError, Observable, firstValueFrom } from 'rxjs';
+import { of, throwError, firstValueFrom } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 describe('ApiService', () => {
   let service: ApiService;
   let httpService: HttpService;
-  let configService: ConfigService;
 
   const mockBaseUrl = 'http://api.example.com';
   const mockEndpoint = '/test';
@@ -39,7 +38,6 @@ describe('ApiService', () => {
 
     service = module.get<ApiService>(ApiService);
     httpService = module.get<HttpService>(HttpService);
-    configService = module.get<ConfigService>(ConfigService);
 
     // Clear all mocks before each test
     jest.clearAllMocks();
