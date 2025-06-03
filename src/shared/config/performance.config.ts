@@ -96,9 +96,25 @@ export const performanceConfig = {
   /**
    * Browser caching settings
    * @type {Object}
+   *
+   * The stale-while-revalidate directive allows browsers to use a cached response
+   * immediately while fetching a fresh copy in the background. This significantly
+   * improves perceived performance while ensuring content is kept up-to-date.
+   *
+   * Different caching strategies are applied based on resource type:
+   * - Static assets (CSS, JS, images): Longer cache with longer stale-while-revalidate
+   * - Dynamic pages: Shorter cache with shorter stale-while-revalidate
    */
   browserCache: {
-    maxAge: 31536000, // 1 year in seconds
+    maxAge: 3600, // Default cache duration: 1 hour in seconds
+    staticAssets: {
+      maxAge: 604800, // 7 days in seconds
+      staleWhileRevalidate: 86400, // 1 day in seconds
+    },
+    pages: {
+      maxAge: 3600, // 1 hour in seconds
+      staleWhileRevalidate: 60, // 1 minute in seconds
+    },
     mustRevalidate: true,
   },
 };
