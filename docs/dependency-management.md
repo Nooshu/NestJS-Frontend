@@ -31,7 +31,7 @@ This project uses npm for dependency management. The project requires Node.js ve
 ### Logging and Monitoring
 - nest-winston: ^1.10.2
 - winston: ^3.17.0
-- pino: ^9.6.0
+- pino: ^9.7.0
 - pino-pretty: ^13.0.0
 
 ### Development Dependencies

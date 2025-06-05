@@ -150,7 +150,7 @@ This project uses the following key package versions:
 
 ### Key Features
 - NestJS Core: v11.1.2
-- NestJS Swagger: v11.1.4
+- NestJS Swagger: v11.2.0
 - NestJS Config: v4.0.2
 - NestJS Axios: v4.0.0
 - NestJS Cache Manager: v3.0.1
@@ -312,23 +312,23 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 ## Dependencies
 
 ### Core Dependencies
-- [NestJS](https://nestjs.com/) v11.1.1
+- [NestJS](https://nestjs.com/) v11.1.2
 - [Express](https://expressjs.com/) v5.1.0+
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.10.1
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.10.2
 - [TypeScript](https://www.typescriptlang.org/) v5.4.2
 - [Node.js](https://github.com/nodejs/release#release-schedule) v20.12.2+
 
 ### Key Features
 - Axios HTTP client for API integration
-- Redis caching with cache-manager v6.4.2
-- Winston logging with structured output
+- Redis caching with cache-manager v6.4.3
+- Winston logging with structured output v3.17.0
 - Swagger/OpenAPI documentation
 - Rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware with configurable settings
 - Browser-side caching with smart invalidation
 - Helmet.js security headers v8.1.0
 - Nunjucks templating engine - the official and default templating language used by GOV.UK Design System
-- Class-validator v0.14.1 for request validation
+- Class-validator v0.14.2 for request validation
 - Class-transformer v0.5.1 for object transformation
 - TypeORM for database operations
 - Prisma ORM support
