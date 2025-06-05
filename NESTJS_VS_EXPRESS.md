@@ -89,7 +89,6 @@ This document outlines the key benefits of using NestJS over a basic Express.js 
   - Database migrations
 - **Hot Reload**: 
   - Automatic server restart on file changes
-  - Webpack-based compilation
   - Fast refresh for development
   - Configurable watch options
 - **Documentation**: 
