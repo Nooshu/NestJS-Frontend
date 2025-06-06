@@ -136,13 +136,25 @@ describe('CacheService', () => {
     it('should handle edge case TTL values', async () => {
       // Arrange
       const testKey = 'ttl-test-key';
-      const testValue = 'test-value';
+      const testValue: string = 'test-value';
       const edgeCases = [0, -1, Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
 
       // Act & Assert
       for (const ttl of edgeCases) {
+        // Set the value
         await service.set(testKey, testValue, ttl);
+        // Verify set was called with correct parameters
         expect(cacheManager.set).toHaveBeenCalledWith(testKey, testValue, ttl);
+        
+        // Mock the get to return our test value
+        cacheManager.get.mockResolvedValue(testValue);
+        // Verify we can retrieve the value
+        const retrievedValue = await service.get<string>(testKey);
+        expect(retrievedValue).toBe(testValue);
+        
+        // Reset mocks for next iteration
+        cacheManager.set.mockClear();
+        cacheManager.get.mockClear();
       }
     });
   });
@@ -226,7 +238,6 @@ describe('CacheService', () => {
     it('should handle concurrent get and set operations', async () => {
       // Arrange
       const testKey = 'concurrent-key';
-      const testValue = 'test-value';
       const operations = Array(10).fill(null).map((_, index) => ({
         key: `${testKey}-${index}`,
         value: `value-${index}`,
@@ -241,7 +252,7 @@ describe('CacheService', () => {
 
       // Assert
       expect(results).toHaveLength(operations.length);
-      operations.forEach((op, index) => {
+      operations.forEach((op) => {
         expect(cacheManager.set).toHaveBeenCalledWith(op.key, op.value, undefined);
         expect(cacheManager.get).toHaveBeenCalledWith(op.key);
       });

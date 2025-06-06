@@ -163,19 +163,60 @@ describe('CacheMiddleware', () => {
         expect(nextFunction).toHaveBeenCalled();
       });
 
-      it('should set different cache headers for static assets', () => {
-        mockRequest.path = '/css/main.css';
-        (configService.get as jest.Mock).mockImplementation((key: string) => {
-          if (key === 'environment') return 'production';
-          if (key === 'performance.browserCache.maxAge') return 3600;
-          if (key === 'performance.browserCache.staticAssets.maxAge') return 604800;
-          if (key === 'performance.browserCache.staticAssets.staleWhileRevalidate') return 86400;
-          return null;
+      describe('Static assets', () => {
+        const staticAssetTests = [
+          { path: '/css/main.css', type: 'CSS' },
+          { path: '/js/app.js', type: 'JavaScript' },
+          { path: '/images/photo.jpg', type: 'JPEG' },
+          { path: '/images/icon.png', type: 'PNG' },
+          { path: '/images/logo.gif', type: 'GIF' },
+          { path: '/favicon.ico', type: 'ICO' },
+          { path: '/fonts/custom.woff', type: 'WOFF' },
+          { path: '/fonts/custom.woff2', type: 'WOFF2' },
+        ];
+
+        staticAssetTests.forEach(({ path, type }) => {
+          it(`should set long cache headers for ${type} files`, () => {
+            mockRequest.path = path;
+            (configService.get as jest.Mock).mockImplementation((key: string) => {
+              if (key === 'environment') return 'production';
+              if (key === 'performance.browserCache.maxAge') return 3600;
+              if (key === 'performance.browserCache.staticAssets.maxAge') return 604800;
+              if (key === 'performance.browserCache.staticAssets.staleWhileRevalidate') return 86400;
+              return null;
+            });
+
+            middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+
+            expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+            expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
+            expect(nextFunction).toHaveBeenCalled();
+          });
+        });
+      });
+
+      it('should handle isAuthenticated function throwing an error', () => {
+        mockRequest.isAuthenticated = () => {
+          throw new Error('Auth check failed');
+        };
+
+        middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+
+        // Should still set cache headers as if unauthenticated
+        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', expect.stringContaining('public, max-age='));
+        expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
+        expect(nextFunction).toHaveBeenCalled();
+      });
+
+      it('should handle config service throwing an error', () => {
+        (configService.get as jest.Mock).mockImplementation(() => {
+          throw new Error('Config error');
         });
 
         middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+        // Should use default values when config fails
+        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=3600, stale-while-revalidate=60');
         expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
         expect(nextFunction).toHaveBeenCalled();
       });
