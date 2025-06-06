@@ -33,13 +33,27 @@ export class CacheService {
   constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
   /**
+   * Validates that the cache key is a non-empty string.
+   * @private
+   * @param {any} key - The key to validate
+   * @throws {Error} If the key is invalid
+   */
+  private validateKey(key: any): void {
+    if (typeof key !== 'string' || key.trim().length === 0) {
+      throw new Error('Cache key must be a non-empty string');
+    }
+  }
+
+  /**
    * Retrieves a value from the cache.
    *
    * @param {string} key - The key to retrieve from the cache
    * @returns {Promise<T | null>} The cached value or null if not found
    * @template T - The type of the cached value
+   * @throws {Error} If the key is invalid
    */
   async get<T>(key: string): Promise<T | null> {
+    this.validateKey(key);
     return this.cacheManager.get<T>(key);
   }
 
@@ -50,8 +64,10 @@ export class CacheService {
    * @param {any} value - The value to cache
    * @param {number} [ttl] - Time to live in seconds (optional)
    * @returns {Promise<void>}
+   * @throws {Error} If the key is invalid
    */
   async set(key: string, value: any, ttl?: number): Promise<void> {
+    this.validateKey(key);
     await this.cacheManager.set(key, value, ttl);
   }
 
@@ -60,8 +76,10 @@ export class CacheService {
    *
    * @param {string} key - The key to remove from the cache
    * @returns {Promise<void>}
+   * @throws {Error} If the key is invalid
    */
   async del(key: string): Promise<void> {
+    this.validateKey(key);
     await this.cacheManager.del(key);
   }
 

@@ -102,6 +102,49 @@ describe('CacheService', () => {
       // Act & Assert
       await expect(service.set(testKey, testValue)).rejects.toThrow('Cache error');
     });
+
+    it('should handle null and undefined values', async () => {
+      // Arrange
+      const testKey = 'null-key';
+      const nullValue = null;
+      const undefinedValue = undefined;
+
+      // Act & Assert
+      await expect(service.set(testKey, nullValue)).resolves.not.toThrow();
+      await expect(service.set(testKey, undefinedValue)).resolves.not.toThrow();
+      expect(cacheManager.set).toHaveBeenCalledTimes(2);
+    });
+
+    it('should handle different data types', async () => {
+      // Arrange
+      const testCases = [
+        { key: 'string-key', value: 'test string' },
+        { key: 'number-key', value: 42 },
+        { key: 'boolean-key', value: true },
+        { key: 'array-key', value: [1, 2, 3] },
+        { key: 'object-key', value: { nested: { value: 'test' } } },
+        { key: 'date-key', value: new Date() },
+      ];
+
+      // Act & Assert
+      for (const testCase of testCases) {
+        await service.set(testCase.key, testCase.value);
+        expect(cacheManager.set).toHaveBeenCalledWith(testCase.key, testCase.value, undefined);
+      }
+    });
+
+    it('should handle edge case TTL values', async () => {
+      // Arrange
+      const testKey = 'ttl-test-key';
+      const testValue = 'test-value';
+      const edgeCases = [0, -1, Number.MAX_SAFE_INTEGER, Number.MIN_SAFE_INTEGER];
+
+      // Act & Assert
+      for (const ttl of edgeCases) {
+        await service.set(testKey, testValue, ttl);
+        expect(cacheManager.set).toHaveBeenCalledWith(testKey, testValue, ttl);
+      }
+    });
   });
 
   describe('del', () => {
@@ -142,6 +185,18 @@ describe('CacheService', () => {
       // Act & Assert
       await expect(service.clear()).rejects.toThrow('Cache error');
     });
+
+    it('should handle multiple clear operations', async () => {
+      // Arrange
+      const clearOperations = Array(3).fill(null).map(() => service.clear());
+
+      // Act
+      await Promise.all(clearOperations);
+
+      // Assert
+      expect(cacheManager.del).toHaveBeenCalledTimes(3);
+      expect(cacheManager.del).toHaveBeenCalledWith('*');
+    });
   });
 
   describe('type safety', () => {
@@ -164,6 +219,67 @@ describe('CacheService', () => {
         expect(result.id).toBe(1);
         expect(result.name).toBe('test');
       }
+    });
+  });
+
+  describe('concurrent operations', () => {
+    it('should handle concurrent get and set operations', async () => {
+      // Arrange
+      const testKey = 'concurrent-key';
+      const testValue = 'test-value';
+      const operations = Array(10).fill(null).map((_, index) => ({
+        key: `${testKey}-${index}`,
+        value: `value-${index}`,
+      }));
+
+      // Act
+      const setPromises = operations.map(op => service.set(op.key, op.value));
+      const getPromises = operations.map(op => service.get(op.key));
+      
+      await Promise.all(setPromises);
+      const results = await Promise.all(getPromises);
+
+      // Assert
+      expect(results).toHaveLength(operations.length);
+      operations.forEach((op, index) => {
+        expect(cacheManager.set).toHaveBeenCalledWith(op.key, op.value, undefined);
+        expect(cacheManager.get).toHaveBeenCalledWith(op.key);
+      });
+    });
+  });
+
+  describe('error handling', () => {
+    it('should handle invalid key types', async () => {
+      // Arrange
+      const invalidKeys = [null, undefined, 123, {}, [], Symbol('test')];
+
+      // Act & Assert
+      for (const invalidKey of invalidKeys) {
+        await expect(service.get(invalidKey as any)).rejects.toThrow();
+        await expect(service.set(invalidKey as any, 'value')).rejects.toThrow();
+        await expect(service.del(invalidKey as any)).rejects.toThrow();
+      }
+    });
+
+    it('should handle cache manager initialization failure', async () => {
+      // Arrange
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          CacheService,
+          {
+            provide: CACHE_MANAGER,
+            useValue: null,
+          },
+        ],
+      }).compile();
+
+      const uninitializedService = module.get<CacheService>(CacheService);
+
+      // Act & Assert
+      await expect(uninitializedService.get('test')).rejects.toThrow();
+      await expect(uninitializedService.set('test', 'value')).rejects.toThrow();
+      await expect(uninitializedService.del('test')).rejects.toThrow();
+      await expect(uninitializedService.clear()).rejects.toThrow();
     });
   });
 }); 
