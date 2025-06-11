@@ -59,12 +59,6 @@
     "watch:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
     "fingerprint:assets": "ts-node -r tsconfig-paths/register src/cli/fingerprint-assets.ts",
     "test:e2e:all": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
-    "test:e2e:browsers": "npm-run-all test:e2e:chromium test:e2e:firefox test:e2e:webkit",
-    "test:e2e:chromium": "playwright test --project=chromium",
-    "test:e2e:firefox": "playwright test --project=firefox",
-    "test:e2e:webkit": "playwright test --project=webkit",
     "build:frontend:dev": "npm run build:scss && npm run copy:images && npm run copy:govuk-assets && npm run copy:govuk-dist"
   },
   "keywords": [
@@ -90,6 +84,7 @@
     "@nestjs/terminus": "11.0.0",
     "@nestjs/throttler": "6.4.0",
     "axios": "1.9.0",
+    "brace-expansion": "^2.0.2",
     "cache-manager": "6.4.3",
     "cache-manager-redis-store": "3.0.1",
     "class-transformer": "0.5.1",
