@@ -137,7 +137,7 @@
     "nunjucks": "3.2.4",
     "onchange": "^7.1.0",
     "postcss": "8.5.6",
-    "prettier": "3.6.1",
+    "prettier": "3.6.2",
     "rimraf": "6.0.1",
     "sass": "1.71.1",
     "supertest": "7.1.1",
