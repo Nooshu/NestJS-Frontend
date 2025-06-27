@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import type { Cache } from 'cache-manager';
 
 /**
@@ -20,7 +20,7 @@ import type { Cache } from 'cache-manager';
  */
 @Injectable()
 export class CacheService {
-  constructor(private cacheManager: Cache) {}
+  constructor(@Inject('Cache') private cacheManager: Cache) {}
 
   /**
    * Retrieves a value from the cache by its key
