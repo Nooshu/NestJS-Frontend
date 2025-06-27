@@ -1,8 +1,8 @@
-import type { Express, Request, Response, NextFunction } from 'express';
+import type { Express, Request, Response } from 'express';
 import type { INestApplication } from '@nestjs/common';
 import { createExpressApp } from '../index';
 import request from 'supertest';
-import { startServer } from '../example';
+import * as exampleModule from '../example';
 import express from 'express';
 
 // Mock the createExpressApp function
@@ -19,58 +19,29 @@ describe('example.ts', () => {
   const originalConsoleError = console.error;
 
   beforeEach(async () => {
-    // Reset environment variables
     process.env = { ...originalEnv };
     process.env.PORT = '3000';
-
-    // Mock console methods
     console.log = jest.fn();
     console.error = jest.fn();
-
-    // Create a real Express app instance for route testing
     mockExpressApp = express();
-
-    // Create mock NestJS app
     mockNestApp = {
       getHttpAdapter: jest.fn().mockReturnValue({
         getInstance: jest.fn().mockReturnValue(mockExpressApp),
       }),
       listen: jest.fn(),
     } as unknown as INestApplication;
-
-    // Setup createExpressApp mock to return our mock NestJS app
     (createExpressApp as jest.Mock).mockResolvedValue(mockNestApp);
-
-    // Add example routes to the Express app
-    mockExpressApp.get('/example', (_req: Request, res: Response) => {
-      res.send('Hello from NestJS with Express!');
-    });
-
-    mockExpressApp.get('/api/data', (_req: Request, res: Response) => {
-      res.json({
-        message: 'This is an example API endpoint',
-        timestamp: new Date().toISOString(),
-      });
-    });
-
-    mockExpressApp.get('/error', (_req: Request, _res: Response, next: NextFunction) => {
-      next(new Error('This is an example error'));
-    });
-
-    // Add error handling middleware
+    mockExpressApp.get('/example', exampleModule.exampleRouteHandler);
+    mockExpressApp.get('/api/data', exampleModule.apiDataRouteHandler);
+    mockExpressApp.get('/error', exampleModule.errorRouteHandler);
     mockExpressApp.use((err: Error, _req: any, res: any, _next: any) => {
       res.status(500).json({ error: err.message });
     });
-
-    // Set app to mockExpressApp for route testing
     app = mockExpressApp;
-
-    // Clear all mocks before each test
     jest.clearAllMocks();
   });
 
   afterEach(() => {
-    // Restore environment variables and console methods
     process.env = originalEnv;
     console.log = originalConsoleLog;
     console.error = originalConsoleError;
@@ -79,67 +50,52 @@ describe('example.ts', () => {
 
   describe('startServer', () => {
     it('should get the Express instance from NestJS app', async () => {
-      // Mock successful server start
       (mockNestApp.listen as jest.Mock).mockResolvedValue(mockNestApp);
-      
-      // Call startServer
-      await startServer();
-
-      // Verify Express instance was retrieved
+      await exampleModule.startServer();
       expect(createExpressApp).toHaveBeenCalled();
       const getHttpAdapterSpy = mockNestApp.getHttpAdapter as jest.Mock;
       expect(getHttpAdapterSpy).toHaveBeenCalled();
       const httpAdapter = getHttpAdapterSpy.mock.results[0].value;
       expect(httpAdapter.getInstance).toHaveBeenCalled();
     });
-
     it('should start the server successfully', async () => {
-      // Mock successful server start
       (mockNestApp.listen as jest.Mock).mockResolvedValue(mockNestApp);
-      
-      // Call startServer
-      await startServer();
-
-      // Verify server was started
+      await exampleModule.startServer();
       expect(mockNestApp.listen).toHaveBeenCalledWith('3000');
       expect(console.log).toHaveBeenCalledWith('Server is running on port 3000');
     });
-
     it('should use custom port from environment', async () => {
       process.env.PORT = '4000';
-      
-      // Mock successful server start
       (mockNestApp.listen as jest.Mock).mockResolvedValue(mockNestApp);
-      
-      // Call startServer
-      await startServer();
-
-      // Verify server was started with custom port
+      await exampleModule.startServer();
       expect(mockNestApp.listen).toHaveBeenCalledWith('4000');
       expect(console.log).toHaveBeenCalledWith('Server is running on port 4000');
     });
-
+    it('should use default port when PORT is not set', async () => {
+      delete process.env.PORT;
+      (mockNestApp.listen as jest.Mock).mockResolvedValue(mockNestApp);
+      await exampleModule.startServer();
+      expect(mockNestApp.listen).toHaveBeenCalledWith(3000);
+      expect(console.log).toHaveBeenCalledWith('Server is running on port 3000');
+    });
     it('should handle server startup errors', async () => {
-      // Mock server startup error
       const mockError = new Error('Failed to start server');
       (mockNestApp.listen as jest.Mock).mockRejectedValue(mockError);
-      
-      // Spy on process.exit
       const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
-
-      // Call startServer and handle the error
-      await startServer().catch((error) => {
-        // Log the error (this simulates what happens in the main block)
+      await exampleModule.startServer().catch((error) => {
         console.error('Failed to start server:', error);
         process.exit(1);
       });
-
-      // Verify error handling
       expect(console.error).toHaveBeenCalledWith('Failed to start server:', mockError);
       expect(processExitSpy).toHaveBeenCalledWith(1);
-
-      // Cleanup
       processExitSpy.mockRestore();
+    });
+    it('should add routes to the Express app', async () => {
+      (mockNestApp.listen as jest.Mock).mockResolvedValue(mockNestApp);
+      await exampleModule.startServer();
+      const response = await request(mockExpressApp).get('/example');
+      expect(response.status).toBe(200);
+      expect(response.text).toBe('Hello from NestJS with Express!');
     });
   });
 
@@ -149,7 +105,6 @@ describe('example.ts', () => {
       expect(response.status).toBe(200);
       expect(response.text).toBe('Hello from NestJS with Express!');
     });
-
     it('should handle /api/data route', async () => {
       const response = await request(app).get('/api/data');
       expect(response.status).toBe(200);
@@ -157,34 +112,64 @@ describe('example.ts', () => {
       expect(response.body).toHaveProperty('timestamp');
       expect(new Date(response.body.timestamp).getTime()).not.toBeNaN();
     });
-
     it('should handle /error route', async () => {
       const response = await request(app).get('/error');
       expect(response.status).toBe(500);
       expect(response.body).toHaveProperty('error', 'This is an example error');
     });
+    it('should return valid JSON timestamp in /api/data route', async () => {
+      const response = await request(app).get('/api/data');
+      expect(response.status).toBe(200);
+      const timestamp = response.body.timestamp;
+      expect(typeof timestamp).toBe('string');
+      expect(new Date(timestamp).toISOString()).toBe(timestamp);
+    });
   });
 
-  describe('Direct file execution', () => {
-    it('should handle errors when run directly', async () => {
-      // Mock server startup error
-      const mockError = new Error('Failed to start server');
-      (mockNestApp.listen as jest.Mock).mockRejectedValue(mockError);
-      
-      // Spy on process.exit
+  describe('Route handler functions', () => {
+    it('should test the /example route handler function directly', () => {
+      const mockReq = {} as Request;
+      const mockRes = { send: jest.fn() } as unknown as Response;
+      exampleModule.exampleRouteHandler(mockReq, mockRes);
+      expect(mockRes.send).toHaveBeenCalledWith('Hello from NestJS with Express!');
+    });
+    it('should test the /api/data route handler function directly', () => {
+      const mockReq = {} as Request;
+      const mockRes = { json: jest.fn() } as unknown as Response;
+      exampleModule.apiDataRouteHandler(mockReq, mockRes);
+      expect(mockRes.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'This is an example API endpoint',
+          timestamp: expect.any(String),
+        })
+      );
+    });
+    it('should test the /error route handler function directly', () => {
+      const mockReq = {} as Request;
+      const mockRes = {} as Response;
+      const mockNext = jest.fn();
+      exampleModule.errorRouteHandler(mockReq, mockRes, mockNext);
+      expect(mockNext).toHaveBeenCalledWith(expect.any(Error));
+      expect(mockNext.mock.calls[0][0].message).toBe('This is an example error');
+    });
+  });
+
+  describe('runIfMain', () => {
+    it('should not throw if not main module', async () => {
+      await expect(exampleModule.runIfMain(false)).resolves.toBeUndefined();
+    });
+    it('should call startServer if isMain is true', async () => {
+      const mockStartServer = jest.fn().mockResolvedValue(undefined);
+      await exampleModule.runIfMain(true, mockStartServer);
+      expect(mockStartServer).toHaveBeenCalled();
+    });
+    it('should handle error in startServer if isMain is true', async () => {
+      const error = new Error('fail');
+      const mockStartServer = jest.fn().mockRejectedValue(error);
       const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
-
-      // Call startServer directly (simulating direct file execution)
-      await startServer().catch((error) => {
-        console.error('Failed to start server:', error);
-        process.exit(1);
-      });
-
-      // Verify error handling
-      expect(console.error).toHaveBeenCalledWith('Failed to start server:', mockError);
+      await exampleModule.runIfMain(true, mockStartServer);
+      expect(console.error).toHaveBeenCalledWith('Failed to start server:', error);
       expect(processExitSpy).toHaveBeenCalledWith(1);
-
-      // Cleanup
       processExitSpy.mockRestore();
     });
   });
