@@ -26,6 +26,7 @@ import { ViewsController } from './views/views.controller';
 import { ViewsModule } from './views/views.module';
 import { NewJourneyModule } from './views/journeys/new-journey/new-journey.module';
 import { FindCourtTribunalModule } from './views/journeys/find-a-court-or-tribunal/find-a-court-or-tribunal.module';
+import { HealthModule } from './shared/health/health.module';
 
 /**
  * Root module class that bootstraps the application.
@@ -52,6 +53,7 @@ import { FindCourtTribunalModule } from './views/journeys/find-a-court-or-tribun
     SecurityModule,
     AppCacheModule,
     LoggerModule,
+    HealthModule,
     NewJourneyModule,
     FindCourtTribunalModule,
   ],

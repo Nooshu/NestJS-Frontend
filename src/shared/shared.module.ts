@@ -22,7 +22,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Global, Module } from '@nestjs/common';
 import { TerminusModule } from '@nestjs/terminus';
 import { LoggerModule } from '../logger/logger.module';
-import { HealthController } from './health/health.controller';
+import { HealthModule } from './health/health.module';
 import { ErrorMiddleware } from './middleware/error.middleware';
 import { LoggerMiddleware } from './middleware/logger.middleware';
 
@@ -47,8 +47,7 @@ import { LoggerMiddleware } from './middleware/logger.middleware';
  */
 @Global()
 @Module({
-  imports: [TerminusModule, HttpModule, LoggerModule],
-  controllers: [HealthController],
+  imports: [TerminusModule, HttpModule, LoggerModule, HealthModule],
   providers: [ErrorMiddleware, LoggerMiddleware],
   exports: [ErrorMiddleware, LoggerMiddleware],
 })
