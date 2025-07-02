@@ -32,7 +32,7 @@ describe('JavaApiClient', () => {
       delete: jest.fn(),
       interceptors: {
         request: { use: jest.fn() },
-        response: { 
+        response: {
           use: jest.fn((_, onRejected) => {
             // Store the error interceptor for later use
             if (onRejected) {
@@ -74,6 +74,7 @@ describe('JavaApiClient', () => {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          'User-Agent': 'NestJS-JavaApiClient/1.0',
         },
       });
     });
@@ -198,7 +199,8 @@ describe('JavaApiClient', () => {
       }
       expect(mockLogger.error).toHaveBeenCalledWith('Java API GET Error', {
         path: '/test',
-        error: expect.any(JavaApiError),
+        config: undefined,
+        error: 'Validation error',
       });
     });
 
@@ -225,7 +227,9 @@ describe('JavaApiClient', () => {
       }
       expect(mockLogger.error).toHaveBeenCalledWith('Java API POST Error', {
         path: '/test',
-        error: expect.any(JavaApiError),
+        dataType: 'object',
+        config: undefined,
+        error: 'Validation error',
       });
     });
 
@@ -252,7 +256,9 @@ describe('JavaApiClient', () => {
       }
       expect(mockLogger.error).toHaveBeenCalledWith('Java API PUT Error', {
         path: '/test',
-        error: expect.any(JavaApiError),
+        dataType: 'object',
+        config: undefined,
+        error: 'Validation error',
       });
     });
 
@@ -279,7 +285,8 @@ describe('JavaApiClient', () => {
       }
       expect(mockLogger.error).toHaveBeenCalledWith('Java API DELETE Error', {
         path: '/test',
-        error: expect.any(JavaApiError),
+        config: undefined,
+        error: 'Validation error',
       });
     });
   });
@@ -319,10 +326,10 @@ describe('JavaApiClient', () => {
       const javaError = client['handleJavaApiError'](errorResponse);
 
       expect(javaError).toBeInstanceOf(JavaApiError);
-      expect(javaError.message).toBe('Unknown error occurred');
+      expect(javaError.message).toBe('HTTP 500 Error');
       expect(javaError.statusCode).toBe(500);
       expect(javaError.errorCode).toBeUndefined();
-      expect(javaError.details).toBeUndefined();
+      expect(javaError.details).toEqual({});
     });
   });
 
@@ -350,17 +357,19 @@ describe('JavaApiClient', () => {
 
       requestInterceptor(config);
 
-      expect(mockLogger.debug).toHaveBeenCalledWith('Java API Request', {
+      expect(mockLogger.debug).toHaveBeenCalledWith('Java API Request', expect.objectContaining({
         method: 'GET',
         url: '/test',
+        baseURL: undefined,
         headers: { 'Content-Type': 'application/json' },
-      });
+        timestamp: expect.any(String),
+      }));
     });
 
     it('should log response details', () => {
       const response: AxiosResponse = {
         status: 200,
-        config: { url: '/test' } as InternalAxiosRequestConfig,
+        config: { url: '/test', method: 'GET' } as InternalAxiosRequestConfig,
         data: {},
         headers: {},
         statusText: 'OK',
@@ -368,16 +377,31 @@ describe('JavaApiClient', () => {
 
       responseInterceptor(response);
 
-      expect(mockLogger.debug).toHaveBeenCalledWith('Java API Response', {
+      expect(mockLogger.debug).toHaveBeenCalledWith('Java API Response', expect.objectContaining({
         status: 200,
+        statusText: 'OK',
         url: '/test',
-      });
+        method: 'GET',
+        contentLength: undefined,
+        timestamp: expect.any(String),
+      }));
     });
 
     it('should handle network error without response', async () => {
-      const error = new AxiosError('Network Error', 'ECONNABORTED');
+      const error = {
+        isAxiosError: true,
+        message: 'Network Error',
+        code: 'ECONNABORTED',
+        config: {} as InternalAxiosRequestConfig,
+        name: 'AxiosError',
+        toJSON: () => ({}),
+      } as AxiosError;
       await expect(errorInterceptor(error)).rejects.toBe(error); // Should pass through network errors
-      expect(mockLogger.error).not.toHaveBeenCalled();
+      expect(mockLogger.error).toHaveBeenCalledWith('Java API Network Error', {
+        message: 'Network Error',
+        code: 'ECONNABORTED',
+        url: undefined,
+      });
     });
   });
-}); 
+});

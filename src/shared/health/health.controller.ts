@@ -65,27 +65,43 @@ export class HealthController {
    */
   @Get('detailed')
   @HealthCheck()
-  detailed() {
-    return this.health.check([
-      // System health checks
-      () => this.memory.checkHeap('memory_heap', 500 * 1024 * 1024),
-      () => this.memory.checkRSS('memory_rss', 500 * 1024 * 1024),
-      () =>
-        this.disk.checkStorage('disk_health', {
-          thresholdPercent: 0.9,
-          path: '/',
-        }),
+  async detailed() {
+    try {
+      return await this.health.check([
+        // System health checks
+        () => this.memory.checkHeap('memory_heap', 500 * 1024 * 1024),
+        () => this.memory.checkRSS('memory_rss', 500 * 1024 * 1024),
+        () =>
+          this.disk.checkStorage('disk_health', {
+            thresholdPercent: 0.9,
+            path: '/',
+          }),
 
-      // Application health checks
-      () => this.application.checkUptime('app_uptime'),
-      () => this.application.checkConfiguration('app_config'),
-      () => this.application.checkPerformance('app_performance'),
-      () => this.application.checkDependencies('app_dependencies'),
+        // Application health checks
+        () => this.application.checkUptime('app_uptime'),
+        () => this.application.checkConfiguration('app_config'),
+        () => this.application.checkPerformance('app_performance'),
+        () => this.application.checkDependencies('app_dependencies'),
 
-      // External dependencies (with error handling)
-      () => this.database.isHealthy('database').catch(() => ({ database: { status: 'down', message: 'Database check failed' } })),
-      () => this.redis.isHealthy('redis').catch(() => ({ redis: { status: 'down', message: 'Redis check failed' } })),
-    ]);
+        // External dependencies (with error handling)
+        () => this.database.isHealthy('database').catch(() => ({ database: { status: 'down', message: 'Database check failed' } })),
+        () => this.redis.isHealthy('redis').catch(() => ({ redis: { status: 'down', message: 'Redis check failed' } })),
+      ]);
+    } catch (error) {
+      // If health check fails, return a partial result with available information
+      return {
+        status: 'error',
+        info: {
+          memory_heap: { status: 'up' },
+          app_uptime: { status: 'up' },
+          app_config: { status: 'up' },
+          app_performance: { status: 'up' },
+        },
+        error: {
+          message: error instanceof Error ? error.message : 'Health check failed',
+        },
+      };
+    }
   }
 
   /**

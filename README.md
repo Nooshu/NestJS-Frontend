@@ -187,34 +187,49 @@ The migration documentation includes:
 
 ## Documentation
 
-### Getting Started
-- [Installation and Setup](./docs/readme/getting-started.md)
-- [Project Structure](./docs/readme/project-structure.md)
-- [Development Guidelines](./docs/readme/development-guidelines.md)
+📚 **[Complete Documentation](./docs/README.md)** - Comprehensive documentation covering all aspects of the application
 
-### Core Features
-- [API Documentation](./docs/readme/api-documentation.md)
-- [API Mocking and Prototypes](./docs/api-mocking-prototype.md) - Guide to creating and using mock APIs for development
-- [Caching](./docs/readme/caching.md)
-- [Request Validation](./docs/readme/validation.md)
-- [GOV.UK Frontend Integration](./docs/readme/govuk-frontend.md)
-- [Frontend Performance](./docs/readme/frontend-performance.md)
-- [Security Features](./docs/security.md)
-- [Asset Fingerprinting](./docs/asset-fingerprinting.md) - Content-based fingerprinting for optimal browser caching
-- [Microservices Architecture](./docs/microservices-architecture.md) - Guide to using this project in a microservice architecture
-- [End-to-End Testing](./docs/playwright-testing.md) - Comprehensive guide to E2E testing with Playwright
+### Quick Links
 
-### Additional Documentation
-- [Dependency Injection Best Practices](./docs/dependency-injection.md)
-- [Security Best Practices](./docs/security-best-practices.md)
-- [Error Handling](./docs/error-handling.md)
-- [Health Checks](./docs/health-checks.md)
-- [TypeORM Migration Guide](./docs/typeorm-migration.md)
-- [Prisma Migration Guide](./docs/prisma-migration.md)
-- [Process Isolation](./docs/process-isolation.md)
-- [Monorepo Architecture](./docs/monorepo-architecture.md)
-- [React Integration Guide](./docs/react-nestjs-integration.md) - **Not Recommended for Government Services**
-- [TypeScript and Babel Setup](./docs/typescript-babel-setup.md)
+#### 🚀 Getting Started
+- [Installation and Setup](./docs/readme/getting-started.md) - Get up and running quickly
+- [Project Structure](./docs/readme/project-structure.md) - Understand the codebase organization
+- [Development Guidelines](./docs/readme/development-guidelines.md) - Best practices and coding standards
+
+#### 🏗️ Core Features
+- [Key Features](./docs/KEYFEATURES.md) - Why NestJS over vanilla Express.js
+- [API Documentation](./docs/readme/api-documentation.md) - Swagger/OpenAPI documentation
+- [GOV.UK Frontend Integration](./docs/readme/govuk-frontend.md) - Using GOV.UK Design System
+- [Caching Strategy](./docs/readme/caching.md) - Redis caching implementation
+- [Security Features](./docs/security.md) - Built-in security implementations
+
+#### ✅ Testing & Quality
+- [Testing Guide](./docs/testing.md) - Unit, integration, and E2E testing
+- [Playwright E2E Testing](./docs/playwright-testing.md) - End-to-end testing with Playwright
+- [Request Validation](./docs/readme/validation.md) - Input validation and sanitization
+
+#### 🚀 Performance & Optimization
+- [Frontend Performance](./docs/readme/frontend-performance.md) - Optimization strategies
+- [Asset Fingerprinting](./docs/asset-fingerprinting.md) - Cache-busting and performance
+- [Performance Monitoring](./docs/performance-monitoring.md) - Application monitoring
+
+#### 🔄 Migration & Integration
+- [Migration Guide](./docs/migration-guide.md) - Migrating from Express.js template
+- [API Integration Patterns](./docs/api-integration-patterns.md) - External API integration
+- [API Mocking & Prototypes](./docs/api-mocking-prototype.md) - Development with mock APIs
+
+#### 🔧 Advanced Features
+- [Microservices Architecture](./docs/microservices-architecture.md) - Scaling with microservices
+- [Process Isolation](./docs/process-isolation.md) - CPU-intensive task handling
+- [Health Checks](./docs/health-checks.md) - Application health monitoring
+- [Error Handling](./docs/error-handling.md) - Comprehensive error management
+
+#### 🛠️ Development Tools
+- [Build Scripts](./docs/build-scripts.md) - Understanding the build process
+- [TypeScript & Babel Setup](./docs/typescript-babel-setup.md) - TypeScript configuration
+- [Dependency Management](./docs/dependency-management.md) - Managing dependencies
+
+> 📖 **For the complete documentation index with all available guides, visit [docs/README.md](./docs/README.md)**
 
 ## Building and Running the Application
 
@@ -367,4 +382,4 @@ This project uses [Renovate](https://renovatebot.com/) to automatically keep dep
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
