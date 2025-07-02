@@ -1,5 +1,7 @@
 # Security Features
 
+> **See also:** [Security Enhancements](security-enhancements.md) for advanced middleware, configuration, and best practices.
+
 This document outlines the security features and best practices implemented in the application.
 
 ## Overview

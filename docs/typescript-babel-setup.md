@@ -1,5 +1,7 @@
 # TypeScript and Babel Setup
 
+> **See also:** [TypeScript Config Changes](typescript-config-changes.md) for path aliases and build improvements.
+
 This document explains why and how this project uses both TypeScript and Babel in its build pipeline.
 
 ## Overview

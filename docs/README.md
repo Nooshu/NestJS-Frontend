@@ -35,6 +35,7 @@ Welcome to the comprehensive documentation for the NestJS Frontend application. 
 ### 🔒 Security & Compliance
 - [Security Best Practices](security-best-practices.md) - Comprehensive security guidelines
 - [Security Features](security.md) - Built-in security implementations
+- [Security Enhancements](security-enhancements.md) - Advanced middleware and configuration
 - [Accessibility Compliance](accessibility-compliance.md) - WCAG compliance and accessibility features
 - [Compliance & Governance](compliance-governance.md) - Regulatory compliance guidelines
 
@@ -55,7 +56,7 @@ Welcome to the comprehensive documentation for the NestJS Frontend application. 
 - [Microservices Architecture](microservices-architecture.md) - Scaling with microservices
 - [Monorepo Architecture](monorepo-architecture.md) - Managing multiple applications
 - [Process Isolation](process-isolation.md) - CPU-intensive task handling
-- [Health Checks](health-checks.md) - Application health monitoring
+- [Comprehensive Health Checks](comprehensive-health-checks.md) - Application health monitoring
 - [Error Handling](error-handling.md) - Comprehensive error management
 - [Logging](logging.md) - Structured logging with Winston
 
@@ -64,10 +65,12 @@ Welcome to the comprehensive documentation for the NestJS Frontend application. 
 - [Migration Benefits](migration-benefits.md) - Advantages of the NestJS approach
 - [Technical Migration Examples](technical-migration-examples.md) - Code examples and comparisons
 - [Express Migration](express-migration.md) - Detailed Express.js migration steps
+- [NestJS vs Express.js](nestjs-vs-express.md) - Feature comparison and migration rationale
 - [React Integration](react-nestjs-integration.md) - React integration (not recommended for gov services)
 
 ### 🛠️ Development Tools
 - [TypeScript & Babel Setup](typescript-babel-setup.md) - TypeScript configuration and tooling
+- [TypeScript Config Changes](typescript-config-changes.md) - Path aliases and build improvements
 - [Dependency Management](dependency-management.md) - Managing project dependencies
 - [Team Collaboration](team-collaboration.md) - Collaboration tools and workflows
 - [Training & Onboarding](training-onboarding.md) - Developer onboarding resources
