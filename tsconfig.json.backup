@@ -13,7 +13,8 @@
     "importHelpers": true,
     "incremental": true,
     "isolatedModules": true,
-    "lib": ["ES2022"],
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
@@ -27,23 +28,13 @@
     "paths": {
       "@/*": ["src/*"],
       "@shared/*": ["src/shared/*"],
-      "@modules/*": ["src/modules/*"],
-      "@config/*": ["src/shared/config/*"],
-      "@utils/*": ["src/shared/utils/*"],
-      "@services/*": ["src/shared/services/*"],
-      "@middleware/*": ["src/shared/middleware/*"],
-      "@controllers/*": ["src/shared/controllers/*"],
-      "@filters/*": ["src/shared/filters/*"],
-      "@interceptors/*": ["src/shared/interceptors/*"],
-      "@guards/*": ["src/shared/guards/*"],
-      "@decorators/*": ["src/shared/decorators/*"],
-      "@types/*": ["src/types/*"],
-      "@test/*": ["src/test/*"],
-      "@views/*": ["src/views/*"],
-      "@adapters/*": ["src/adapters/*"],
-      "@cache/*": ["src/cache/*"],
-      "@logger/*": ["src/logger/*"]
+      "@modules/*": ["src/modules/*"]
     },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "removeComments": true,
     "resolveJsonModule": true,
     "skipDefaultLibCheck": true,
@@ -54,10 +45,10 @@
     "strictFunctionTypes": true,
     "strictNullChecks": true,
     "strictPropertyInitialization": true,
-    "target": "ES2022",
+    "target": "ESNext",
     "types": ["node", "jest"],
     "useDefineForClassFields": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "coverage", "test-output", "tests-examples"]
+  "exclude": ["node_modules", "dist"]
 }
