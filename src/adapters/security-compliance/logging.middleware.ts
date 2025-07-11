@@ -65,7 +65,7 @@ function maskSensitiveData(
  * Applies logging and monitoring to the Express application
  */
 export function applyLoggingAndMonitoring(app: Application, config: LoggingConfig): void {
-  const logger = createLogger(config.base);
+  const logger = config.base.logger || createLogger(config.base);
 
   // Add request ID middleware
   app.use(requestId());
