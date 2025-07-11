@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckService, TerminusModule } from '@nestjs/terminus';
+import { HealthCheckService, TerminusModule, HealthIndicator } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { HealthController } from '../health.controller';
@@ -8,9 +8,48 @@ import { RedisHealthIndicator } from '../indicators/redis.health';
 import { HttpHealthIndicator } from '../indicators/http.health';
 import { ApplicationHealthIndicator } from '../indicators/application.health';
 
+// Mock HttpHealthIndicator to avoid real HTTP calls during testing
+class MockHttpHealthIndicator extends HealthIndicator {
+  checkMultipleEndpoints = jest.fn().mockResolvedValue(
+    this.getStatus('http_services', true, {
+      healthyCount: 2,
+      totalCount: 2,
+      endpoints: [
+        {
+          name: 'Google',
+          url: 'https://www.google.com',
+          status: 'healthy',
+          statusCode: 200,
+          responseTime: 100,
+          isHealthy: true,
+        },
+        {
+          name: 'Cloudflare',
+          url: 'https://1.1.1.1',
+          status: 'healthy',
+          statusCode: 200,
+          responseTime: 120,
+          isHealthy: true,
+        },
+      ],
+      message: 'HTTP endpoints are healthy',
+    })
+  );
+
+  pingCheck = jest.fn().mockResolvedValue(
+    this.getStatus('http_test', true, {
+      url: 'https://httpbin.org/status/200',
+      statusCode: 200,
+      responseTime: 100,
+      message: 'HTTP service is responsive',
+    })
+  );
+}
+
 describe('HealthController', () => {
   let controller: HealthController;
   let healthCheckService: HealthCheckService;
+  let mockHttpHealthIndicator: MockHttpHealthIndicator;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,13 +67,21 @@ describe('HealthController', () => {
       providers: [
         DatabaseHealthIndicator,
         RedisHealthIndicator,
-        HttpHealthIndicator,
+        {
+          provide: HttpHealthIndicator,
+          useClass: MockHttpHealthIndicator,
+        },
         ApplicationHealthIndicator,
       ],
     }).compile();
 
     controller = module.get<HealthController>(HealthController);
     healthCheckService = module.get<HealthCheckService>(HealthCheckService);
+    mockHttpHealthIndicator = module.get<MockHttpHealthIndicator>(HttpHealthIndicator);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -104,22 +151,23 @@ describe('HealthController', () => {
       expect(result).toHaveProperty('status');
       expect(result).toHaveProperty('info');
       expect(result.info).toHaveProperty('http_services');
+      expect(mockHttpHealthIndicator.checkMultipleEndpoints).toHaveBeenCalledWith('http_services', [
+        { name: 'Google', url: 'https://www.google.com', timeout: 5000 },
+        { name: 'Cloudflare', url: 'https://1.1.1.1', timeout: 5000 },
+      ]);
     });
 
     it('should return http services health check results with custom URLs', async () => {
-      // Use faster, more reliable test endpoints
       const customUrls = 'https://httpbin.org/status/200';
 
-      try {
-        const result = await controller.checkHttp(customUrls);
-        expect(result).toHaveProperty('status');
-        expect(result).toHaveProperty('info');
-        expect(result.info).toHaveProperty('http_services');
-      } catch (error) {
-        // Accept that external HTTP calls might fail in test environment
-        expect(error instanceof Error ? error.message : String(error)).toContain('Service Unavailable');
-      }
-    }, 10000); // Increase timeout to 10 seconds
+      const result = await controller.checkHttp(customUrls);
+      expect(result).toHaveProperty('status');
+      expect(result).toHaveProperty('info');
+      expect(result.info).toHaveProperty('http_services');
+      expect(mockHttpHealthIndicator.checkMultipleEndpoints).toHaveBeenCalledWith('http_services', [
+        { name: 'Custom-1', url: 'https://httpbin.org/status/200', timeout: 5000 },
+      ]);
+    });
   });
 
   describe('checkApplication', () => {

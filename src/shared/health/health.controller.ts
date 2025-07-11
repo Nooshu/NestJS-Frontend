@@ -139,7 +139,7 @@ export class HealthController {
   checkHttp(@Query('urls') urls?: string) {
     const defaultEndpoints = [
       { name: 'Google', url: 'https://www.google.com', timeout: 5000 },
-      { name: 'GitHub', url: 'https://api.github.com', timeout: 5000 },
+      { name: 'Cloudflare', url: 'https://1.1.1.1', timeout: 5000 },
     ];
 
     if (urls) {

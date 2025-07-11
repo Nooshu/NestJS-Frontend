@@ -159,7 +159,9 @@ export class HttpHealthIndicator extends HealthIndicator {
 
       const healthyCount = endpointResults.filter(r => r.isHealthy).length;
       const totalCount = endpointResults.length;
-      const overallHealthy = healthyCount === totalCount;
+      
+      // Consider healthy if at least 50% of endpoints are healthy
+      const overallHealthy = healthyCount >= Math.ceil(totalCount / 2);
 
       if (!overallHealthy) {
         throw new HealthCheckError(
@@ -177,7 +179,7 @@ export class HttpHealthIndicator extends HealthIndicator {
         healthyCount,
         totalCount,
         endpoints: endpointResults,
-        message: 'All HTTP endpoints are healthy',
+        message: 'HTTP endpoints are healthy',
       });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Multiple endpoint check failed';
