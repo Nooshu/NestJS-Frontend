@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckService, TerminusModule, HealthIndicator } from '@nestjs/terminus';
+import { HealthCheckService, TerminusModule, HealthIndicator, MemoryHealthIndicator } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { HealthController } from '../health.controller';
@@ -128,6 +128,27 @@ class MockApplicationHealthIndicator extends HealthIndicator {
   );
 }
 
+// Mock MemoryHealthIndicator to avoid real memory checks during testing
+class MockMemoryHealthIndicator extends HealthIndicator {
+  checkHeap = jest.fn((key = 'memory_heap', _limit) =>
+    Promise.resolve(
+      this.getStatus(key, true, {
+        heapUsed: 100 * 1024 * 1024, // 100MB
+        message: 'Heap memory usage is healthy',
+      })
+    )
+  );
+
+  checkRSS = jest.fn((key = 'memory_rss', _limit) =>
+    Promise.resolve(
+      this.getStatus(key, true, {
+        rss: 150 * 1024 * 1024, // 150MB
+        message: 'RSS memory usage is healthy',
+      })
+    )
+  );
+}
+
 describe('HealthController', () => {
   let controller: HealthController;
   let healthCheckService: HealthCheckService;
@@ -135,6 +156,7 @@ describe('HealthController', () => {
   let mockDatabaseHealthIndicator: MockDatabaseHealthIndicator;
   let mockRedisHealthIndicator: MockRedisHealthIndicator;
   let mockApplicationHealthIndicator: MockApplicationHealthIndicator;
+  let mockMemoryHealthIndicator: MockMemoryHealthIndicator;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -166,6 +188,10 @@ describe('HealthController', () => {
           provide: ApplicationHealthIndicator,
           useClass: MockApplicationHealthIndicator,
         },
+        {
+          provide: MemoryHealthIndicator,
+          useClass: MockMemoryHealthIndicator,
+        },
       ],
     }).compile();
 
@@ -175,6 +201,7 @@ describe('HealthController', () => {
     mockDatabaseHealthIndicator = module.get<MockDatabaseHealthIndicator>(DatabaseHealthIndicator);
     mockRedisHealthIndicator = module.get<MockRedisHealthIndicator>(RedisHealthIndicator);
     mockApplicationHealthIndicator = module.get<MockApplicationHealthIndicator>(ApplicationHealthIndicator);
+    mockMemoryHealthIndicator = module.get<MockMemoryHealthIndicator>(MemoryHealthIndicator);
   });
 
   afterEach(() => {
