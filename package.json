@@ -83,7 +83,7 @@
     "@nestjs/swagger": "11.2.0",
     "@nestjs/terminus": "11.0.0",
     "@nestjs/throttler": "6.4.0",
-    "axios": "1.10.0",
+    "axios": "1.11.0",
     "brace-expansion": "^2.0.2",
     "cache-manager": "6.4.3",
     "cache-manager-redis-store": "3.0.1",
