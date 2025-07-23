@@ -2,7 +2,7 @@
 
 A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend integration, designed to replace the existing [HMCTS Express.js template](https://github.com/hmcts/expressjs-template).
 
-:rotating_light: **Note**: This PoC is not intended for use with ExUI at this stage; its application is envisioned as a future goal of the project. :rotating_light:
+:rotating_light: **Note**: This proof of concept (PoC) is not currently intended for exclusive use with ExUI. Its integration with ExUI is a longer-term objective, dependent on the future decentralisation of CCD. :rotating_light:
 
 ## Super Quick Start guide
 
