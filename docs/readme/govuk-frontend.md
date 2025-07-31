@@ -1,6 +1,6 @@
 # Updating GOV.UK Frontend
 
-The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling and components. The current version is 5.10.2 as specified in `package.json`.
+The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling and components. The current version is 5.11.1 as specified in `package.json`.
 
 ## Before Updating
 
@@ -14,7 +14,7 @@ The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling 
    ```bash
    npm list govuk-frontend
    ```
-   Current version should be 5.10.2
+   Current version should be 5.11.1
 
 3. Review the current configuration:
    - Check `src/adapters/security-compliance/govuk.config.ts` for any configuration changes

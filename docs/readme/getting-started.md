@@ -38,29 +38,47 @@ npm run start:dev
   - Generates production-ready code in dist/
 
 ### Testing
-- `npm run test` - Run all tests
+- `npm run test` - Run all unit tests
   - Executes all test files using Jest
   - Shows test results and summary
-- `npm run test:watch` - Run tests in watch mode
+- `npm run test:unit` - Run unit tests
+- `npm run test:integration` - Run integration tests
+- `npm run test:unit:watch` - Run unit tests in watch mode
   - Continuously watches for changes
   - Re-runs tests when files are modified
-- `npm run test:cov` - Run tests with coverage reporting
-  - Generates detailed code coverage report
-  - Shows percentage of code covered by tests
-- `npm run test:debug` - Run tests in debug mode
+- `npm run test:integration:watch` - Run integration tests in watch mode
+- `npm run test:unit:debug` - Run unit tests in debug mode
   - Enables debugging capabilities for tests
   - Uses Node.js inspector for debugging
+- `npm run test:integration:debug` - Run integration tests in debug mode
+- `npm run test:cov` - Run all tests with coverage reporting
+  - Generates detailed code coverage report
+  - Shows percentage of code covered by tests
+- `npm run test:cov:unit` - Run unit tests with coverage
+- `npm run test:cov:integration` - Run integration tests with coverage
 - `npm run test:e2e` - Run end-to-end tests
-  - Executes tests from test/jest-e2e.json configuration
+  - Executes Playwright tests
   - Tests the application as a whole, including API endpoints and integration points
   - Verifies complete user flows and system interactions
   - Ensures all components work together correctly
+- `npm run test:e2e:local` - Run end-to-end tests locally with proper setup (recommended)
+  - Includes port cleanup, browser installation, and application build
+  - Provides robust local testing environment
+- `npm run test:e2e:ui` - Run E2E tests with UI mode
+- `npm run test:e2e:debug` - Run E2E tests in debug mode
+- `npm run test:e2e:chromium` - Run E2E tests in Chrome
+- `npm run test:e2e:firefox` - Run E2E tests in Firefox
+- `npm run test:e2e:webkit` - Run E2E tests in Safari
+- `npm run test:e2e:browsers` - Run E2E tests in all browsers
 - `npm run test:govuk` - Run GOV.UK component tests
   - Tests specific to GOV.UK Frontend components
 - `npm run test:govuk:watch` - Run GOV.UK tests in watch mode
   - Continuously watches for changes in GOV.UK component tests
-- `npm run test:govuk:cov` - Run GOV.UK tests with coverage
+- `npm run test:govuk:debug` - Run GOV.UK tests in debug mode
+- `npm run test:cov:govuk` - Run GOV.UK tests with coverage
   - Generates coverage report for GOV.UK component tests
+- `npm run test:all` - Run all tests (unit, integration, GOV.UK, and E2E)
+- `npm run test:all:watch` - Run all tests in watch mode (concurrently)
 
 ### Code Quality
 - `npm run format` - Format code with Prettier
@@ -70,6 +88,7 @@ npm run start:dev
   - Lints all TypeScript files
   - Automatically fixes fixable issues
   - Checks code style and potential problems
+- `npm run lint:check` - Check code style without fixing
 
 ### Frontend Build
 - `npm run build:frontend` - Build frontend assets for production

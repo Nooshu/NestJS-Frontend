@@ -147,26 +147,26 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 This project uses the following key package versions:
 
 ### Core Dependencies
-- NestJS Framework: v11.1.2
+- NestJS Framework: v11.1.5
 - Express.js: v5.1.0
-- GOV.UK Frontend: v5.10.2
-- TypeScript: v5.4.2
+- GOV.UK Frontend: v5.11.1
+- TypeScript: v5.8.3
 - Node.js: >=20.12.2
 
 ### Key Features
-- NestJS Core: v11.1.2
+- NestJS Core: v11.1.5
 - NestJS Swagger: v11.2.0
 - NestJS Config: v4.0.2
-- NestJS Axios: v4.0.0
+- NestJS Axios: v4.0.1
 - NestJS Cache Manager: v3.0.1
 - NestJS Terminus: v11.0.0
 - NestJS Throttler: v6.4.0
 
 ### Testing & Development
 - Jest: v29.7.0
-- Playwright: v1.52.0
+- Playwright: v1.54.1
 - ESLint & Prettier: Latest versions
-- SASS: v1.71.1
+- SASS: v1.89.2
 
 For a complete list of dependencies and their versions, please refer to the `package.json` file.
 
@@ -211,6 +211,7 @@ The migration documentation includes:
 #### ✅ Testing & Quality
 - [Testing Guide](./docs/testing.md) - Unit, integration, and E2E testing
 - [Playwright E2E Testing](./docs/playwright-testing.md) - End-to-end testing with Playwright
+- [Playwright Test Improvements](./docs/playwright-improvements.md) - Recent fixes and enhancements
 - [Request Validation](./docs/readme/validation.md) - Input validation and sanitization
 
 #### 🚀 Performance & Optimization
@@ -299,6 +300,7 @@ npm run test:e2e:debug       # Run E2E tests in debug mode
 npm run test:e2e:chromium    # Run E2E tests in Chrome
 npm run test:e2e:firefox     # Run E2E tests in Firefox
 npm run test:e2e:webkit      # Run E2E tests in Safari
+npm run test:e2e:local       # Run E2E tests locally with proper setup
 ```
 
 For detailed information about all build scripts, see the [Build Scripts Documentation](docs/build-scripts.md).
@@ -307,6 +309,7 @@ For detailed information about testing:
 - [Testing Strategy](docs/testing.md)
 - [Unit Testing Guide](docs/unit-testing.md)
 - [End-to-End Testing with Playwright](docs/playwright-testing.md)
+- [Playwright Test Improvements](docs/playwright-improvements.md)
 - [GOV.UK Component Testing](docs/govuk-testing.md)
 
 ## Asset Fingerprinting
@@ -332,14 +335,14 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 ## Dependencies
 
 ### Core Dependencies
-- [NestJS](https://nestjs.com/) v11.1.2
+- [NestJS](https://nestjs.com/) v11.1.5
 - [Express](https://expressjs.com/) v5.1.0+
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.10.2
-- [TypeScript](https://www.typescriptlang.org/) v5.4.2
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.11.1
+- [TypeScript](https://www.typescriptlang.org/) v5.8.3
 - [Node.js](https://github.com/nodejs/release#release-schedule) v20.12.2+
 
 ### Key Features
-- Axios HTTP client for API integration
+- Axios HTTP client for API integration v1.11.0
 - Redis caching with cache-manager v6.4.3
 - Winston logging with structured output v3.17.0
 - Swagger/OpenAPI documentation
@@ -365,15 +368,15 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 
 ### Development Tools
 - Jest v29.7.0 for unit and integration testing
-- Playwright v1.52.0 for end-to-end testing
-- Prettier v3.0.0 for code formatting
+- Playwright v1.54.1 for end-to-end testing
+- Prettier v3.6.2 for code formatting
 - ESLint for code linting
 - TypeScript strict mode enabled
-- SASS v1.71.1 for CSS preprocessing
-- Supertest v7.1.0 for API testing
+- SASS v1.89.2 for CSS preprocessing
+- Supertest v7.1.4 for API testing
 - Renovate bot for dependency updates
-- PostCSS v8.4.35 for CSS optimisation
-- Babel v7.24.0 for JavaScript transpilation
+- PostCSS v8.5.6 for CSS optimisation
+- Babel v7.28.0 for JavaScript transpilation
 
 ## Dependency Management
 

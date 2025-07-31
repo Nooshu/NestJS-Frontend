@@ -104,7 +104,7 @@ export default defineConfig({
   webServer: {
     /* Command to start the server - use production build in CI for faster startup */
     command: process.env.CI 
-      ? 'npm run build:prod && npm run start:prod' 
+      ? 'npm run start:prod' 
       : 'npm run start:dev',
     
     /* URL where the server will be running */

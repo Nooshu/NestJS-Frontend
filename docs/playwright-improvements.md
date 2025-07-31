@@ -38,6 +38,14 @@ This document outlines the recent improvements made to the Playwright testing se
 - Added environment-specific timeout configurations
 - Improved server startup detection with better stdout/stderr handling
 
+### 5. **CI Build Conflicts**
+**Problem**: Playwright configuration was trying to build the application again in CI
+**Root Cause**: Double building causing conflicts and timing issues
+**Solution**:
+- Updated `playwright.config.ts` to only start the application in CI, not build it
+- GitHub Actions workflow handles the build process separately
+- Added application startup verification in CI workflow
+
 ## 🚀 **New Features**
 
 ### 1. **Local Development Script**
@@ -101,7 +109,7 @@ export default defineConfig({
   
   webServer: {
     command: process.env.CI 
-      ? 'npm run build:prod && npm run start:prod' 
+      ? 'npm run start:prod' 
       : 'npm run start:dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
@@ -117,6 +125,7 @@ export default defineConfig({
 - Better server startup detection
 - Conditional reporter selection
 - Enhanced error handling
+- **NEW**: Fixed CI build conflicts by removing double building
 
 ### 3. **Improved GitHub Actions Workflow**
 Enhanced `.github/workflows/playwright.yml`:
@@ -145,43 +154,179 @@ jobs:
         npm ci
         npm cache clean --force
     
-    - name: Install Playwright Browsers
+    - name: Install Playwright browsers
       run: npx playwright install --with-deps
     
     - name: Build application
       run: |
         npm run build:frontend:dev
         npm run build
+        
+        # Verify the build was successful
+        echo "Verifying build..."
+        ls -la dist/
+        ls -la dist/main.js || echo "Main file not found"
     
-    - name: Run Playwright tests
+    - name: Test application startup
       run: |
         export CI=true
-        npx playwright test --timeout=300000 --reporter=line
+        export NODE_ENV=production
+        
+        echo "Testing application startup in CI..."
+        
+        # Start the application in background
+        npm run start:prod &
+        APP_PID=$!
+        
+        # Wait for startup
+        sleep 15
+        
+        # Check if process is still running
+        if ps -p $APP_PID > /dev/null; then
+          echo "Application started successfully"
+          
+          # Test if we can connect to it
+          if curl -f http://localhost:3000/health; then
+            echo "Application is responding to requests"
+          else
+            echo "Application is not responding to requests"
+          fi
+          
+          # Kill the process
+          kill $APP_PID
+        else
+          echo "Application failed to start"
+          exit 1
+        fi
       env:
         CI: true
         NODE_ENV: production
     
-    - uses: actions/upload-artifact@v4
+    - name: Run Playwright tests
+      run: |
+        export CI=true
+        export NODE_ENV=production
+        
+        echo "Running Playwright tests..."
+        npx playwright test --timeout=300000 --reporter=html,line --project=chromium
+        
+        # Show test results for debugging
+        echo "Test results directory:"
+        ls -la test-results/ 2>/dev/null || echo "No test-results directory found"
+        echo "Playwright report directory:"
+        ls -la playwright-report/ 2>/dev/null || echo "No playwright-report directory found"
+      env:
+        CI: true
+        NODE_ENV: production
+    
+    - name: Upload test results on failure
       if: failure()
+      uses: actions/upload-artifact@v4
       with:
-        name: playwright-report
-        path: playwright-report/
+        name: playwright-report-failure
+        path: |
+          playwright-report/
+          test-results/
+          playwright-report.html
+          playwright-report/index.html
         retention-days: 30
     
-    - uses: actions/upload-artifact@v4
+    - name: Upload test results on success
       if: success()
+      uses: actions/upload-artifact@v4
       with:
         name: playwright-report-success
-        path: playwright-report/
+        path: |
+          playwright-report/
+          test-results/
+          playwright-report.html
+          playwright-report/index.html
         retention-days: 7
 ```
 
 **Enhancements**:
 - Proper browser installation
-- Application build step
-- Better artifact handling
-- Extended timeouts for CI
+- Application build step with verification
+- **NEW**: Application startup test in CI environment
+- Better artifact handling with multiple possible paths
+- Extended timeouts for CI environments
 - Success and failure artifact uploads
+- Enhanced debugging information
+
+### 4. **CI Application Startup Test**
+Created `scripts/test-ci-startup.sh` for testing application startup in CI:
+
+```bash
+#!/bin/bash
+# CI Application Startup Test Script
+# This script tests if the application can start properly in CI environment
+
+set -e
+
+echo "🧪 Testing application startup in CI environment..."
+
+# Set CI environment variables
+export CI=true
+export NODE_ENV=production
+
+echo "Environment variables:"
+echo "CI: $CI"
+echo "NODE_ENV: $NODE_ENV"
+
+# Check if the build exists
+echo "📋 Checking build files..."
+if [ -f "dist/main.js" ]; then
+    echo "✅ Build files found"
+    ls -la dist/
+else
+    echo "❌ Build files not found"
+    exit 1
+fi
+
+# Test application startup
+echo "🚀 Testing application startup..."
+npm run start:prod &
+APP_PID=$!
+
+# Wait for startup
+echo "⏳ Waiting for application to start..."
+sleep 15
+
+# Check if process is still running
+if ps -p $APP_PID > /dev/null; then
+    echo "✅ Application process is running"
+    
+    # Test if we can connect to it
+    echo "🔍 Testing application connectivity..."
+    if curl -f http://localhost:3000/health; then
+        echo "✅ Application is responding to health check"
+    else
+        echo "❌ Application is not responding to health check"
+        kill $APP_PID
+        exit 1
+    fi
+    
+    # Test homepage
+    echo "🏠 Testing homepage..."
+    if curl -f http://localhost:3000/; then
+        echo "✅ Homepage is accessible"
+    else
+        echo "❌ Homepage is not accessible"
+        kill $APP_PID
+        exit 1
+    fi
+    
+    # Kill the process
+    echo "🛑 Stopping application..."
+    kill $APP_PID
+    wait $APP_PID 2>/dev/null || true
+    
+    echo "✅ Application startup test completed successfully"
+else
+    echo "❌ Application failed to start"
+    exit 1
+fi
+```
 
 ## 📊 **Test Results**
 
@@ -191,6 +336,7 @@ jobs:
 - ❌ "No files were found with the provided path: playwright-report/" errors
 - ❌ Application startup failures
 - ❌ Missing browser binaries
+- ❌ CI build conflicts
 
 ### After Improvements
 - ✅ Tests passing consistently
@@ -198,6 +344,8 @@ jobs:
 - ✅ Application startup working
 - ✅ Artifacts uploaded correctly
 - ✅ Local development experience improved
+- ✅ CI build conflicts resolved
+- ✅ Application startup verification in CI
 
 ## 🛠️ **Usage Guide**
 
@@ -218,6 +366,7 @@ CI=true NODE_ENV=production npx playwright test
 Tests run automatically with proper configuration:
 - Browser installation handled by GitHub Actions
 - Application build included in workflow
+- Application startup verification in CI
 - Extended timeouts for CI environments
 - Artifact upload for debugging
 
@@ -243,18 +392,45 @@ Tests run automatically with proper configuration:
 #### 4. Tests failing in CI but passing locally
 **Solution**: Check CI logs and verify application builds correctly
 
+#### 5. "No files were found with the provided path: playwright-report/"
+**Solution**: Updated artifact paths to include multiple possible locations
+
+### Environment-Specific Issues
+
+#### Local Development
+```bash
+# Use the local testing script for proper setup
+npm run test:e2e:local
+
+# Or manually ensure proper setup
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+npx playwright install --with-deps
+npm run build:frontend:dev
+npm run build
+CI=true NODE_ENV=production npx playwright test
+```
+
+#### CI/CD Environment
+- Tests run automatically with proper configuration
+- Browser installation handled by GitHub Actions
+- Application build included in workflow
+- Application startup verification added
+- Extended timeouts for slower CI environments
+
 ## 📈 **Performance Improvements**
 
 ### Before
 - Test execution time: ~30-60 seconds (when working)
 - Frequent failures requiring manual intervention
 - Poor local development experience
+- CI build conflicts
 
 ### After
 - Test execution time: ~10-15 seconds
 - Consistent success rate
 - Improved local development workflow
 - Better CI/CD integration
+- Application startup verification
 
 ## 🔮 **Future Enhancements**
 
@@ -277,6 +453,7 @@ Tests run automatically with proper configuration:
 - [Testing Strategy](./testing.md) - Overall testing approach
 - [GitHub Actions Workflow](../.github/workflows/playwright.yml) - CI/CD configuration
 - [Local Testing Script](../scripts/test-e2e.sh) - Local development script
+- [CI Startup Test Script](../scripts/test-ci-startup.sh) - CI environment testing
 
 ## 🤝 **Contributing**
 

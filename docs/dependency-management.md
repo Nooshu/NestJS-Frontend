@@ -1,15 +1,15 @@
 # Dependency Management
 
 ## Overview
-This project uses npm for dependency management. The project requires Node.js version 20.0.0 or higher.
+This project uses npm for dependency management. The project requires Node.js version 20.12.2 or higher.
 
 ## Key Dependencies
 
 ### Core Dependencies
-- @nestjs/common: ^11.1.2
-- @nestjs/core: ^11.1.2
-- @nestjs/platform-express: ^11.1.2
-- govuk-frontend: ^5.10.2
+- @nestjs/common: ^11.1.5
+- @nestjs/core: ^11.1.5
+- @nestjs/platform-express: ^11.1.5
+- govuk-frontend: ^5.11.1
 - nunjucks: ^3.2.4
 
 ### Security Dependencies
@@ -17,9 +17,9 @@ This project uses npm for dependency management. The project requires Node.js ve
 - @nestjs/throttler: ^6.4.0
 
 ### API and Integration
-- @nestjs/axios: ^4.0.0
-- axios: ^1.9.0
-- @nestjs/swagger: ^11.1.4
+- @nestjs/axios: ^4.0.1
+- axios: ^1.11.0
+- @nestjs/swagger: ^11.2.0
 - swagger-ui-express: ^5.0.1
 
 ### Caching
@@ -32,14 +32,15 @@ This project uses npm for dependency management. The project requires Node.js ve
 - nest-winston: ^1.10.2
 - winston: ^3.17.0
 - pino: ^9.7.0
-- pino-pretty: ^13.0.0
+- pino-pretty: ^13.1.1
 
 ### Development Dependencies
-- @nestjs/cli: ^11.0.7
+- @nestjs/cli: ^11.0.10
 - jest: ^29.7.0
-- typescript: ^5.4.2
-- prettier: ^3.0.0
-- sass: ^1.71.1
+- typescript: ^5.8.3
+- prettier: ^3.6.2
+- sass: ^1.89.2
+- @playwright/test: ^1.54.1
 
 ## Table of Contents
 
