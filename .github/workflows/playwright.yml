@@ -76,6 +76,7 @@ jobs:
     
     # Run Playwright tests with better error handling and debugging
     - name: Run Playwright tests
+      if: ${{ vars.DISABLE_PLAYWRIGHT_TESTS != 'true' }}
       run: |
         # Set CI environment variable
         export CI=true
@@ -109,9 +110,16 @@ jobs:
         CI: true
         NODE_ENV: production
     
+    # Skip Playwright tests notification
+    - name: Skip Playwright tests
+      if: ${{ vars.DISABLE_PLAYWRIGHT_TESTS == 'true' }}
+      run: |
+        echo "Playwright tests are disabled via DISABLE_PLAYWRIGHT_TESTS environment variable"
+        echo "To re-enable tests, set DISABLE_PLAYWRIGHT_TESTS to 'false' or remove the variable"
+    
     # Upload test results on failure (try multiple possible locations)
     - name: Upload test results on failure
-      if: failure()
+      if: failure() && vars.DISABLE_PLAYWRIGHT_TESTS != 'true'
       uses: actions/upload-artifact@v4
       with:
         name: playwright-report-failure
@@ -124,7 +132,7 @@ jobs:
     
     # Upload test results on success (for debugging)
     - name: Upload test results on success
-      if: success()
+      if: success() && vars.DISABLE_PLAYWRIGHT_TESTS != 'true'
       uses: actions/upload-artifact@v4
       with:
         name: playwright-report-success
