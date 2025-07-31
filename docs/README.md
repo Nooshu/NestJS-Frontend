@@ -43,6 +43,7 @@ Welcome to the comprehensive documentation for the NestJS Frontend application. 
 - [Testing Strategies](testing-strategies.md) - Comprehensive testing approach
 - [Testing Guide](testing.md) - Unit, integration, and E2E testing
 - [Playwright E2E Testing](playwright-testing.md) - End-to-end testing with Playwright
+- [Playwright Test Improvements](playwright-improvements.md) - Recent fixes and enhancements
 - [Component Testing](component-testing.md) - Testing UI components
 - [Request Validation](readme/validation.md) - Input validation and sanitization
 
@@ -90,6 +91,7 @@ npm run build:frontend:dev # Build frontend assets for development
 # Testing
 npm run test:all          # Run all tests
 npm run test:e2e          # Run end-to-end tests
+npm run test:e2e:local    # Run E2E tests locally with proper setup
 npm run test:govuk        # Run GOV.UK component tests
 
 # Production

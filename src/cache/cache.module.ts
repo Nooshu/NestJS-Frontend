@@ -15,8 +15,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { CacheService } from './cache.service';
 
 /**
- * Module that provides caching functionality using Redis.
- * Configures the Redis connection using environment variables:
+ * Module that provides caching functionality using Redis or memory cache.
+ * Configures the cache connection using environment variables:
+ * - REDIS_ENABLED: Whether to use Redis (default: false)
  * - REDIS_HOST: Redis server host (default: localhost)
  * - REDIS_PORT: Redis server port (default: 6379)
  * - CACHE_TTL: Default time-to-live for cached items in seconds (default: 3600)
@@ -27,12 +28,28 @@ import { CacheService } from './cache.service';
   imports: [
     CacheModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService): Promise<CacheOptions> => ({
-        store: 'redis',
-        host: configService.get('REDIS_HOST', 'localhost'),
-        port: configService.get('REDIS_PORT', 6379),
-        ttl: configService.get('CACHE_TTL', 3600) ?? 3600, // Default TTL: 1 hour
-      }),
+      useFactory: async (configService: ConfigService): Promise<CacheOptions> => {
+        const redisEnabled = configService.get('redis.enabled', false);
+        
+        if (redisEnabled) {
+          // Use Redis cache
+          return {
+            store: 'redis',
+            host: configService.get('redis.host', 'localhost'),
+            port: configService.get('redis.port', 6379),
+            password: configService.get('redis.password'),
+            db: configService.get('redis.db', 0),
+            ttl: configService.get('CACHE_TTL', 3600) ?? 3600, // Default TTL: 1 hour
+          };
+        } else {
+          // Use memory cache as fallback
+          return {
+            store: 'memory',
+            ttl: configService.get('CACHE_TTL', 3600) ?? 3600, // Default TTL: 1 hour
+            max: 100, // Maximum number of items in memory cache
+          };
+        }
+      },
       inject: [ConfigService],
     }),
   ],

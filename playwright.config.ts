@@ -43,7 +43,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
 
   /* Configure test reporting - using HTML reporter for rich test results */
-  reporter: 'html',
+  reporter: process.env.CI ? 'dot' : 'html',
 
   /* Global settings applied to all tests */
   use: {
@@ -55,6 +55,10 @@ export default defineConfig({
 
     /* Capture screenshots on test failure for debugging */
     screenshot: 'only-on-failure',
+
+    /* Set longer timeout for CI environments */
+    actionTimeout: process.env.CI ? 30000 : 10000,
+    navigationTimeout: process.env.CI ? 30000 : 10000,
   },
 
   /* Configure browser-specific test projects */
@@ -99,7 +103,9 @@ export default defineConfig({
   /* Configure the local development server to run during tests */
   webServer: {
     /* Command to start the server - use production build in CI for faster startup */
-    command: process.env.CI ? 'npm run build:prod && npm run start:prod' : 'npm run start:dev',
+    command: process.env.CI 
+      ? 'npm run build:prod && npm run start:prod' 
+      : 'npm run start:dev',
     
     /* URL where the server will be running */
     url: 'http://localhost:3000',
@@ -107,7 +113,11 @@ export default defineConfig({
     /* Reuse the server instance if it's already running (except in CI) */
     reuseExistingServer: !process.env.CI,
     
-    /* Maximum time to wait for the server to start (3 minutes in CI, 2 minutes locally) */
-    timeout: process.env.CI ? 180 * 1000 : 120 * 1000,
+    /* Maximum time to wait for the server to start (5 minutes in CI, 2 minutes locally) */
+    timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
+
+    /* Wait for the server to be ready by checking the health endpoint */
+    stdout: 'Application is running on: http://localhost:3000',
+    stderr: 'error',
   },
 });

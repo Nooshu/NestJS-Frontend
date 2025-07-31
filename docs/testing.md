@@ -31,12 +31,12 @@ The application uses a clear separation of test types with dedicated directories
 2. **`tests/` Directory**
    - Contains all Playwright-based E2E tests
    - End-to-end test suites
-   - Example tests in `tests/examples/`
+   - Current tests: `tests/home.spec.ts` (homepage and navigation tests)
    - Files typically end with `.spec.ts`
 
 3. **`tests-examples/` Directory**
    - Legacy directory for example tests
-   - Being migrated to `tests/examples/`
+   - Being migrated to `tests/`
    - Will be removed in future versions
 
 ### Test File Naming
@@ -102,12 +102,35 @@ module.exports = {
 ```
 
 ### Playwright Configuration
-The application uses Playwright for E2E testing with the following configuration:
+The application uses Playwright for E2E testing with enhanced configuration:
 
 ```typescript
 export default defineConfig({
   testDir: './tests',  // Playwright tests directory
-  // ... other config ...
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: process.env.CI ? 'dot' : 'html',
+  
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    actionTimeout: process.env.CI ? 30000 : 10000,
+    navigationTimeout: process.env.CI ? 30000 : 10000,
+  },
+  
+  webServer: {
+    command: process.env.CI 
+      ? 'npm run build:prod && npm run start:prod' 
+      : 'npm run start:dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
+    stdout: 'Application is running on: http://localhost:3000',
+    stderr: 'error',
+  },
 });
 ```
 
@@ -130,8 +153,11 @@ npm run test:unit -- test/unit/path/to/test.spec.ts
 # Run all E2E tests
 npm run test:e2e
 
+# Run E2E tests locally with proper setup (recommended)
+npm run test:e2e:local
+
 # Run specific test file
-npm run test:e2e -- tests/examples/demo-todo-app.spec.ts
+npm run test:e2e -- tests/home.spec.ts
 
 # Run tests in specific browser
 npm run test:e2e:chromium
@@ -262,6 +288,9 @@ npm run test:cov:govuk
 ```bash
 # Run all E2E tests
 npm run test:e2e
+
+# Run E2E tests locally with proper setup (recommended)
+npm run test:e2e:local
 
 # Run E2E tests with UI mode
 npm run test:e2e:ui

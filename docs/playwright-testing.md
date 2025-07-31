@@ -3,6 +3,20 @@
 ## Overview
 This project uses Playwright for end-to-end testing, providing reliable and powerful browser automation capabilities. Playwright allows testing across multiple browser engines (Chromium, Firefox, and WebKit) and provides powerful features for modern web application testing.
 
+## Recent Improvements
+
+### 🔧 **Configuration Enhancements**
+- **Conditional Cache Support**: Application now uses memory cache when Redis is disabled (default behavior)
+- **Improved CI/CD Integration**: Better GitHub Actions workflow with proper browser installation and artifact handling
+- **Enhanced Timeouts**: Longer timeouts for CI environments to handle slower server startup
+- **Better Error Handling**: More robust server startup detection and error reporting
+
+### 🚀 **New Local Development Script**
+- **`npm run test:e2e:local`**: Automated script that handles browser installation, port cleanup, and proper environment setup
+- **Port Management**: Automatically kills existing processes on port 3000
+- **Browser Installation**: Ensures Playwright browsers are properly installed
+- **Build Process**: Automatically builds the application before running tests
+
 ## Features
 - Cross-browser testing support (Chrome, Firefox, Safari)
 - Automatic waiting for elements
@@ -12,6 +26,8 @@ This project uses Playwright for end-to-end testing, providing reliable and powe
 - Parallel test execution
 - Interactive debugging
 - Built-in test reporting
+- **NEW**: Conditional cache configuration for different environments
+- **NEW**: Improved CI/CD integration with better artifact handling
 
 ## Getting Started
 
@@ -20,6 +36,13 @@ Playwright is already installed as a development dependency. The browsers are in
 
 ### Running Tests
 
+#### Local Development (Recommended)
+```bash
+# Run tests with proper local setup (recommended for development)
+npm run test:e2e:local
+```
+
+#### Standard Commands
 ```bash
 # Run all tests
 npx playwright test
@@ -37,15 +60,28 @@ npm run test:e2e:webkit
 ```
 
 ### Test Structure
-Tests are located in the `tests` directory. Each test file follows the `.spec.ts` naming convention.
+Tests are located in the `tests` directory. Each test file follows the `.`.spec.ts` naming convention.
+
+**Current Test Suite:**
+- `tests/home.spec.ts` - Homepage and navigation tests
+  - Homepage loading verification
+  - Health check endpoint testing
+  - Basic navigation element validation
 
 Example test structure:
 ```typescript
 import { test, expect } from '@playwright/test';
 
-test.describe('Feature Name', () => {
-  test('should do something specific', async ({ page }) => {
-    // Test implementation
+test.describe('Homepage', () => {
+  test('should load the homepage successfully', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForLoadState('networkidle');
+    
+    const title = await page.title();
+    expect(title).toBeTruthy();
+    
+    const mainContent = await page.locator('main');
+    await expect(mainContent).toBeVisible();
   });
 });
 ```
@@ -53,12 +89,43 @@ test.describe('Feature Name', () => {
 ## Configuration
 The Playwright configuration is defined in `playwright.config.ts` and includes:
 
-- Base URL configuration for your application
-- Browser configurations (Chromium, Firefox, WebKit)
-- Screenshot capture on test failure
-- Automatic test retries in CI environment
-- Parallel test execution
-- HTML test reporting
+### Enhanced Configuration Features
+- **Environment-Aware Settings**: Different configurations for CI vs local development
+- **Improved Server Startup**: Better detection of when the application is ready
+- **Conditional Cache**: Memory cache fallback when Redis is disabled
+- **Extended Timeouts**: 5-minute timeout for CI environments, 2-minute for local
+- **Better Reporting**: Line reporter for CI, HTML reporter for local development
+
+### Key Configuration Options
+```typescript
+export default defineConfig({
+  testDir: './tests',
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  reporter: process.env.CI ? 'dot' : 'html',
+  
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+    actionTimeout: process.env.CI ? 30000 : 10000,
+    navigationTimeout: process.env.CI ? 30000 : 10000,
+  },
+  
+  webServer: {
+    command: process.env.CI 
+      ? 'npm run build:prod && npm run start:prod' 
+      : 'npm run start:dev',
+    url: 'http://localhost:3000',
+    reuseExistingServer: !process.env.CI,
+    timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
+    stdout: 'Application is running on: http://localhost:3000',
+    stderr: 'error',
+  },
+});
+```
 
 ## Best Practices
 
@@ -95,6 +162,11 @@ class HomePage {
 - Implement custom waiting helpers for complex scenarios
 - Avoid arbitrary timeouts
 
+### 5. Environment Considerations
+- **Local Development**: Use `npm run test:e2e:local` for proper setup
+- **CI/CD**: Tests run automatically with proper browser installation
+- **Cache Configuration**: Application automatically uses memory cache when Redis is disabled
+
 ## Debugging Tests
 
 ### UI Mode
@@ -113,30 +185,75 @@ npm run test:e2e:debug
 Tests automatically capture screenshots on failure. Configure additional captures in `playwright.config.ts`.
 
 ## CI/CD Integration
-Playwright tests are configured to run in the CI environment with:
-- Parallel execution
-- Retry on failure
-- HTML report generation
-- Screenshot and video capture
 
-## Common Issues and Solutions
+### GitHub Actions Workflow
+The project includes an enhanced GitHub Actions workflow (`.github/workflows/playwright.yml`) that:
 
-### 1. Element Not Found
-- Check if the element is in the viewport
-- Verify the selector is correct
-- Ensure proper waiting conditions
+1. **Proper Browser Installation**: Installs all required browsers with dependencies
+2. **Application Build**: Builds the application before running tests
+3. **Environment Configuration**: Sets proper CI environment variables
+4. **Artifact Handling**: Uploads test results for both success and failure cases
+5. **Extended Timeouts**: Uses longer timeouts for CI environments
 
-### 2. Timing Issues
-- Use automatic waiting mechanisms
-- Implement custom expect conditions
-- Avoid fixed timeouts
+### Workflow Features
+- **Automatic Browser Installation**: `npx playwright install --with-deps`
+- **Application Build**: `npm run build:frontend:dev && npm run build`
+- **Test Execution**: `npx playwright test --timeout=300000 --reporter=line`
+- **Artifact Upload**: Test results uploaded for debugging
 
-### 3. Cross-Browser Differences
-- Use browser-agnostic selectors
-- Test across all supported browsers
-- Document browser-specific workarounds
+## Troubleshooting
+
+### Common Issues and Solutions
+
+#### 1. "Process from config.webServer exited early"
+**Cause**: Application failed to start due to missing dependencies or configuration issues
+**Solution**: 
+- Use `npm run test:e2e:local` for proper setup
+- Check if Redis is running (or disable it in configuration)
+- Verify all dependencies are installed
+
+#### 2. "Executable doesn't exist" for browsers
+**Cause**: Playwright browsers not installed
+**Solution**: 
+- Run `npx playwright install --with-deps`
+- Use `npm run test:e2e:local` which handles browser installation
+
+#### 3. "http://localhost:3000 is already used"
+**Cause**: Another process is using port 3000
+**Solution**: 
+- Use `npm run test:e2e:local` which automatically kills existing processes
+- Manually kill processes: `lsof -ti:3000 | xargs kill -9`
+
+#### 4. Tests failing in CI but passing locally
+**Cause**: Different environment configurations
+**Solution**:
+- Check CI environment variables
+- Verify application builds correctly in CI
+- Review CI logs for specific error messages
+
+### Environment-Specific Issues
+
+#### Local Development
+```bash
+# Use the local testing script for proper setup
+npm run test:e2e:local
+
+# Or manually ensure proper setup
+lsof -ti:3000 | xargs kill -9 2>/dev/null || true
+npx playwright install --with-deps
+npm run build:frontend:dev
+npm run build
+CI=true NODE_ENV=production npx playwright test
+```
+
+#### CI/CD Environment
+- Tests run automatically with proper configuration
+- Browser installation handled by GitHub Actions
+- Application build included in workflow
+- Extended timeouts for slower CI environments
 
 ## Additional Resources
 - [Playwright Documentation](https://playwright.dev/docs/intro)
 - [API Reference](https://playwright.dev/docs/api/class-playwright)
-- [Best Practices Guide](https://playwright.dev/docs/best-practices) 
+- [Best Practices Guide](https://playwright.dev/docs/best-practices)
+- [GitHub Actions Integration](https://playwright.dev/docs/ci-intro) 

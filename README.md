@@ -44,6 +44,9 @@ npm run test:govuk
 # Run end-to-end tests in all browsers
 npm run test:e2e:browsers
 
+# Run end-to-end tests locally (with proper setup)
+npm run test:e2e:local
+
 # Run tests with coverage
 npm run test:cov
 ```
@@ -57,13 +60,14 @@ The application uses a clear separation of test types:
 
 - **End-to-End Tests** (`tests/` directory)
   - Playwright-based tests for complete user journeys
-  - Example tests in `tests/examples/`
+  - Tests for homepage, health checks, and navigation
   - Run with `npm run test:e2e` or browser-specific commands
+  - Use `npm run test:e2e:local` for local development with proper setup
 
 For detailed information about testing:
 - [Testing Strategy](docs/testing.md) - Comprehensive testing documentation
-- [Unit Testing Guide](docs/unit-testing.md) - Guide for writing unit tests
 - [End-to-End Testing with Playwright](docs/playwright-testing.md) - Guide for E2E testing
+- [Playwright Test Improvements](docs/playwright-improvements.md) - Recent fixes and enhancements
 - [GOV.UK Component Testing](docs/govuk-testing.md) - Guide for component testing
 
 ### Available Scripts
@@ -96,6 +100,7 @@ For detailed information about testing:
 - `npm run test:e2e:chromium` - Run end-to-end tests in Chrome
 - `npm run test:e2e:firefox` - Run end-to-end tests in Firefox
 - `npm run test:e2e:webkit` - Run end-to-end tests in Safari
+- `npm run test:e2e:local` - Run end-to-end tests locally with proper setup
 - `npm run test:cov` - Run all tests with coverage
 - `npm run test:cov:unit` - Run unit tests with coverage
 - `npm run test:cov:integration` - Run integration tests with coverage
