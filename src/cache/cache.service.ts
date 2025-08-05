@@ -54,7 +54,8 @@ export class CacheService {
    */
   async get<T>(key: string): Promise<T | null> {
     this.validateKey(key);
-    return this.cacheManager.get<T>(key);
+    const result = await this.cacheManager.get<T>(key);
+    return result ?? null;
   }
 
   /**

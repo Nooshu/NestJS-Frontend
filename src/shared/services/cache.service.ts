@@ -33,7 +33,8 @@ export class CacheService {
    * const user = await cacheService.get<User>('user:123');
    */
   async get<T>(key: string): Promise<T | null> {
-    return await this.cacheManager.get<T>(key);
+    const result = await this.cacheManager.get<T>(key);
+    return result ?? null;
   }
 
   /**

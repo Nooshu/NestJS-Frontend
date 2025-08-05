@@ -171,7 +171,7 @@ describe('CacheService', () => {
 
       // Assert
       expect(cacheManager.get).toHaveBeenCalledWith(testKey);
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
     });
 
     it('should handle cache manager errors', async () => {
