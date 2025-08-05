@@ -161,6 +161,7 @@ export const governmentSecurityConfig: SecurityConfig = {
     store: new MemoryStore(),
     validate: true,
     passOnStoreError: false,
+    ipv6Subnet: 64, // IPv6 subnet mask for rate limiting
   },
 
   /**
