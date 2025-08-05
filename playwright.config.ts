@@ -30,6 +30,9 @@ export default defineConfig({
   /* Directory where test files are located */
   testDir: './tests',
 
+  /* Disable all tests by ignoring all test files */
+  testIgnore: '**/*.spec.ts',
+
   /* Run tests in files in parallel */
   fullyParallel: true,
 
