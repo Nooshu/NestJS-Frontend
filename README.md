@@ -51,6 +51,54 @@ npm run test:e2e:local
 npm run test:cov
 ```
 
+### Running with Docker
+
+#### Production Mode
+```bash
+# Prepare the project for Docker build (recommended)
+./scripts/prepare-docker.sh
+
+# Build the Docker image
+docker-compose build
+
+# Run the application
+docker-compose up
+
+# Or run in detached mode
+docker-compose up -d
+```
+
+#### Development Mode
+```bash
+# Build and run in development mode
+docker-compose --profile dev up frontend-dev
+
+# Or run in detached mode
+docker-compose --profile dev up -d frontend-dev
+```
+
+#### Accessing the Application
+Once the container is running, you can access the application at:
+- **Production**: https://localhost:3100
+- **Development**: https://localhost:3101
+
+The application will serve a basic home page with GOV.UK Frontend styling.
+
+#### Docker Commands
+```bash
+# Stop the application
+docker-compose down
+
+# View logs
+docker-compose logs -f
+
+# Rebuild and restart
+docker-compose up --build
+
+# Clean up containers and images
+docker-compose down --rmi all --volumes --remove-orphans
+```
+
 The application uses a clear separation of test types:
 
 - **Unit and Integration Tests** (`test/` directory)

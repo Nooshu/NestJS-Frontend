@@ -95,7 +95,7 @@ export class ViewEngineService {
 
     // Define template loading paths
     // Primary path: Application-specific templates
-    const viewsPath = join(process.cwd(), 'src', 'views');
+    const viewsPath = join(process.cwd(), 'dist', 'views');
     // Secondary path: GOV.UK Frontend component templates
     const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist');
 

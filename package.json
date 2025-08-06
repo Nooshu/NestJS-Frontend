@@ -46,7 +46,7 @@
     "test:cov:govuk": "jest --testPathPattern=test/govuk-components --coverage --coverageReporters='text-summary' --coverageReporters='html'",
     "test:all": "npm-run-all test:unit test:integration test:govuk test:e2e",
     "test:all:watch": "concurrently \"npm run test:unit:watch\" \"npm run test:integration:watch\" \"npm run test:govuk:watch\"",
-    "build:frontend": "npm run build:scss && npm run copy:assets && npm run fingerprint:assets",
+    "build:frontend": "npm run build:scss && npm run copy:assets && npm run copy:views && npm run fingerprint:assets",
     "build:frontend:watch": "./filter-concurrently-output.sh concurrently --kill-others-on-fail --no-command-logs \"npm run watch:all\"",
     "build:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --style=compressed --load-path=node_modules",
     "build:scss:watch": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
@@ -55,6 +55,7 @@
     "copy:govuk-assets": "cpy 'node_modules/govuk-frontend/govuk/assets/**/*' 'dist/public/assets'",
     "copy:govuk-dist": "cpy 'node_modules/govuk-frontend/dist/govuk/*.{css,js,css.map,js.map}' 'dist/public/govuk'",
     "copy:public-assets": "cpy 'src/public/**/*' 'dist/public'",
+    "copy:views": "cpy 'src/views/**/*.njk' 'dist/views'",
     "watch:all": "./filter-concurrently-output.sh concurrently --kill-others-on-fail --no-command-logs \"npm run watch:assets\" \"npm run watch:scss\"",
     "watch:assets": "onchange 'src/frontend/images/**/*' 'src/public/**/*' -- npm-run-all copy:images copy:public-assets",
     "watch:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
@@ -106,7 +107,10 @@
     "reflect-metadata": "0.2.2",
     "rxjs": "7.8.2",
     "swagger-ui-express": "5.0.1",
-    "winston": "3.17.0"
+    "winston": "3.17.0",
+    "nunjucks": "3.2.4",
+    "glob": "^10.3.10",
+    "chokidar": "^4.0.3"
   },
   "devDependencies": {
     "@babel/core": "7.28.0",
@@ -135,7 +139,6 @@
     "jsdom": "26.1.0",
     "node-html-parser": "7.0.1",
     "npm-run-all2": "^8.0.0",
-    "nunjucks": "3.2.4",
     "onchange": "^7.1.0",
     "postcss": "8.5.6",
     "prettier": "3.6.2",

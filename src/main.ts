@@ -164,7 +164,7 @@ async function bootstrap() {
     }
   );
   app.setViewEngine('njk');
-  app.setBaseViewsDir(join(process.cwd(), 'src', 'views'));
+  app.setBaseViewsDir(join(process.cwd(), 'dist', 'views'));
 
   /**
    * Static Asset Configuration
@@ -254,7 +254,7 @@ async function bootstrap() {
     });
   }
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3100;
   await app.listen(port);
   logger.info(`Application is running on: http://localhost:${port}`);
 }
