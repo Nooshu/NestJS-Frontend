@@ -1,6 +1,9 @@
 # Use Node.js 20 LTS as the base image
 FROM node:22-alpine AS base
 
+# Update npm to the latest version
+RUN npm install -g npm@latest
+
 # Set working directory
 WORKDIR /app
 
