@@ -113,8 +113,8 @@
     "chokidar": "^4.0.3"
   },
   "devDependencies": {
-    "@babel/core": "7.28.0",
-    "@babel/preset-env": "7.28.0",
+    "@babel/core": "7.28.3",
+    "@babel/preset-env": "7.28.3",
     "@nestjs/cli": "11.0.10",
     "@nestjs/testing": "11.1.5",
     "@playwright/test": "1.54.2",
