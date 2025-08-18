@@ -155,6 +155,7 @@
   },
   "overrides": {
     "multer": "2.0.2",
+    "tmp": ">=0.2.4",
     "jest": {
       "engines": {
         "node": ">=18.14.0"
