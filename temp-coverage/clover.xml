@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1755788534650" clover="3.2.0">
+  <project timestamp="1755788534650" name="All files">
+    <metrics statements="37" coveredstatements="37" conditionals="10" coveredconditionals="9" methods="7" coveredmethods="7" elements="54" coveredelements="53" complexity="0" loc="37" ncloc="37" packages="1" files="2" classes="2"/>
+    <file name="new-journey.controller.ts" path="/Users/MattHobbs/Development/NestJS-Frontend/src/views/journeys/new-journey/new-journey.controller.ts">
+      <metrics statements="32" coveredstatements="32" conditionals="10" coveredconditionals="9" methods="7" coveredmethods="7"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="47" count="1" type="stmt"/>
+      <line num="48" count="27" type="stmt"/>
+      <line num="50" count="27" type="cond" truecount="3" falsecount="1"/>
+      <line num="59" count="27" type="stmt"/>
+      <line num="67" count="1" type="stmt"/>
+      <line num="68" count="1" type="stmt"/>
+      <line num="81" count="1" type="stmt"/>
+      <line num="82" count="1" type="stmt"/>
+      <line num="97" count="1" type="stmt"/>
+      <line num="98" count="2" type="stmt"/>
+      <line num="99" count="2" type="stmt"/>
+      <line num="109" count="1" type="stmt"/>
+      <line num="110" count="8" type="cond" truecount="2" falsecount="0"/>
+      <line num="111" count="1" type="stmt"/>
+      <line num="113" count="7" type="stmt"/>
+      <line num="131" count="1" type="stmt"/>
+      <line num="132" count="5" type="stmt"/>
+      <line num="140" count="4" type="stmt"/>
+      <line num="141" count="4" type="stmt"/>
+      <line num="142" count="3" type="stmt"/>
+      <line num="143" count="3" type="stmt"/>
+      <line num="145" count="1" type="stmt"/>
+      <line num="146" count="1" type="stmt"/>
+      <line num="158" count="1" type="stmt"/>
+      <line num="159" count="11" type="cond" truecount="4" falsecount="0"/>
+      <line num="160" count="5" type="stmt"/>
+      <line num="163" count="6" type="stmt"/>
+      <line num="164" count="6" type="stmt"/>
+      <line num="170" count="6" type="stmt"/>
+      <line num="179" count="6" type="stmt"/>
+    </file>
+    <file name="new-journey.module.ts" path="/Users/MattHobbs/Development/NestJS-Frontend/src/views/journeys/new-journey/new-journey.module.ts">
+      <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="13" count="1" type="stmt"/>
+      <line num="14" count="1" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="24" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

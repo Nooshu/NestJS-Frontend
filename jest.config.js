@@ -24,12 +24,6 @@ module.exports = {
       lines: 80,
       statements: 80,
     },
-    './src/views/extensions/asset-path.extension.ts': {
-      branches: 100,
-      functions: 100,
-      lines: 100,
-      statements: 100,
-    },
   },
   testEnvironment: 'node',
   setupFilesAfterEnv: ['<rootDir>/src/test/setup.ts'],

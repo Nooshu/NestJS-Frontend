@@ -47,6 +47,75 @@ describe('NewJourneyController', () => {
     expect(configService.get).toBeDefined();
   });
 
+  it('should be constructable with ConfigService', () => {
+    const testConfigService = {
+      get: jest.fn()
+    };
+    
+    const testController = new NewJourneyController(testConfigService as any);
+    expect(testController).toBeDefined();
+    expect(testController).toBeInstanceOf(NewJourneyController);
+    
+    // Test that the configService is properly assigned
+    expect((testController as any).configService).toBe(testConfigService);
+    
+    // Test that the logger is properly initialized
+    expect((testController as any).logger).toBeDefined();
+    
+    // Test that the formData is properly initialized
+    expect((testController as any).formData).toEqual({});
+  });
+
+  it('should handle constructor with undefined configService', () => {
+    // This might help cover the branch in the constructor
+    const testController = new NewJourneyController(undefined as any);
+    expect(testController).toBeDefined();
+    expect((testController as any).configService).toBeUndefined();
+  });
+
+  it('should initialize logger with correct class name', () => {
+    // Test that the logger is properly initialized with the class name
+    const logger = (controller as any).logger;
+    expect(logger).toBeDefined();
+    expect(logger.context).toBe('NewJourneyController');
+  });
+
+  it('should handle edge case where class name might be undefined', () => {
+    // Mock the class constructor to test edge cases
+    const originalName = NewJourneyController.name;
+    
+    try {
+      // Temporarily modify the name property
+      Object.defineProperty(NewJourneyController, 'name', {
+        value: undefined,
+        configurable: true
+      });
+      
+      const testConfigService = { get: jest.fn() };
+      const testController = new NewJourneyController(testConfigService as any);
+      expect(testController).toBeDefined();
+      
+    } finally {
+      // Restore the original name
+      Object.defineProperty(NewJourneyController, 'name', {
+        value: originalName,
+        configurable: true
+      });
+    }
+  });
+
+  it('should initialize formData as empty object by default', () => {
+    // Test the formData initialization branch
+    const formData = (controller as any).formData;
+    expect(formData).toEqual({});
+    expect(formData.start).toBeUndefined();
+    expect(formData.details).toBeUndefined();
+    
+    // Test that we can modify it
+    formData.start = { fullName: 'test', email: 'test@test.com', journeyType: 'personal' };
+    expect(formData.start).toBeDefined();
+  });
+
   describe('index', () => {
     it('should return the correct view model for the welcome page', () => {
       const result = controller.index();
@@ -140,6 +209,29 @@ describe('NewJourneyController', () => {
         isDevelopment: false
       });
     });
+
+    it('should return isDevelopment as false when NODE_ENV is a different string value', () => {
+      // First, populate the start form data
+      const startFormData = {
+        fullName: 'John Doe',
+        email: 'john@example.com',
+        journeyType: 'personal' as const
+      };
+      
+      (controller as any).formData.start = startFormData;
+      
+      // Mock the config service to return a different string value
+      jest.spyOn(configService, 'get').mockReturnValue('staging');
+      
+      const result = controller.details();
+      
+      expect(result).toEqual({
+        title: 'New Journey - Details',
+        journey: 'new-journey',
+        currentPage: 'details',
+        isDevelopment: false
+      });
+    });
   });
 
   describe('handleDetails', () => {
@@ -196,6 +288,32 @@ describe('NewJourneyController', () => {
       // Restore the original formData
       (controller as any).formData = originalFormData;
     });
+
+    it('should handle error when logger throws an exception', () => {
+      const formData = {
+        'journeyDate-day': '15',
+        'journeyDate-month': '6',
+        'journeyDate-year': '2024',
+        journeyDuration: '2 weeks',
+        journeyDescription: 'Business trip to London'
+      };
+
+      // Mock the logger to throw an error
+      const originalLogger = (controller as any).logger;
+      (controller as any).logger = {
+        debug: jest.fn().mockImplementation(() => {
+          throw new Error('Logger error');
+        }),
+        error: jest.fn().mockImplementation(() => {}),
+        log: jest.fn().mockImplementation(() => {}),
+        warn: jest.fn().mockImplementation(() => {})
+      };
+
+      expect(() => controller.handleDetails(formData)).toThrow('Logger error');
+
+      // Restore the original logger
+      (controller as any).logger = originalLogger;
+    });
   });
 
   describe('confirmation', () => {
@@ -215,6 +333,57 @@ describe('NewJourneyController', () => {
       
       const result = controller.confirmation();
       
+      expect(result).toEqual({ redirect: '/new-journey' });
+    });
+
+    it('should redirect to index when start form data exists but details form data does not exist', () => {
+      // Set only start form data (details is undefined)
+      (controller as any).formData.start = {
+        fullName: 'John Doe',
+        email: 'john@example.com',
+        journeyType: 'personal' as const
+      };
+      
+      // Explicitly set details to undefined to test the OR condition branch
+      (controller as any).formData.details = undefined;
+      
+      const result = controller.confirmation();
+      
+      expect(result).toEqual({ redirect: '/new-journey' });
+    });
+
+    it('should redirect to index when start form data exists but details form data is null', () => {
+      // Set only start form data (details is null)
+      (controller as any).formData.start = {
+        fullName: 'John Doe',
+        email: 'john@example.com',
+        journeyType: 'personal' as const
+      };
+      
+      // Explicitly set details to null to test the OR condition branch
+      (controller as any).formData.details = null;
+      
+      const result = controller.confirmation();
+      
+      expect(result).toEqual({ redirect: '/new-journey' });
+    });
+
+    it('should test short-circuit evaluation when start form data is falsy', () => {
+      // Set start form data to a falsy value (empty string)
+      (controller as any).formData.start = '';
+      
+      // Set details form data to a truthy value
+      (controller as any).formData.details = {
+        'journeyDate-day': '15',
+        'journeyDate-month': '6',
+        'journeyDate-year': '2024',
+        journeyDuration: '2 weeks',
+        journeyDescription: 'Business trip to London'
+      };
+      
+      const result = controller.confirmation();
+      
+      // Should redirect because !this.formData.start is true (short-circuit)
       expect(result).toEqual({ redirect: '/new-journey' });
     });
 
@@ -380,6 +549,48 @@ describe('NewJourneyController', () => {
       
       // Mock the config service to return undefined
       jest.spyOn(configService, 'get').mockReturnValue(undefined);
+      
+      const result = controller.details();
+      
+      expect(result).toEqual({
+        title: 'New Journey - Details',
+        journey: 'new-journey',
+        currentPage: 'details',
+        isDevelopment: false
+      });
+    });
+
+    it('should return isDevelopment as false when NODE_ENV is null', () => {
+      // Set start form data
+      (controller as any).formData.start = {
+        fullName: 'Test User',
+        email: 'test@example.com',
+        journeyType: 'personal' as const
+      };
+      
+      // Mock the config service to return null
+      jest.spyOn(configService, 'get').mockReturnValue(null);
+      
+      const result = controller.details();
+      
+      expect(result).toEqual({
+        title: 'New Journey - Details',
+        journey: 'new-journey',
+        currentPage: 'details',
+        isDevelopment: false
+      });
+    });
+
+    it('should return isDevelopment as false when NODE_ENV is empty string', () => {
+      // Set start form data
+      (controller as any).formData.start = {
+        fullName: 'Test User',
+        email: 'test@example.com',
+        journeyType: 'personal' as const
+      };
+      
+      // Mock the config service to return empty string
+      jest.spyOn(configService, 'get').mockReturnValue('');
       
       const result = controller.details();
       
