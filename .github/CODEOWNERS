@@ -1,0 +1,54 @@
+# Global owners
+* @[username]
+
+# Core application files
+/src/ @[username]
+/src/app.* @[username]
+/src/main.ts @[username]
+
+# Adapters and integrations
+/src/adapters/ @[username]
+/src/adapters/express/ @[username]
+/src/adapters/java-api/ @[username]
+/src/adapters/security-compliance/ @[username]
+
+# API and controllers
+/src/api/ @[username]
+/src/views/journeys/ @[username]
+/src/views/controllers/ @[username]
+
+# Shared modules and utilities
+/src/shared/ @[username]
+/src/shared/config/ @[username]
+/src/shared/health/ @[username]
+/src/shared/middleware/ @[username]
+/src/shared/services/ @[username]
+
+# Testing and configuration
+/tests/ @[username]
+/test/ @[username]
+jest.config.js @[username]
+playwright.config.ts @[username]
+tsconfig*.json @[username]
+
+# Documentation
+/docs/ @[username]
+README.md @[username]
+CONTRIBUTING.md @[username]
+SECURITY.md @[username]
+
+# CI/CD and workflows
+/.github/ @[username]
+/.github/workflows/ @[username]
+docker-compose.yml @[username]
+Dockerfile @[username]
+
+# Frontend assets
+/src/frontend/ @[username]
+/src/public/ @[username]
+/src/views/ @[username]
+
+# Dependencies and package management
+package.json @[username]
+package-lock.json @[username]
+renovate.json @[username]
