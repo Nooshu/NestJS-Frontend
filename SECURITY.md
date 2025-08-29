@@ -16,7 +16,7 @@ We take the security of our NestJS-frontend application seriously. If you believ
 
 ### How to Report
 
-1. **Email Security Team**: Send an email to [security@hmcts.gov.uk](mailto:security@hmcts.gov.uk)
+1. **Email Security Team**: Send an email to [security@hmcts.net](mailto:security@hmcts.net)
 2. **Subject Line**: Use the format `[SECURITY] NestJS-frontend - [Brief Description]`
 3. **Include Details**: Provide as much information as possible about the vulnerability
 
@@ -151,9 +151,9 @@ We believe in responsible disclosure and will:
 
 ## Security Contacts
 
-- **Security Team**: [security@hmcts.gov.uk](mailto:security@hmcts.gov.uk)
-- **Project Maintainers**: [matt.hobbs@hmcts.gov.uk](mailto:matt.hobbs@hmcts.gov.uk)
-- **Emergency Contact**: [security-emergency@hmcts.gov.uk](mailto:security-emergency@hmcts.gov.uk)
+- **Security Team**: [security@hmcts.net](mailto:security@hmcts.net)
+- **Project Maintainers**: [matthew.hobbs@hmcts.net](mailto:matthew.hobbs@hmcts.net)
+- **Emergency Contact**: [security-emergency@hmcts.net](mailto:security-emergency@hmcts.net)
 
 ## Security Resources
 
