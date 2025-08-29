@@ -18,12 +18,12 @@ The configuration is organized into several sections:
 ### 1. Application
 - `PORT`: Application port number (default: 3000)
 - `NODE_ENV`: Application environment (development, production, test)
-- `NODE_VERSION`: Required Node.js version (>=20.12.2)
+- `NODE_VERSION`: Required Node.js version (>=20.11.1)
 
 ### 2. Views
 - `VIEWS_DIRECTORY`: Directory containing view templates
 - `VIEWS_CACHE`: Whether to cache compiled templates
-- `GOVUK_FRONTEND_VERSION`: Version of GOV.UK Frontend (5.10.2)
+- `GOVUK_FRONTEND_VERSION`: Version of GOV.UK Frontend (5.11.2)
 
 ### 3. Public Assets
 - `PUBLIC_DIRECTORY`: Directory containing public assets
@@ -75,10 +75,10 @@ Set environment variables in your `.env` file:
 # Application
 PORT=3000
 NODE_ENV=development
-NODE_VERSION=20.12.2
+NODE_VERSION=20.11.1
 
 # Views
-GOVUK_FRONTEND_VERSION=5.10.2
+GOVUK_FRONTEND_VERSION=5.11.2
 
 # Security
 CORS_ENABLED=true

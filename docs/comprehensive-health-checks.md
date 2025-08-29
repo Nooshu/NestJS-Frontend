@@ -71,7 +71,7 @@ curl http://localhost:3000/health/detailed
     "app_config": {
       "status": "up",
       "environment": "production",
-      "nodeVersion": "v20.12.2"
+      "nodeVersion": "v20.11.1"
     },
     "app_performance": {
       "status": "up",

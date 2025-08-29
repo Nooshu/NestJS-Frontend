@@ -6,8 +6,8 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ## Core Features
 
 ### 1. Modern Framework Architecture
-- Built on NestJS v11.1.0, providing a scalable and maintainable architecture
-- TypeScript v5.1.3 with strict mode enabled for maximum type safety
+- Built on NestJS v11.1.6, providing a scalable and maintainable architecture
+- TypeScript v5.9.2 with strict mode enabled for maximum type safety
 - Modular design following SOLID principles with clear separation of concerns
 - Dependency injection for better testability and maintainability
 - Built-in support for microservices architecture
@@ -24,7 +24,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ![NestJS Popularity Trends](./assets/nestjs-popularity-graph.png)
 
 ### 3. GOV.UK Frontend Integration
-- Seamless integration with GOV.UK Frontend v5.10.1 components
+- Seamless integration with GOV.UK Frontend v5.11.2 components
 - Nunjucks templating engine - the official and default templating language used by [GOV.UK Design System](https://design-system.service.gov.uk/), ensuring perfect compatibility and maintainability
 - Built-in support for [GOV.UK Design System patterns](https://design-system.service.gov.uk/)
 - [WCAG 2.2 Accessibility compliance](https://design-system.service.gov.uk/accessibility/wcag-2.2/) built into the codebase
@@ -60,13 +60,13 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ### 5. Developer Experience
 - Comprehensive testing setup
-  - Jest v29.7.0 for unit and integration testing
+  - Jest v30.1.1 for unit and integration testing
     - Full Performance API mocking for accurate performance testing
     - Type-safe test utilities with TypeScript
     - Custom test matchers for common assertions
     - Global test configuration and setup
     - Mock utilities for common browser APIs
-  - Playwright v1.52.0 for end-to-end testing
+  - Playwright v1.55.0 for end-to-end testing
     - Cross-browser testing (Chrome, Firefox, Safari)
     - Automatic waiting and retry mechanisms
     - Screenshot and video capture
@@ -103,26 +103,26 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
     - Coverage reporting and analysis
 - Swagger/OpenAPI documentation with automatic generation
 - Winston v3.17.0 logging integration with structured logging
-- Prettier v3.0.0 and ESLint for code quality
+- Prettier v3.6.2 and ESLint for code quality
 - Hot-reload development environment
 - TypeScript decorators for clean code
 - Built-in validation and transformation
 - Clear error messages and debugging support
-- Supertest v7.1.0 for API testing
-- Node.js v20.12.2+ support with modern features
-- PostCSS v8.4.35 for modern CSS processing
-- Babel v7.24.0 for JavaScript transpilation
+- Supertest v7.1.4 for API testing
+- Node.js v20.11.1+ support with modern features
+- PostCSS v8.5.6 for modern CSS processing
+- Babel v7.28.3 for JavaScript transpilation
 
 ### 6. Performance Optimisation
-- Redis caching support with cache-manager v6.4.3
+- Redis caching support with cache-manager v7.2.0
 - Static file serving optimisation with custom headers
 - Compression middleware with configurable options
-- Axios v1.9.0 HTTP client for efficient API calls
+- Axios v1.11.0 HTTP client for efficient API calls
 - Request batching support
 - Connection pooling
 - Response compression
 - Asset versioning and caching
-- ioredis v5.6.1 for Redis operations
+- ioredis v5.7.0 for Redis operations
 - Code splitting and lazy loading
 - CSS optimisation with PostCSS
 - Service worker for offline support

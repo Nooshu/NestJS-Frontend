@@ -149,7 +149,7 @@ This document outlines the training and onboarding processes for the NestJS Fron
    {
      "development": {
        "ide": "VS Code",
-       "node": ">=16.0.0",
+       "node": ">=20.11.1",
        "npm": ">=8.0.0",
        "git": ">=2.0.0"
      },
