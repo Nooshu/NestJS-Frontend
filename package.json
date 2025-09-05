@@ -159,6 +159,9 @@
       "engines": {
         "node": ">=18.14.0"
       }
+    },
+    "nunjucks": {
+      "chokidar": "^4.0.3"
     }
   }
 }
