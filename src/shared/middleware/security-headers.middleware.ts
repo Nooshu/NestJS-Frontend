@@ -92,7 +92,7 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
     }
 
     // Enhanced security headers for API routes
-    if (req.path.startsWith('/api')) {
+    if (req.path && req.path.startsWith('/api')) {
       // Ensure JSON responses are not cached
       res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate');
 
@@ -108,7 +108,7 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
     }
 
     // Enhanced CSP for HTML responses
-    if (req.path.endsWith('.html') || req.accepts('html')) {
+    if ((req.path && req.path.endsWith('.html')) || req.accepts('html')) {
       const cspConfig = this.securityConfig.csp;
       if (cspConfig.enabled) {
         const cspDirectives = Object.entries(cspConfig.directives)
@@ -134,6 +134,8 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
   }
 
   private isSensitiveRoute(path: string): boolean {
+    if (!path) return false;
+    
     const sensitivePatterns = [
       '/api',
       '/auth',
@@ -150,6 +152,8 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
   }
 
   private isStaticAsset(path: string): boolean {
+    if (!path) return false;
+    
     const staticExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
     return staticExtensions.some(ext => path.endsWith(ext));
   }
