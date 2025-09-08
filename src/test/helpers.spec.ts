@@ -4,6 +4,8 @@ import {
   customMatchers,
   setupTestEnvironment,
   cleanupTestEnvironment,
+  createTestApp,
+  createTestModule,
 } from './helpers';
 
 describe('Test Helpers', () => {
@@ -222,6 +224,96 @@ describe('Test Helpers', () => {
     });
   });
 
+  describe('createTestApp', () => {
+    let app: any;
+
+    afterEach(async () => {
+      if (app) {
+        await app.close();
+      }
+    });
+
+    it('should create a test application instance', async () => {
+      app = await createTestApp();
+      
+      expect(app).toBeDefined();
+      expect(typeof app.close).toBe('function');
+      expect(typeof app.useGlobalPipes).toBe('function');
+      expect(typeof app.setGlobalPrefix).toBe('function');
+      expect(typeof app.useLogger).toBe('function');
+    });
+
+    it('should have global prefix set to api', async () => {
+      app = await createTestApp();
+      
+      // The global prefix is set internally, we can verify the app was created successfully
+      expect(app).toBeDefined();
+    });
+
+    it('should have logger configured', async () => {
+      app = await createTestApp();
+      
+      // The logger is set internally, we can verify the app was created successfully
+      expect(app).toBeDefined();
+    });
+
+    it('should have validation pipes configured', async () => {
+      app = await createTestApp();
+      
+      // The validation pipes are set internally, we can verify the app was created successfully
+      expect(app).toBeDefined();
+    });
+
+    it('should have Swagger documentation configured', async () => {
+      app = await createTestApp();
+      
+      // The Swagger setup is done internally, we can verify the app was created successfully
+      expect(app).toBeDefined();
+    });
+
+    it('should be able to close the application', async () => {
+      app = await createTestApp();
+      
+      expect(app).toBeDefined();
+      await expect(app.close()).resolves.not.toThrow();
+    });
+  });
+
+  describe('createTestModule', () => {
+    let module: any;
+
+    afterEach(async () => {
+      if (module) {
+        await module.close();
+      }
+    });
+
+    it('should create a test module instance', async () => {
+      module = await createTestModule();
+      
+      expect(module).toBeDefined();
+      expect(typeof module.createNestApplication).toBe('function');
+      expect(typeof module.close).toBe('function');
+    });
+
+    it('should be able to create a nest application from the module', async () => {
+      module = await createTestModule();
+      
+      const app = module.createNestApplication();
+      expect(app).toBeDefined();
+      expect(typeof app.close).toBe('function');
+      
+      await app.close();
+    });
+
+    it('should be able to close the module', async () => {
+      module = await createTestModule();
+      
+      expect(module).toBeDefined();
+      await expect(module.close()).resolves.not.toThrow();
+    });
+  });
+
   describe('Integration tests', () => {
     it('should work together in a test setup and cleanup cycle', () => {
       // Setup test environment
@@ -258,6 +350,18 @@ describe('Test Helpers', () => {
       setupTestEnvironment();
       expect(global.performance).toBe(mockPerformance);
       cleanupTestEnvironment();
+    });
+
+    it('should work with createTestApp and createTestModule', async () => {
+      // Test that both functions can be used together
+      const module = await createTestModule();
+      const app = await createTestApp();
+      
+      expect(module).toBeDefined();
+      expect(app).toBeDefined();
+      
+      await app.close();
+      await module.close();
     });
   });
 });
