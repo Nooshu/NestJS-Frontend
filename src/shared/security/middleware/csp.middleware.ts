@@ -13,8 +13,26 @@ export class CspMiddleware implements NestMiddleware {
 
     // Set CSP headers
     const directives = this.securityConfig.csp.directives;
+    
+    // Handle case where directives is null/undefined
+    if (!directives) {
+      return next();
+    }
+    
     const cspHeader = Object.entries(directives)
-      .map(([key, value]) => `${key} ${(value as string[]).join(' ')}`)
+      .map(([key, value]) => {
+        // Handle different value types
+        if (Array.isArray(value)) {
+          return `${key} ${value.join(' ')}`;
+        } else if (typeof value === 'string') {
+          return `${key} ${value}`;
+        } else if (value === null || value === undefined) {
+          return `${key} 'none'`;
+        } else {
+          // Convert other types to string
+          return `${key} ${String(value)}`;
+        }
+      })
       .join('; ');
 
     res.setHeader('Content-Security-Policy', cspHeader);
