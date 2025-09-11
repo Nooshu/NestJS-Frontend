@@ -36,8 +36,6 @@ export class HtmlCacheMiddleware implements NestMiddleware {
       // Set cache headers for HTML pages
       // Using shorter cache duration for HTML as suggested by the AI
       res.set('Cache-Control', 'public, max-age=60, stale-while-revalidate=30');
-      
-      console.log(`🚀 HTML Cache Middleware: Setting cache headers for HTML response to ${req.path}`);
     }
     
     next();
