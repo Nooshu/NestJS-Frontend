@@ -32,6 +32,14 @@ services:
         value: false
       - key: DB_LOGGING
         value: false
+      - key: STATIC_CACHE_MAX_AGE
+        value: 31536000
+      - key: STATIC_CACHE_STALE_WHILE_REVALIDATE
+        value: 2592000
+      - key: PAGE_CACHE_MAX_AGE
+        value: 86400
+      - key: PAGE_CACHE_STALE_WHILE_REVALIDATE
+        value: 3600
     healthCheckPath: /health
     autoDeploy: true
     branch: main

@@ -17,6 +17,7 @@ import { CoreModule } from './core/core.module';
 import { LoggerModule } from './logger/logger.module';
 import { CspReportController } from './shared/controllers/csp-report.controller';
 import { CacheMiddleware } from './shared/middleware/cache.middleware';
+import { CacheOverrideMiddleware } from './shared/middleware/cache-override.middleware';
 import { CompressionMiddleware } from './shared/middleware/compression.middleware';
 import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
 import { ErrorMiddleware } from './shared/middleware/error.middleware';
@@ -101,6 +102,13 @@ export class AppModule {
      * Applied to all GET routes to enable response caching
      */
     consumer.apply(CacheMiddleware).forRoutes({ path: '*path', method: RequestMethod.GET });
+
+    /**
+     * Cache Override Middleware
+     * Applied AFTER cache middleware to ensure static assets get proper cache headers
+     * This middleware specifically targets static assets and overrides any existing cache headers
+     */
+    consumer.apply(CacheOverrideMiddleware).forRoutes({ path: '*path', method: RequestMethod.GET });
 
     /**
      * CSRF Protection Middleware
