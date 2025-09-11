@@ -16,7 +16,6 @@ import { AppCacheModule } from './cache/cache.module';
 import { CoreModule } from './core/core.module';
 import { LoggerModule } from './logger/logger.module';
 import { CspReportController } from './shared/controllers/csp-report.controller';
-import { CacheMiddleware } from './shared/middleware/cache.middleware';
 import { CacheOverrideMiddleware } from './shared/middleware/cache-override.middleware';
 import { CompressionMiddleware } from './shared/middleware/compression.middleware';
 import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
