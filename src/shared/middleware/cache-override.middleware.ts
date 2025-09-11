@@ -27,14 +27,15 @@ export class CacheOverrideMiddleware implements NestMiddleware {
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
       res.setHeader('Vary', 'Accept-Encoding');
       
-      // Log for debugging
-      console.log(`Cache Override: Setting cache headers for ${req.path}`);
+      // Log for debugging - this should appear in Render logs
+      console.log(`🚀 Cache Override: Setting cache headers for ${req.path}`);
+      console.log(`🚀 Headers set: Cache-Control=public, max-age=31536000, immutable, stale-while-revalidate=2592000`);
     } else if (this.isHtmlPage(req.path)) {
       // Set cache headers for HTML pages
       res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600');
       res.setHeader('Vary', 'Accept-Encoding');
       
-      console.log(`Cache Override: Setting page cache headers for ${req.path}`);
+      console.log(`🚀 Cache Override: Setting page cache headers for ${req.path}`);
     }
 
     next();
