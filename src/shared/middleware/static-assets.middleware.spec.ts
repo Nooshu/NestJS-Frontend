@@ -158,7 +158,7 @@ describe('StaticAssetsMiddleware', () => {
       
       expect(mockExistsSync).toHaveBeenCalled();
       expect(mockStat).toHaveBeenCalled();
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=86400, immutable');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
     });
 
     it('should find file in govuk-frontend dist directory', async () => {
@@ -248,7 +248,7 @@ describe('StaticAssetsMiddleware', () => {
     it('should set correct cache headers', async () => {
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
       
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=86400, immutable');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('ETag', '"/test.css"');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Last-Modified', 'Sun, 01 Jan 2023 12:00:00 GMT');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Length', 2048);

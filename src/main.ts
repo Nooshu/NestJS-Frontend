@@ -204,8 +204,8 @@ async function bootstrap() {
           etag: true,
           lastModified: true,
           setHeaders: (res: any) => {
-            // Set Cache-Control with immutable flag for fingerprinted assets
-            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+            // Set Cache-Control with immutable flag and stale-while-revalidate for fingerprinted assets
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
           },
         };
 

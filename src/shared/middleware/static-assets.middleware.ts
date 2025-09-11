@@ -56,7 +56,7 @@ export class StaticAssetsMiddleware implements NestMiddleware {
 
       // Set cache headers
       const staticOptions = performanceConfig.staticAssets;
-      res.setHeader('Cache-Control', 'public, max-age=86400, immutable');
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
       if (staticOptions.etag) {
         res.setHeader('ETag', `"${hashedPath}"`);
       }
