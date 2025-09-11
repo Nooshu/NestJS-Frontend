@@ -108,7 +108,7 @@ export class AppModule {
      * Applied AFTER cache middleware to ensure static assets get proper cache headers
      * This middleware specifically targets static assets and overrides any existing cache headers
      */
-    consumer.apply(CacheOverrideMiddleware).forRoutes({ path: '*', method: RequestMethod.GET });
+    consumer.apply(CacheOverrideMiddleware).forRoutes('*');
 
     /**
      * CSRF Protection Middleware
