@@ -7,14 +7,9 @@ import type { Express } from 'express';
  * @param {Express} app - The Express.js application instance
  */
 export function setupRoutes(app: Express) {
-  // Example route setup - this should be expanded based on your actual routes
-  app.get('/', (_req, res) => {
-    res.render('index', {
-      title: 'GOV.UK Frontend with Express.js',
-      serviceName: 'Example Service',
-    });
-  });
-
+  // Note: Root route (/) is handled by NestJS AppController
+  // This function is kept for future Express-specific routes if needed
+  
   // Add more routes here
   // Example:
   // app.get('/example', (req, res) => {
