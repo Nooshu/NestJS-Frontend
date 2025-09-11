@@ -10,6 +10,9 @@ export function setupRoutes(app: Express) {
   // Note: Root route (/) is handled by NestJS AppController
   // This function is kept for future Express-specific routes if needed
   
+  // Suppress unused parameter warning since this function is called but currently empty
+  void app;
+  
   // Add more routes here
   // Example:
   // app.get('/example', (req, res) => {
