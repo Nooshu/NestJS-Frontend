@@ -37,15 +37,8 @@ export class CacheOverrideMiddleware implements NestMiddleware {
       console.log(`🚀 Headers set: Cache-Control=public, max-age=31536000, immutable, stale-while-revalidate=2592000`);
     } else if (isHtmlPage) {
       // Set cache headers for HTML pages (including root route)
-      // Use res.writeHead to ensure headers are set at the right time
-      const originalWriteHead = res.writeHead;
-      res.writeHead = function(statusCode: number, statusMessage?: string | any, headers?: any) {
-        headers = headers || {};
-        headers['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=3600';
-        headers['Vary'] = 'Accept-Encoding';
-        console.log(`🔥 WRITEHEAD Override: Setting cache headers for HTML page ${req.path}`);
-        return originalWriteHead.call(this, statusCode, statusMessage, headers);
-      };
+      res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600');
+      res.setHeader('Vary', 'Accept-Encoding');
       
       console.log(`🚀 Cache Override: Setting page cache headers for HTML page ${req.path}`);
       console.log(`🚀 Headers set: Cache-Control=public, max-age=86400, stale-while-revalidate=3600`);
