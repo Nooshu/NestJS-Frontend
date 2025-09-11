@@ -29,7 +29,7 @@ export class PerformanceConfig {
       etag: true,
       lastModified: true,
       setHeaders: (res: any) => {
-        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+        res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
       },
     };
   }
@@ -77,7 +77,7 @@ export const performanceConfig = {
     etag: true,
     lastModified: true,
     setHeaders: (res: any) => {
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
     },
   } as ServeStaticOptions,
 
@@ -102,18 +102,18 @@ export const performanceConfig = {
    * improves perceived performance while ensuring content is kept up-to-date.
    *
    * Different caching strategies are applied based on resource type:
-   * - Static assets (CSS, JS, images): Longer cache with longer stale-while-revalidate
-   * - Dynamic pages: Shorter cache with shorter stale-while-revalidate
+   * - Static assets (CSS, JS, images): Very long cache with long stale-while-revalidate
+   * - HTML pages: Longer cache with moderate stale-while-revalidate
    */
   browserCache: {
-    maxAge: 3600, // Default cache duration: 1 hour in seconds
+    maxAge: 86400, // Default cache duration: 1 day in seconds
     staticAssets: {
-      maxAge: 604800, // 7 days in seconds
-      staleWhileRevalidate: 86400, // 1 day in seconds
+      maxAge: 2592000, // 30 days in seconds (increased from 7 days)
+      staleWhileRevalidate: 604800, // 7 days in seconds (increased from 1 day)
     },
     pages: {
-      maxAge: 3600, // 1 hour in seconds
-      staleWhileRevalidate: 60, // 1 minute in seconds
+      maxAge: 86400, // 1 day in seconds (increased from 1 hour)
+      staleWhileRevalidate: 3600, // 1 hour in seconds (increased from 1 minute)
     },
     mustRevalidate: true,
   },
