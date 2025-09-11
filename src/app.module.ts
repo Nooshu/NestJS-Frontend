@@ -101,14 +101,14 @@ export class AppModule {
      * Cache Middleware
      * Applied to all GET routes to enable response caching
      */
-    consumer.apply(CacheMiddleware).forRoutes({ path: '*path', method: RequestMethod.GET });
+    consumer.apply(CacheMiddleware).forRoutes({ path: '*', method: RequestMethod.GET });
 
     /**
      * Cache Override Middleware
      * Applied AFTER cache middleware to ensure static assets get proper cache headers
      * This middleware specifically targets static assets and overrides any existing cache headers
      */
-    consumer.apply(CacheOverrideMiddleware).forRoutes({ path: '*path', method: RequestMethod.GET });
+    consumer.apply(CacheOverrideMiddleware).forRoutes({ path: '*', method: RequestMethod.GET });
 
     /**
      * CSRF Protection Middleware
