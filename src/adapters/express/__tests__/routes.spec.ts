@@ -26,27 +26,12 @@ describe('routes.ts', () => {
   });
 
   describe('setupRoutes', () => {
-    it('should call app.get to set up the root route', () => {
-      // This will cover line 9 (function execution) and line 11 (app.get call)
+    it('should not set up the root route (handled by NestJS)', () => {
+      // This will cover line 9 (function execution) but should not call app.get for root route
       setupRoutes(mockApp as Express);
 
-      expect(mockApp.get).toHaveBeenCalledWith('/', expect.any(Function));
-    });
-
-    it('should render index template with correct data when root route is accessed', () => {
-      // Set up the route
-      setupRoutes(mockApp as Express);
-
-      // Get the route handler that was registered
-      const routeHandler = (mockApp.get as jest.Mock).mock.calls[0][1];
-
-      // Call the route handler - this will cover line 12 and the res.render call
-      routeHandler(mockReq as Request, mockRes as Response);
-
-      expect(mockRes.render).toHaveBeenCalledWith('index', {
-        title: 'GOV.UK Frontend with Express.js',
-        serviceName: 'Example Service',
-      });
+      // Should not call app.get for root route since it's handled by NestJS AppController
+      expect(mockApp.get).not.toHaveBeenCalledWith('/', expect.any(Function));
     });
 
     it('should accept Express app as parameter', () => {
