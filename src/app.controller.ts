@@ -8,7 +8,7 @@
  * @requires @nestjs/common
  */
 
-import { Controller, Get, Render } from '@nestjs/common';
+import { Controller, Get, Render, Header } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 /**
@@ -48,6 +48,8 @@ export class AppController {
     description: 'Renders the home page with GOV.UK Frontend template.',
   })
   @Get()
+  @Header('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600')
+  @Header('Vary', 'Accept-Encoding')
   @Render('index')
   getIndex() {
     return {
