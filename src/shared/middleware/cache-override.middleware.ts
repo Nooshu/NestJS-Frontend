@@ -38,6 +38,23 @@ export class CacheOverrideMiddleware implements NestMiddleware {
       console.log(`🚀 Cache Override: Setting page cache headers for ${req.path}`);
     }
 
+    // Use res.writeHead to ensure headers are set before any response is sent
+    const originalWriteHead = res.writeHead;
+    res.writeHead = function(statusCode: number, statusMessage?: string | any, headers?: any) {
+      if (isStaticAsset) {
+        headers = headers || {};
+        headers['Cache-Control'] = 'public, max-age=31536000, immutable, stale-while-revalidate=2592000';
+        headers['Vary'] = 'Accept-Encoding';
+        console.log(`🔥 WRITEHEAD Override: Setting cache headers for ${req.path}`);
+      } else if (this.isHtmlPage(req.path)) {
+        headers = headers || {};
+        headers['Cache-Control'] = 'public, max-age=86400, stale-while-revalidate=3600';
+        headers['Vary'] = 'Accept-Encoding';
+        console.log(`🔥 WRITEHEAD Override: Setting page cache headers for ${req.path}`);
+      }
+      return originalWriteHead.call(this, statusCode, statusMessage, headers);
+    }.bind(this);
+
     next();
   }
 

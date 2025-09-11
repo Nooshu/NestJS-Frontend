@@ -18,7 +18,6 @@ import { LoggerModule } from './logger/logger.module';
 import { CspReportController } from './shared/controllers/csp-report.controller';
 import { CacheMiddleware } from './shared/middleware/cache.middleware';
 import { CacheOverrideMiddleware } from './shared/middleware/cache-override.middleware';
-import { FinalCacheOverrideMiddleware } from './shared/middleware/final-cache-override.middleware';
 import { CompressionMiddleware } from './shared/middleware/compression.middleware';
 import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
 import { ErrorMiddleware } from './shared/middleware/error.middleware';
@@ -125,11 +124,5 @@ export class AppModule {
       )
       .forRoutes({ path: '*path', method: RequestMethod.ALL });
 
-    /**
-     * Final Cache Override Middleware
-     * Applied LAST to ensure it overrides any cache headers set by other middleware
-     * This middleware uses res.on('finish') to set headers just before response is sent
-     */
-    consumer.apply(FinalCacheOverrideMiddleware).forRoutes({ path: '*path', method: RequestMethod.GET });
   }
 }
