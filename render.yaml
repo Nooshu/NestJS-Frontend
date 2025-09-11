@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: nestjs-frontend
+    env: node
+    plan: starter
+    buildCommand: npm ci && npm run build:prod
+    startCommand: npm run start:render
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: LOG_LEVEL
+        value: info
+      - key: LOG_CONSOLE
+        value: true
+      - key: LOG_FILE
+        value: false
+      - key: CORS_ENABLED
+        value: true
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: CSRF_ENABLED
+        value: true
+      - key: CSP_ENABLED
+        value: true
+      - key: PERFORMANCE_ENABLED
+        value: true
+      - key: REDIS_ENABLED
+        value: false
+      - key: DB_SYNCHRONIZE
+        value: false
+      - key: DB_LOGGING
+        value: false
+    healthCheckPath: /health
+    autoDeploy: true
+    branch: main
+    rootDir: .
+    dockerfilePath: ./Dockerfile

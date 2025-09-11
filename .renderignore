@@ -1,0 +1,70 @@
+# Render.com ignore file
+# Files and directories to exclude from deployment
+
+# Development files
+.env
+.env.local
+.env.development
+.env.test
+*.log
+logs/
+coverage/
+temp-coverage/
+test-results/
+playwright-report/
+
+# Development dependencies and tools
+node_modules/.cache/
+.npm/
+.yarn/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Git files
+.git/
+.gitignore
+
+# Documentation and examples
+docs/
+tests-examples/
+examples/
+*.md
+!README.md
+
+# Scripts that aren't needed in production
+scripts/test-*.sh
+scripts/setup-docker.sh
+scripts/prepare-docker.sh
+scripts/validate-docker.sh
+
+# Docker files (using Render's build process)
+Dockerfile
+Dockerfile.render
+docker-compose.yml
+
+# Test files
+test/
+tests/
+*.spec.ts
+*.test.ts
+jest.config.js
+playwright.config.ts
+
+# Development configuration
+tsconfig.json.backup
+postcss.config.js
+renovate.json
