@@ -23,6 +23,10 @@ export class CacheOverrideMiddleware implements NestMiddleware {
     const isStaticAsset = this.isStaticAsset(req.path);
     const isHtmlPage = this.isHtmlPage(req.path);
     
+    // Enhanced debugging - log all requests
+    console.log(`🔍 Cache Override Middleware: ${req.method} ${req.path}`);
+    console.log(`🔍 isStaticAsset: ${isStaticAsset}, isHtmlPage: ${isHtmlPage}`);
+    
     if (isStaticAsset) {
       // Override any existing cache headers for static assets
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
