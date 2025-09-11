@@ -16,7 +16,7 @@ import { AppCacheModule } from './cache/cache.module';
 import { CoreModule } from './core/core.module';
 import { LoggerModule } from './logger/logger.module';
 import { CspReportController } from './shared/controllers/csp-report.controller';
-import { CacheOverrideMiddleware } from './shared/middleware/cache-override.middleware';
+import { HtmlCacheMiddleware } from './shared/middleware/html-cache.middleware';
 import { CompressionMiddleware } from './shared/middleware/compression.middleware';
 import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
 import { ErrorMiddleware } from './shared/middleware/error.middleware';
@@ -97,11 +97,11 @@ export class AppModule {
     consumer.apply(CompressionMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
 
     /**
-     * Cache Override Middleware
-     * Applied to all routes to handle caching for both static assets and HTML pages
-     * This middleware replaces the need for CacheMiddleware
+     * HTML Cache Middleware
+     * Applied to all routes to set appropriate cache headers for HTML responses
+     * This middleware works with Render's Cloudflare edge caching rules
      */
-    consumer.apply(CacheOverrideMiddleware).forRoutes('*');
+    consumer.apply(HtmlCacheMiddleware).forRoutes('*');
 
     /**
      * CSRF Protection Middleware
