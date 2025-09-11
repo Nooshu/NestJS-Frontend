@@ -21,6 +21,7 @@ export class CacheOverrideMiddleware implements NestMiddleware {
 
     // Check if this is a static asset
     const isStaticAsset = this.isStaticAsset(req.path);
+    const isHtmlPage = this.isHtmlPage(req.path);
     
     if (isStaticAsset) {
       // Override any existing cache headers for static assets
@@ -28,14 +29,17 @@ export class CacheOverrideMiddleware implements NestMiddleware {
       res.setHeader('Vary', 'Accept-Encoding');
       
       // Log for debugging - this should appear in Render logs
-      console.log(`🚀 Cache Override: Setting cache headers for ${req.path}`);
+      console.log(`🚀 Cache Override: Setting cache headers for static asset ${req.path}`);
       console.log(`🚀 Headers set: Cache-Control=public, max-age=31536000, immutable, stale-while-revalidate=2592000`);
-    } else if (this.isHtmlPage(req.path)) {
-      // Set cache headers for HTML pages
+    } else if (isHtmlPage) {
+      // Set cache headers for HTML pages (including root route)
       res.setHeader('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600');
       res.setHeader('Vary', 'Accept-Encoding');
       
-      console.log(`🚀 Cache Override: Setting page cache headers for ${req.path}`);
+      console.log(`🚀 Cache Override: Setting page cache headers for HTML page ${req.path}`);
+      console.log(`🚀 Headers set: Cache-Control=public, max-age=86400, stale-while-revalidate=3600`);
+    } else {
+      console.log(`🚀 Cache Override: No cache headers set for ${req.path} (not static asset or HTML page)`);
     }
 
     next();
@@ -55,7 +59,6 @@ export class CacheOverrideMiddleware implements NestMiddleware {
     // Check if this is an HTML page (not API routes)
     return !path.startsWith('/api') && 
            !path.startsWith('/health') && 
-           !path.includes('.') && 
-           path !== '/';
+           !path.includes('.');
   }
 }
