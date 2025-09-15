@@ -5,13 +5,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      target: production
+      target: development
       args:
-        - NODE_ENV=production
+        - NODE_ENV=development
     ports:
       - "3100:3100"
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
       - PORT=3100
     restart: unless-stopped
     healthcheck:

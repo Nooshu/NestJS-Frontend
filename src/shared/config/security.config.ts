@@ -14,12 +14,14 @@ export class SecurityConfig {
   }
 
   get csrf() {
+    const isDevelopment = this.configService.get<string>('NODE_ENV') !== 'production';
+    
     return {
       enabled: this.configService.get<boolean>('security.csrf.enabled') ?? true,
       cookieName: this.configService.get<string>('security.csrf.cookieName') ?? 'XSRF-TOKEN',
       cookieOptions: {
         httpOnly: this.configService.get<boolean>('security.csrf.cookieOptions.httpOnly') ?? true,
-        secure: this.configService.get<boolean>('security.csrf.cookieOptions.secure') ?? true,
+        secure: isDevelopment ? false : (this.configService.get<boolean>('security.csrf.cookieOptions.secure') ?? true),
         sameSite:
           this.configService.get<string>('security.csrf.cookieOptions.sameSite') ?? 'strict',
       },
@@ -44,26 +46,28 @@ export class SecurityConfig {
   }
 
   get helmet(): HelmetOptions {
+    const isDevelopment = this.configService.get<string>('NODE_ENV') !== 'production';
+    
     return {
       contentSecurityPolicy: this.csp.enabled
         ? {
             directives: this.csp.directives,
           }
         : false,
-      crossOriginEmbedderPolicy: true,
-      crossOriginOpenerPolicy: true,
+      crossOriginEmbedderPolicy: !isDevelopment,
+      crossOriginOpenerPolicy: !isDevelopment,
       crossOriginResourcePolicy: { policy: 'same-site' },
       dnsPrefetchControl: { allow: false },
       frameguard: { action: 'deny' },
       hidePoweredBy: true,
-      hsts: {
+      hsts: isDevelopment ? false : {
         maxAge: 31536000,
         includeSubDomains: true,
         preload: true,
       },
       ieNoOpen: true,
       noSniff: true,
-      originAgentCluster: true,
+      originAgentCluster: !isDevelopment,
       permittedCrossDomainPolicies: { permittedPolicies: 'none' },
       referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
       xssFilter: true,

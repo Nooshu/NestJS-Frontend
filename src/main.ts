@@ -248,7 +248,10 @@ async function bootstrap() {
   const port = process.env.PORT || 3100;
   const host = process.env.HOST || '0.0.0.0';
   await app.listen(port, host);
-  logger.info(`Application is running on: http://${host}:${port}`);
+  
+  // Display localhost for better user experience, even though we bind to 0.0.0.0 for Docker
+  const displayHost = host === '0.0.0.0' ? 'localhost' : host;
+  logger.info(`Application is running on: http://${displayHost}:${port}`);
 }
 
 /**
