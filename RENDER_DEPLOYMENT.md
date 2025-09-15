@@ -155,6 +155,24 @@ By default, Render automatically redeploys when you push to your main branch. Yo
 - Configure appropriate cache headers
 - Monitor performance metrics in Render dashboard
 
+### Compression Configuration
+
+The application is configured to exclude binary assets from compression to optimize performance:
+
+**Excluded from compression:**
+- Images: `.jpg`, `.jpeg`, `.png`, `.gif`, `.svg`, `.ico`, `.webp`, `.avif`, `.bmp`, `.tiff`
+- Fonts: `.woff`, `.woff2`, `.ttf`, `.eot`, `.otf`
+- Media: `.mp4`, `.mp3`, `.wav`, `.avi`, `.mov`
+- Archives: `.pdf`, `.zip`, `.gz`, `.tar`, `.rar`, `.7z`
+
+**Compression settings:**
+- Level: 6 (balanced between speed and compression ratio)
+- Threshold: 1KB (only compress responses larger than 1KB)
+- Filter: Automatically excludes binary assets based on file extension and MIME type
+
+**Render.com Brotli Compression:**
+Render.com automatically applies Brotli compression to all responses. While you cannot disable this at the platform level, the application-level compression filter ensures that binary assets are not double-compressed, which can degrade performance and quality.
+
 ## Support
 
 - Render Documentation: https://render.com/docs
