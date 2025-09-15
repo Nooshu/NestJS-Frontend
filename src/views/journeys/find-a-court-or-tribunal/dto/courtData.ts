@@ -192,7 +192,7 @@ export const courtsData: Record<string, Court> = {
       },
     ],
     image: {
-      url: '/assets/images/courtImages/manchesterCrownCourt.jpg',
+      url: '/assets/images/courtImages/manchester-crown-court.jpg',
       alt: 'Manchester Crown Court (Minshull St) exterior',
     },
     handles: [
@@ -279,7 +279,7 @@ export const courtsData: Record<string, Court> = {
       },
     ],
     image: {
-      url: '/assets/images/courtImages/birminghamCrownCourt.jpg',
+      url: '/assets/images/courtImages/birmingham-crown-court.jpg',
       alt: 'Birmingham Crown Court exterior',
     },
     handles: [
@@ -385,7 +385,7 @@ export const courtsData: Record<string, Court> = {
       },
     ],
     image: {
-      url: '/assets/images/courtImages/londonCrownCourt.jpg',
+      url: '/assets/images/courtImages/inner_london_crown_court.jpg',
       alt: 'Inner London Crown Court exterior',
     },
     handles: [
