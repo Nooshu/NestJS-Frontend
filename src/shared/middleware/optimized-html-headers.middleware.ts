@@ -47,11 +47,11 @@ export class OptimizedHtmlHeadersMiddleware implements NestMiddleware {
    */
   private isHtmlResponse(req: Request, res: Response): boolean {
     // Check if request accepts HTML
-    const acceptsHtml = req.accepts('html');
+    const acceptsHtml = Boolean(req.accepts('html'));
     
     // Check if response will be HTML (based on content-type)
     const contentType = res.getHeader('content-type') as string;
-    const isHtmlContentType = contentType?.includes('text/html');
+    const isHtmlContentType = Boolean(contentType?.includes('text/html'));
     
     // Check if this is likely an HTML page route (not API, health, or static assets)
     const path = req.path || '';
@@ -125,7 +125,7 @@ export class OptimizedHtmlHeadersMiddleware implements NestMiddleware {
           const etag = createHash('md5').update(content).digest('hex');
           res.setHeader('ETag', `"${etag}"`);
         }
-        originalEnd.call(this, chunk, encoding);
+        return originalEnd.call(this, chunk, encoding);
       };
     }
   }
