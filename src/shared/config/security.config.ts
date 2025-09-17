@@ -33,14 +33,13 @@ export class SecurityConfig {
       enabled: this.configService.get<boolean>('security.csp.enabled') ?? true,
       directives: this.configService.get<any>('security.csp.directives') ?? {
         defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", 'https:', 'data:'],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        imgSrc: ["'self'", 'data:', 'https:'],
-        connectSrc: ["'self'"],
-        fontSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        fontSrc: ["'self'", 'https:'],
         objectSrc: ["'none'"],
-        mediaSrc: ["'self'"],
-        frameSrc: ["'none'"],
+        frameAncestors: ["'self'"],
+        upgradeInsecureRequests: [],
       },
     };
   }

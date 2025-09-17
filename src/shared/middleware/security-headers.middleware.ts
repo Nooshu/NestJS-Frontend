@@ -22,45 +22,14 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
     // Enable XSS filter in browsers (deprecated but still useful for older browsers)
     res.setHeader('X-XSS-Protection', '1; mode=block');
 
-    // Enhanced Permissions Policy with more comprehensive restrictions
-    const permissionsPolicy = [
-      'accelerometer=()',
-      'ambient-light-sensor=()',
-      'autoplay=()',
-      'battery=()',
-      'camera=()',
-      'cross-origin-isolated=()',
-      'display-capture=()',
-      'document-domain=()',
-      'encrypted-media=()',
-      'execution-while-not-rendered=()',
-      'execution-while-out-of-viewport=()',
-      'fullscreen=()',
-      'geolocation=()',
-      'gyroscope=()',
-      'keyboard-map=()',
-      'magnetometer=()',
-      'microphone=()',
-      'midi=()',
-      'navigation-override=()',
-      'payment=()',
-      'picture-in-picture=()',
-      'publickey-credentials-get=()',
-      'screen-wake-lock=()',
-      'sync-xhr=()',
-      'usb=()',
-      'web-share=()',
-      'xr-spatial-tracking=()'
-    ].join(', ');
-
+    // Permissions Policy - simplified to match requirements
+    const permissionsPolicy = 'geolocation=(), microphone=(), camera=()';
     res.setHeader('Permissions-Policy', permissionsPolicy);
 
     // Referrer Policy for better privacy
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
 
     // Cross-Origin policies
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
     res.setHeader('Cross-Origin-Resource-Policy', 'same-site');
 
     // Prevent IE from executing downloads in your site's context
