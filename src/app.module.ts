@@ -16,7 +16,7 @@ import { AppCacheModule } from './cache/cache.module';
 import { CoreModule } from './core/core.module';
 import { LoggerModule } from './logger/logger.module';
 import { CspReportController } from './shared/controllers/csp-report.controller';
-import { HtmlCacheMiddleware } from './shared/middleware/html-cache.middleware';
+import { OptimizedHtmlHeadersMiddleware } from './shared/middleware/optimized-html-headers.middleware';
 import { CompressionMiddleware } from './shared/middleware/compression.middleware';
 import { CsrfMiddleware } from './shared/middleware/csrf.middleware';
 import { ErrorMiddleware } from './shared/middleware/error.middleware';
@@ -97,11 +97,11 @@ export class AppModule {
     consumer.apply(CompressionMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
 
     /**
-     * HTML Cache Middleware
-     * Applied to all routes to set appropriate cache headers for HTML responses
-     * This middleware works with Render's Cloudflare edge caching rules
+     * Optimized HTML Headers Middleware
+     * Applied to all routes to set optimized headers for HTML responses
+     * This middleware consolidates all TTFB optimization headers in one place
      */
-    consumer.apply(HtmlCacheMiddleware).forRoutes('*');
+    consumer.apply(OptimizedHtmlHeadersMiddleware).forRoutes('*');
 
     /**
      * CSRF Protection Middleware

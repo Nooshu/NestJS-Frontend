@@ -13,10 +13,15 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
   }
 
   use(req: Request, res: Response, next: NextFunction) {
-    // Prevent clickjacking
+    // Skip HTML responses as they are handled by OptimizedHtmlHeadersMiddleware
+    if (this.isHtmlResponse(req, res)) {
+      return next();
+    }
+
+    // Prevent clickjacking for non-HTML responses
     res.setHeader('X-Frame-Options', 'DENY');
 
-    // Prevent MIME type sniffing
+    // Prevent MIME type sniffing for non-HTML responses
     res.setHeader('X-Content-Type-Options', 'nosniff');
 
     // Enable XSS filter in browsers (deprecated but still useful for older browsers)
@@ -76,8 +81,8 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
       }
     }
 
-    // Enhanced CSP for HTML responses
-    if ((req.path && req.path.endsWith('.html')) || req.accepts('html')) {
+    // Enhanced CSP for non-HTML responses
+    if (!this.isHtmlResponse(req, res)) {
       const cspConfig = this.securityConfig.csp;
       if (cspConfig.enabled) {
         const cspDirectives = Object.entries(cspConfig.directives)
@@ -100,6 +105,32 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
     }
 
     next();
+  }
+
+  private isHtmlResponse(req: Request, res: Response): boolean {
+    // Check if request accepts HTML
+    const acceptsHtml = req.accepts('html');
+    
+    // Check if response will be HTML (based on content-type)
+    const contentType = res.getHeader('content-type') as string;
+    const isHtmlContentType = contentType?.includes('text/html');
+    
+    // Check if this is likely an HTML page route (not API, health, or static assets)
+    const path = req.path || '';
+    const isHtmlRoute = !path.startsWith('/api') && 
+                       !path.startsWith('/health') && 
+                       !this.isStaticAsset(path) &&
+                       !path.includes('.') &&
+                       !path.startsWith('/auth') &&
+                       !path.startsWith('/login') &&
+                       !path.startsWith('/logout') &&
+                       !path.startsWith('/admin') &&
+                       !path.startsWith('/dashboard') &&
+                       !path.startsWith('/profile') &&
+                       !path.startsWith('/settings') &&
+                       !path.startsWith('/account');
+    
+    return acceptsHtml || isHtmlContentType || isHtmlRoute;
   }
 
   private isSensitiveRoute(path: string): boolean {

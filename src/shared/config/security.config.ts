@@ -48,27 +48,29 @@ export class SecurityConfig {
     const isDevelopment = this.configService.get<string>('NODE_ENV') !== 'production';
     
     return {
-      contentSecurityPolicy: this.csp.enabled
-        ? {
-            directives: this.csp.directives,
-          }
-        : false,
+      // Disable CSP as it's now handled by OptimizedHtmlHeadersMiddleware
+      contentSecurityPolicy: false,
       crossOriginEmbedderPolicy: !isDevelopment,
       crossOriginOpenerPolicy: !isDevelopment,
-      crossOriginResourcePolicy: { policy: 'same-site' },
+      // Disable CORP as it's now handled by OptimizedHtmlHeadersMiddleware
+      crossOriginResourcePolicy: false,
       dnsPrefetchControl: { allow: false },
-      frameguard: { action: 'deny' },
+      // Disable frameguard as it's now handled by OptimizedHtmlHeadersMiddleware
+      frameguard: false,
       hidePoweredBy: true,
       hsts: isDevelopment ? false : {
         maxAge: 31536000,
         includeSubDomains: true,
         preload: true,
       },
-      ieNoOpen: true,
-      noSniff: true,
+      // Disable ieNoOpen as it's now handled by OptimizedHtmlHeadersMiddleware
+      ieNoOpen: false,
+      // Disable noSniff as it's now handled by OptimizedHtmlHeadersMiddleware
+      noSniff: false,
       originAgentCluster: !isDevelopment,
       permittedCrossDomainPolicies: { permittedPolicies: 'none' },
-      referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+      // Disable referrerPolicy as it's now handled by OptimizedHtmlHeadersMiddleware
+      referrerPolicy: false,
       xssFilter: true,
     };
   }

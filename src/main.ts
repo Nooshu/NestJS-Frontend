@@ -121,36 +121,7 @@ async function bootstrap() {
    */
   app.use(helmet(securityConfig.helmet));
 
-  // Add custom headers middleware
-  app.use((_req: any, res: any, next: any) => {
-    // Permissions-Policy header (not supported by Helmet)
-    res.setHeader('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-    
-    // Custom cache control for HTML responses
-    if (res.getHeader('content-type')?.includes('text/html')) {
-      res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=3600');
-    }
-    
-    // HTTP/3 support
-    res.setHeader('Alt-Svc', 'h3=":443"; ma=86400');
-    
-    // Resource priority hint
-    res.setHeader('Priority', 'u=0');
-    
-    // Generate ETag for responses that don't have one
-    const originalEnd = res.end;
-    res.end = function(chunk: any, encoding?: any) {
-      if (!res.getHeader('etag')) {
-        const crypto = require('crypto');
-        const content = chunk ? chunk.toString() : '';
-        const etag = crypto.createHash('md5').update(content).digest('hex');
-        res.setHeader('ETag', `"${etag}"`);
-      }
-      originalEnd.call(this, chunk, encoding);
-    };
-    
-    next();
-  });
+  // Note: HTML headers are now handled by OptimizedHtmlHeadersMiddleware in AppModule
 
   /**
    * Performance Middleware Configuration
@@ -162,17 +133,7 @@ async function bootstrap() {
    */
   app.use(compression({
     ...performanceConfig.compression,
-    // Enable Brotli compression when available
-    filter: (req: any, res: any) => {
-      // Check if client supports Brotli
-      const acceptEncoding = req.headers['accept-encoding'] || '';
-      if (acceptEncoding.includes('br')) {
-        res.setHeader('Content-Encoding', 'br');
-      }
-      
-      // Use the original filter logic
-      return performanceConfig.compression.filter ? performanceConfig.compression.filter(req, res) : true;
-    }
+    // Note: Content-Encoding header is now handled by OptimizedHtmlHeadersMiddleware
   }));
 
   // Add cookie-parser middleware, required for csrf token storage
