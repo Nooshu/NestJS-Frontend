@@ -51,8 +51,9 @@
     "build:frontend:watch": "./filter-concurrently-output.sh concurrently --kill-others-on-fail --no-command-logs \"npm run watch:all\"",
     "build:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --style=compressed --load-path=node_modules",
     "build:scss:watch": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
-    "copy:assets": "npm-run-all copy:images copy:govuk-assets copy:govuk-dist copy:public-assets",
+    "copy:assets": "npm-run-all copy:images copy:js copy:govuk-assets copy:govuk-dist copy:public-assets",
     "copy:images": "cpy 'src/frontend/images/**/*' 'dist/public/images'",
+    "copy:js": "cpy 'src/frontend/js/**/*' 'dist/public/js'",
     "copy:govuk-assets": "cpy 'node_modules/govuk-frontend/govuk/assets/**/*' 'dist/public/assets'",
     "copy:govuk-dist": "cpy 'node_modules/govuk-frontend/dist/govuk/*.{css,js,css.map,js.map}' 'dist/public/govuk'",
     "copy:public-assets": "cpy 'src/public/**/*' 'dist/public'",
@@ -62,7 +63,7 @@
     "watch:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
     "fingerprint:assets": "ts-node -r tsconfig-paths/register src/cli/fingerprint-assets.ts",
     "test:e2e:all": "playwright test",
-    "build:frontend:dev": "npm run build:scss && npm run copy:images && npm run copy:govuk-assets && npm run copy:govuk-dist",
+    "build:frontend:dev": "npm run build:scss && npm run copy:images && npm run copy:js && npm run copy:govuk-assets && npm run copy:govuk-dist",
     "deploy:render": "./scripts/deploy-render.sh"
   },
   "keywords": [

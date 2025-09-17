@@ -272,9 +272,32 @@ export class FingerprintService {
       this.manifest[`css/${original}`] = `css/${fingerprinted}`;
     });
     
-    // Process JS files
-    const jsFiles = glob.sync(join(this.assetsDir, 'js', '**', '*.js'));
-    jsFiles.forEach(file => this.processFile(file));
+    // Process JS files from dist/public/js (already built and copied)
+    const jsFiles = glob.sync(join(this.publicDir, 'js', '*.js'));
+    jsFiles.forEach(file => {
+      const { fingerprinted } = this.fingerprintFilename(file);
+      const content = readFileSync(file);
+      
+      // Write the fingerprinted file
+      const fingerprintedPath = join(dirname(file), fingerprinted);
+      writeFileSync(fingerprintedPath, content);
+      
+      // Update manifest with both original and fingerprinted paths
+      const relativePath = relative(this.publicDir, file);
+      const fingerprintedRelativePath = relative(this.publicDir, fingerprintedPath);
+      
+      // Map the fingerprinted file to itself (for existing references)
+      this.manifest[relativePath] = fingerprintedRelativePath;
+      
+      // Map the original filename to the fingerprinted version (for template references)
+      const originalFilename = basename(file);
+      this.manifest[`js/${originalFilename}`] = fingerprintedRelativePath;
+      
+      // Special case: map js/main.js to the fingerprinted main.js file
+      if (originalFilename.startsWith('main.')) {
+        this.manifest['js/main.js'] = fingerprintedRelativePath;
+      }
+    });
     
     // Process images
     const imageFiles = glob.sync(join(this.assetsDir, 'images', '**', '*.*'));

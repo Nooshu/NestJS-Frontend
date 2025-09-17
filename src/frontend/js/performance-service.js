@@ -1,4 +1,4 @@
-import { performanceMonitor } from './performance-monitor';
+import { performanceMonitor } from './performance-monitor.js';
 
 /**
  * PerformanceService class for managing and reporting performance metrics.
@@ -15,18 +15,23 @@ class PerformanceService {
    */
   constructor() {
     this.metrics = {};
-    this.reportingEndpoint = process.env.PERFORMANCE_REPORTING_ENDPOINT || '/api/performance-metrics';
-    this.sampleRate = process.env.PERFORMANCE_SAMPLE_RATE || 1.0;
-    this.maxEntries = process.env.PERFORMANCE_MAX_ENTRIES || 100;
-    this.isReportingEnabled = process.env.NODE_ENV === 'production';
+    this.reportingEndpoint = '/api/performance-metrics';
+    this.sampleRate = 1.0;
+    this.maxEntries = 100;
+    this.isReportingEnabled = false; // Disable reporting in browser
+    this.isMonitoringEnabled = true; // Enable monitoring in all environments
   }
 
   // Initialize the performance service
   init() {
-    if (this.isReportingEnabled && Math.random() < this.sampleRate) {
+    if (this.isMonitoringEnabled && Math.random() < this.sampleRate) {
       performanceMonitor.init();
       this.setupMetricsCollection();
-      this.setupPeriodicReporting();
+      
+      // Only setup periodic reporting in production
+      if (this.isReportingEnabled) {
+        this.setupPeriodicReporting();
+      }
     }
   }
 
@@ -186,12 +191,14 @@ class PerformanceService {
    * @param {number} [config.sampleRate] - Rate at which to sample metrics (0-1)
    * @param {number} [config.maxEntries] - Maximum number of entries to store
    * @param {boolean} [config.isReportingEnabled] - Whether reporting is enabled
+   * @param {boolean} [config.isMonitoringEnabled] - Whether monitoring is enabled
    */
   setConfig(config) {
     this.reportingEndpoint = config.reportingEndpoint || this.reportingEndpoint;
     this.sampleRate = config.sampleRate || this.sampleRate;
     this.maxEntries = config.maxEntries || this.maxEntries;
     this.isReportingEnabled = config.isReportingEnabled ?? this.isReportingEnabled;
+    this.isMonitoringEnabled = config.isMonitoringEnabled ?? this.isMonitoringEnabled;
   }
 }
 

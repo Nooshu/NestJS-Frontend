@@ -1,33 +1,46 @@
-// Import GOV.UK Frontend
-import { initAll } from 'govuk-frontend';
-import { performanceMonitor } from './performance-monitor';
-import { performanceService } from './performance-service';
+// Import performance monitoring modules
+import { performanceMonitor } from './performance-monitor.js';
+import { performanceService } from './performance-service.js';
 
-// Initialize GOV.UK Frontend components
-initAll();
+// Initialize GOV.UK Frontend components (already loaded via script tag)
+// The initAll() is called in the HTML template
 
 // Initialize performance monitoring
-if (process.env.NODE_ENV === 'production') {
-  performanceService.init();
-  
-  // Example: Log performance metrics to console
-  performanceMonitor.addObserver((type, data) => {
-    console.log(`Performance metric - ${type}:`, data);
-  });
-}
+// Enable performance monitoring in all environments for development and testing
+performanceService.init();
 
-// Register service worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('ServiceWorker registration successful');
-      })
-      .catch(error => {
-        console.error('ServiceWorker registration failed:', error);
-      });
-  });
-}
+// Enable console output for all performance metrics
+performanceMonitor.setConfig({ enableConsoleOutput: true });
+
+// Log performance metrics to console with enhanced formatting
+performanceMonitor.addObserver((type, data) => {
+  if (type === 'coreWebVitalsReport') {
+    // The reportCoreWebVitals method already handles console output
+    return;
+  }
+  
+  // Log individual metrics as they come in
+  const emoji = {
+    navigation: '🧭',
+    resource: '📁',
+    longTask: '⏱️',
+    layoutShift: '📐',
+    firstInput: '👆',
+    largestContentfulPaint: '🎨',
+    cumulativeLayoutShift: '📊',
+    firstContentfulPaint: '🎯',
+    timeToInteractive: '⚡',
+    totalBlockingTime: '🚫',
+    memoryUsage: '💾',
+    bundleSize: '📦',
+    routeChange: '🔄',
+    userInteraction: '👆'
+  };
+  
+  console.log(`${emoji[type] || '📈'} ${type}:`, data);
+});
+
+// Service Worker registration removed - not needed for performance monitoring
 
 // Custom JavaScript functionality
 document.addEventListener('DOMContentLoaded', () => {
@@ -56,17 +69,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// Performance monitoring
-if (process.env.NODE_ENV === 'production') {
-  // Example: Basic performance monitoring
-  window.addEventListener('load', () => {
-    const timing = window.performance.timing;
-    const loadTime = timing.loadEventEnd - timing.navigationStart;
-    
-    // Log performance metrics
-    console.log('Page load time:', loadTime);
-    
-    // You could send this to your analytics service
-    // sendToAnalytics({ loadTime });
-  });
-} 
+// Performance monitoring is now handled by the enhanced PerformanceMonitor class above 

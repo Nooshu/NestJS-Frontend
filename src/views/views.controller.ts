@@ -99,4 +99,16 @@ export class ViewsController {
   missingComponents() {
     return { title: 'Missing Components' };
   }
+
+  /**
+   * Renders the performance metrics demo page
+   *
+   * @method performanceDemo
+   * @returns {Object} Template data with page title
+   */
+  @Get('performance-demo')
+  @Render('performance-demo')
+  performanceDemo() {
+    return { title: 'Performance Metrics Demo' };
+  }
 }

@@ -1,0 +1,134 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">Performance Metrics Demo</h1>
+    
+    <p class="govuk-body">
+      This page demonstrates the comprehensive performance metrics system. 
+      Open your browser's developer console to see the performance metrics being logged.
+    </p>
+
+    <div class="govuk-inset-text">
+      <p><strong>Core Web Vitals:</strong></p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>LCP (Largest Contentful Paint) - Time for largest content element to render</li>
+        <li>FID (First Input Delay) - Time from first user interaction to browser response</li>
+        <li>INP (Interaction to Next Paint) - Modern replacement for FID, measures interaction responsiveness</li>
+        <li>CLS (Cumulative Layout Shift) - Visual stability score</li>
+        <li>FCP (First Contentful Paint) - Time for first content to render</li>
+        <li>TTFB (Time to First Byte) - Server response time</li>
+      </ul>
+    </div>
+
+    <div class="govuk-inset-text">
+      <p><strong>Custom Application Metrics:</strong></p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>MemoryUsage - JavaScript heap memory usage in MB</li>
+        <li>BundleSize - Size of JavaScript bundles in bytes</li>
+        <li>RouteChange - Time for SPA route transitions in milliseconds</li>
+        <li>DOMContentLoaded - Time for DOM to be fully parsed</li>
+        <li>PageLoad - Complete page load time</li>
+        <li>UserInteraction - Custom tracking of user interactions (clicks, scrolls, etc.)</li>
+      </ul>
+    </div>
+
+    <h2 class="govuk-heading-l">Interactive Elements</h2>
+    
+    <p class="govuk-body">
+      Click the buttons below to trigger user interactions and see them tracked in the console:
+    </p>
+
+    <div class="govuk-button-group">
+      <button class="govuk-button" id="test-button-1" data-module="govuk-button">
+        Test Button 1
+      </button>
+      <button class="govuk-button govuk-button--secondary" id="test-button-2" data-module="govuk-button">
+        Test Button 2
+      </button>
+      <button class="govuk-button govuk-button--warning" id="test-button-3" data-module="govuk-button">
+        Test Button 3
+      </button>
+    </div>
+
+    <h2 class="govuk-heading-l">Memory Usage</h2>
+    
+    <p class="govuk-body">
+      Memory usage is monitored every 5 seconds. Check the console for updates.
+    </p>
+
+    <div class="govuk-inset-text">
+      <p><strong>Note:</strong> Memory usage monitoring requires Chrome/Chromium browsers with the <code>--enable-precise-memory-info</code> flag.</p>
+    </div>
+
+    <h2 class="govuk-heading-l">Route Change Testing</h2>
+    
+    <p class="govuk-body">
+      Navigate to other pages to test route change tracking:
+    </p>
+
+    <ul class="govuk-list">
+      <li><a href="/" class="govuk-link">Home</a></li>
+      <li><a href="/second-page" class="govuk-link">Second Page</a></li>
+      <li><a href="/third-page" class="govuk-link">Third Page</a></li>
+      <li><a href="/form-components" class="govuk-link">Form Components</a></li>
+    </ul>
+
+    <h2 class="govuk-heading-l">Console Output</h2>
+    
+    <p class="govuk-body">
+      The performance metrics will appear in your browser's console with the following format:
+    </p>
+
+    <pre class="govuk-body"><code>🚀 Performance Metrics Report
+📈 Core Web Vitals
+LCP: 1234ms - Largest Contentful Paint - Time for largest content element to render
+FID: 45ms - First Input Delay - Time from first user interaction to browser response
+INP: 45ms - Interaction to Next Paint - Modern replacement for FID, measures interaction responsiveness
+CLS: 0.1 - Cumulative Layout Shift - Visual stability score
+FCP: 800ms - First Contentful Paint - Time for first content to render
+TTFB: 200ms - Time to First Byte - Server response time
+
+⚙️ Custom Application Metrics
+MemoryUsage: 15MB - JavaScript heap memory usage
+BundleSize: 250KB - Size of JavaScript bundles
+RouteChange: 50ms - Time for SPA route transitions
+DOMContentLoaded: 300ms - Time for DOM to be fully parsed
+PageLoad: 1200ms - Complete page load time
+UserInteraction: 5 - Custom tracking of user interactions (clicks, scrolls, etc.)</code></pre>
+  </div>
+</div>
+
+<script>
+// Add some interactive elements for testing
+document.addEventListener('DOMContentLoaded', function() {
+  const buttons = document.querySelectorAll('[id^="test-button"]');
+  
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', function() {
+      console.log(`Test button ${index + 1} clicked!`);
+      
+      // Create some DOM changes to trigger layout shifts
+      const testDiv = document.createElement('div');
+      testDiv.style.height = '50px';
+      testDiv.style.backgroundColor = '#f0f0f0';
+      testDiv.style.margin = '10px 0';
+      testDiv.textContent = `Button ${index + 1} was clicked at ${new Date().toLocaleTimeString()}`;
+      
+      const targetElement = document.querySelector('.govuk-button-group');
+      if (targetElement) {
+        targetElement.appendChild(testDiv);
+        
+        // Remove the element after 3 seconds to simulate dynamic content
+        setTimeout(() => {
+          if (testDiv.parentNode) {
+            testDiv.parentNode.removeChild(testDiv);
+          }
+        }, 3000);
+      }
+    });
+  });
+});
+</script>
+{% endblock %}
