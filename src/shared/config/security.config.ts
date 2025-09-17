@@ -35,7 +35,7 @@ export class SecurityConfig {
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", 'https:', 'data:'],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"], // Temporarily allow inline scripts
         fontSrc: ["'self'", 'https:'],
         objectSrc: ["'none'"],
         frameAncestors: ["'self'"],

@@ -140,7 +140,7 @@ export default () => ({
         defaultSrc: ["'self'"],
         imgSrc: ["'self'", 'https:', 'data:'],
         styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
         fontSrc: ["'self'", 'https:'],
         objectSrc: ["'none'"],
         frameAncestors: ["'self'"],

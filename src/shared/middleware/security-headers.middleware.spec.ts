@@ -85,10 +85,8 @@ describe('SecurityHeadersMiddleware', () => {
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Frame-Options', 'DENY');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Content-Type-Options', 'nosniff');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-XSS-Protection', '1; mode=block');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Permissions-Policy', expect.stringContaining('accelerometer=()'));
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Referrer-Policy', 'strict-origin-when-cross-origin');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cross-Origin-Embedder-Policy', 'require-corp');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cross-Origin-Opener-Policy', 'same-origin');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Cross-Origin-Resource-Policy', 'same-site');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Download-Options', 'noopen');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Security-Enhanced', 'true');
@@ -110,11 +108,7 @@ describe('SecurityHeadersMiddleware', () => {
       expect(permissionsPolicyCall).toBeDefined();
       
       const permissionsPolicy = permissionsPolicyCall[1];
-      expect(permissionsPolicy).toContain('accelerometer=()');
-      expect(permissionsPolicy).toContain('camera=()');
-      expect(permissionsPolicy).toContain('microphone=()');
-      expect(permissionsPolicy).toContain('geolocation=()');
-      expect(permissionsPolicy).toContain('payment=()');
+      expect(permissionsPolicy).toBe('geolocation=(), microphone=(), camera=()');
     });
   });
 

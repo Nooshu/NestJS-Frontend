@@ -87,6 +87,11 @@ export class SecurityErrorFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
+    // Skip processing for excluded paths (browser-generated requests)
+    if (this.shouldExcludePath(request.url)) {
+      return;
+    }
+
     const secureError = this.sanitizeError(exception);
 
     // Log the error securely (without sensitive data)
@@ -98,12 +103,55 @@ export class SecurityErrorFilter implements ExceptionFilter {
       status: secureError.status,
     });
 
-    response.status(secureError.status).json({
-      statusCode: secureError.status,
-      message: secureError.message,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      stack: secureError.stack,
+    // Check if headers have already been sent to prevent "Cannot set headers after they are sent" error
+    if (!response.headersSent) {
+      response.status(secureError.status).json({
+        statusCode: secureError.status,
+        message: secureError.message,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        stack: secureError.stack,
+      });
+    } else {
+      // If headers are already sent, just log the error
+      console.error('Headers already sent, cannot send error response:', {
+        path: request.url,
+        method: request.method,
+        error: secureError.message,
+        status: secureError.status,
+      });
+    }
+  }
+
+  /**
+   * Determines if a given path should be excluded from error processing.
+   * This prevents unnecessary error handling for browser-generated requests.
+   *
+   * @private
+   * @param {string} path - The request path to check
+   * @returns {boolean} True if the path should be excluded, false otherwise
+   */
+  private shouldExcludePath(path: string): boolean {
+    const excludePaths = [
+      '/.well-known/appspecific/com.chrome.devtools.json',
+      '/favicon.ico',
+      '*.js.map',
+      '*.css.map'
+    ];
+
+    return excludePaths.some(pattern => {
+      // Handle exact matches
+      if (!pattern.includes('*')) {
+        return path === pattern;
+      }
+      
+      // Handle *.extension patterns
+      if (pattern.startsWith('*.')) {
+        const extension = pattern.slice(1);
+        return path.endsWith(extension);
+      }
+
+      return false;
     });
   }
 }
