@@ -45,7 +45,7 @@ describe('OptimizedHtmlHeadersMiddleware', () => {
         'Cache-Control',
         'public, max-age=0, s-maxage=86400, stale-while-revalidate=3600'
       );
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Encoding', 'br');
+      // Content-Encoding is now handled by compression middleware, not this middleware
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
       expect(mockResponse.setHeader).toHaveBeenCalledWith(
         'Content-Security-Policy',
@@ -102,12 +102,13 @@ describe('OptimizedHtmlHeadersMiddleware', () => {
       );
     });
 
-    it('should set Brotli encoding when supported', () => {
+    it('should not set Content-Encoding header (handled by compression middleware)', () => {
       mockRequest.headers = { 'accept-encoding': 'gzip, deflate, br' };
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
 
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Encoding', 'br');
+      // Content-Encoding is now handled by compression middleware, not this middleware
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('Content-Encoding', 'br');
     });
 
     it('should not set Brotli encoding when not supported', () => {
@@ -125,6 +126,16 @@ describe('OptimizedHtmlHeadersMiddleware', () => {
         'Content-Security-Policy',
         "default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' https:; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests"
       );
+    });
+
+    it('should NOT set legacy headers for HTML responses', () => {
+      middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
+
+      // Verify that legacy headers are NOT set for HTML responses
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-DNS-Prefetch-Control', 'off');
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-Permitted-Cross-Domain-Policies', 'none');
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-XSS-Protection', '0');
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-XSS-Protection', '1; mode=block');
     });
   });
 

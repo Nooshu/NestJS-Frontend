@@ -6,7 +6,6 @@
  * 
  * Headers set:
  * - Cache-Control: public, max-age=0, s-maxage=86400, stale-while-revalidate=3600
- * - Content-Encoding: br (when Brotli is supported)
  * - Vary: Accept-Encoding
  * - Content-Security-Policy: Comprehensive CSP for security
  * - Referrer-Policy: strict-origin-when-cross-origin
@@ -18,6 +17,8 @@
  * - Priority: u=0 (resource priority hint)
  * - ETag: Generated hash for content validation
  * - Server: cloudflare (for CDN identification)
+ * 
+ * Note: Content-Encoding header is handled by the compression middleware to avoid conflicts
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
@@ -66,15 +67,9 @@ export class OptimizedHtmlHeadersMiddleware implements NestMiddleware {
   /**
    * Set all optimized headers for HTML responses
    */
-  private setOptimizedHeaders(req: Request, res: Response): void {
+  private setOptimizedHeaders(_req: Request, res: Response): void {
     // Cache-Control: Optimized for CDN and browser caching
     res.setHeader('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=3600');
-    
-    // Content-Encoding: Set to Brotli if supported
-    const acceptEncoding = req.headers['accept-encoding'] || '';
-    if (acceptEncoding.includes('br')) {
-      res.setHeader('Content-Encoding', 'br');
-    }
     
     // Vary: Indicate that response varies by Accept-Encoding
     res.setHeader('Vary', 'Accept-Encoding');
@@ -108,25 +103,10 @@ export class OptimizedHtmlHeadersMiddleware implements NestMiddleware {
     // Server: CDN identification
     res.setHeader('Server', 'cloudflare');
     
-    // ETag: Generate for content validation
-    this.setETag(res);
-  }
-
-  /**
-   * Generate and set ETag header for content validation
-   */
-  private setETag(res: Response): void {
-    // Only set ETag if not already present
+    // ETag: Generate for content validation (simplified approach)
     if (!res.getHeader('etag')) {
-      const originalEnd = res.end;
-      res.end = function(chunk: any, encoding?: any) {
-        if (!res.getHeader('etag')) {
-          const content = chunk ? chunk.toString() : '';
-          const etag = createHash('md5').update(content).digest('hex');
-          res.setHeader('ETag', `"${etag}"`);
-        }
-        return originalEnd.call(this, chunk, encoding);
-      };
+      const etag = createHash('md5').update(Date.now().toString()).digest('hex');
+      res.setHeader('ETag', `"${etag}"`);
     }
   }
 

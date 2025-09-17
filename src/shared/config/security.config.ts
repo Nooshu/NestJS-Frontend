@@ -54,7 +54,6 @@ export class SecurityConfig {
       crossOriginOpenerPolicy: !isDevelopment,
       // Disable CORP as it's now handled by OptimizedHtmlHeadersMiddleware
       crossOriginResourcePolicy: false,
-      dnsPrefetchControl: { allow: false },
       // Disable frameguard as it's now handled by OptimizedHtmlHeadersMiddleware
       frameguard: false,
       hidePoweredBy: true,
@@ -68,10 +67,17 @@ export class SecurityConfig {
       // Disable noSniff as it's now handled by OptimizedHtmlHeadersMiddleware
       noSniff: false,
       originAgentCluster: !isDevelopment,
-      permittedCrossDomainPolicies: { permittedPolicies: 'none' },
       // Disable referrerPolicy as it's now handled by OptimizedHtmlHeadersMiddleware
       referrerPolicy: false,
-      xssFilter: true,
+      // Explicitly disable legacy headers that don't provide meaningful security anymore
+      dnsPrefetchControl: false,
+      permittedCrossDomainPolicies: false,
+      xssFilter: false,
+      // Try setting legacy headers to undefined to completely disable them
+      // @ts-ignore - These are not in the official HelmetOptions type but may work
+      'X-DNS-Prefetch-Control': undefined,
+      'X-Permitted-Cross-Domain-Policies': undefined,
+      'X-XSS-Protection': undefined,
     };
   }
 }
