@@ -59,5 +59,6 @@ module.exports = {
     '/tests/',
     '/e2e/',
     '/tests-examples/',
+    '/dist/',
   ],
 };
