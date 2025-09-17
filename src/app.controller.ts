@@ -48,7 +48,7 @@ export class AppController {
     description: 'Renders the home page with GOV.UK Frontend template.',
   })
   @Get()
-  @Header('Cache-Control', 'public, max-age=86400, stale-while-revalidate=3600')
+  @Header('Cache-Control', 'public, max-age=0, s-maxage=86400, stale-while-revalidate=3600')
   @Header('Vary', 'Accept-Encoding')
   @Render('index')
   getIndex() {
