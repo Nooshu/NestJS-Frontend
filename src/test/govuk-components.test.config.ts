@@ -51,6 +51,19 @@ export const govukTestConfig = {
       'with-one-section-open',
       'with-translations',
     ],
+    // Tag component scenarios
+    tag: [
+      'default',
+      'green',
+      'grey',
+      'light-blue',
+      'orange',
+      'pink',
+      'purple',
+      'red',
+      'turquoise',
+      'yellow',
+    ],
     // Add more component scenarios as needed
   },
 
