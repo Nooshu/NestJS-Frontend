@@ -1,3 +1,5 @@
+🚨 Note: This proof of concept (PoC) is no longer maintained, leaving the code here for future reference. Feel free to archive if required. 🚨
+
 # PoC: NestJS Frontend Application
 
 A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend integration, designed to replace the existing [HMCTS Express.js template](https://github.com/hmcts/expressjs-template).
