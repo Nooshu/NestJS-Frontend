@@ -1,4 +1,4 @@
-🚨 Note: This proof of concept (PoC) is no longer maintained, leaving the code here for future reference. Feel free to archive if required. 🚨
+# Note: 🚨🚨This proof of concept (PoC) is no longer maintained, leaving the code here for future reference. Feel free to archive if required. 🚨🚨
 
 # PoC: NestJS Frontend Application
 
