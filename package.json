@@ -102,7 +102,7 @@
     "express-rate-limit": "8.1.0",
     "express-request-id": "3.0.0",
     "glob": "^11.0.0",
-    "govuk-frontend": "5.12.0",
+    "govuk-frontend": "5.13.0",
     "helmet": "8.1.0",
     "ioredis": "5.8.2",
     "joi": "18.0.1",
