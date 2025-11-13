@@ -13,7 +13,7 @@ This project uses Playwright for end-to-end testing, providing reliable and powe
 
 ### 🚀 **New Local Development Script**
 - **`npm run test:e2e:local`**: Automated script that handles browser installation, port cleanup, and proper environment setup
-- **Port Management**: Automatically kills existing processes on port 3000
+- **Port Management**: Automatically kills existing processes on port 3002
 - **Browser Installation**: Ensures Playwright browsers are properly installed
 - **Build Process**: Automatically builds the application before running tests
 
@@ -107,7 +107,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'dot' : 'html',
   
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3002',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     actionTimeout: process.env.CI ? 30000 : 10000,
@@ -118,10 +118,10 @@ export default defineConfig({
     command: process.env.CI 
       ? 'npm run build:prod && npm run start:prod' 
       : 'npm run start:dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3002',
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
-    stdout: 'Application is running on: http://localhost:3000',
+    stdout: 'Application is running on: http://localhost:3002',
     stderr: 'error',
   },
 });
@@ -218,11 +218,11 @@ The project includes an enhanced GitHub Actions workflow (`.github/workflows/pla
 - Run `npx playwright install --with-deps`
 - Use `npm run test:e2e:local` which handles browser installation
 
-#### 3. "http://localhost:3000 is already used"
-**Cause**: Another process is using port 3000
+#### 3. "http://localhost:3002 is already used"
+**Cause**: Another process is using port 3002
 **Solution**: 
 - Use `npm run test:e2e:local` which automatically kills existing processes
-- Manually kill processes: `lsof -ti:3000 | xargs kill -9`
+- Manually kill processes: `lsof -ti:3002 | xargs kill -9`
 
 #### 4. Tests failing in CI but passing locally
 **Cause**: Different environment configurations

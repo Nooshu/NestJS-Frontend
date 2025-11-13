@@ -14,7 +14,7 @@
     "build": "cross-env NODE_ENV=production nest build --config tsconfig.build.json",
     "build:prod": "npm run build && npm run build:frontend",
     "format": "prettier --write \"src/**/*.{ts,js,json,njk}\"",
-    "start": "cross-env NODE_ENV=production nest start",
+    "start": "cross-env NODE_ENV=production PORT=3002 nest start",
     "start:dev": "./filter-concurrently-output.sh npm run build:frontend:dev && concurrently --kill-others-on-fail --handle-input --no-command-logs \"cross-env NODE_ENV=development nest start --watch\" \"npm run watch:all\"",
     "start:debug": "cross-env NODE_ENV=development nest start --debug --watch",
     "start:prod": "cross-env NODE_ENV=production node dist/main",

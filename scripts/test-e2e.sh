@@ -7,9 +7,9 @@ set -e
 
 echo "🚀 Setting up E2E test environment..."
 
-# Kill any existing processes on port 3000
-echo "📋 Checking for existing processes on port 3000..."
-lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "No processes found on port 3000"
+# Kill any existing processes on port 3002
+echo "📋 Checking for existing processes on port 3002..."
+lsof -ti:3002 | xargs kill -9 2>/dev/null || echo "No processes found on port 3002"
 
 # Install Playwright browsers if not already installed
 echo "🌐 Installing Playwright browsers..."

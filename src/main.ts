@@ -213,7 +213,7 @@ async function bootstrap() {
    * Swagger (OpenAPI) Configuration
    * Sets up API documentation with detailed information about the API endpoints.
    *
-   * The documentation will be available at: http://localhost:3000/api-docs
+   * The documentation will be available at: http://localhost:3002/api-docs
    *
    * @swagger
    * - Title: Name of the API documentation
@@ -251,7 +251,7 @@ async function bootstrap() {
     });
   }
 
-  const port = process.env.PORT || 3100;
+  const port = process.env.PORT || 3002;
   const host = process.env.HOST || '0.0.0.0';
   await app.listen(port, host);
   

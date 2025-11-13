@@ -4,7 +4,7 @@ This document describes the Docker configuration for the NestJS Frontend applica
 
 ## Overview
 
-The Docker setup provides containerized deployment for both development and production environments. The application runs on port 3100 and includes:
+The Docker setup provides containerized deployment for both development and production environments. The application runs on port 3002 and includes:
 
 - Multi-stage Docker build for optimization
 - Production and development configurations
@@ -29,7 +29,7 @@ The Docker setup provides containerized deployment for both development and prod
 - **Location**: `./docker-compose.yml`
 - **Purpose**: Container orchestration
 - **Services**:
-  - `frontend`: Production service on port 3100
+  - `frontend`: Production service on port 3002
   - `frontend-dev`: Development service on port 3101 (optional)
 
 ### .dockerignore
@@ -75,24 +75,24 @@ docker-compose --profile dev up -d frontend-dev
 ```
 
 ### Access the Application
-- **Production**: https://localhost:3100
+- **Production**: https://localhost:3002
 - **Development**: https://localhost:3101
 
 ## Configuration Details
 
 ### Port Configuration
-The application is configured to run on port 3100 by default:
-- Updated `src/main.ts` to use port 3100
-- Docker containers expose port 3100
+The application is configured to run on port 3002 by default:
+- Updated `src/main.ts` to use port 3002
+- Docker containers expose port 3002
 - Environment variable `PORT` can override default
 
 ### Environment Variables
 - `NODE_ENV`: Set to `production` or `development`
-- `PORT`: Application port (default: 3100)
+- `PORT`: Application port (default: 3002)
 
 ### Health Checks
 The application includes health checks that verify:
-- Application is responding on port 3100
+- Application is responding on port 3002
 - Health endpoint returns 200 status
 - Checks run every 30 seconds with 3 retries
 
@@ -161,10 +161,10 @@ docker stats
 ### Testing the Application
 ```bash
 # Test the main application
-curl http://localhost:3100
+curl http://localhost:3002
 
 # Test the health endpoint
-curl http://localhost:3100/health
+curl http://localhost:3002/health
 
 # Expected responses:
 # - Main page: HTML content with GOV.UK styling
@@ -186,11 +186,11 @@ curl http://localhost:3100/health
 
 #### Port Already in Use
 ```bash
-# Check what's using port 3100
-lsof -i :3100
+# Check what's using port 3002
+lsof -i :3002
 
 # Kill the process or use different port
-docker-compose up -p 3102:3100
+docker-compose up -p 3003:3002
 ```
 
 #### Build Failures
@@ -272,7 +272,7 @@ jobs:
       - name: Build Docker image
         run: docker-compose build
       - name: Test Docker image
-        run: docker-compose up -d && sleep 30 && curl -f http://localhost:3100/health
+        run: docker-compose up -d && sleep 30 && curl -f http://localhost:3002/health
 ```
 
 ## Monitoring and Logging

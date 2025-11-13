@@ -158,7 +158,7 @@ The application includes Swagger (OpenAPI) documentation for all API endpoints. 
 npm run start:dev
 ```
 
-2. Visit the Swagger UI at: `http://localhost:3000/api-docs`
+2. Visit the Swagger UI at: `http://localhost:3002/api-docs`
 
 ### Documentation Features
 

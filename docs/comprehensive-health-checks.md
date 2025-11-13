@@ -22,7 +22,7 @@ Basic health check that monitors critical system metrics:
 - Disk storage availability
 
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:3002/health
 ```
 
 **Response Example**:
@@ -52,7 +52,7 @@ Comprehensive health check including all system components:
 - External dependencies (database, Redis)
 
 ```bash
-curl http://localhost:3000/health/detailed
+curl http://localhost:3002/health/detailed
 ```
 
 **Response Example**:
@@ -90,7 +90,7 @@ curl http://localhost:3000/health/detailed
 Monitors database connectivity and performance:
 
 ```bash
-curl http://localhost:3000/health/database
+curl http://localhost:3002/health/database
 ```
 
 ### Redis Health Check
@@ -99,7 +99,7 @@ curl http://localhost:3000/health/database
 Monitors Redis connectivity and memory usage:
 
 ```bash
-curl http://localhost:3000/health/redis
+curl http://localhost:3002/health/redis
 ```
 
 ### HTTP Services Health Check
@@ -109,10 +109,10 @@ Monitors external HTTP service dependencies:
 
 ```bash
 # Check default endpoints
-curl http://localhost:3000/health/http
+curl http://localhost:3002/health/http
 
 # Check custom endpoints
-curl "http://localhost:3000/health/http?urls=https://api.example.com,https://service.example.com"
+curl "http://localhost:3002/health/http?urls=https://api.example.com,https://service.example.com"
 ```
 
 ### Application Health Check
@@ -125,7 +125,7 @@ Application-specific health metrics:
 - Internal dependencies
 
 ```bash
-curl http://localhost:3000/health/application
+curl http://localhost:3002/health/application
 ```
 
 ### System Resources Health Check
@@ -137,7 +137,7 @@ System resource monitoring:
 - Performance metrics
 
 ```bash
-curl http://localhost:3000/health/system
+curl http://localhost:3002/health/system
 ```
 
 ### Kubernetes Probes
@@ -152,7 +152,7 @@ Determines if the application is ready to receive traffic:
 readinessProbe:
   httpGet:
     path: /health/ready
-    port: 3000
+    port: 3002
   initialDelaySeconds: 10
   periodSeconds: 5
 ```
@@ -167,7 +167,7 @@ Determines if the application should be restarted:
 livenessProbe:
   httpGet:
     path: /health/live
-    port: 3000
+    port: 3002
   initialDelaySeconds: 30
   periodSeconds: 10
 ```
@@ -294,7 +294,7 @@ The health endpoints can be integrated with Prometheus for monitoring:
 scrape_configs:
   - job_name: 'nestjs-health'
     static_configs:
-      - targets: ['localhost:3000']
+      - targets: ['localhost:3002']
     metrics_path: '/health/detailed'
     scrape_interval: 30s
 ```
@@ -360,10 +360,10 @@ Test health endpoints:
 
 ```bash
 # Test basic health check
-curl -f http://localhost:3000/health || echo "Health check failed"
+curl -f http://localhost:3002/health || echo "Health check failed"
 
 # Test with timeout
-timeout 10s curl http://localhost:3000/health/detailed
+timeout 10s curl http://localhost:3002/health/detailed
 ```
 
 ### Load Testing
@@ -372,11 +372,11 @@ Monitor health under load:
 
 ```bash
 # Using Apache Bench
-ab -n 1000 -c 10 http://localhost:3000/health
+ab -n 1000 -c 10 http://localhost:3002/health
 
 # Using curl in a loop
 for i in {1..100}; do
-  curl -s http://localhost:3000/health > /dev/null
+  curl -s http://localhost:3002/health > /dev/null
   echo "Request $i completed"
 done
 ```
@@ -443,7 +443,7 @@ Monitor health check performance:
 
 ```bash
 # Monitor response times
-curl -w "@curl-format.txt" -s -o /dev/null http://localhost:3000/health
+curl -w "@curl-format.txt" -s -o /dev/null http://localhost:3002/health
 ```
 
 ## Future Enhancements

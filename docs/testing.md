@@ -114,7 +114,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'dot' : 'html',
   
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3002',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     actionTimeout: process.env.CI ? 30000 : 10000,
@@ -125,10 +125,10 @@ export default defineConfig({
     command: process.env.CI 
       ? 'npm run build:prod && npm run start:prod' 
       : 'npm run start:dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3002',
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
-    stdout: 'Application is running on: http://localhost:3000',
+    stdout: 'Application is running on: http://localhost:3002',
     stderr: 'error',
   },
 });

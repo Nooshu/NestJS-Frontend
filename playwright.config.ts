@@ -51,7 +51,7 @@ export default defineConfig({
   /* Global settings applied to all tests */
   use: {
     /* Base URL for all page.goto() calls */
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3002',
 
     /* Collect trace when retrying the failed test for debugging */
     trace: 'on-first-retry',
@@ -111,7 +111,7 @@ export default defineConfig({
       : 'npm run start:dev',
     
     /* URL where the server will be running */
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3002',
     
     /* Reuse the server instance if it's already running (except in CI) */
     reuseExistingServer: !process.env.CI,
@@ -120,7 +120,7 @@ export default defineConfig({
     timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
 
     /* Wait for the server to be ready by checking the health endpoint */
-    stdout: 'Application is running on: http://localhost:3000',
+    stdout: 'Application is running on: http://localhost:3002',
     stderr: 'error',
   },
 });

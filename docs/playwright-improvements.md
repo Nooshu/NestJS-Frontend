@@ -23,8 +23,8 @@ This document outlines the recent improvements made to the Playwright testing se
 - Created local development script that handles browser installation
 
 ### 3. **Port Conflicts**
-**Problem**: Tests failing with "http://localhost:3000 is already used" errors
-**Root Cause**: Existing processes on port 3000 preventing server startup
+**Problem**: Tests failing with "http://localhost:3002 is already used" errors
+**Root Cause**: Existing processes on port 3002 preventing server startup
 **Solution**:
 - Created `scripts/test-e2e.sh` that automatically kills existing processes
 - Added port cleanup to local development workflow
@@ -60,9 +60,9 @@ set -e
 
 echo "🚀 Setting up E2E test environment..."
 
-# Kill any existing processes on port 3000
-echo "📋 Checking for existing processes on port 3000..."
-lsof -ti:3000 | xargs kill -9 2>/dev/null || echo "No processes found on port 3000"
+# Kill any existing processes on port 3002
+echo "📋 Checking for existing processes on port 3002..."
+lsof -ti:3002 | xargs kill -9 2>/dev/null || echo "No processes found on port 3002"
 
 # Install Playwright browsers if not already installed
 echo "🌐 Installing Playwright browsers..."
@@ -100,7 +100,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'dot' : 'html',
   
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: 'http://localhost:3002',
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
     actionTimeout: process.env.CI ? 30000 : 10000,
@@ -111,10 +111,10 @@ export default defineConfig({
     command: process.env.CI 
       ? 'npm run start:prod' 
       : 'npm run start:dev',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:3002',
     reuseExistingServer: !process.env.CI,
     timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
-    stdout: 'Application is running on: http://localhost:3000',
+    stdout: 'Application is running on: http://localhost:3002',
     stderr: 'error',
   },
 });
@@ -186,7 +186,7 @@ jobs:
           echo "Application started successfully"
           
           # Test if we can connect to it
-          if curl -f http://localhost:3000/health; then
+          if curl -f http://localhost:3002/health; then
             echo "Application is responding to requests"
           else
             echo "Application is not responding to requests"
@@ -298,7 +298,7 @@ if ps -p $APP_PID > /dev/null; then
     
     # Test if we can connect to it
     echo "🔍 Testing application connectivity..."
-    if curl -f http://localhost:3000/health; then
+    if curl -f http://localhost:3002/health; then
         echo "✅ Application is responding to health check"
     else
         echo "❌ Application is not responding to health check"
@@ -308,7 +308,7 @@ if ps -p $APP_PID > /dev/null; then
     
     # Test homepage
     echo "🏠 Testing homepage..."
-    if curl -f http://localhost:3000/; then
+    if curl -f http://localhost:3002/; then
         echo "✅ Homepage is accessible"
     else
         echo "❌ Homepage is not accessible"
@@ -386,7 +386,7 @@ Tests run automatically with proper configuration:
 #### 2. "Executable doesn't exist" for browsers
 **Solution**: Run `npx playwright install --with-deps`
 
-#### 3. "http://localhost:3000 is already used"
+#### 3. "http://localhost:3002 is already used"
 **Solution**: Use `npm run test:e2e:local` which automatically kills existing processes
 
 #### 4. Tests failing in CI but passing locally

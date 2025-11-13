@@ -81,7 +81,7 @@ docker-compose --profile dev up -d frontend-dev
 
 #### Accessing the Application
 Once the container is running, you can access the application at:
-- **Production**: https://localhost:3100
+- **Production**: https://localhost:3002
 - **Development**: https://localhost:3101
 
 The application will serve a basic home page with GOV.UK Frontend styling.
