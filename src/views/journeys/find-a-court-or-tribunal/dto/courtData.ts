@@ -398,7 +398,7 @@ export const courtsData: Record<string, Court> = {
     ],
     codes: {
       crown: '440',
-      dx: 'DX: 97345 Southwark 3',
+      dx: '97345 Southwark 3',
     },
   },
 };
