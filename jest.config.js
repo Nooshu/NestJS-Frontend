@@ -61,4 +61,7 @@ module.exports = {
     '/tests-examples/',
     '/dist/',
   ],
+  transformIgnorePatterns: [
+    'node_modules/(?!(jsdom|parse5)/)',
+  ],
 };
