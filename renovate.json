@@ -3,7 +3,7 @@
   "extends": [
     "local>hmcts/.github:renovate-config"
   ],
-  "dependencyDashboard": false,
+  "dependencyDashboard": true,
   "npm": {
     "postUpdateOptions": ["--legacy-peer-deps"]
   }
