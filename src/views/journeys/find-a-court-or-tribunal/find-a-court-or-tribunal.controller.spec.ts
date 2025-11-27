@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { Response } from 'express';
 import { FindCourtTribunalController } from './find-a-court-or-tribunal.controller';
 import { courtsData } from './dto/courtData';
 
@@ -46,6 +47,65 @@ describe('FindCourtTribunalController', () => {
 
     it('should have the correct method signature', () => {
       expect(typeof controller.options).toBe('function');
+    });
+  });
+
+  describe('handleOptions', () => {
+    let mockResponse: Partial<Response>;
+
+    beforeEach(() => {
+      mockResponse = {
+        render: jest.fn(),
+        redirect: jest.fn(),
+      };
+    });
+
+    it('should render error page when no option is selected', () => {
+      const body = {};
+      
+      controller.handleOptions(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/options', {
+        title: 'Find a Court or Tribunal - Select Option',
+        journey: 'find-a-court-or-tribunal',
+        currentPage: 'options',
+        errors: {
+          courtOption: {
+            text: 'Select whether you know the name of the court or tribunal'
+          }
+        },
+        errorSummary: [
+          {
+            text: 'Select whether you know the name of the court or tribunal',
+            href: '#courtOption'
+          }
+        ],
+        formData: body
+      });
+    });
+
+    it('should redirect to court-search with hasName=true when option1 is selected', () => {
+      const body = { courtOption: 'option1' };
+      
+      controller.handleOptions(body, mockResponse as Response);
+      
+      expect(mockResponse.redirect).toHaveBeenCalledWith('/find-a-court-or-tribunal/court-search?hasName=true');
+    });
+
+    it('should redirect to court-search with hasName=false when option2 is selected', () => {
+      const body = { courtOption: 'option2' };
+      
+      controller.handleOptions(body, mockResponse as Response);
+      
+      expect(mockResponse.redirect).toHaveBeenCalledWith('/find-a-court-or-tribunal/court-search?hasName=false');
+    });
+
+    it('should redirect to court-search as fallback for invalid options', () => {
+      const body = { courtOption: 'invalid-option' };
+      
+      controller.handleOptions(body, mockResponse as Response);
+      
+      expect(mockResponse.redirect).toHaveBeenCalledWith('/find-a-court-or-tribunal/court-search');
     });
   });
 
