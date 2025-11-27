@@ -18,7 +18,6 @@
 <p class="govuk-body" id="court-name-hint">The name of the court or tribunal can be found on a letter, email or text from us.</p>
 
 <form method="POST" action="/find-a-court-or-tribunal/options" novalidate id="optionsForm" aria-labelledby="court-name-question">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
     
     {{ govukRadios({
       name: "courtOption",

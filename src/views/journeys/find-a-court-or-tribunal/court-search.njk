@@ -1,9 +1,17 @@
 {% extends "layout.njk" %}
 {% from "govuk/components/input/macro.njk" import govukInput %}
 {% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
 {% from "journeys/shared/navigation.njk" import journeyNavigation %}
 
 {% block content %}
+  {% if errorSummary %}
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: errorSummary
+    }) }}
+  {% endif %}
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -15,7 +23,6 @@
   </div>
 
   <form method="POST" action="/find-a-court-or-tribunal/name-search" novalidate id="nameSearchForm" aria-label="Search for a court or tribunal">
-    <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
     {{ govukInput({
       label: {
@@ -29,53 +36,213 @@
       id: "fullName",
       name: "fullName",
       classes: "govuk-input--width-20",
+      value: formData.fullName if formData,
+      errorMessage: errors.fullName if errors and errors.fullName,
       attributes: {
         "aria-describedby": "search-hint"
       }
     }) }}
 
     {{ govukButton({
-      text: "Continue",
+      text: "Search",
+      type: "submit",
       attributes: {
         "data-module": "govuk-button",
         "id": "submit-button"
       }
     }) }}
   </form>
+  {% if showResults %}
   <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds" id="courtResults" style="display: none;" role="region" aria-live="polite" aria-label="Search results">
-      <p class="govuk-body" id="results-count">We found  courts or tribunals matching your search for 'manchester'.</p>
-      <p class="govuk-body">Most relevant results displayed.</p>
-
+    <div class="govuk-grid-column-two-thirds" id="courtResults" role="region" aria-live="polite" aria-label="Search results">
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+      
+      {% if filteredCourts and filteredCourts.length > 0 %}
+        <p class="govuk-body" id="results-count">We found {{ filteredCourts.length }} court{% if filteredCourts.length != 1 %}s{% endif %} or tribunal{% if filteredCourts.length != 1 %}s{% endif %} matching your search for '{{ searchTerm }}'.</p>
+        <p class="govuk-body">Most relevant results displayed.</p>
 
-      {% if courts and courts.length > 0 %}
-        <h2 class="govuk-heading-m" id="results-heading">Search results</h2>
+        <h2 class="govuk-heading-m govuk-!-margin-top-4" id="results-heading">Search results</h2>
         <ul class="govuk-list" aria-labelledby="results-heading" aria-describedby="results-count">
-          {% for court in courts %}
-            <li>
-              <h3 class="govuk-heading-m">
+          {% for court in filteredCourts %}
+            <li class="govuk-!-margin-bottom-4">
+              <h3 class="govuk-heading-m govuk-!-margin-bottom-1">
                 <a href="/find-a-court-or-tribunal/court-details/{{ court.id }}" class="govuk-link">
                   {{ court.name }}
                 </a>
               </h3>
+              <p class="govuk-body govuk-!-margin-bottom-0">
+                {% for line in court.address.lines %}
+                  {{ line }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+              </p>
             </li>
           {% endfor %}
         </ul>
+      {% else %}
+        <p class="govuk-body" id="results-count">No courts or tribunals found matching your search for '{{ searchTerm }}'.</p>
+        <p class="govuk-body">Try searching for: Manchester, Birmingham, or London</p>
       {% endif %}
     </div>
   </div>
+  {% endif %}
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const submitButton = document.getElementById('submit-button');
-      const courtResults = document.getElementById('courtResults');
+      console.log('Court search page loaded, setting up validation');
+      
+      const form = document.getElementById('nameSearchForm');
+      if (!form) {
+        console.error('Form with ID "nameSearchForm" not found');
+        return;
+      }
 
-      submitButton.addEventListener('click', function (event) {
-        event.preventDefault();
-        courtResults.style.display = 'block';
-        // Announce the results to screen readers
-        courtResults.setAttribute('aria-live', 'polite');
+      form.addEventListener('submit', function (e) {
+        console.log('Form submit event triggered');
+        
+        const searchInput = document.getElementById('fullName');
+        const searchValue = searchInput?.value.trim().toLowerCase();
+        
+        console.log('Search value:', searchValue);
+        
+        // Client-side validation
+        if (!searchValue) {
+          console.log('No search value provided, preventing submission');
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Remove any existing error summary
+          const existingErrorSummary = document.querySelector('.govuk-error-summary');
+          if (existingErrorSummary) {
+            existingErrorSummary.remove();
+          }
+          
+          // Create error summary
+          const errorHtml = `
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+              <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+              </h2>
+              <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                  <li><a href="#fullName">Enter a court name, address, town or city</a></li>
+                </ul>
+              </div>
+            </div>
+          `;
+          
+          // Insert error summary at the beginning of the content
+          const contentDiv = document.querySelector('[role="main"]') || document.querySelector('.govuk-main-wrapper') || document.querySelector('main');
+          if (contentDiv) {
+            contentDiv.insertAdjacentHTML('afterbegin', errorHtml);
+          } else {
+            form.insertAdjacentHTML('beforebegin', errorHtml);
+          }
+          
+          // Add error styling to input
+          const formGroup = searchInput.closest('.govuk-form-group');
+          if (formGroup && !formGroup.classList.contains('govuk-form-group--error')) {
+            formGroup.classList.add('govuk-form-group--error');
+            searchInput.classList.add('govuk-input--error');
+            
+            // Add error message if it doesn't exist
+            if (!formGroup.querySelector('.govuk-error-message')) {
+              const errorMessage = document.createElement('p');
+              errorMessage.className = 'govuk-error-message';
+              errorMessage.innerHTML = '<span class="govuk-visually-hidden">Error:</span> Enter a court name, address, town or city';
+              
+              const label = formGroup.querySelector('.govuk-label');
+              const hint = formGroup.querySelector('.govuk-hint');
+              const insertBefore = hint || searchInput;
+              
+              if (label && insertBefore) {
+                insertBefore.parentNode.insertBefore(errorMessage, insertBefore);
+              }
+            }
+          }
+          
+          // Focus error summary
+          const errorSummary = document.querySelector('.govuk-error-summary');
+          if (errorSummary) {
+            errorSummary.focus();
+            errorSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          
+          return false;
+        }
+        
+        // Validate against allowed courts
+        const validCourts = ['manchester', 'birmingham', 'london'];
+        const isValid = validCourts.some(court => searchValue.includes(court));
+        
+        if (!isValid) {
+          console.log('Invalid court name, preventing submission');
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Remove any existing error summary
+          const existingErrorSummary = document.querySelector('.govuk-error-summary');
+          if (existingErrorSummary) {
+            existingErrorSummary.remove();
+          }
+          
+          // Create error summary
+          const errorHtml = `
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+              <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+              </h2>
+              <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                  <li><a href="#fullName">Enter a valid court name. Valid options are: Manchester, Birmingham, or London</a></li>
+                </ul>
+              </div>
+            </div>
+          `;
+          
+          // Insert error summary
+          const contentDiv = document.querySelector('[role="main"]') || document.querySelector('.govuk-main-wrapper') || document.querySelector('main');
+          if (contentDiv) {
+            contentDiv.insertAdjacentHTML('afterbegin', errorHtml);
+          } else {
+            form.insertAdjacentHTML('beforebegin', errorHtml);
+          }
+          
+          // Add error styling to input
+          const formGroup = searchInput.closest('.govuk-form-group');
+          if (formGroup && !formGroup.classList.contains('govuk-form-group--error')) {
+            formGroup.classList.add('govuk-form-group--error');
+            searchInput.classList.add('govuk-input--error');
+            
+            // Add error message
+            const existingError = formGroup.querySelector('.govuk-error-message');
+            if (existingError) {
+              existingError.innerHTML = '<span class="govuk-visually-hidden">Error:</span> Enter a valid court name. Valid options are: Manchester, Birmingham, or London';
+            } else {
+              const errorMessage = document.createElement('p');
+              errorMessage.className = 'govuk-error-message';
+              errorMessage.innerHTML = '<span class="govuk-visually-hidden">Error:</span> Enter a valid court name. Valid options are: Manchester, Birmingham, or London';
+              
+              const label = formGroup.querySelector('.govuk-label');
+              const hint = formGroup.querySelector('.govuk-hint');
+              const insertBefore = hint || searchInput;
+              
+              if (label && insertBefore) {
+                insertBefore.parentNode.insertBefore(errorMessage, insertBefore);
+              }
+            }
+          }
+          
+          // Focus error summary
+          const errorSummary = document.querySelector('.govuk-error-summary');
+          if (errorSummary) {
+            errorSummary.focus();
+            errorSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          
+          return false;
+        }
+        
+        console.log('Valid search value, allowing form submission');
       });
     });
   </script>

@@ -42,6 +42,7 @@ describe('FindCourtTribunalController', () => {
         title: 'Find a Court or Tribunal - Select Option',
         journey: 'find-a-court-or-tribunal',
         currentPage: 'options',
+        csrfToken: '',
       });
     });
 
@@ -57,6 +58,9 @@ describe('FindCourtTribunalController', () => {
       mockResponse = {
         render: jest.fn(),
         redirect: jest.fn(),
+        locals: {
+          csrfToken: ''
+        }
       };
     });
 
@@ -69,6 +73,7 @@ describe('FindCourtTribunalController', () => {
         title: 'Find a Court or Tribunal - Select Option',
         journey: 'find-a-court-or-tribunal',
         currentPage: 'options',
+        csrfToken: '',
         errors: {
           courtOption: {
             text: 'Select whether you know the name of the court or tribunal'
@@ -118,6 +123,7 @@ describe('FindCourtTribunalController', () => {
         journey: 'find-a-court-or-tribunal',
         currentPage: 'court-search',
         courts: Object.values(courtsData),
+        csrfToken: '',
       });
     });
 
@@ -148,6 +154,147 @@ describe('FindCourtTribunalController', () => {
     it('should return courts as an array', () => {
       const result = controller.courtSearch();
       expect(Array.isArray(result.courts)).toBe(true);
+    });
+  });
+
+  describe('handleNameSearch', () => {
+    let mockResponse: Partial<Response>;
+
+    beforeEach(() => {
+      mockResponse = {
+        render: jest.fn(),
+        redirect: jest.fn(),
+        locals: {
+          csrfToken: ''
+        }
+      };
+    });
+
+    it('should render error when search term is empty', () => {
+      const body = { fullName: '' };
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/court-search', {
+        title: 'Find a Court or Tribunal - Court Search',
+        journey: 'find-a-court-or-tribunal',
+        currentPage: 'court-search',
+        courts: expect.any(Array),
+        csrfToken: '',
+        errors: {
+          fullName: {
+            text: 'Enter a court name, address, town or city'
+          }
+        },
+        errorSummary: [
+          {
+            text: 'Enter a court name, address, town or city',
+            href: '#fullName'
+          }
+        ],
+        formData: body
+      });
+    });
+
+    it('should render error when search term is not provided', () => {
+      const body = {};
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/court-search', expect.objectContaining({
+        errors: expect.objectContaining({
+          fullName: expect.objectContaining({
+            text: 'Enter a court name, address, town or city'
+          })
+        })
+      }));
+    });
+
+    it('should render error when search term is invalid', () => {
+      const body = { fullName: 'Invalid Court Name' };
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/court-search', expect.objectContaining({
+        errors: expect.objectContaining({
+          fullName: expect.objectContaining({
+            text: 'Enter a valid court name. Valid options are: Manchester, Birmingham, or London'
+          })
+        })
+      }));
+    });
+
+    it('should filter and show Manchester courts when searching for Manchester', () => {
+      const body = { fullName: 'Manchester' };
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/court-search', expect.objectContaining({
+        csrfToken: '',
+        filteredCourts: expect.arrayContaining([
+          expect.objectContaining({
+            name: expect.stringContaining('Manchester')
+          })
+        ]),
+        showResults: true,
+        searchTerm: 'Manchester'
+      }));
+    });
+
+    it('should filter and show Birmingham courts when searching for Birmingham', () => {
+      const body = { fullName: 'Birmingham' };
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/court-search', expect.objectContaining({
+        csrfToken: '',
+        filteredCourts: expect.arrayContaining([
+          expect.objectContaining({
+            name: expect.stringContaining('Birmingham')
+          })
+        ]),
+        showResults: true,
+        searchTerm: 'Birmingham'
+      }));
+    });
+
+    it('should filter and show London courts when searching for London', () => {
+      const body = { fullName: 'London' };
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/court-search', expect.objectContaining({
+        csrfToken: '',
+        filteredCourts: expect.arrayContaining([
+          expect.objectContaining({
+            name: expect.stringContaining('London')
+          })
+        ]),
+        showResults: true,
+        searchTerm: 'London'
+      }));
+    });
+
+    it('should be case insensitive', () => {
+      const body = { fullName: 'MANCHESTER' };
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      expect(mockResponse.render).toHaveBeenCalledWith('journeys/find-a-court-or-tribunal/court-search', expect.objectContaining({
+        csrfToken: '',
+        filteredCourts: expect.any(Array),
+        showResults: true
+      }));
+    });
+
+    it('should only show one court when searching for specific court', () => {
+      const body = { fullName: 'Manchester' };
+      
+      controller.handleNameSearch(body, mockResponse as Response);
+      
+      const call = (mockResponse.render as jest.Mock).mock.calls[0][1];
+      expect(call.filteredCourts.length).toBe(1);
+      expect(call.filteredCourts[0].name).toContain('Manchester');
     });
   });
 

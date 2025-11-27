@@ -113,7 +113,9 @@ export class AppModule {
       .exclude(
         { path: 'api', method: RequestMethod.ALL },
         { path: 'api/*path', method: RequestMethod.ALL },
-        { path: 'health', method: RequestMethod.ALL }
+        { path: 'health', method: RequestMethod.ALL },
+        { path: 'find-a-court-or-tribunal', method: RequestMethod.ALL },
+        { path: 'find-a-court-or-tribunal/*path', method: RequestMethod.ALL }
       )
       .forRoutes({ path: '*path', method: RequestMethod.ALL });
 
