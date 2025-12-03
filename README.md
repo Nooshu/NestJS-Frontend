@@ -2,6 +2,29 @@
 
 A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend integration, designed to replace the existing [HMCTS Express.js template](https://github.com/hmcts/expressjs-template).
 
+## Project Status
+
+| Category | Status |
+|----------|--------|
+| **Build** | ✅ Passing |
+| **Tests** | ✅ All tests passing (Unit, Integration, GOV.UK Component, E2E) |
+| **Dependencies** | ✅ Up to date (December 2025) |
+| **Security** | ✅ No known vulnerabilities |
+| **GOV.UK Frontend** | ✅ v5.13.0 (Latest) |
+| **Node.js** | ✅ v20.11.1+ |
+
+### Current Features
+
+- ✅ Full GOV.UK Design System integration with component parity testing
+- ✅ NestJS v11.1.9 with Express v5.2.1 adapter
+- ✅ Comprehensive test suite (Jest + Playwright)
+- ✅ Asset fingerprinting for optimal caching
+- ✅ Docker support for development and production
+- ✅ Swagger/OpenAPI documentation
+- ✅ Security headers and CSRF protection
+- ✅ Performance monitoring and metrics
+- ✅ **Find a Court or Tribunal (FaCT) prototype journey** with form validation
+
 ## Super Quick Start guide
 
 ### Development Mode
@@ -114,7 +137,7 @@ For detailed information about testing:
 - [Testing Strategy](docs/testing.md) - Comprehensive testing documentation
 - [End-to-End Testing with Playwright](docs/playwright-testing.md) - Guide for E2E testing
 - [Playwright Test Improvements](docs/playwright-improvements.md) - Recent fixes and enhancements
-- [GOV.UK Component Testing](docs/govuk-testing.md) - Guide for component testing
+- [GOV.UK Component Testing](docs/component-testing.md) - Guide for component parity testing
 
 ### Available Scripts
 
@@ -186,33 +209,46 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 - Microservices architecture support
 - Intelligent 404 error handling with pattern-based exclusions
 
+### Prototype Journeys
+
+#### Find a Court or Tribunal (FaCT)
+
+A prototype user journey demonstrating GOV.UK Design System patterns including:
+- Radio button selection with server-side validation
+- Search functionality with filtered results
+- GOV.UK Error Summary and field-level error messages
+- Accessible form validation following GDS patterns
+
+Access the prototype at `/find-a-court-or-tribunal` when running the application.
+
 > 💡 **Why NestJS?** Discover how NestJS + Express.js + GOV.UK Frontend provides a more powerful and maintainable solution compared to vanilla Express.js in our [Key Features Guide](docs/KEYFEATURES.md).
 
 ## Package Versions
 
-This project uses the following key package versions:
+This project uses the following key package versions (last updated: December 2025):
 
 ### Core Dependencies
-- NestJS Framework: v11.1.5
-- Express.js: v5.1.0
-- GOV.UK Frontend: v5.11.1
-- TypeScript: v5.8.3
-- Node.js: >=20.12.2
+- NestJS Framework: v11.1.9
+- Express.js: v5.2.1
+- GOV.UK Frontend: v5.13.0
+- TypeScript: v5.9.3
+- Node.js: >=20.11.1
 
 ### Key Features
-- NestJS Core: v11.1.5
-- NestJS Swagger: v11.2.0
+- NestJS Core: v11.1.9
+- NestJS Swagger: v11.2.3
 - NestJS Config: v4.0.2
 - NestJS Axios: v4.0.1
 - NestJS Cache Manager: v3.0.1
 - NestJS Terminus: v11.0.0
-- NestJS Throttler: v6.4.0
+- NestJS Throttler: v6.5.0
 
 ### Testing & Development
-- Jest: v29.7.0
-- Playwright: v1.54.1
-- ESLint & Prettier: Latest versions
-- SASS: v1.89.2
+- Jest: v30.2.0
+- Playwright: v1.57.0
+- Prettier: v3.7.4
+- SASS: v1.94.2
+- Babel: v7.28.5
 
 For a complete list of dependencies and their versions, please refer to the `package.json` file.
 
@@ -356,7 +392,7 @@ For detailed information about testing:
 - [Unit Testing Guide](docs/unit-testing.md)
 - [End-to-End Testing with Playwright](docs/playwright-testing.md)
 - [Playwright Test Improvements](docs/playwright-improvements.md)
-- [GOV.UK Component Testing](docs/govuk-testing.md)
+- [GOV.UK Component Testing](docs/component-testing.md)
 
 ## Asset Fingerprinting
 
@@ -381,23 +417,23 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 ## Dependencies
 
 ### Core Dependencies
-- [NestJS](https://nestjs.com/) v11.1.5
-- [Express](https://expressjs.com/) v5.1.0+
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.11.1
-- [TypeScript](https://www.typescriptlang.org/) v5.8.3
-- [Node.js](https://github.com/nodejs/release#release-schedule) v20.12.2+
+- [NestJS](https://nestjs.com/) v11.1.9
+- [Express](https://expressjs.com/) v5.2.1
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.13.0
+- [TypeScript](https://www.typescriptlang.org/) v5.9.3
+- [Node.js](https://github.com/nodejs/release#release-schedule) v20.11.1+
 
 ### Key Features
-- Axios HTTP client for API integration v1.11.0
-- Redis caching with cache-manager v6.4.3
-- Winston logging with structured output v3.17.0
+- Axios HTTP client for API integration v1.13.2
+- Redis caching with cache-manager v7.2.5
+- Winston logging with structured output v3.18.3
 - Swagger/OpenAPI documentation
-- Rate limiting with @nestjs/throttler v6.4.0
+- Rate limiting with @nestjs/throttler v6.5.0
 - Compression middleware with configurable settings
 - Browser-side caching with smart invalidation
 - Helmet.js security headers v8.1.0
 - Nunjucks templating engine - the official and default templating language used by GOV.UK Design System
-- Class-validator v0.14.2 for request validation
+- Class-validator v0.14.3 for request validation
 - Class-transformer v0.5.1 for object transformation
 - TypeORM for database operations
 - Prisma ORM support
@@ -413,16 +449,16 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 - Intelligent 404 error handling with pattern-based exclusions
 
 ### Development Tools
-- Jest v29.7.0 for unit and integration testing
-- Playwright v1.54.1 for end-to-end testing
-- Prettier v3.6.2 for code formatting
+- Jest v30.2.0 for unit and integration testing
+- Playwright v1.57.0 for end-to-end testing
+- Prettier v3.7.4 for code formatting
 - ESLint for code linting
 - TypeScript strict mode enabled
-- SASS v1.89.2 for CSS preprocessing
+- SASS v1.94.2 for CSS preprocessing
 - Supertest v7.1.4 for API testing
 - Renovate bot for dependency updates
 - PostCSS v8.5.6 for CSS optimisation
-- Babel v7.28.0 for JavaScript transpilation
+- Babel v7.28.5 for JavaScript transpilation
 
 ## Dependency Management
 
