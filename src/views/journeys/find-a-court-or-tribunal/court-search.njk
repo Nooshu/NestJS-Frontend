@@ -56,7 +56,7 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds" id="courtResults" role="region" aria-live="polite" aria-label="Search results">
       <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-      
+
       {% if filteredCourts and filteredCourts.length > 0 %}
         <p class="govuk-body" id="results-count">We found {{ filteredCourts.length }} court{% if filteredCourts.length != 1 %}s{% endif %} or tribunal{% if filteredCourts.length != 1 %}s{% endif %} matching your search for '{{ searchTerm }}'.</p>
         <p class="govuk-body">Most relevant results displayed.</p>
