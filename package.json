@@ -12,6 +12,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production nest build --config tsconfig.build.json",
+    "postbuild": "npm run copy:views",
     "build:prod": "npm run build && npm run build:frontend",
     "format": "prettier --write \"src/**/*.{ts,js,json,njk}\"",
     "start": "cross-env NODE_ENV=production PORT=3002 nest start",
@@ -92,7 +93,7 @@
     "brace-expansion": "4.0.1",
     "cache-manager": "7.2.7",
     "cache-manager-redis-store": "3.0.1",
-    "chokidar": "4.0.3",
+    "chokidar": "5.0.0",
     "class-transformer": "0.5.1",
     "class-validator": "0.14.3",
     "compression": "1.8.1",
@@ -128,11 +129,11 @@
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
-    "@types/node": "24.10.2",
+    "@types/node": "25.0.2",
     "@types/nunjucks": "3.2.6",
     "@types/serve-static": "2.2.0",
     "@types/supertest": "6.0.3",
-    "autoprefixer": "10.4.22",
+    "autoprefixer": "10.4.23",
     "concurrently": "9.2.1",
     "cpy-cli": "6.0.0",
     "cross-env": "10.1.0",
@@ -146,7 +147,7 @@
     "postcss": "8.5.6",
     "prettier": "3.7.4",
     "rimraf": "6.1.2",
-    "sass": "1.95.1",
+    "sass": "1.96.0",
     "supertest": "7.1.4",
     "ts-jest": "29.4.6",
     "ts-node": "10.9.2",
@@ -154,7 +155,8 @@
     "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=20.11.1"
+    "node": ">=24.11.1",
+    "npm": ">=11.6.4"
   },
   "overrides": {
     "multer": "2.0.2",
@@ -164,7 +166,7 @@
       }
     },
     "nunjucks": {
-      "chokidar": "4.0.3"
+      "chokidar": "5.0.0"
     }
   }
 }
