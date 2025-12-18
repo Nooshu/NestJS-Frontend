@@ -8,8 +8,11 @@
  * @requires @nestjs/common
  */
 
-import { Controller, Get, Render, Header } from '@nestjs/common';
+import { Controller, Get, Render, Header, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Response } from 'express';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 /**
  * Main application controller that handles HTTP requests and view rendering.
@@ -42,6 +45,31 @@ export class AppController {
    * // 2. Return the view data
    * // 3. Render the index.njk template with the provided data
    */
+  /**
+   * Serves robots.txt file to prevent search engine crawling.
+   * This route serves the robots.txt file from the public directory
+   * with the correct content-type header.
+   *
+   * @method getRobotsTxt
+   * @param {Response} res - Express response object
+   * @returns {void} Sends robots.txt file content
+   */
+  @Get('robots.txt')
+  getRobotsTxt(@Res() res: Response): void {
+    const robotsPath = join(process.cwd(), 'dist', 'public', 'robots.txt');
+    try {
+      const robotsContent = readFileSync(robotsPath, 'utf-8');
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.send(robotsContent);
+    } catch (error) {
+      // Fallback if file doesn't exist
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.send('User-agent: *\nDisallow: /\n');
+    }
+  }
+
   @ApiOperation({ summary: 'Get home page' })
   @ApiResponse({
     status: 200,

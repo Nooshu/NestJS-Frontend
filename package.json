@@ -12,7 +12,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production nest build --config tsconfig.build.json",
-    "postbuild": "npm run copy:views",
+    "postbuild": "npm run copy:views && npm run copy:public-assets",
     "build:prod": "npm run build && npm run build:frontend",
     "format": "prettier --write \"src/**/*.{ts,js,json,njk}\"",
     "start": "cross-env NODE_ENV=production PORT=3002 nest start",
