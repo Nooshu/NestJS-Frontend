@@ -127,7 +127,7 @@ describe('CsrfMiddleware', () => {
       path: '/test',
       headers: {},
       cookies: {},
-      csrfToken: () => 'test-csrf-token'
+      csrfToken: () => 'test-csrf-token',
     };
 
     mockResponse = {
@@ -181,7 +181,7 @@ describe('CsrfMiddleware', () => {
 
     it('should reject invalid CSRF token', () => {
       mockRequest.method = 'POST';
-      mockRequest.cookies = { '_csrf': 'test-token' };
+      mockRequest.cookies = { _csrf: 'test-token' };
       mockRequest.headers = { 'csrf-token': 'invalid-token' };
 
       // Configure the mock to simulate an error
@@ -235,7 +235,7 @@ describe('CsrfMiddleware', () => {
   describe('error handling', () => {
     it('should handle errors gracefully', () => {
       mockRequest.method = 'POST';
-      mockRequest.cookies = { '_csrf': 'test-token' };
+      mockRequest.cookies = { _csrf: 'test-token' };
       mockRequest.headers = { 'csrf-token': 'test-token' };
 
       // Configure the mock to simulate an error

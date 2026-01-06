@@ -45,10 +45,10 @@ describe('error-handling.ts', () => {
       // Assert
       expect(mockApp.use).toHaveBeenCalled();
       const middleware = (mockApp.use as jest.Mock).mock.calls[0][0];
-      
+
       // Call the middleware with mock request and response
       middleware(mockReq as Request, mockRes as Response, mockNext);
-      
+
       expect(mockRes.status).toHaveBeenCalledWith(404);
       expect(mockRes.render).toHaveBeenCalledWith('error', {
         title: 'Page not found',
@@ -66,11 +66,11 @@ describe('error-handling.ts', () => {
       // Assert
       expect(mockApp.use).toHaveBeenCalled();
       const errorMiddleware = (mockApp.use as jest.Mock).mock.calls[1][0];
-      
+
       // Test with a generic error
       const error = new Error('Test error');
       errorMiddleware(error, mockReq as Request, mockRes as Response, mockNext);
-      
+
       expect(consoleErrorSpy).toHaveBeenCalledWith(error.stack);
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.render).toHaveBeenCalledWith('error', {
@@ -89,14 +89,14 @@ describe('error-handling.ts', () => {
       // Assert
       expect(mockApp.use).toHaveBeenCalled();
       const errorMiddleware = (mockApp.use as jest.Mock).mock.calls[1][0];
-      
+
       // Create a security error
       const securityError = new Error('Security violation');
       securityError.name = 'SecurityError';
-      
+
       // Test with security error
       errorMiddleware(securityError, mockReq as Request, mockRes as Response, mockNext);
-      
+
       expect(consoleErrorSpy).toHaveBeenCalledWith(securityError.stack);
       expect(mockRes.status).toHaveBeenCalledWith(403);
       expect(mockRes.render).toHaveBeenCalledWith('error', {
@@ -115,14 +115,14 @@ describe('error-handling.ts', () => {
       // Assert
       expect(mockApp.use).toHaveBeenCalled();
       const errorMiddleware = (mockApp.use as jest.Mock).mock.calls[1][0];
-      
+
       // Create an error without stack trace
       const error = new Error('Test error');
       delete error.stack;
-      
+
       // Test with error without stack
       errorMiddleware(error, mockReq as Request, mockRes as Response, mockNext);
-      
+
       expect(consoleErrorSpy).toHaveBeenCalledWith(undefined);
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.render).toHaveBeenCalledWith('error', {
@@ -141,11 +141,11 @@ describe('error-handling.ts', () => {
       // Assert
       expect(mockApp.use).toHaveBeenCalled();
       const errorMiddleware = (mockApp.use as jest.Mock).mock.calls[1][0];
-      
+
       // Test with non-Error object
       const nonError = { message: 'Not an error' };
       errorMiddleware(nonError, mockReq as Request, mockRes as Response, mockNext);
-      
+
       expect(consoleErrorSpy).toHaveBeenCalledWith(undefined);
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.render).toHaveBeenCalledWith('error', {
@@ -157,4 +157,4 @@ describe('error-handling.ts', () => {
       });
     });
   });
-}); 
+});

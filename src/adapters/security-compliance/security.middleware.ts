@@ -171,7 +171,7 @@ const excludeFields = (
  * Security middleware factory for creating a comprehensive security middleware stack.
  * Implements multiple security layers including rate limiting, CORS protection,
  * security headers, and audit logging.
- * 
+ *
  * Security features:
  * - Rate limiting with configurable windows
  * - CORS protection with strict origin validation
@@ -179,14 +179,14 @@ const excludeFields = (
  * - Audit logging with sensitive data masking
  * - Request validation
  * - Error handling
- * 
+ *
  * Configuration options:
  * - Rate limit settings
  * - CORS policy
  * - Security headers
  * - Audit logging
  * - Cache settings
- * 
+ *
  * @param {SecurityConfig} config - Security configuration object
  * @returns {RequestHandler[]} Array of security middleware functions
  */

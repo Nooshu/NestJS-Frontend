@@ -62,6 +62,6 @@ module.exports = {
     '/dist/',
   ],
   transformIgnorePatterns: [
-    'node_modules/(?!(jsdom|parse5)/)',
+    'node_modules/(?!(jsdom|parse5|@exodus|html-encoding-sniffer|whatwg-url|data-urls|abab|cssom|nwsapi|domexception|webidl-conversions|tr46|ws|form-data|fetch-blob|node-domexception)/)',
   ],
 };

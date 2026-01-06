@@ -44,4 +44,4 @@ describe('routes.ts', () => {
       expect(typeof setupRoutes).toBe('function');
     });
   });
-}); 
+});

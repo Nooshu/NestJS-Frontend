@@ -3,7 +3,7 @@ import { ConfigService } from './config.service';
 import { ConfigService as NestConfigService } from '@nestjs/config';
 import { loggingConfig } from './logging.config';
 
-type SecurityConfigKeys = 
+type SecurityConfigKeys =
   | 'security.cors.enabled'
   | 'security.cors.origin'
   | 'security.csrf.enabled'
@@ -93,7 +93,7 @@ describe('ConfigService', () => {
     it('should use injected ConfigService for all getters', () => {
       const configService = new ConfigService(mockNestConfigService as any);
       mockNestConfigService.get.mockReturnValue('test-value');
-      
+
       // Call all getters to ensure they use the injected service
       configService.port;
       configService.environment;
@@ -415,7 +415,7 @@ describe('ConfigService', () => {
     it('should handle security configuration with all values undefined', () => {
       mockNestConfigService.get.mockReturnValue(undefined);
       const security = service.security;
-      
+
       // Verify each property uses its default value
       expect(security.cors.enabled).toBe(false);
       expect(security.cors.origin).toBe('*');
@@ -486,19 +486,19 @@ describe('ConfigService', () => {
     it('should return default logging configuration', () => {
       mockNestConfigService.get.mockImplementation((key: LoggingConfigKeys) => {
         const defaults: Record<LoggingConfigKeys, undefined> = {
-          'APP_NAME': undefined,
-          'NODE_ENV': undefined,
-          'LOG_LEVEL': undefined,
-          'LOG_FILE': undefined,
-          'LOG_FILE_PATH': undefined,
-          'LOG_FILE_MAX_SIZE': undefined,
-          'LOG_FILE_MAX_FILES': undefined,
-          'LOG_CONSOLE': undefined,
-          'LOG_AUDIT_ENABLED': undefined,
-          'LOG_MONITORING_ENABLED': undefined,
-          'LOG_MONITORING_ERROR_RATE_THRESHOLD': undefined,
-          'LOG_MONITORING_RESPONSE_TIME_THRESHOLD': undefined,
-          'LOG_MONITORING_MEMORY_USAGE_THRESHOLD': undefined,
+          APP_NAME: undefined,
+          NODE_ENV: undefined,
+          LOG_LEVEL: undefined,
+          LOG_FILE: undefined,
+          LOG_FILE_PATH: undefined,
+          LOG_FILE_MAX_SIZE: undefined,
+          LOG_FILE_MAX_FILES: undefined,
+          LOG_CONSOLE: undefined,
+          LOG_AUDIT_ENABLED: undefined,
+          LOG_MONITORING_ENABLED: undefined,
+          LOG_MONITORING_ERROR_RATE_THRESHOLD: undefined,
+          LOG_MONITORING_RESPONSE_TIME_THRESHOLD: undefined,
+          LOG_MONITORING_MEMORY_USAGE_THRESHOLD: undefined,
         };
         return defaults[key] ?? undefined;
       });
@@ -514,19 +514,19 @@ describe('ConfigService', () => {
     it('should return custom logging configuration', () => {
       mockNestConfigService.get.mockImplementation((key: LoggingConfigKeys) => {
         const customValues: Record<LoggingConfigKeys, string | boolean | number | undefined> = {
-          'APP_NAME': 'custom-app',
-          'NODE_ENV': 'production',
-          'LOG_LEVEL': 'error',
-          'LOG_FILE': true,
-          'LOG_FILE_PATH': '/custom/logs',
-          'LOG_FILE_MAX_SIZE': 1000000,
-          'LOG_FILE_MAX_FILES': 10,
-          'LOG_CONSOLE': true,
-          'LOG_AUDIT_ENABLED': true,
-          'LOG_MONITORING_ENABLED': true,
-          'LOG_MONITORING_ERROR_RATE_THRESHOLD': 5,
-          'LOG_MONITORING_RESPONSE_TIME_THRESHOLD': 1000,
-          'LOG_MONITORING_MEMORY_USAGE_THRESHOLD': 80,
+          APP_NAME: 'custom-app',
+          NODE_ENV: 'production',
+          LOG_LEVEL: 'error',
+          LOG_FILE: true,
+          LOG_FILE_PATH: '/custom/logs',
+          LOG_FILE_MAX_SIZE: 1000000,
+          LOG_FILE_MAX_FILES: 10,
+          LOG_CONSOLE: true,
+          LOG_AUDIT_ENABLED: true,
+          LOG_MONITORING_ENABLED: true,
+          LOG_MONITORING_ERROR_RATE_THRESHOLD: 5,
+          LOG_MONITORING_RESPONSE_TIME_THRESHOLD: 1000,
+          LOG_MONITORING_MEMORY_USAGE_THRESHOLD: 80,
         };
         return customValues[key] ?? undefined;
       });
@@ -604,9 +604,9 @@ describe('ConfigService', () => {
     it('should handle custom monitoring thresholds', () => {
       mockNestConfigService.get.mockImplementation((key: LoggingConfigKeys) => {
         const customValues = {
-          'LOG_MONITORING_ERROR_RATE_THRESHOLD': 10,
-          'LOG_MONITORING_RESPONSE_TIME_THRESHOLD': 2000,
-          'LOG_MONITORING_MEMORY_USAGE_THRESHOLD': 90,
+          LOG_MONITORING_ERROR_RATE_THRESHOLD: 10,
+          LOG_MONITORING_RESPONSE_TIME_THRESHOLD: 2000,
+          LOG_MONITORING_MEMORY_USAGE_THRESHOLD: 90,
         };
         return customValues[key as keyof typeof customValues] ?? undefined;
       });
@@ -622,19 +622,19 @@ describe('ConfigService', () => {
     it('should handle null values for logging configuration', () => {
       mockNestConfigService.get.mockImplementation((key: LoggingConfigKeys) => {
         const nullValues: Record<LoggingConfigKeys, null> = {
-          'APP_NAME': null,
-          'NODE_ENV': null,
-          'LOG_LEVEL': null,
-          'LOG_FILE': null,
-          'LOG_FILE_PATH': null,
-          'LOG_FILE_MAX_SIZE': null,
-          'LOG_FILE_MAX_FILES': null,
-          'LOG_CONSOLE': null,
-          'LOG_AUDIT_ENABLED': null,
-          'LOG_MONITORING_ENABLED': null,
-          'LOG_MONITORING_ERROR_RATE_THRESHOLD': null,
-          'LOG_MONITORING_RESPONSE_TIME_THRESHOLD': null,
-          'LOG_MONITORING_MEMORY_USAGE_THRESHOLD': null,
+          APP_NAME: null,
+          NODE_ENV: null,
+          LOG_LEVEL: null,
+          LOG_FILE: null,
+          LOG_FILE_PATH: null,
+          LOG_FILE_MAX_SIZE: null,
+          LOG_FILE_MAX_FILES: null,
+          LOG_CONSOLE: null,
+          LOG_AUDIT_ENABLED: null,
+          LOG_MONITORING_ENABLED: null,
+          LOG_MONITORING_ERROR_RATE_THRESHOLD: null,
+          LOG_MONITORING_RESPONSE_TIME_THRESHOLD: null,
+          LOG_MONITORING_MEMORY_USAGE_THRESHOLD: null,
         };
         return nullValues[key] ?? undefined;
       });
@@ -694,7 +694,7 @@ describe('ConfigService', () => {
     it('should handle logging configuration with all values undefined', () => {
       mockNestConfigService.get.mockReturnValue(undefined);
       const logging = service.logging;
-      
+
       // Verify each property uses its default value
       expect(logging.base.appName).toBe(loggingConfig.base.appName);
       expect(logging.base.environment).toBe(loggingConfig.base.environment);
@@ -770,4 +770,4 @@ describe('ConfigService', () => {
       expect(service.npmPackageVersion).toBe('1.0.0');
     });
   });
-}); 
+});

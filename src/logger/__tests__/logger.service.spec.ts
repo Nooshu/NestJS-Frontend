@@ -38,7 +38,16 @@ describe('LoggerService', () => {
       },
       audit: {
         enabled: true,
-        include: ['timestamp', 'user', 'action', 'resource', 'status', 'ip', 'userAgent', 'requestId'],
+        include: [
+          'timestamp',
+          'user',
+          'action',
+          'resource',
+          'status',
+          'ip',
+          'userAgent',
+          'requestId',
+        ],
         exclude: ['password', 'token'],
         maskSensitiveData: true,
         sensitiveFields: ['password', 'token', 'secret', 'apiKey', 'authorization'],
@@ -353,4 +362,4 @@ describe('LoggerService', () => {
       });
     });
   });
-}); 
+});

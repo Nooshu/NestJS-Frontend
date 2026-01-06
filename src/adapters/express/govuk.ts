@@ -24,7 +24,14 @@ export function setupGovUKFrontend(_app: Application, nunjucksEnv: nunjucks.Envi
   });
 
   // Add GOV.UK Frontend components path
-  const componentsPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'components');
+  const componentsPath = join(
+    process.cwd(),
+    'node_modules',
+    'govuk-frontend',
+    'dist',
+    'govuk',
+    'components'
+  );
   nunjucksEnv.addGlobal('govukComponentsPath', componentsPath);
 
   // Add GOV.UK Frontend macros

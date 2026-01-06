@@ -208,14 +208,14 @@ export class RedisHealthIndicator extends HealthIndicator {
     try {
       // Get Redis memory info
       const info = await this.redisClient.info('memory');
-      
+
       // Parse memory info to get used and max memory
       const usedMemoryMatch = info.match(/used_memory:(\d+)/);
       const maxMemoryMatch = info.match(/maxmemory:(\d+)/);
-      
+
       const usedMemory = usedMemoryMatch ? parseInt(usedMemoryMatch[1], 10) : 0;
       const maxMemory = maxMemoryMatch ? parseInt(maxMemoryMatch[1], 10) : 0;
-      
+
       const memoryUsagePercent = maxMemory > 0 ? (usedMemory / maxMemory) * 100 : 0;
       const isHealthy = memoryUsagePercent < 80; // Consider healthy if memory usage < 80%
 

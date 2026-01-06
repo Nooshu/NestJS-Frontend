@@ -81,7 +81,9 @@ describe('example.ts', () => {
     it('should handle server startup errors', async () => {
       const mockError = new Error('Failed to start server');
       (mockNestApp.listen as jest.Mock).mockRejectedValue(mockError);
-      const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+      const processExitSpy = jest
+        .spyOn(process, 'exit')
+        .mockImplementation(() => undefined as never);
       await exampleModule.startServer().catch((error) => {
         console.error('Failed to start server:', error);
         process.exit(1);
@@ -166,11 +168,13 @@ describe('example.ts', () => {
     it('should handle error in startServer if isMain is true', async () => {
       const error = new Error('fail');
       const mockStartServer = jest.fn().mockRejectedValue(error);
-      const processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+      const processExitSpy = jest
+        .spyOn(process, 'exit')
+        .mockImplementation(() => undefined as never);
       await exampleModule.runIfMain(true, mockStartServer);
       expect(console.error).toHaveBeenCalledWith('Failed to start server:', error);
       expect(processExitSpy).toHaveBeenCalledWith(1);
       processExitSpy.mockRestore();
     });
   });
-}); 
+});

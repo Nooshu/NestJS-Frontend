@@ -95,11 +95,7 @@ export function loadFixtures(componentName: string): GovukComponentFixtures {
  * @returns {string} The normalized HTML
  */
 export function normalizeHtml(html: string): string {
-  return html
-    .replace(/\s+/g, ' ')
-    .replace(/>\s+</g, '><')
-    .replace(/\n/g, '')
-    .trim();
+  return html.replace(/\s+/g, ' ').replace(/>\s+</g, '><').replace(/\n/g, '').trim();
 }
 
 /**
@@ -149,7 +145,7 @@ export function compareHtml(rendered: string, fixture: string): boolean {
   if (renderedAttrKeys.length !== fixtureAttrKeys.length) {
     console.log('Attribute count mismatch:', {
       rendered: renderedAttrKeys,
-      fixture: fixtureAttrKeys
+      fixture: fixtureAttrKeys,
     });
     return false;
   }
@@ -159,7 +155,7 @@ export function compareHtml(rendered: string, fixture: string): boolean {
       console.log('Attribute value mismatch:', {
         key,
         rendered: renderedAttrs[key],
-        fixture: fixtureAttrs[key]
+        fixture: fixtureAttrs[key],
       });
       return false;
     }
@@ -172,7 +168,7 @@ export function compareHtml(rendered: string, fixture: string): boolean {
   if (renderedClasses.length !== fixtureClasses.length) {
     console.log('Class count mismatch:', {
       rendered: renderedClasses,
-      fixture: fixtureClasses
+      fixture: fixtureClasses,
     });
     return false;
   }
@@ -191,7 +187,7 @@ export function compareHtml(rendered: string, fixture: string): boolean {
   if (renderedText !== fixtureText) {
     console.log('Text content mismatch:', {
       rendered: renderedText,
-      fixture: fixtureText
+      fixture: fixtureText,
     });
     return false;
   }
@@ -203,7 +199,7 @@ export function compareHtml(rendered: string, fixture: string): boolean {
   if (renderedChildren.length !== fixtureChildren.length) {
     console.log('Child count mismatch:', {
       rendered: renderedChildren.length,
-      fixture: fixtureChildren.length
+      fixture: fixtureChildren.length,
     });
     return false;
   }

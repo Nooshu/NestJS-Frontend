@@ -13,12 +13,12 @@ export class CspMiddleware implements NestMiddleware {
 
     // Set CSP headers
     const directives = this.securityConfig.csp.directives;
-    
+
     // Handle case where directives is null/undefined
     if (!directives) {
       return next();
     }
-    
+
     const cspHeader = Object.entries(directives)
       .map(([key, value]) => {
         // Handle different value types

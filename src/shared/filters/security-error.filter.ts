@@ -136,15 +136,15 @@ export class SecurityErrorFilter implements ExceptionFilter {
       '/.well-known/appspecific/com.chrome.devtools.json',
       '/favicon.ico',
       '*.js.map',
-      '*.css.map'
+      '*.css.map',
     ];
 
-    return excludePaths.some(pattern => {
+    return excludePaths.some((pattern) => {
       // Handle exact matches
       if (!pattern.includes('*')) {
         return path === pattern;
       }
-      
+
       // Handle *.extension patterns
       if (pattern.startsWith('*.')) {
         const extension = pattern.slice(1);

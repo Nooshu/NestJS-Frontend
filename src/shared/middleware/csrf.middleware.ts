@@ -155,7 +155,7 @@ export class CsrfMiddleware implements NestMiddleware {
     this.cookieOptions = {
       ...csrfConfig.cookieOptions,
       sameSite: csrfConfig.cookieOptions.sameSite as SameSite,
-      path: '/'
+      path: '/',
     };
 
     // Set logging context for better debugging
@@ -231,7 +231,7 @@ export class CsrfMiddleware implements NestMiddleware {
       if (!token || !providedToken) {
         this.logger.debug('CSRF token validation failed: missing token', {
           hasCookieToken: !!token,
-          hasHeaderToken: !!providedToken
+          hasHeaderToken: !!providedToken,
         });
         return false;
       }
@@ -242,7 +242,7 @@ export class CsrfMiddleware implements NestMiddleware {
       if (token !== providedToken) {
         this.logger.debug('CSRF token validation failed: token mismatch', {
           cookieToken: token.substring(0, 8) + '...',
-          headerToken: providedToken.substring(0, 8) + '...'
+          headerToken: providedToken.substring(0, 8) + '...',
         });
         return false;
       }
@@ -250,7 +250,10 @@ export class CsrfMiddleware implements NestMiddleware {
       return true;
     } catch (error) {
       // Log validation errors for security monitoring
-      this.logger.error('CSRF token validation error', error instanceof Error ? error.stack : 'Unknown error');
+      this.logger.error(
+        'CSRF token validation error',
+        error instanceof Error ? error.stack : 'Unknown error'
+      );
       return false;
     }
   }
@@ -284,15 +287,11 @@ export class CsrfMiddleware implements NestMiddleware {
   private handleError(res: Response, error?: Error, details?: Record<string, any>) {
     const errorDetails = {
       ...details,
-      message: error?.message
+      message: error?.message,
     };
 
     // Log security event for monitoring and audit purposes
-    this.logger.error(
-      'CSRF token validation error',
-      error?.stack,
-      errorDetails
-    );
+    this.logger.error('CSRF token validation error', error?.stack, errorDetails);
 
     // Return standardized error response
     return res.status(403).json({
@@ -300,7 +299,7 @@ export class CsrfMiddleware implements NestMiddleware {
       message: 'Invalid CSRF token',
       error: 'Forbidden',
       // Include detailed error information only in development
-      details: process.env.NODE_ENV === 'development' ? errorDetails : undefined
+      details: process.env.NODE_ENV === 'development' ? errorDetails : undefined,
     });
   }
 
@@ -351,7 +350,7 @@ export class CsrfMiddleware implements NestMiddleware {
           const token = this.generateToken(req);
           const cookieOptions = {
             ...this.cookieOptions,
-            sameSite: this.cookieOptions.sameSite
+            sameSite: this.cookieOptions.sameSite,
           };
 
           this.logger.debug('Setting CSRF cookie', {
@@ -360,7 +359,7 @@ export class CsrfMiddleware implements NestMiddleware {
             tokenPrefix: token.substring(0, 8) + '...',
             cookieName: this.cookieName,
             cookieOptions,
-            cookieHeader: res.getHeader('Set-Cookie')
+            cookieHeader: res.getHeader('Set-Cookie'),
           });
 
           // Set the cookie with explicit options
@@ -369,14 +368,14 @@ export class CsrfMiddleware implements NestMiddleware {
             path: '/',
             httpOnly: true,
             secure: true,
-            sameSite: 'strict'
+            sameSite: 'strict',
           });
 
           // Log the cookie after setting
           this.logger.debug('CSRF cookie set', {
             cookieHeader: res.getHeader('Set-Cookie'),
             cookieName: this.cookieName,
-            tokenPrefix: token.substring(0, 8) + '...'
+            tokenPrefix: token.substring(0, 8) + '...',
           });
 
           res.locals.csrfToken = token;
@@ -398,7 +397,7 @@ export class CsrfMiddleware implements NestMiddleware {
             cookieTokenPrefix: token ? token.substring(0, 8) + '...' : undefined,
             formTokenPrefix: formToken ? formToken.substring(0, 8) + '...' : undefined,
             cookieHeader: req.headers.cookie,
-            body: req.body
+            body: req.body,
           });
 
           this.logger.debug('Validating CSRF token', {
@@ -408,7 +407,7 @@ export class CsrfMiddleware implements NestMiddleware {
             hasCookieToken: !!token,
             hasFormToken: !!formToken,
             cookieTokenPrefix: token ? token.substring(0, 8) + '...' : undefined,
-            formTokenPrefix: formToken ? formToken.substring(0, 8) + '...' : undefined
+            formTokenPrefix: formToken ? formToken.substring(0, 8) + '...' : undefined,
           });
 
           if (!this.verifyToken(token, formToken)) {
@@ -422,7 +421,7 @@ export class CsrfMiddleware implements NestMiddleware {
               formTokenPrefix: formToken ? formToken.substring(0, 8) + '...' : undefined,
               allCookies: Object.keys(req.cookies),
               cookieHeader: req.headers.cookie,
-              body: req.body
+              body: req.body,
             });
           }
 
@@ -430,7 +429,7 @@ export class CsrfMiddleware implements NestMiddleware {
             path: req.path,
             method: req.method,
             cookieTokenPrefix: token.substring(0, 8) + '...',
-            formTokenPrefix: formToken.substring(0, 8) + '...'
+            formTokenPrefix: formToken.substring(0, 8) + '...',
           });
         }
 
@@ -440,7 +439,7 @@ export class CsrfMiddleware implements NestMiddleware {
           path: req.path,
           method: req.method,
           error: error instanceof Error ? error.message : 'Unknown error',
-          stack: error instanceof Error ? error.stack : undefined
+          stack: error instanceof Error ? error.stack : undefined,
         });
       }
     });

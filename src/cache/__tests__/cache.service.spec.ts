@@ -145,13 +145,13 @@ describe('CacheService', () => {
         await service.set(testKey, testValue, ttl);
         // Verify set was called with correct parameters
         expect(cacheManager.set).toHaveBeenCalledWith(testKey, testValue, ttl);
-        
+
         // Mock the get to return our test value
         cacheManager.get.mockResolvedValue(testValue);
         // Verify we can retrieve the value
         const retrievedValue = await service.get<string>(testKey);
         expect(retrievedValue).toBe(testValue);
-        
+
         // Reset mocks for next iteration
         cacheManager.set.mockClear();
         cacheManager.get.mockClear();
@@ -200,7 +200,9 @@ describe('CacheService', () => {
 
     it('should handle multiple clear operations', async () => {
       // Arrange
-      const clearOperations = Array(3).fill(null).map(() => service.clear());
+      const clearOperations = Array(3)
+        .fill(null)
+        .map(() => service.clear());
 
       // Act
       await Promise.all(clearOperations);
@@ -238,15 +240,17 @@ describe('CacheService', () => {
     it('should handle concurrent get and set operations', async () => {
       // Arrange
       const testKey = 'concurrent-key';
-      const operations = Array(10).fill(null).map((_, index) => ({
-        key: `${testKey}-${index}`,
-        value: `value-${index}`,
-      }));
+      const operations = Array(10)
+        .fill(null)
+        .map((_, index) => ({
+          key: `${testKey}-${index}`,
+          value: `value-${index}`,
+        }));
 
       // Act
-      const setPromises = operations.map(op => service.set(op.key, op.value));
-      const getPromises = operations.map(op => service.get(op.key));
-      
+      const setPromises = operations.map((op) => service.set(op.key, op.value));
+      const getPromises = operations.map((op) => service.get(op.key));
+
       await Promise.all(setPromises);
       const results = await Promise.all(getPromises);
 
@@ -293,4 +297,4 @@ describe('CacheService', () => {
       await expect(uninitializedService.clear()).rejects.toThrow();
     });
   });
-}); 
+});

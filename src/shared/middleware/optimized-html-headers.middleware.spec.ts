@@ -51,9 +51,18 @@ describe('OptimizedHtmlHeadersMiddleware', () => {
         'Content-Security-Policy',
         "default-src 'self'; img-src 'self' https: data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' https:; object-src 'none'; frame-ancestors 'self'; upgrade-insecure-requests"
       );
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Referrer-Policy', 'strict-origin-when-cross-origin');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cross-Origin-Resource-Policy', 'same-site');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Referrer-Policy',
+        'strict-origin-when-cross-origin'
+      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Permissions-Policy',
+        'geolocation=(), microphone=(), camera=()'
+      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Cross-Origin-Resource-Policy',
+        'same-site'
+      );
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Content-Type-Options', 'nosniff');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Frame-Options', 'DENY');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Alt-Svc', 'h3=":443"; ma=86400');
@@ -133,7 +142,10 @@ describe('OptimizedHtmlHeadersMiddleware', () => {
 
       // Verify that legacy headers are NOT set for HTML responses
       expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-DNS-Prefetch-Control', 'off');
-      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-Permitted-Cross-Domain-Policies', 'none');
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith(
+        'X-Permitted-Cross-Domain-Policies',
+        'none'
+      );
       expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-XSS-Protection', '0');
       expect(mockResponse.setHeader).not.toHaveBeenCalledWith('X-XSS-Protection', '1; mode=block');
     });
@@ -150,7 +162,10 @@ describe('OptimizedHtmlHeadersMiddleware', () => {
       const endFunction = mockResponse.end as jest.Mock;
       endFunction('test content');
 
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('ETag', expect.stringMatching(/^"[a-f0-9]{32}"$/));
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'ETag',
+        expect.stringMatching(/^"[a-f0-9]{32}"$/)
+      );
     });
   });
 
@@ -163,7 +178,7 @@ describe('OptimizedHtmlHeadersMiddleware', () => {
         '/fonts/font.woff2',
       ];
 
-      staticPaths.forEach(path => {
+      staticPaths.forEach((path) => {
         jest.clearAllMocks();
         mockRequest.path = path;
         mockRequest.accepts = jest.fn().mockReturnValue(false);

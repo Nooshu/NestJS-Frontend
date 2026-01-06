@@ -29,7 +29,7 @@ describe('GOV.UK Frontend Middleware', () => {
     it('should apply static assets middleware', () => {
       const useSpy = jest.spyOn(app, 'use');
       applyGovukFrontend(app, mockGovukConfig);
-      
+
       // Check that static assets middleware is applied
       expect(useSpy).toHaveBeenCalledWith('/assets', expect.any(Function));
       useSpy.mockRestore();
@@ -38,7 +38,7 @@ describe('GOV.UK Frontend Middleware', () => {
     it('should apply configuration middleware', () => {
       const useSpy = jest.spyOn(app, 'use');
       applyGovukFrontend(app, mockGovukConfig);
-      
+
       // Should be called 3 times: static assets + config + cookie consent
       expect(useSpy).toHaveBeenCalledTimes(3);
       useSpy.mockRestore();
@@ -47,7 +47,7 @@ describe('GOV.UK Frontend Middleware', () => {
     it('should apply cookie consent middleware', () => {
       const useSpy = jest.spyOn(app, 'use');
       applyGovukFrontend(app, mockGovukConfig);
-      
+
       // The last call should be for cookie consent
       const calls = useSpy.mock.calls;
       expect(calls.length).toBeGreaterThanOrEqual(3);
@@ -70,7 +70,7 @@ describe('GOV.UK Frontend Middleware', () => {
 
       const useSpy = jest.spyOn(app, 'use');
       applyGovukFrontend(app, customConfig);
-      
+
       expect(useSpy).toHaveBeenCalled();
       useSpy.mockRestore();
     });
@@ -134,7 +134,9 @@ describe('GOV.UK Frontend Middleware', () => {
 
       expect(mockResponse.locals?.govuk.phaseBanner).toBeDefined();
       expect(mockResponse.locals?.govuk.phaseBanner.phase).toBe(mockGovukConfig.base.phase);
-      expect(mockResponse.locals?.govuk.phaseBanner.feedbackLink).toBe(mockGovukConfig.base.feedbackLink);
+      expect(mockResponse.locals?.govuk.phaseBanner.feedbackLink).toBe(
+        mockGovukConfig.base.feedbackLink
+      );
     });
 
     it('should not add phase banner when showPhaseBanner is false', () => {
@@ -210,7 +212,9 @@ describe('GOV.UK Frontend Middleware', () => {
       expect(testResponse.locals.govuk.cookieConsent).toBeDefined();
       expect(testResponse.locals.govuk.cookieConsent.showBanner).toBe(true);
       expect(testResponse.locals.govuk.cookieConsent.accepted).toBe(false);
-      expect(testResponse.locals.govuk.cookieConsent.policyUrl).toBe(mockGovukConfig.cookieBanner.cookiePolicyUrl);
+      expect(testResponse.locals.govuk.cookieConsent.policyUrl).toBe(
+        mockGovukConfig.cookieBanner.cookiePolicyUrl
+      );
       expect(mockNext).toHaveBeenCalled();
     });
 

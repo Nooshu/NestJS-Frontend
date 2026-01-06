@@ -84,7 +84,10 @@ describe('CacheMiddleware', () => {
     it('should set no-cache headers in development environment', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'no-cache, no-store, must-revalidate');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Cache-Control',
+        'no-cache, no-store, must-revalidate'
+      );
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Pragma', 'no-cache');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Expires', '0');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
@@ -126,7 +129,10 @@ describe('CacheMiddleware', () => {
 
         middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=3600, stale-while-revalidate=60');
+        expect(mockResponse.setHeader).toHaveBeenCalledWith(
+          'Cache-Control',
+          'public, max-age=3600, stale-while-revalidate=60'
+        );
         expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
         expect(nextFunction).toHaveBeenCalled();
       });
@@ -142,7 +148,10 @@ describe('CacheMiddleware', () => {
 
         middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=7200, stale-while-revalidate=120');
+        expect(mockResponse.setHeader).toHaveBeenCalledWith(
+          'Cache-Control',
+          'public, max-age=7200, stale-while-revalidate=120'
+        );
         expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
         expect(nextFunction).toHaveBeenCalled();
       });
@@ -158,7 +167,10 @@ describe('CacheMiddleware', () => {
 
         middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=3600, stale-while-revalidate=60');
+        expect(mockResponse.setHeader).toHaveBeenCalledWith(
+          'Cache-Control',
+          'public, max-age=3600, stale-while-revalidate=60'
+        );
         expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
         expect(nextFunction).toHaveBeenCalled();
       });
@@ -182,13 +194,17 @@ describe('CacheMiddleware', () => {
               if (key === 'environment') return 'production';
               if (key === 'performance.browserCache.maxAge') return 3600;
               if (key === 'performance.browserCache.staticAssets.maxAge') return 604800;
-              if (key === 'performance.browserCache.staticAssets.staleWhileRevalidate') return 86400;
+              if (key === 'performance.browserCache.staticAssets.staleWhileRevalidate')
+                return 86400;
               return null;
             });
 
             middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-            expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=604800, stale-while-revalidate=86400');
+            expect(mockResponse.setHeader).toHaveBeenCalledWith(
+              'Cache-Control',
+              'public, max-age=604800, stale-while-revalidate=86400'
+            );
             expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
             expect(nextFunction).toHaveBeenCalled();
           });
@@ -203,7 +219,10 @@ describe('CacheMiddleware', () => {
         middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
         // Should still set cache headers as if unauthenticated
-        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', expect.stringContaining('public, max-age='));
+        expect(mockResponse.setHeader).toHaveBeenCalledWith(
+          'Cache-Control',
+          expect.stringContaining('public, max-age=')
+        );
         expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
         expect(nextFunction).toHaveBeenCalled();
       });
@@ -216,7 +235,10 @@ describe('CacheMiddleware', () => {
         middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
         // Should use default values when config fails
-        expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=3600, stale-while-revalidate=60');
+        expect(mockResponse.setHeader).toHaveBeenCalledWith(
+          'Cache-Control',
+          'public, max-age=3600, stale-while-revalidate=60'
+        );
         expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
         expect(nextFunction).toHaveBeenCalled();
       });
@@ -246,7 +268,10 @@ describe('CacheMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=3600, stale-while-revalidate=60');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Cache-Control',
+        'public, max-age=3600, stale-while-revalidate=60'
+      );
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Vary', 'Accept-Encoding');
       expect(nextFunction).toHaveBeenCalled();
     });

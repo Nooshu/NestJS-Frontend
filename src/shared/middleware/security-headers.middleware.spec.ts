@@ -85,9 +85,18 @@ describe('SecurityHeadersMiddleware', () => {
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Frame-Options', 'DENY');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Content-Type-Options', 'nosniff');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-XSS-Protection', '1; mode=block');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Referrer-Policy', 'strict-origin-when-cross-origin');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cross-Origin-Resource-Policy', 'same-site');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Permissions-Policy',
+        'geolocation=(), microphone=(), camera=()'
+      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Referrer-Policy',
+        'strict-origin-when-cross-origin'
+      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Cross-Origin-Resource-Policy',
+        'same-site'
+      );
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Download-Options', 'noopen');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Security-Enhanced', 'true');
     });
@@ -103,10 +112,10 @@ describe('SecurityHeadersMiddleware', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
 
       const permissionsPolicyCall = (mockResponse.setHeader as jest.Mock).mock.calls.find(
-        call => call[0] === 'Permissions-Policy'
+        (call) => call[0] === 'Permissions-Policy'
       );
       expect(permissionsPolicyCall).toBeDefined();
-      
+
       const permissionsPolicy = permissionsPolicyCall[1];
       expect(permissionsPolicy).toBe('geolocation=(), microphone=(), camera=()');
     });
@@ -163,7 +172,7 @@ describe('SecurityHeadersMiddleware', () => {
       '/account/profile',
     ];
 
-    sensitiveRoutes.forEach(route => {
+    sensitiveRoutes.forEach((route) => {
       it(`should set no-cache headers for sensitive route: ${route}`, () => {
         mockRequest.path = route;
         mockRequest.accepts = jest.fn().mockReturnValue(false); // Ensure it's not detected as HTML
@@ -298,7 +307,8 @@ describe('SecurityHeadersMiddleware', () => {
         ],
       }).compile();
 
-      const middlewareWithDisabledCsp = module.get<SecurityHeadersMiddleware>(SecurityHeadersMiddleware);
+      const middlewareWithDisabledCsp =
+        module.get<SecurityHeadersMiddleware>(SecurityHeadersMiddleware);
       mockRequest.path = '/api/test';
       mockRequest.accepts = jest.fn().mockReturnValue(false);
 
@@ -317,10 +327,10 @@ describe('SecurityHeadersMiddleware', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
 
       const cspCall = (mockResponse.setHeader as jest.Mock).mock.calls.find(
-        call => call[0] === 'Content-Security-Policy'
+        (call) => call[0] === 'Content-Security-Policy'
       );
       expect(cspCall).toBeDefined();
-      
+
       const cspValue = cspCall[1];
       expect(cspValue).toContain("default-src 'self'");
       expect(cspValue).toContain("script-src 'self' 'unsafe-inline'");
@@ -346,7 +356,7 @@ describe('SecurityHeadersMiddleware', () => {
       '/fonts/font.eot',
     ];
 
-    staticAssets.forEach(asset => {
+    staticAssets.forEach((asset) => {
       it(`should set appropriate headers for static asset: ${asset}`, () => {
         mockRequest.path = asset;
 
@@ -387,22 +397,15 @@ describe('SecurityHeadersMiddleware', () => {
           '/account/profile',
         ];
 
-        sensitiveRoutes.forEach(route => {
+        sensitiveRoutes.forEach((route) => {
           expect((middleware as any).isSensitiveRoute(route)).toBe(true);
         });
       });
 
       it('should not identify non-sensitive routes as sensitive', () => {
-        const nonSensitiveRoutes = [
-          '/public/info',
-          '/about',
-          '/contact',
-          '/help',
-          '/docs',
-          '/',
-        ];
+        const nonSensitiveRoutes = ['/public/info', '/about', '/contact', '/help', '/docs', '/'];
 
-        nonSensitiveRoutes.forEach(route => {
+        nonSensitiveRoutes.forEach((route) => {
           expect((middleware as any).isSensitiveRoute(route)).toBe(false);
         });
       });
@@ -425,7 +428,7 @@ describe('SecurityHeadersMiddleware', () => {
           '/font.eot',
         ];
 
-        staticAssets.forEach(asset => {
+        staticAssets.forEach((asset) => {
           expect((middleware as any).isStaticAsset(asset)).toBe(true);
         });
       });
@@ -439,7 +442,7 @@ describe('SecurityHeadersMiddleware', () => {
           '/config.xml',
         ];
 
-        nonStaticFiles.forEach(file => {
+        nonStaticFiles.forEach((file) => {
           expect((middleware as any).isStaticAsset(file)).toBe(false);
         });
       });

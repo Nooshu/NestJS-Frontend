@@ -149,13 +149,13 @@ describe('ErrorMiddleware', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
       const responseCall = mockResponse.json.mock.calls[0][0];
-      
+
       // Check that the response has the expected structure
       expect(responseCall.statusCode).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
       expect(responseCall.message).toBe('Development error');
       expect(responseCall.path).toBe('/test/path');
       expect(responseCall.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
-      
+
       // The stack trace inclusion depends on the configuration mock working
       // If the mock doesn't work, we'll just verify the basic structure
       if (responseCall.stack) {
@@ -201,13 +201,13 @@ describe('ErrorMiddleware', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
       const responseCall = mockResponse.json.mock.calls[0][0];
-      
+
       // Check that the response has the expected structure
       expect(responseCall.statusCode).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
       expect(responseCall.message).toBe('Internal server error'); // This is the actual behavior
       expect(responseCall.path).toBe('/test/path');
       expect(responseCall.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
-      
+
       // The stack trace inclusion depends on the configuration mock working
       if (responseCall.stack) {
         expect(responseCall.stack).toBe('No stack trace available');
@@ -267,7 +267,7 @@ describe('ErrorMiddleware', () => {
 
     it('should handle different request URLs', () => {
       mockRequest.url = '/api/users/123';
-      
+
       const error = new Error('Test error');
       mockNext.mockImplementation(() => {
         throw error;
@@ -295,7 +295,7 @@ describe('ErrorMiddleware', () => {
 
       const responseCall = mockResponse.json.mock.calls[0][0];
       expect(responseCall.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
-      
+
       const timestamp = new Date(responseCall.timestamp);
       expect(timestamp.getTime()).toBeGreaterThanOrEqual(new Date(beforeCall).getTime());
       expect(timestamp.getTime()).toBeLessThanOrEqual(new Date(afterCall).getTime());
@@ -333,7 +333,7 @@ describe('ErrorMiddleware', () => {
 
       expect(mockResponse.status).toHaveBeenCalledWith(HttpStatus.INTERNAL_SERVER_ERROR);
       const responseCall = mockResponse.json.mock.calls[0][0];
-      
+
       // Check that the response has the expected structure
       expect(responseCall.statusCode).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
       expect(responseCall.message).toBe('Internal server error'); // This is the actual behavior
@@ -375,13 +375,13 @@ describe('ErrorMiddleware', () => {
       middleware.use(mockRequest, mockResponse, mockNext);
 
       const response = mockResponse.json.mock.calls[0][0];
-      
+
       // Check basic response structure
       expect(response).toHaveProperty('statusCode');
       expect(response).toHaveProperty('message');
       expect(response).toHaveProperty('timestamp');
       expect(response).toHaveProperty('path');
-      
+
       // The stack field inclusion depends on the configuration mock working
       if (response.stack) {
         expect(typeof response.stack).toBe('string');

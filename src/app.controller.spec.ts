@@ -19,11 +19,12 @@ describe('AppController', () => {
 
     it('should return the correct view data', () => {
       const result = controller.getIndex();
-      
+
       expect(result).toEqual({
         title: 'NestJS GOV.UK Frontend',
-        message: 'Welcome to the NestJS GOV.UK Frontend application, this is the homepage of the application. The FaCT journey starts below.',
+        message:
+          'Welcome to the NestJS GOV.UK Frontend application, this is the homepage of the application. The FaCT journey starts below.',
       });
     });
   });
-}); 
+});

@@ -8,20 +8,20 @@ import { map } from 'rxjs/operators';
 /**
  * API service for making HTTP requests to backend services.
  * Provides standardized request handling, error management, and response processing.
- * 
+ *
  * Features:
  * - Standardized HTTP client configuration
  * - Automatic error handling and transformation
  * - Request timeout management
  * - Retry logic for failed requests
  * - Response type safety
- * 
+ *
  * Security considerations:
  * - Request timeout limits
  * - Error message sanitization
  * - Response validation
  * - Request ID tracking
- * 
+ *
  * @class ApiService
  * @description Handles HTTP requests to backend services
  */
@@ -37,7 +37,7 @@ export class ApiService {
   /**
    * Creates an instance of ApiService.
    * Initializes the HTTP service with standardized configuration.
-   * 
+   *
    * @param {HttpService} httpService - The HTTP service for making requests
    */
   constructor(httpService: HttpService, configService: ConfigService) {
@@ -49,7 +49,7 @@ export class ApiService {
   /**
    * Default timeout for API requests in milliseconds.
    * Prevents hanging requests and ensures timely error responses.
-   * 
+   *
    * @private
    * @type {number}
    */
@@ -62,12 +62,12 @@ export class ApiService {
    * - Error message sanitization
    * - Timestamp addition
    * - Error type identification
-   * 
+   *
    * Security considerations:
    * - Error message sanitization
    * - Status code validation
    * - Error type verification
-   * 
+   *
    * @private
    * @param {AxiosError} error - The error object from the HTTP request
    * @returns {Observable<never>} An observable that emits the error
@@ -91,7 +91,7 @@ export class ApiService {
 
   /**
    * Gets the timeout value for a request, respecting custom timeouts if provided
-   * 
+   *
    * @private
    * @param {Object} options - Request options
    * @returns {number} The timeout value in milliseconds

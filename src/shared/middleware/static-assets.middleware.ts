@@ -32,7 +32,7 @@ export class StaticAssetsMiddleware implements NestMiddleware {
     const staticDirs = [
       join(process.cwd(), 'src', 'public'),
       join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'),
-      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets')
+      join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk', 'assets'),
     ];
 
     let filePath: string | null = null;
@@ -56,7 +56,10 @@ export class StaticAssetsMiddleware implements NestMiddleware {
 
       // Set cache headers
       const staticOptions = performanceConfig.staticAssets;
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
+      res.setHeader(
+        'Cache-Control',
+        'public, max-age=31536000, immutable, stale-while-revalidate=2592000'
+      );
       if (staticOptions.etag) {
         res.setHeader('ETag', `"${hashedPath}"`);
       }
@@ -66,20 +69,21 @@ export class StaticAssetsMiddleware implements NestMiddleware {
 
       // Set content type based on file extension
       const ext = filePath.split('.').pop()?.toLowerCase();
-      const contentType = {
-        'css': 'text/css',
-        'js': 'application/javascript',
-        'png': 'image/png',
-        'jpg': 'image/jpeg',
-        'jpeg': 'image/jpeg',
-        'gif': 'image/gif',
-        'svg': 'image/svg+xml',
-        'ico': 'image/x-icon',
-        'woff': 'font/woff',
-        'woff2': 'font/woff2',
-        'ttf': 'font/ttf',
-        'eot': 'application/vnd.ms-fontobject'
-      }[ext || ''] || 'application/octet-stream';
+      const contentType =
+        {
+          css: 'text/css',
+          js: 'application/javascript',
+          png: 'image/png',
+          jpg: 'image/jpeg',
+          jpeg: 'image/jpeg',
+          gif: 'image/gif',
+          svg: 'image/svg+xml',
+          ico: 'image/x-icon',
+          woff: 'font/woff',
+          woff2: 'font/woff2',
+          ttf: 'font/ttf',
+          eot: 'application/vnd.ms-fontobject',
+        }[ext || ''] || 'application/octet-stream';
 
       res.setHeader('Content-Type', contentType);
       res.setHeader('Content-Length', stats.size);
@@ -90,4 +94,4 @@ export class StaticAssetsMiddleware implements NestMiddleware {
       next(error);
     }
   }
-} 
+}

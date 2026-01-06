@@ -5,7 +5,7 @@
  * - Journey start form (collecting user details)
  * - Journey details form (collecting journey specifics)
  * - Confirmation page
- * 
+ *
  * The journey follows a sequential flow with data persistence between steps.
  * @class NewJourneyController
  */
@@ -68,7 +68,7 @@ export class NewJourneyController {
     return {
       title: 'New Journey - Welcome',
       journey: 'new-journey',
-      currentPage: 'index'
+      currentPage: 'index',
     };
   }
 
@@ -82,7 +82,7 @@ export class NewJourneyController {
     return {
       title: 'New Journey - Start',
       journey: 'new-journey',
-      currentPage: 'start'
+      currentPage: 'start',
     };
   }
 
@@ -114,7 +114,7 @@ export class NewJourneyController {
       title: 'New Journey - Details',
       journey: 'new-journey',
       currentPage: 'details',
-      isDevelopment: this.configService.get<string>('NODE_ENV') === 'development'
+      isDevelopment: this.configService.get<string>('NODE_ENV') === 'development',
     };
   }
 
@@ -133,8 +133,8 @@ export class NewJourneyController {
       formData,
       headers: {
         'content-type': 'application/x-www-form-urlencoded',
-        'accept': 'application/json'
-      }
+        accept: 'application/json',
+      },
     });
 
     try {
@@ -172,8 +172,8 @@ export class NewJourneyController {
       rawDate: {
         year: details['journeyDate-year'],
         month: details['journeyDate-month'],
-        day: details['journeyDate-day']
-      }
+        day: details['journeyDate-day'],
+      },
     });
 
     return {
@@ -187,11 +187,11 @@ export class NewJourneyController {
         startDate: startDate.toLocaleDateString('en-GB', {
           day: 'numeric',
           month: 'long',
-          year: 'numeric'
+          year: 'numeric',
         }),
         duration: details.journeyDuration,
-        description: details.journeyDescription
-      }
+        description: details.journeyDescription,
+      },
     };
   }
-} 
+}

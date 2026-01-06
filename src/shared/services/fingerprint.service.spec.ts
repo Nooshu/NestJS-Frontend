@@ -21,7 +21,7 @@ describe('FingerprintService', () => {
     }).compile();
 
     service = module.get<FingerprintService>(FingerprintService);
-    
+
     // Replace the service's logger with our mock
     (service as any).logger = mockLogger;
 
@@ -33,8 +33,12 @@ describe('FingerprintService', () => {
     it('should initialize with correct paths', () => {
       expect((service as any).publicDir).toBe(join(process.cwd(), 'dist', 'public'));
       expect((service as any).assetsDir).toBe(join(process.cwd(), 'src', 'frontend'));
-      expect((service as any).govukDir).toBe(join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk'));
-      expect((service as any).manifestPath).toBe(join(process.cwd(), 'dist', 'public', 'asset-manifest.json'));
+      expect((service as any).govukDir).toBe(
+        join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk')
+      );
+      expect((service as any).manifestPath).toBe(
+        join(process.cwd(), 'dist', 'public', 'asset-manifest.json')
+      );
     });
   });
 
@@ -53,7 +57,9 @@ describe('FingerprintService', () => {
       const result = service.getAssetPath('/css/app.css');
 
       expect(result).toBe('/css/app.css');
-      expect(mockLogger.warn).toHaveBeenCalledWith('Asset manifest not found, returning original path');
+      expect(mockLogger.warn).toHaveBeenCalledWith(
+        'Asset manifest not found, returning original path'
+      );
 
       // Restore original function
       require('fs').existsSync = originalExistsSync;
@@ -61,11 +67,11 @@ describe('FingerprintService', () => {
 
     it('should load manifest if not already loaded', () => {
       const manifest = { 'css/app.css': 'css/app.12345678.css' };
-      
+
       // Mock fs functions
       const originalExistsSync = require('fs').existsSync;
       const originalReadFileSync = require('fs').readFileSync;
-      
+
       require('fs').existsSync = jest.fn().mockReturnValue(true);
       require('fs').readFileSync = jest.fn().mockReturnValue(JSON.stringify(manifest));
 
@@ -81,7 +87,7 @@ describe('FingerprintService', () => {
     it('should use cached manifest if already loaded', () => {
       const manifest = { 'css/app.css': 'css/app.12345678.css' };
       (service as any).manifest = manifest;
-      
+
       // Mock existsSync to return true
       const originalExistsSync = require('fs').existsSync;
       require('fs').existsSync = jest.fn().mockReturnValue(true);
@@ -98,7 +104,7 @@ describe('FingerprintService', () => {
       // Mock fs functions
       const originalExistsSync = require('fs').existsSync;
       const originalReadFileSync = require('fs').readFileSync;
-      
+
       require('fs').existsSync = jest.fn().mockReturnValue(true);
       require('fs').readFileSync = jest.fn().mockImplementation(() => {
         throw new Error('Manifest read error');
@@ -107,7 +113,9 @@ describe('FingerprintService', () => {
       const result = service.getAssetPath('/css/app.css');
 
       expect(result).toBe('/css/app.css');
-      expect(mockLogger.error).toHaveBeenCalledWith('Failed to load asset manifest: Manifest read error');
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        'Failed to load asset manifest: Manifest read error'
+      );
 
       // Restore original functions
       require('fs').existsSync = originalExistsSync;
@@ -117,7 +125,7 @@ describe('FingerprintService', () => {
     it('should normalize paths by removing leading slash', () => {
       const manifest = { 'css/app.css': 'css/app.12345678.css' };
       (service as any).manifest = manifest;
-      
+
       // Mock existsSync to return true
       const originalExistsSync = require('fs').existsSync;
       require('fs').existsSync = jest.fn().mockReturnValue(true);
@@ -133,7 +141,7 @@ describe('FingerprintService', () => {
     it('should return original path if not found in manifest', () => {
       const manifest = { 'css/other.css': 'css/other.12345678.css' };
       (service as any).manifest = manifest;
-      
+
       // Mock existsSync to return true
       const originalExistsSync = require('fs').existsSync;
       require('fs').existsSync = jest.fn().mockReturnValue(true);
@@ -150,7 +158,7 @@ describe('FingerprintService', () => {
       // Mock fs functions
       const originalExistsSync = require('fs').existsSync;
       const originalReadFileSync = require('fs').readFileSync;
-      
+
       require('fs').existsSync = jest.fn().mockReturnValue(true);
       require('fs').readFileSync = jest.fn().mockImplementation(() => {
         throw 'String error';
@@ -169,7 +177,7 @@ describe('FingerprintService', () => {
 
   describe('fingerprint method', () => {
     it('should reset manifest at start', () => {
-      (service as any).manifest = { 'existing': 'path' };
+      (service as any).manifest = { existing: 'path' };
 
       // Mock the glob.sync calls to return empty arrays to avoid file system operations
       const originalGlobSync = require('glob').sync;
@@ -201,7 +209,7 @@ describe('FingerprintService', () => {
     it('should generate consistent hash for same content', () => {
       const filePath = '/test/file.css';
       const content = Buffer.from('test content');
-      
+
       // Mock readFileSync
       const originalReadFileSync = require('fs').readFileSync;
       require('fs').readFileSync = jest.fn().mockReturnValue(content);
@@ -219,7 +227,7 @@ describe('FingerprintService', () => {
     it('should create fingerprinted filename with hash', () => {
       const filePath = '/test/styles.css';
       const content = Buffer.from('css content');
-      
+
       // Mock readFileSync
       const originalReadFileSync = require('fs').readFileSync;
       require('fs').readFileSync = jest.fn().mockReturnValue(content);
@@ -237,7 +245,7 @@ describe('FingerprintService', () => {
     it('should handle files without extension', () => {
       const filePath = '/test/script';
       const content = Buffer.from('js content');
-      
+
       // Mock readFileSync
       const originalReadFileSync = require('fs').readFileSync;
       require('fs').readFileSync = jest.fn().mockReturnValue(content);
@@ -254,7 +262,7 @@ describe('FingerprintService', () => {
     it('should handle files with multiple dots', () => {
       const filePath = '/test/app.min.js';
       const content = Buffer.from('js content');
-      
+
       // Mock readFileSync
       const originalReadFileSync = require('fs').readFileSync;
       require('fs').readFileSync = jest.fn().mockReturnValue(content);
@@ -273,12 +281,12 @@ describe('FingerprintService', () => {
     it('should handle errors in processFile method', () => {
       const filePath = '/src/frontend/js/app.js';
       const error = new Error('File read error');
-      
+
       // Mock fs functions to throw error
       const originalReadFileSync = require('fs').readFileSync;
       const originalExistsSync = require('fs').existsSync;
       const originalMkdirSync = require('fs').mkdirSync;
-      
+
       require('fs').readFileSync = jest.fn().mockImplementation(() => {
         throw error;
       });
@@ -286,7 +294,9 @@ describe('FingerprintService', () => {
       require('fs').mkdirSync = jest.fn();
 
       expect(() => (service as any).processFile(filePath)).toThrow(error);
-      expect(mockLogger.error).toHaveBeenCalledWith(`Failed to process file ${filePath}: File read error`);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Failed to process file ${filePath}: File read error`
+      );
 
       // Restore original functions
       require('fs').readFileSync = originalReadFileSync;
@@ -297,12 +307,12 @@ describe('FingerprintService', () => {
     it('should handle errors in processGovukFile method', () => {
       const filePath = '/node_modules/govuk-frontend/dist/govuk/all.js';
       const error = new Error('GOV.UK file error');
-      
+
       // Mock fs functions to throw error
       const originalReadFileSync = require('fs').readFileSync;
       const originalExistsSync = require('fs').existsSync;
       const originalMkdirSync = require('fs').mkdirSync;
-      
+
       require('fs').readFileSync = jest.fn().mockImplementation(() => {
         throw error;
       });
@@ -311,7 +321,9 @@ describe('FingerprintService', () => {
 
       (service as any).processGovukFile(filePath);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(`Failed to process GOV.UK file ${filePath}: GOV.UK file error`);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Failed to process GOV.UK file ${filePath}: GOV.UK file error`
+      );
 
       // Restore original functions
       require('fs').readFileSync = originalReadFileSync;
@@ -322,12 +334,12 @@ describe('FingerprintService', () => {
     it('should handle errors in processGovukCssFile method', () => {
       const filePath = '/node_modules/govuk-frontend/dist/govuk/all.css';
       const error = new Error('CSS processing error');
-      
+
       // Mock fs functions to throw error
       const originalReadFileSync = require('fs').readFileSync;
       const originalExistsSync = require('fs').existsSync;
       const originalMkdirSync = require('fs').mkdirSync;
-      
+
       require('fs').readFileSync = jest.fn().mockImplementation(() => {
         throw error;
       });
@@ -336,7 +348,9 @@ describe('FingerprintService', () => {
 
       (service as any).processGovukCssFile(filePath);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(`Failed to process GOV.UK CSS file ${filePath}: CSS processing error`);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Failed to process GOV.UK CSS file ${filePath}: CSS processing error`
+      );
 
       // Restore original functions
       require('fs').readFileSync = originalReadFileSync;
@@ -347,12 +361,12 @@ describe('FingerprintService', () => {
     it('should handle errors in processGovukAssetFile method', () => {
       const assetFile = '/node_modules/govuk-frontend/dist/govuk/assets/test.jpg';
       const error = new Error('Asset processing error');
-      
+
       // Mock fs functions to throw error
       const originalReadFileSync = require('fs').readFileSync;
       const originalExistsSync = require('fs').existsSync;
       const originalMkdirSync = require('fs').mkdirSync;
-      
+
       require('fs').readFileSync = jest.fn().mockImplementation(() => {
         throw error;
       });
@@ -361,7 +375,9 @@ describe('FingerprintService', () => {
 
       (service as any).processGovukAssetFile(assetFile);
 
-      expect(mockLogger.error).toHaveBeenCalledWith(`Failed to process GOV.UK asset file ${assetFile}: Asset processing error`);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        `Failed to process GOV.UK asset file ${assetFile}: Asset processing error`
+      );
 
       // Restore original functions
       require('fs').readFileSync = originalReadFileSync;

@@ -27,10 +27,7 @@ describe('RateLimitingMiddleware', () => {
     } as any;
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RateLimitingMiddleware,
-        { provide: LoggerService, useValue: mockLogger },
-      ],
+      providers: [RateLimitingMiddleware, { provide: LoggerService, useValue: mockLogger }],
     }).compile();
 
     middleware = module.get<RateLimitingMiddleware>(RateLimitingMiddleware);
@@ -248,9 +245,7 @@ describe('RateLimitingMiddleware', () => {
       jest.advanceTimersByTime(5 * 60 * 1000); // 5 minutes for cleanup interval
 
       // The cleanup should have been called and logged
-      expect(mockLogger.debug).toHaveBeenCalledWith(
-        expect.stringContaining('Cleaned up')
-      );
+      expect(mockLogger.debug).toHaveBeenCalledWith(expect.stringContaining('Cleaned up'));
     });
   });
 

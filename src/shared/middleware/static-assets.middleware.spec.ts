@@ -78,27 +78,27 @@ describe('StaticAssetsMiddleware', () => {
   describe('Non-GET requests', () => {
     it('should call next() for POST requests', async () => {
       mockRequest.method = 'POST';
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(nextFunction).toHaveBeenCalledTimes(1);
       expect(assetFingerprintService.getHashedPath).not.toHaveBeenCalled();
     });
 
     it('should call next() for PUT requests', async () => {
       mockRequest.method = 'PUT';
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(nextFunction).toHaveBeenCalledTimes(1);
       expect(assetFingerprintService.getHashedPath).not.toHaveBeenCalled();
     });
 
     it('should call next() for DELETE requests', async () => {
       mockRequest.method = 'DELETE';
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(nextFunction).toHaveBeenCalledTimes(1);
       expect(assetFingerprintService.getHashedPath).not.toHaveBeenCalled();
     });
@@ -109,9 +109,9 @@ describe('StaticAssetsMiddleware', () => {
       mockRequest.method = 'GET';
       mockRequest.path = '/styles.css';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/styles.abc123.css');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(assetFingerprintService.getHashedPath).toHaveBeenCalledWith('/styles.css');
       expect(mockResponse.redirect).toHaveBeenCalledWith('/styles.abc123.css');
       expect(nextFunction).not.toHaveBeenCalled();
@@ -128,9 +128,9 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(assetFingerprintService.getHashedPath).toHaveBeenCalledWith('/styles.css');
       expect(mockResponse.redirect).not.toHaveBeenCalled();
     });
@@ -153,12 +153,15 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockExistsSync).toHaveBeenCalled();
       expect(mockStat).toHaveBeenCalled();
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Cache-Control',
+        'public, max-age=31536000, immutable, stale-while-revalidate=2592000'
+      );
     });
 
     it('should find file in govuk-frontend dist directory', async () => {
@@ -167,9 +170,11 @@ describe('StaticAssetsMiddleware', () => {
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/govuk/test.css');
       mockExistsSync.mockImplementation((path: string) => {
         // The middleware will check paths like: /path/to/project/node_modules/govuk-frontend/dist/govuk/test.css
-        return path.includes('node_modules/govuk-frontend/dist/govuk') && 
-               !path.includes('assets') && 
-               !path.includes('src/public');
+        return (
+          path.includes('node_modules/govuk-frontend/dist/govuk') &&
+          !path.includes('assets') &&
+          !path.includes('src/public')
+        );
       });
       mockStat.mockResolvedValue({
         isFile: () => true,
@@ -177,9 +182,9 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockExistsSync).toHaveBeenCalled();
       expect(mockStat).toHaveBeenCalled();
     });
@@ -190,8 +195,10 @@ describe('StaticAssetsMiddleware', () => {
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/govuk/test.css');
       mockExistsSync.mockImplementation((path: string) => {
         // The middleware will check paths like: /path/to/project/node_modules/govuk-frontend/dist/govuk/assets/test.css
-        return path.includes('node_modules/govuk-frontend/dist/govuk/assets') && 
-               !path.includes('src/public');
+        return (
+          path.includes('node_modules/govuk-frontend/dist/govuk/assets') &&
+          !path.includes('src/public')
+        );
       });
       mockStat.mockResolvedValue({
         isFile: () => true,
@@ -199,18 +206,18 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockExistsSync).toHaveBeenCalled();
       expect(mockStat).toHaveBeenCalled();
     });
 
     it('should call next() when file is not found in any directory', async () => {
       mockExistsSync.mockReturnValue(false);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockExistsSync).toHaveBeenCalled();
       expect(mockStat).not.toHaveBeenCalled();
       expect(nextFunction).toHaveBeenCalledTimes(1);
@@ -223,9 +230,9 @@ describe('StaticAssetsMiddleware', () => {
         size: 1024,
         mtime: new Date('2023-01-01'),
       } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockStat).toHaveBeenCalled();
       expect(nextFunction).toHaveBeenCalledTimes(1);
     });
@@ -247,88 +254,97 @@ describe('StaticAssetsMiddleware', () => {
 
     it('should set correct cache headers', async () => {
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
+
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Cache-Control',
+        'public, max-age=31536000, immutable, stale-while-revalidate=2592000'
+      );
       expect(mockResponse.setHeader).toHaveBeenCalledWith('ETag', '"/test.css"');
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Last-Modified', 'Sun, 01 Jan 2023 12:00:00 GMT');
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Last-Modified',
+        'Sun, 01 Jan 2023 12:00:00 GMT'
+      );
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Length', 2048);
     });
 
     it('should set correct content type for CSS files', async () => {
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'text/css');
     });
 
     it('should set correct content type for JavaScript files', async () => {
       mockRequest.path = '/app.js';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/app.js');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'application/javascript');
     });
 
     it('should set correct content type for PNG images', async () => {
       mockRequest.path = '/logo.png';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/logo.png');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'image/png');
     });
 
     it('should set correct content type for JPEG images', async () => {
       mockRequest.path = '/photo.jpg';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/photo.jpg');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'image/jpeg');
     });
 
     it('should set correct content type for SVG images', async () => {
       mockRequest.path = '/icon.svg';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/icon.svg');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'image/svg+xml');
     });
 
     it('should set correct content type for WOFF fonts', async () => {
       mockRequest.path = '/font.woff';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/font.woff');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'font/woff');
     });
 
     it('should set correct content type for WOFF2 fonts', async () => {
       mockRequest.path = '/font.woff2';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/font.woff2');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'font/woff2');
     });
 
     it('should set default content type for unknown file extensions', async () => {
       mockRequest.path = '/unknown.xyz';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/unknown.xyz');
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'application/octet-stream');
+
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Content-Type',
+        'application/octet-stream'
+      );
     });
 
     it('should stream the file using createReadStream', async () => {
       const mockStream = { pipe: jest.fn() };
       mockCreateReadStream.mockReturnValue(mockStream as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockCreateReadStream).toHaveBeenCalled();
       expect(mockStream.pipe).toHaveBeenCalledWith(mockResponse);
     });
@@ -345,9 +361,9 @@ describe('StaticAssetsMiddleware', () => {
     it('should call next with error when stat fails', async () => {
       const error = new Error('File system error');
       mockStat.mockRejectedValue(error);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(nextFunction).toHaveBeenCalledWith(error);
     });
 
@@ -361,9 +377,9 @@ describe('StaticAssetsMiddleware', () => {
       mockCreateReadStream.mockImplementation(() => {
         throw error;
       });
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(nextFunction).toHaveBeenCalledWith(error);
     });
   });
@@ -374,9 +390,9 @@ describe('StaticAssetsMiddleware', () => {
       mockRequest.path = '';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('');
       mockExistsSync.mockReturnValue(false);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(nextFunction).toHaveBeenCalledTimes(1);
     });
 
@@ -391,10 +407,13 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
-      expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'application/octet-stream');
+
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Content-Type',
+        'application/octet-stream'
+      );
     });
 
     it('should handle path with multiple dots', async () => {
@@ -408,9 +427,9 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'application/javascript');
     });
 
@@ -425,9 +444,9 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'text/css');
     });
 
@@ -442,9 +461,9 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Type', 'image/jpeg');
     });
   });
@@ -453,8 +472,10 @@ describe('StaticAssetsMiddleware', () => {
     it('should strip /govuk/ prefix when searching for files', async () => {
       mockRequest.method = 'GET';
       mockRequest.path = '/govuk/assets/css/main.css';
-      (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/govuk/assets/css/main.css');
-      
+      (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue(
+        '/govuk/assets/css/main.css'
+      );
+
       mockExistsSync.mockImplementation((path: string) => {
         // Should search for 'assets/css/main.css' (without /govuk/ prefix)
         return path.includes('assets/css/main.css') && !path.includes('/govuk/');
@@ -465,9 +486,9 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockExistsSync).toHaveBeenCalled();
       expect(mockStat).toHaveBeenCalled();
     });
@@ -476,7 +497,7 @@ describe('StaticAssetsMiddleware', () => {
       mockRequest.method = 'GET';
       mockRequest.path = '/public/css/main.css';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/public/css/main.css');
-      
+
       mockExistsSync.mockImplementation((path: string) => {
         // Should search for the full path including /public/
         return path.includes('public/css/main.css');
@@ -487,9 +508,9 @@ describe('StaticAssetsMiddleware', () => {
         mtime: new Date('2023-01-01'),
       } as any);
       mockCreateReadStream.mockReturnValue({ pipe: jest.fn() } as any);
-      
+
       await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
-      
+
       expect(mockExistsSync).toHaveBeenCalled();
       expect(mockStat).toHaveBeenCalled();
     });

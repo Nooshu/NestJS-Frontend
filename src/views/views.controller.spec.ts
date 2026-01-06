@@ -178,4 +178,4 @@ describe('ViewsController', () => {
       expect(missingComponentsResult).toEqual({ title: 'Missing Components' });
     });
   });
-}); 
+});

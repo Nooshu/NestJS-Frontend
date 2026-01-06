@@ -267,4 +267,4 @@ describe('Java API Config', () => {
       expect(prodConfig.baseUrl).toBe('https://api.example.gov.uk');
     });
   });
-}); 
+});

@@ -1,11 +1,11 @@
 import type { Application, NextFunction, Request, Response } from 'express';
 import express from 'express';
-import { 
-  applyGovernmentSecurity, 
-  securityMiddleware, 
-  rateLimitMiddleware, 
-  auditMiddleware, 
-  dataProtectionMiddleware 
+import {
+  applyGovernmentSecurity,
+  securityMiddleware,
+  rateLimitMiddleware,
+  auditMiddleware,
+  dataProtectionMiddleware,
 } from '../security.middleware';
 import type { SecurityConfig } from '../security.types';
 import { testConfig } from '../test.config';
@@ -175,7 +175,7 @@ describe('Security Middleware', () => {
       const res = mockResponse as Response;
 
       // Find rate limiting middleware
-      const rateLimitMiddleware = middlewares.find(middleware => {
+      const rateLimitMiddleware = middlewares.find((middleware) => {
         const testReq = { ...mockRequest, ip: '192.168.1.1' } as Request;
         const testRes = mockResponse as Response;
         middleware(testReq, testRes, mockNext);
@@ -206,7 +206,7 @@ describe('Security Middleware', () => {
       const res = mockResponse as Response;
 
       // Find rate limiting middleware
-      const rateLimitMiddleware = middlewares.find(middleware => {
+      const rateLimitMiddleware = middlewares.find((middleware) => {
         const testReq = { ...mockRequest, ip: '192.168.1.1' } as Request;
         const testRes = mockResponse as Response;
         middleware(testReq, testRes, mockNext);
@@ -236,7 +236,7 @@ describe('Security Middleware', () => {
       const res = mockResponse as Response;
 
       // Find rate limiting middleware
-      const rateLimitMiddleware = middlewares.find(middleware => {
+      const rateLimitMiddleware = middlewares.find((middleware) => {
         const testReq = { ...mockRequest, ip: '192.168.1.1' } as Request;
         const testRes = mockResponse as Response;
         middleware(testReq, testRes, mockNext);
@@ -274,7 +274,7 @@ describe('Security Middleware', () => {
       } as Request;
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -316,7 +316,7 @@ describe('Security Middleware', () => {
       } as Request;
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -357,7 +357,7 @@ describe('Security Middleware', () => {
       } as Request;
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -392,7 +392,7 @@ describe('Security Middleware', () => {
       const res = { ...mockResponse, setHeader: jest.fn() } as Response;
 
       // Find headers middleware
-      const headersMiddleware = middlewares.find(middleware => {
+      const headersMiddleware = middlewares.find((middleware) => {
         const testReq = { ...mockRequest } as Request;
         const testRes = { ...mockResponse, setHeader: jest.fn() } as Response;
         middleware(testReq, testRes, mockNext);
@@ -430,7 +430,7 @@ describe('Security Middleware', () => {
       const res = { ...mockResponse, setHeader: jest.fn() } as Response;
 
       // Find headers middleware
-      const headersMiddleware = middlewares.find(middleware => {
+      const headersMiddleware = middlewares.find((middleware) => {
         const testReq = { ...mockRequest } as Request;
         const testRes = { ...mockResponse, setHeader: jest.fn() } as Response;
         middleware(testReq, testRes, mockNext);
@@ -460,7 +460,7 @@ describe('Security Middleware', () => {
       const res = { ...mockResponse, setHeader: jest.fn() } as Response;
 
       // Find headers middleware
-      const headersMiddleware = middlewares.find(middleware => {
+      const headersMiddleware = middlewares.find((middleware) => {
         const testReq = { ...mockRequest } as Request;
         const testRes = { ...mockResponse, setHeader: jest.fn() } as Response;
         middleware(testReq, testRes, mockNext);
@@ -496,7 +496,7 @@ describe('Security Middleware', () => {
       } as Request;
 
       // Find audit middleware
-      const auditMiddleware = middlewares.find(middleware => {
+      const auditMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           method: 'POST',
@@ -538,7 +538,7 @@ describe('Security Middleware', () => {
       } as Request;
 
       // Find audit middleware
-      const auditMiddleware = middlewares.find(middleware => {
+      const auditMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           method: 'POST',
@@ -577,7 +577,7 @@ describe('Security Middleware', () => {
       } as Request;
 
       // Find audit middleware
-      const auditMiddleware = middlewares.find(middleware => {
+      const auditMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           method: 'POST',
@@ -739,7 +739,7 @@ describe('Security Middleware', () => {
 
     it('should log audit data correctly', () => {
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
-      
+
       const config: SecurityConfig = {
         audit: {
           enabled: true,
@@ -758,12 +758,15 @@ describe('Security Middleware', () => {
 
       middleware(req, mockResponse as Response, mockNext);
 
-      expect(consoleSpy).toHaveBeenCalledWith('Audit Log:', expect.objectContaining({
-        method: 'POST',
-        path: '/api/users',
-        query: { page: '1' },
-        body: { name: 'John' }, // password and token should be excluded
-      }));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Audit Log:',
+        expect.objectContaining({
+          method: 'POST',
+          path: '/api/users',
+          query: { page: '1' },
+          body: { name: 'John' }, // password and token should be excluded
+        })
+      );
       expect(mockNext).toHaveBeenCalled();
 
       consoleSpy.mockRestore();
@@ -846,7 +849,9 @@ describe('Security Middleware', () => {
       const middleware = dataProtectionMiddleware(config);
       const res = {
         ...mockResponse,
-        send: function (body: any) { return body; },
+        send: function (body: any) {
+          return body;
+        },
       } as Response;
 
       // Spy on the send method after middleware wraps it
@@ -855,7 +860,12 @@ describe('Security Middleware', () => {
       middleware(mockRequest as Request, res, mockNext);
 
       // Test that the send method is overridden and called with masked data
-      const testData = { name: 'John', password: 'secret123', ssn: '123-45-6789', email: 'john@example.com' };
+      const testData = {
+        name: 'John',
+        password: 'secret123',
+        ssn: '123-45-6789',
+        email: 'john@example.com',
+      };
       res.send(testData);
 
       expect(sendSpy).toHaveBeenCalledWith({
@@ -882,7 +892,7 @@ describe('Security Middleware', () => {
       const middleware = dataProtectionMiddleware(config);
       const res = {
         ...mockResponse,
-        send: function (body: any) { 
+        send: function (body: any) {
           throw new Error('Send error');
         },
       } as Response;
@@ -906,7 +916,7 @@ describe('Security Middleware', () => {
       };
 
       const middlewares = securityMiddleware(config);
-      
+
       // Find password middleware by testing each one
       let passwordMiddleware: any = null;
       for (const middleware of middlewares) {
@@ -916,7 +926,7 @@ describe('Security Middleware', () => {
           method: 'POST',
           body: { password: 'weak' },
         } as Request;
-        
+
         try {
           await middleware(req, mockResponse as Response, mockNext);
           // If we get here and next was called with an error, this is likely the password middleware
@@ -942,7 +952,7 @@ describe('Security Middleware', () => {
         } as Request;
 
         await passwordMiddleware(invalidReq, mockResponse as Response, mockNext);
-        
+
         // Should call next with an error for invalid password
         expect(mockNext).toHaveBeenCalled();
         const error = mockNext.mock.calls[0][0];
@@ -963,7 +973,7 @@ describe('Security Middleware', () => {
       };
 
       const middlewares = securityMiddleware(config);
-      
+
       // Test valid password
       const validReq = {
         ...mockRequest,
@@ -976,7 +986,7 @@ describe('Security Middleware', () => {
       mockCacheService.set.mockResolvedValue();
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -1004,9 +1014,9 @@ describe('Security Middleware', () => {
       };
 
       const middlewares = securityMiddleware(config);
-      
+
       // Find headers middleware
-      const headersMiddleware = middlewares.find(middleware => {
+      const headersMiddleware = middlewares.find((middleware) => {
         const req = { ...mockRequest } as Request;
         const res = { ...mockResponse, setHeader: jest.fn() } as Response;
         middleware(req, res, mockNext);
@@ -1016,9 +1026,9 @@ describe('Security Middleware', () => {
       if (headersMiddleware) {
         const req = { ...mockRequest } as Request;
         const res = { ...mockResponse, setHeader: jest.fn() } as Response;
-        
+
         await headersMiddleware(req, res, mockNext);
-        
+
         expect(res.setHeader).toHaveBeenCalled();
         expect(mockNext).toHaveBeenCalled();
       }
@@ -1082,7 +1092,7 @@ describe('Security Middleware', () => {
       // So we'll test it through the middleware
       const config: SecurityConfig = { passwordPolicy: policy };
       const middlewares = securityMiddleware(config);
-      
+
       const req = {
         ...mockRequest,
         path: '/auth/register',
@@ -1094,7 +1104,7 @@ describe('Security Middleware', () => {
       mockCacheService.set.mockResolvedValue();
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -1122,7 +1132,7 @@ describe('Security Middleware', () => {
 
       const config: SecurityConfig = { passwordPolicy: policy };
       const middlewares = securityMiddleware(config);
-      
+
       const req = {
         ...mockRequest,
         path: '/auth/register',
@@ -1134,7 +1144,7 @@ describe('Security Middleware', () => {
       mockCacheService.set.mockResolvedValue();
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -1162,7 +1172,7 @@ describe('Security Middleware', () => {
 
       const config: SecurityConfig = { passwordPolicy: policy };
       const middlewares = securityMiddleware(config);
-      
+
       const req = {
         ...mockRequest,
         path: '/auth/register',
@@ -1174,7 +1184,7 @@ describe('Security Middleware', () => {
       mockCacheService.set.mockResolvedValue();
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -1202,7 +1212,7 @@ describe('Security Middleware', () => {
 
       const config: SecurityConfig = { passwordPolicy: policy };
       const middlewares = securityMiddleware(config);
-      
+
       const req = {
         ...mockRequest,
         path: '/auth/register',
@@ -1214,7 +1224,7 @@ describe('Security Middleware', () => {
       mockCacheService.set.mockResolvedValue();
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',
@@ -1242,7 +1252,7 @@ describe('Security Middleware', () => {
 
       const config: SecurityConfig = { passwordPolicy: policy };
       const middlewares = securityMiddleware(config);
-      
+
       const req = {
         ...mockRequest,
         path: '/auth/register',
@@ -1254,7 +1264,7 @@ describe('Security Middleware', () => {
       mockCacheService.set.mockResolvedValue();
 
       // Find password middleware
-      const passwordMiddleware = middlewares.find(middleware => {
+      const passwordMiddleware = middlewares.find((middleware) => {
         const testReq = {
           ...mockRequest,
           path: '/auth/register',

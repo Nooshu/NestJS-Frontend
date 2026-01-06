@@ -34,16 +34,24 @@ describe('setupLogger', () => {
     // The first middleware added is the request logger
     const middleware = useMock.mock.calls[0][0];
     const req = { method: 'GET', url: '/test', get: jest.fn().mockReturnValue('agent') };
-    const res: any = { statusCode: 200, on: jest.fn((event, cb) => { if (event === 'finish') cb(); }) };
+    const res: any = {
+      statusCode: 200,
+      on: jest.fn((event, cb) => {
+        if (event === 'finish') cb();
+      }),
+    };
     const next = jest.fn();
 
     middleware(req, res, next);
-    expect(loggerMock.info).toHaveBeenCalledWith('HTTP request', expect.objectContaining({
-      method: 'GET',
-      url: '/test',
-      status: 200,
-      userAgent: 'agent',
-    }));
+    expect(loggerMock.info).toHaveBeenCalledWith(
+      'HTTP request',
+      expect.objectContaining({
+        method: 'GET',
+        url: '/test',
+        status: 200,
+        userAgent: 'agent',
+      })
+    );
     expect(next).toHaveBeenCalled();
   });
 
@@ -57,11 +65,14 @@ describe('setupLogger', () => {
     const next = jest.fn();
 
     errorMiddleware(err, req, res, next);
-    expect(loggerMock.error).toHaveBeenCalledWith('Error occurred', expect.objectContaining({
-      error: 'fail',
-      url: '/fail',
-      method: 'POST',
-    }));
+    expect(loggerMock.error).toHaveBeenCalledWith(
+      'Error occurred',
+      expect.objectContaining({
+        error: 'fail',
+        url: '/fail',
+        method: 'POST',
+      })
+    );
     expect(next).toHaveBeenCalledWith(err);
   });
 
@@ -70,7 +81,12 @@ describe('setupLogger', () => {
     const middleware = useMock.mock.calls[0][0];
     const req = { method: 'POST', url: '/branch', get: jest.fn() };
     // Simulate res.on with a non-finish event
-    const res: any = { statusCode: 201, on: jest.fn((event, cb) => { if (event === 'not-finish') cb(); }) };
+    const res: any = {
+      statusCode: 201,
+      on: jest.fn((event, cb) => {
+        if (event === 'not-finish') cb();
+      }),
+    };
     const next = jest.fn();
 
     middleware(req, res, next);
@@ -92,4 +108,4 @@ describe('setupLogger', () => {
     expect(loggerMock.info).not.toHaveBeenCalled();
     expect(next).toHaveBeenCalled();
   });
-}); 
+});

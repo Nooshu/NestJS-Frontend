@@ -23,7 +23,7 @@ describe('createNunjucksEngine', () => {
     expect(typeof engine).toBe('function');
   });
 
-  it('should call env.render with correct arguments and handle success', done => {
+  it('should call env.render with correct arguments and handle success', (done) => {
     const engine = createNunjucksEngine();
     const filePath = 'template.njk';
     const options = { foo: 'bar' };
@@ -42,7 +42,7 @@ describe('createNunjucksEngine', () => {
     });
   });
 
-  it('should call env.render and handle error', done => {
+  it('should call env.render and handle error', (done) => {
     const engine = createNunjucksEngine();
     const filePath = 'template.njk';
     const options = { foo: 'bar' };
@@ -60,4 +60,4 @@ describe('createNunjucksEngine', () => {
       done();
     });
   });
-}); 
+});

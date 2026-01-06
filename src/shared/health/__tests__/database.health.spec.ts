@@ -33,27 +33,27 @@ describe('DatabaseHealthIndicator', () => {
 
     it('should throw HealthCheckError when response time is too high', async () => {
       // Mock the simulateDatabaseQuery to take longer than 1 second
-      jest.spyOn(indicator as any, 'simulateDatabaseQuery').mockImplementation(
-        () => new Promise(resolve => setTimeout(resolve, 1100))
-      );
+      jest
+        .spyOn(indicator as any, 'simulateDatabaseQuery')
+        .mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 1100)));
 
       await expect(indicator.isHealthy('database')).rejects.toThrow(HealthCheckError);
     });
 
     it('should handle database connection errors', async () => {
       // Mock the simulateDatabaseQuery to throw an error
-      jest.spyOn(indicator as any, 'simulateDatabaseQuery').mockImplementation(
-        () => Promise.reject(new Error('Connection failed'))
-      );
+      jest
+        .spyOn(indicator as any, 'simulateDatabaseQuery')
+        .mockImplementation(() => Promise.reject(new Error('Connection failed')));
 
       await expect(indicator.isHealthy('database')).rejects.toThrow(HealthCheckError);
     });
 
     it('should handle unknown errors gracefully', async () => {
       // Mock the simulateDatabaseQuery to throw a non-Error object
-      jest.spyOn(indicator as any, 'simulateDatabaseQuery').mockImplementation(
-        () => Promise.reject('Unknown error')
-      );
+      jest
+        .spyOn(indicator as any, 'simulateDatabaseQuery')
+        .mockImplementation(() => Promise.reject('Unknown error'));
 
       await expect(indicator.isHealthy('database')).rejects.toThrow(HealthCheckError);
     });

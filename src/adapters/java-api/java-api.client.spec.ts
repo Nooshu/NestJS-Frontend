@@ -177,12 +177,9 @@ describe('JavaApiClient', () => {
     });
 
     it('should handle GET request error', async () => {
-      const javaApiError = new JavaApiError(
-        'Validation error',
-        400,
-        'VALIDATION_ERROR',
-        { field: 'name' }
-      );
+      const javaApiError = new JavaApiError('Validation error', 400, 'VALIDATION_ERROR', {
+        field: 'name',
+      });
       mockAxiosInstance.get.mockRejectedValue(javaApiError);
 
       try {
@@ -205,12 +202,9 @@ describe('JavaApiClient', () => {
     });
 
     it('should handle POST request error', async () => {
-      const javaApiError = new JavaApiError(
-        'Validation error',
-        400,
-        'VALIDATION_ERROR',
-        { field: 'name' }
-      );
+      const javaApiError = new JavaApiError('Validation error', 400, 'VALIDATION_ERROR', {
+        field: 'name',
+      });
       mockAxiosInstance.post.mockRejectedValue(javaApiError);
 
       try {
@@ -234,12 +228,9 @@ describe('JavaApiClient', () => {
     });
 
     it('should handle PUT request error', async () => {
-      const javaApiError = new JavaApiError(
-        'Validation error',
-        400,
-        'VALIDATION_ERROR',
-        { field: 'name' }
-      );
+      const javaApiError = new JavaApiError('Validation error', 400, 'VALIDATION_ERROR', {
+        field: 'name',
+      });
       mockAxiosInstance.put.mockRejectedValue(javaApiError);
 
       try {
@@ -263,12 +254,9 @@ describe('JavaApiClient', () => {
     });
 
     it('should handle DELETE request error', async () => {
-      const javaApiError = new JavaApiError(
-        'Validation error',
-        400,
-        'VALIDATION_ERROR',
-        { field: 'name' }
-      );
+      const javaApiError = new JavaApiError('Validation error', 400, 'VALIDATION_ERROR', {
+        field: 'name',
+      });
       mockAxiosInstance.delete.mockRejectedValue(javaApiError);
 
       try {
@@ -357,13 +345,16 @@ describe('JavaApiClient', () => {
 
       requestInterceptor(config);
 
-      expect(mockLogger.debug).toHaveBeenCalledWith('Java API Request', expect.objectContaining({
-        method: 'GET',
-        url: '/test',
-        baseURL: undefined,
-        headers: { 'Content-Type': 'application/json' },
-        timestamp: expect.any(String),
-      }));
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'Java API Request',
+        expect.objectContaining({
+          method: 'GET',
+          url: '/test',
+          baseURL: undefined,
+          headers: { 'Content-Type': 'application/json' },
+          timestamp: expect.any(String),
+        })
+      );
     });
 
     it('should log response details', () => {
@@ -377,14 +368,17 @@ describe('JavaApiClient', () => {
 
       responseInterceptor(response);
 
-      expect(mockLogger.debug).toHaveBeenCalledWith('Java API Response', expect.objectContaining({
-        status: 200,
-        statusText: 'OK',
-        url: '/test',
-        method: 'GET',
-        contentLength: undefined,
-        timestamp: expect.any(String),
-      }));
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'Java API Response',
+        expect.objectContaining({
+          status: 200,
+          statusText: 'OK',
+          url: '/test',
+          method: 'GET',
+          contentLength: undefined,
+          timestamp: expect.any(String),
+        })
+      );
     });
 
     it('should handle network error without response', async () => {

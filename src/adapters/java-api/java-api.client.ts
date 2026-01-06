@@ -488,7 +488,7 @@ export class JavaApiClient {
       this.logger.error('Java API GET Error', {
         path,
         config: this.sanitizeConfig(config),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
 
       if (axios.isAxiosError(error)) {
@@ -541,7 +541,7 @@ export class JavaApiClient {
         path,
         dataType: data ? typeof data : 'undefined',
         config: this.sanitizeConfig(config),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
 
       if (axios.isAxiosError(error)) {
@@ -594,7 +594,7 @@ export class JavaApiClient {
         path,
         dataType: data ? typeof data : 'undefined',
         config: this.sanitizeConfig(config),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
 
       if (axios.isAxiosError(error)) {
@@ -642,7 +642,7 @@ export class JavaApiClient {
       this.logger.error('Java API DELETE Error', {
         path,
         config: this.sanitizeConfig(config),
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : 'Unknown error',
       });
 
       if (axios.isAxiosError(error)) {

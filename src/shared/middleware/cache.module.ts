@@ -7,4 +7,4 @@ import { CacheMiddleware } from './cache.middleware';
   providers: [CacheMiddleware],
   exports: [CacheMiddleware],
 })
-export class CacheModule {} 
+export class CacheModule {}

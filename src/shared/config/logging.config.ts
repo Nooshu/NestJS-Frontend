@@ -176,7 +176,7 @@ export const loggingConfig: LoggingConfiguration = {
       '/.well-known/appspecific/com.chrome.devtools.json',
       '/favicon.ico',
       '*.js.map',
-      '*.css.map'
+      '*.css.map',
     ],
   },
 

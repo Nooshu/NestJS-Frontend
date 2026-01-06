@@ -2,7 +2,7 @@
  * Data Transfer Object (DTO) for the journey start form.
  * Defines the validation rules and transformations for the initial journey data.
  * Uses class-validator decorators to enforce data integrity and format requirements.
- * 
+ *
  * @class StartJourneyDto
  * @property {string} fullName - User's full name (letters, spaces, hyphens, and apostrophes only)
  * @property {string} email - User's email address (must be valid email format)
@@ -18,7 +18,9 @@ export class StartJourneyDto {
    * Will be trimmed of leading/trailing whitespace.
    */
   @IsNotEmpty({ message: 'Please enter your full name' })
-  @Matches(/^[a-zA-Z\s'-]+$/, { message: 'Full name can only contain letters, spaces, hyphens and apostrophes' })
+  @Matches(/^[a-zA-Z\s'-]+$/, {
+    message: 'Full name can only contain letters, spaces, hyphens and apostrophes',
+  })
   @Transform(({ value }) => value?.trim())
   fullName!: string;
 
@@ -39,4 +41,4 @@ export class StartJourneyDto {
   @IsNotEmpty({ message: 'Please select a journey type' })
   @IsEnum(['personal', 'business', 'other'], { message: 'Please select a valid journey type' })
   journeyType!: 'personal' | 'business' | 'other';
-} 
+}

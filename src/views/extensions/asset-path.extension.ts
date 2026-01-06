@@ -1,6 +1,6 @@
 /**
  * Asset path Nunjucks extension.
- * 
+ *
  * This extension provides a function to resolve fingerprinted asset paths in Nunjucks templates.
  */
 import { Injectable } from '@nestjs/common';
@@ -26,4 +26,4 @@ export class AssetPathExtension {
       return this.fingerprintService.getAssetPath(assetPath);
     };
   }
-} 
+}

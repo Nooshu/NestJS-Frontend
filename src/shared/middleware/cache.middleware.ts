@@ -69,7 +69,7 @@ export class CacheMiddleware implements NestMiddleware {
       let currentEnv: string;
       try {
         currentEnv = this.configService.get<string>('environment') || 'production';
-      } catch (error) {
+      } catch (_error) {
         // If config service fails, default to production settings
         currentEnv = 'production';
       }
@@ -85,7 +85,7 @@ export class CacheMiddleware implements NestMiddleware {
         let isAuthenticated = false;
         try {
           isAuthenticated = req.isAuthenticated?.() || false;
-        } catch (error) {
+        } catch (_error) {
           // If auth check fails, treat as unauthenticated
           isAuthenticated = false;
         }
@@ -104,22 +104,38 @@ export class CacheMiddleware implements NestMiddleware {
         let pageStaleTime = 60; // 1 minute
 
         try {
-          defaultMaxAge = this.configService.get<number>('performance.browserCache.maxAge') || defaultMaxAge;
-          staticAssetMaxAge = this.configService.get<number>('performance.browserCache.staticAssets.maxAge') || staticAssetMaxAge;
-          staticAssetStaleTime = this.configService.get<number>('performance.browserCache.staticAssets.staleWhileRevalidate') || staticAssetStaleTime;
-          pageMaxAge = this.configService.get<number>('performance.browserCache.pages.maxAge') || defaultMaxAge;
-          pageStaleTime = this.configService.get<number>('performance.browserCache.pages.staleWhileRevalidate') || pageStaleTime;
-        } catch (error) {
+          defaultMaxAge =
+            this.configService.get<number>('performance.browserCache.maxAge') || defaultMaxAge;
+          staticAssetMaxAge =
+            this.configService.get<number>('performance.browserCache.staticAssets.maxAge') ||
+            staticAssetMaxAge;
+          staticAssetStaleTime =
+            this.configService.get<number>(
+              'performance.browserCache.staticAssets.staleWhileRevalidate'
+            ) || staticAssetStaleTime;
+          pageMaxAge =
+            this.configService.get<number>('performance.browserCache.pages.maxAge') ||
+            defaultMaxAge;
+          pageStaleTime =
+            this.configService.get<number>('performance.browserCache.pages.staleWhileRevalidate') ||
+            pageStaleTime;
+        } catch (_error) {
           // If config service fails, use default values
         }
 
         // Apply different caching strategies based on resource type
         if (req.path.match(/\.(css|js|jpg|jpeg|png|gif|ico|woff|woff2)$/)) {
           // Long cache with stale-while-revalidate for static assets
-          res.setHeader('Cache-Control', `public, max-age=${staticAssetMaxAge}, stale-while-revalidate=${staticAssetStaleTime}`);
+          res.setHeader(
+            'Cache-Control',
+            `public, max-age=${staticAssetMaxAge}, stale-while-revalidate=${staticAssetStaleTime}`
+          );
         } else {
           // For public pages, shorter cache with stale-while-revalidate
-          res.setHeader('Cache-Control', `public, max-age=${pageMaxAge}, stale-while-revalidate=${pageStaleTime}`);
+          res.setHeader(
+            'Cache-Control',
+            `public, max-age=${pageMaxAge}, stale-while-revalidate=${pageStaleTime}`
+          );
         }
       }
 
@@ -127,7 +143,7 @@ export class CacheMiddleware implements NestMiddleware {
       res.setHeader('Vary', 'Accept-Encoding');
 
       next();
-    } catch (error) {
+    } catch (_error) {
       // If any unexpected error occurs, proceed without caching
       next();
     }

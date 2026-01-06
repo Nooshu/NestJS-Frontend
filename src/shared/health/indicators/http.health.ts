@@ -38,10 +38,12 @@ export class HttpHealthIndicator extends HealthIndicator {
       const startTime = Date.now();
 
       const response = await firstValueFrom(
-        this.httpService.get(url, {
-          timeout: timeoutMs,
-          validateStatus: () => true, // Don't throw on non-2xx status codes
-        }).pipe(timeout(timeoutMs))
+        this.httpService
+          .get(url, {
+            timeout: timeoutMs,
+            validateStatus: () => true, // Don't throw on non-2xx status codes
+          })
+          .pipe(timeout(timeoutMs))
       );
 
       const responseTime = Date.now() - startTime;
@@ -119,10 +121,12 @@ export class HttpHealthIndicator extends HealthIndicator {
           const startTime = Date.now();
           try {
             const response = await firstValueFrom(
-              this.httpService.get(endpoint.url, {
-                timeout: endpoint.timeout || 5000,
-                validateStatus: () => true,
-              }).pipe(timeout(endpoint.timeout || 5000))
+              this.httpService
+                .get(endpoint.url, {
+                  timeout: endpoint.timeout || 5000,
+                  validateStatus: () => true,
+                })
+                .pipe(timeout(endpoint.timeout || 5000))
             );
 
             const responseTime = Date.now() - startTime;
@@ -149,17 +153,19 @@ export class HttpHealthIndicator extends HealthIndicator {
       );
 
       const endpointResults = results.map((result) =>
-        result.status === 'fulfilled' ? result.value : {
-          name: 'unknown',
-          status: 'error',
-          isHealthy: false,
-          error: 'Promise rejected',
-        }
+        result.status === 'fulfilled'
+          ? result.value
+          : {
+              name: 'unknown',
+              status: 'error',
+              isHealthy: false,
+              error: 'Promise rejected',
+            }
       );
 
-      const healthyCount = endpointResults.filter(r => r.isHealthy).length;
+      const healthyCount = endpointResults.filter((r) => r.isHealthy).length;
       const totalCount = endpointResults.length;
-      
+
       // Consider healthy if at least 50% of endpoints are healthy
       const overallHealthy = healthyCount >= Math.ceil(totalCount / 2);
 
@@ -182,7 +188,8 @@ export class HttpHealthIndicator extends HealthIndicator {
         message: 'HTTP endpoints are healthy',
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Multiple endpoint check failed';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Multiple endpoint check failed';
       const errorName = error instanceof Error ? error.name : 'MultipleHttpError';
 
       throw new HealthCheckError(

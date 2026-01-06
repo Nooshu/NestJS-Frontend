@@ -15,13 +15,15 @@ export class SecurityConfig {
 
   get csrf() {
     const isDevelopment = this.configService.get<string>('NODE_ENV') !== 'production';
-    
+
     return {
       enabled: this.configService.get<boolean>('security.csrf.enabled') ?? true,
       cookieName: this.configService.get<string>('security.csrf.cookieName') ?? 'XSRF-TOKEN',
       cookieOptions: {
         httpOnly: this.configService.get<boolean>('security.csrf.cookieOptions.httpOnly') ?? true,
-        secure: isDevelopment ? false : (this.configService.get<boolean>('security.csrf.cookieOptions.secure') ?? true),
+        secure: isDevelopment
+          ? false
+          : (this.configService.get<boolean>('security.csrf.cookieOptions.secure') ?? true),
         sameSite:
           this.configService.get<string>('security.csrf.cookieOptions.sameSite') ?? 'strict',
       },
@@ -46,7 +48,7 @@ export class SecurityConfig {
 
   get helmet(): HelmetOptions {
     const isDevelopment = this.configService.get<string>('NODE_ENV') !== 'production';
-    
+
     return {
       // Disable CSP as it's now handled by OptimizedHtmlHeadersMiddleware
       contentSecurityPolicy: false,
@@ -57,11 +59,13 @@ export class SecurityConfig {
       // Disable frameguard as it's now handled by OptimizedHtmlHeadersMiddleware
       frameguard: false,
       hidePoweredBy: true,
-      hsts: isDevelopment ? false : {
-        maxAge: 31536000,
-        includeSubDomains: true,
-        preload: true,
-      },
+      hsts: isDevelopment
+        ? false
+        : {
+            maxAge: 31536000,
+            includeSubDomains: true,
+            preload: true,
+          },
       // Disable ieNoOpen as it's now handled by OptimizedHtmlHeadersMiddleware
       ieNoOpen: false,
       // Disable noSniff as it's now handled by OptimizedHtmlHeadersMiddleware
@@ -74,7 +78,7 @@ export class SecurityConfig {
       permittedCrossDomainPolicies: false,
       xssFilter: false,
       // Try setting legacy headers to undefined to completely disable them
-      // @ts-ignore - These are not in the official HelmetOptions type but may work
+      // @ts-expect-error - These are not in the official HelmetOptions type but may work
       'X-DNS-Prefetch-Control': undefined,
       'X-Permitted-Cross-Domain-Policies': undefined,
       'X-XSS-Protection': undefined,

@@ -123,4 +123,4 @@ describe('NotFoundExceptionFilter', () => {
       expect(mockResponse.json).not.toHaveBeenCalled();
     });
   });
-}); 
+});

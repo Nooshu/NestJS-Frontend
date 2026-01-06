@@ -13,7 +13,7 @@ describe('fingerprint-assets.ts CLI script', () => {
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
-    
+
     // Reset console output
     consoleOutput = [];
     console.log = jest.fn((...args) => {
@@ -34,7 +34,7 @@ describe('fingerprint-assets.ts CLI script', () => {
     // Arrange
     const mockFingerprint = jest.fn();
     (FingerprintService as jest.Mock).mockImplementation(() => ({
-      fingerprint: mockFingerprint
+      fingerprint: mockFingerprint,
     }));
 
     // Act
@@ -49,7 +49,7 @@ describe('fingerprint-assets.ts CLI script', () => {
     // Arrange
     const mockFingerprint = jest.fn();
     (FingerprintService as jest.Mock).mockImplementation(() => ({
-      fingerprint: mockFingerprint
+      fingerprint: mockFingerprint,
     }));
 
     // Act
@@ -65,7 +65,7 @@ describe('fingerprint-assets.ts CLI script', () => {
     const mockError = new Error('Fingerprinting failed');
     const mockFingerprint = jest.fn().mockRejectedValue(mockError);
     (FingerprintService as jest.Mock).mockImplementation(() => ({
-      fingerprint: mockFingerprint
+      fingerprint: mockFingerprint,
     }));
 
     // Mock process.exit to prevent test from actually exiting
@@ -78,4 +78,4 @@ describe('fingerprint-assets.ts CLI script', () => {
     expect(consoleOutput).toContain('ERROR: Asset fingerprinting failed: Fingerprinting failed');
     expect(mockExit).toHaveBeenCalledWith(1);
   });
-}); 
+});

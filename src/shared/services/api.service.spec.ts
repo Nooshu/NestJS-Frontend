@@ -167,7 +167,9 @@ describe('ApiService', () => {
 
       jest.spyOn(httpService, 'post').mockReturnValue(throwError(() => mockError).pipe(take(1)));
 
-      await expect(firstValueFrom(service.post(mockEndpoint, mockData))).rejects.toThrow(HttpException);
+      await expect(firstValueFrom(service.post(mockEndpoint, mockData))).rejects.toThrow(
+        HttpException
+      );
     });
   });
 
@@ -208,7 +210,9 @@ describe('ApiService', () => {
 
       jest.spyOn(httpService, 'put').mockReturnValue(throwError(() => mockError).pipe(take(1)));
 
-      await expect(firstValueFrom(service.put(mockEndpoint, mockData))).rejects.toThrow(HttpException);
+      await expect(firstValueFrom(service.put(mockEndpoint, mockData))).rejects.toThrow(
+        HttpException
+      );
     });
   });
 
@@ -384,7 +388,7 @@ describe('ApiService', () => {
 
     it('should handle different response status codes', async () => {
       const statusCodes = [200, 201, 204, 301, 302, 400, 401, 403, 404, 500];
-      
+
       for (const status of statusCodes) {
         const mockAxiosResponse: AxiosResponse = {
           data: mockResponse,
@@ -416,4 +420,4 @@ describe('ApiService', () => {
       expect(result).toBeNull();
     });
   });
-}); 
+});

@@ -1,4 +1,10 @@
-import { loadFixtures, normalizeHtml, compareHtml, verifyComponent, GovukFixture } from './fixtures.test-helper';
+import {
+  loadFixtures,
+  normalizeHtml,
+  compareHtml,
+  verifyComponent,
+  GovukFixture,
+} from './fixtures.test-helper';
 import * as fs from 'fs';
 import * as path from 'path';
 import { parse } from 'node-html-parser';
@@ -21,9 +27,9 @@ describe('FixturesTestHelper', () => {
             name: 'default',
             options: {},
             html: '<button class="govuk-button">Click me</button>',
-            hidden: false
-          }
-        ]
+            hidden: false,
+          },
+        ],
       };
 
       (path.join as jest.Mock).mockReturnValue('/mock/path/fixtures.json');
@@ -38,7 +44,9 @@ describe('FixturesTestHelper', () => {
       (path.join as jest.Mock).mockReturnValue('/mock/path/fixtures.json');
       (fs.existsSync as jest.Mock).mockReturnValue(false);
 
-      expect(() => loadFixtures('nonexistent')).toThrow('Fixtures not found for component nonexistent');
+      expect(() => loadFixtures('nonexistent')).toThrow(
+        'Fixtures not found for component nonexistent'
+      );
     });
   });
 
@@ -117,7 +125,7 @@ describe('FixturesTestHelper', () => {
         expect(spy).toHaveBeenCalledWith('Attribute value mismatch:', {
           key: 'class',
           rendered: 'a b',
-          fixture: 'a'
+          fixture: 'a',
         });
         spy.mockRestore();
       });
@@ -129,7 +137,7 @@ describe('FixturesTestHelper', () => {
         expect(spy).toHaveBeenCalledWith('Attribute value mismatch:', {
           key: 'class',
           rendered: 'a',
-          fixture: 'a b'
+          fixture: 'a b',
         });
         spy.mockRestore();
       });
@@ -149,7 +157,7 @@ describe('FixturesTestHelper', () => {
       name: 'test',
       options: {},
       html: '<button class="govuk-button" type="submit">Click me</button>',
-      hidden: false
+      hidden: false,
     };
 
     it('should throw error when rendered HTML parsing fails', () => {
@@ -157,8 +165,9 @@ describe('FixturesTestHelper', () => {
     });
 
     it('should throw error when fixture HTML parsing fails', () => {
-      expect(() => verifyComponent('<button></button>', { ...mockFixture, html: '' }))
-        .toThrow('Failed to parse fixture HTML');
+      expect(() => verifyComponent('<button></button>', { ...mockFixture, html: '' })).toThrow(
+        'Failed to parse fixture HTML'
+      );
     });
 
     it('should handle class attributes from rawAttrs', () => {
@@ -194,7 +203,7 @@ describe('FixturesTestHelper', () => {
       const rendered = '<button class="govuk-button custom">Click me</button>';
       const fixture = {
         ...mockFixture,
-        html: '<button class="govuk-button custom">Click me</button>'
+        html: '<button class="govuk-button custom">Click me</button>',
       };
       verifyComponent(rendered, fixture);
     });
@@ -209,7 +218,7 @@ describe('FixturesTestHelper', () => {
         name: 'test',
         options: {},
         html: '',
-        hidden: false
+        hidden: false,
       };
       it('should extract class from rawAttrs', () => {
         const rendered = '<div class="foo bar">hi</div>';
@@ -231,8 +240,8 @@ describe('FixturesTestHelper', () => {
         const rendered = '<div class="foo bar">hi</div>';
         const fixture = {
           name: 'test-component',
-          html: '<div class="foo bar">hi</div>',  // Include class in HTML for initial comparison
-          class: 'foo bar',  // Also specify in class property to test that path
+          html: '<div class="foo bar">hi</div>', // Include class in HTML for initial comparison
+          class: 'foo bar', // Also specify in class property to test that path
           options: {},
           hidden: false,
           severity: 'info' as const,
@@ -277,4 +286,4 @@ describe('FixturesTestHelper', () => {
       });
     });
   });
-}); 
+});

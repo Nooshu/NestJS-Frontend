@@ -84,7 +84,7 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.sanitizeObject(item, depth + 1));
+      return obj.map((item) => this.sanitizeObject(item, depth + 1));
     }
 
     if (typeof obj === 'object') {
@@ -100,11 +100,11 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   }
 
   private checkBlockedPatterns(input: string): boolean {
-    return this.config.blockedPatterns.some(pattern => pattern.test(input));
+    return this.config.blockedPatterns.some((pattern) => pattern.test(input));
   }
 
   private checkSuspiciousPatterns(input: string): boolean {
-    return this.config.suspiciousPatterns.some(pattern => pattern.test(input));
+    return this.config.suspiciousPatterns.some((pattern) => pattern.test(input));
   }
 
   private validateRequest(req: Request): { valid: boolean; reason?: string; suspicious?: boolean } {
@@ -170,7 +170,8 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   private getClientInfo(req: Request) {
     const forwarded = req.headers['x-forwarded-for'] as string;
     const realIp = req.headers['x-real-ip'] as string;
-    const ip = forwarded?.split(',')[0] || realIp || req.ip || req.connection.remoteAddress || 'unknown';
+    const ip =
+      forwarded?.split(',')[0] || realIp || req.ip || req.connection.remoteAddress || 'unknown';
 
     return {
       ip,
@@ -224,9 +225,13 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
           method: req.method,
         });
       } catch (error) {
-        this.logger.error('Error sanitizing request body', error instanceof Error ? error.stack : 'Unknown error', {
-          ...clientInfo,
-        });
+        this.logger.error(
+          'Error sanitizing request body',
+          error instanceof Error ? error.stack : 'Unknown error',
+          {
+            ...clientInfo,
+          }
+        );
 
         res.status(400).json({
           statusCode: 400,
@@ -246,9 +251,13 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
           method: req.method,
         });
       } catch (error) {
-        this.logger.error('Error sanitizing query parameters', error instanceof Error ? error.stack : 'Unknown error', {
-          ...clientInfo,
-        });
+        this.logger.error(
+          'Error sanitizing query parameters',
+          error instanceof Error ? error.stack : 'Unknown error',
+          {
+            ...clientInfo,
+          }
+        );
 
         res.status(400).json({
           statusCode: 400,

@@ -2,7 +2,7 @@
  * Data Transfer Object (DTO) for the journey details form.
  * Defines the validation rules and transformations for the journey-specific data.
  * Uses class-validator decorators to enforce data integrity and format requirements.
- * 
+ *
  * @class JourneyDetailsDto
  * @property {string} journeyDate-day - Day component of journey start date (1-31)
  * @property {string} journeyDate-month - Month component of journey start date (1-12)
@@ -50,7 +50,7 @@ export class JourneyDetailsDto {
    */
   @IsNotEmpty({ message: 'Please select a journey duration' })
   @IsEnum(['1-week', '2-weeks', '1-month', '3-months', '6-months', '1-year'], {
-    message: 'Please select a valid journey duration'
+    message: 'Please select a valid journey duration',
   })
   journeyDuration!: string;
 
@@ -65,4 +65,4 @@ export class JourneyDetailsDto {
   @MaxLength(500, { message: 'Journey description must not exceed 500 characters' })
   @Transform(({ value }) => value?.trim())
   journeyDescription!: string;
-} 
+}

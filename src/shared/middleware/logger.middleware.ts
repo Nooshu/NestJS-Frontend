@@ -16,7 +16,7 @@ import { loggingConfig } from '../config/logging.config';
  * Logger middleware for request/response logging and monitoring.
  * Provides comprehensive logging of HTTP requests and responses,
  * including performance monitoring and audit logging capabilities.
- * 
+ *
  * Features:
  * - Request/response logging
  * - Performance monitoring
@@ -24,13 +24,13 @@ import { loggingConfig } from '../config/logging.config';
  * - Response time tracking
  * - Audit logging
  * - Request ID tracking
- * 
+ *
  * Monitoring thresholds:
  * - Error rate monitoring (500+ status codes)
  * - Response time monitoring
  * - Content length tracking
  * - User agent logging
- * 
+ *
  * @class LoggerMiddleware
  * @implements {NestMiddleware}
  */
@@ -44,12 +44,12 @@ export class LoggerMiddleware implements NestMiddleware {
    * Check if a path should be excluded from logging
    */
   private shouldExcludePath(path: string): boolean {
-    return loggingConfig.base.excludePaths.some(pattern => {
+    return loggingConfig.base.excludePaths.some((pattern) => {
       // Handle exact matches
       if (!pattern.includes('*')) {
         return path === pattern;
       }
-      
+
       // Handle *.extension patterns
       if (pattern.startsWith('*.')) {
         const extension = pattern.slice(1); // Remove the *
@@ -67,13 +67,13 @@ export class LoggerMiddleware implements NestMiddleware {
    * - Response metrics (status, duration, content length)
    * - Performance monitoring
    * - Audit logging
-   * 
+   *
    * Security considerations:
    * - IP address logging
    * - User agent logging
    * - Request ID tracking
    * - Sensitive data masking
-   * 
+   *
    * @method use
    * @param {Request} req - The request object
    * @param {Response} res - The response object

@@ -49,19 +49,19 @@ describe('NewJourneyController', () => {
 
   it('should be constructable with ConfigService', () => {
     const testConfigService = {
-      get: jest.fn()
+      get: jest.fn(),
     };
-    
+
     const testController = new NewJourneyController(testConfigService as any);
     expect(testController).toBeDefined();
     expect(testController).toBeInstanceOf(NewJourneyController);
-    
+
     // Test that the configService is properly assigned
     expect((testController as any).configService).toBe(testConfigService);
-    
+
     // Test that the logger is properly initialized
     expect((testController as any).logger).toBeDefined();
-    
+
     // Test that the formData is properly initialized
     expect((testController as any).formData).toEqual({});
   });
@@ -83,23 +83,22 @@ describe('NewJourneyController', () => {
   it('should handle edge case where class name might be undefined', () => {
     // Mock the class constructor to test edge cases
     const originalName = NewJourneyController.name;
-    
+
     try {
       // Temporarily modify the name property
       Object.defineProperty(NewJourneyController, 'name', {
         value: undefined,
-        configurable: true
+        configurable: true,
       });
-      
+
       const testConfigService = { get: jest.fn() };
       const testController = new NewJourneyController(testConfigService as any);
       expect(testController).toBeDefined();
-      
     } finally {
       // Restore the original name
       Object.defineProperty(NewJourneyController, 'name', {
         value: originalName,
-        configurable: true
+        configurable: true,
       });
     }
   });
@@ -110,7 +109,7 @@ describe('NewJourneyController', () => {
     expect(formData).toEqual({});
     expect(formData.start).toBeUndefined();
     expect(formData.details).toBeUndefined();
-    
+
     // Test that we can modify it
     formData.start = { fullName: 'test', email: 'test@test.com', journeyType: 'personal' };
     expect(formData.start).toBeDefined();
@@ -119,11 +118,11 @@ describe('NewJourneyController', () => {
   describe('index', () => {
     it('should return the correct view model for the welcome page', () => {
       const result = controller.index();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Welcome',
         journey: 'new-journey',
-        currentPage: 'index'
+        currentPage: 'index',
       });
     });
   });
@@ -131,11 +130,11 @@ describe('NewJourneyController', () => {
   describe('start', () => {
     it('should return the correct view model for the start page', () => {
       const result = controller.start();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Start',
         journey: 'new-journey',
-        currentPage: 'start'
+        currentPage: 'start',
       });
     });
   });
@@ -145,11 +144,11 @@ describe('NewJourneyController', () => {
       const formData = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
 
       const result = controller.handleStart(formData);
-      
+
       expect(result).toEqual({});
       // Note: We can't directly test the private formData property
       // but we can test the behavior through the details method
@@ -159,7 +158,7 @@ describe('NewJourneyController', () => {
   describe('details', () => {
     it('should redirect to start page when no start form data exists', () => {
       const result = controller.details();
-      
+
       expect(result).toEqual({ redirect: '/new-journey/start' });
     });
 
@@ -168,22 +167,22 @@ describe('NewJourneyController', () => {
       const startFormData = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       // Use the private method to set form data (we'll need to access it)
       (controller as any).formData.start = startFormData;
-      
+
       // Mock the config service
       jest.spyOn(configService, 'get').mockReturnValue('development');
-      
+
       const result = controller.details();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Details',
         journey: 'new-journey',
         currentPage: 'details',
-        isDevelopment: true
+        isDevelopment: true,
       });
     });
 
@@ -192,21 +191,21 @@ describe('NewJourneyController', () => {
       const startFormData = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       (controller as any).formData.start = startFormData;
-      
+
       // Mock the config service to return production
       jest.spyOn(configService, 'get').mockReturnValue('production');
-      
+
       const result = controller.details();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Details',
         journey: 'new-journey',
         currentPage: 'details',
-        isDevelopment: false
+        isDevelopment: false,
       });
     });
 
@@ -215,21 +214,21 @@ describe('NewJourneyController', () => {
       const startFormData = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       (controller as any).formData.start = startFormData;
-      
+
       // Mock the config service to return a different string value
       jest.spyOn(configService, 'get').mockReturnValue('staging');
-      
+
       const result = controller.details();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Details',
         journey: 'new-journey',
         currentPage: 'details',
-        isDevelopment: false
+        isDevelopment: false,
       });
     });
   });
@@ -241,11 +240,11 @@ describe('NewJourneyController', () => {
         'journeyDate-month': '6',
         'journeyDate-year': '2024',
         journeyDuration: '2 weeks',
-        journeyDescription: 'Business trip to London'
+        journeyDescription: 'Business trip to London',
       };
 
       const result = controller.handleDetails(formData);
-      
+
       expect(result).toEqual({});
     });
 
@@ -255,11 +254,11 @@ describe('NewJourneyController', () => {
         'journeyDate-month': '6',
         'journeyDate-year': '2024',
         journeyDuration: '2 weeks',
-        journeyDescription: 'Business trip to London'
+        journeyDescription: 'Business trip to London',
       };
 
       const result = controller.handleDetails(formData);
-      
+
       expect(result).toEqual({});
     });
 
@@ -269,7 +268,7 @@ describe('NewJourneyController', () => {
         'journeyDate-month': '6',
         'journeyDate-year': '2024',
         journeyDuration: '2 weeks',
-        journeyDescription: 'Business trip to London'
+        journeyDescription: 'Business trip to London',
       };
 
       // Mock the formData assignment to throw an error
@@ -280,7 +279,7 @@ describe('NewJourneyController', () => {
         },
         set details(value) {
           throw new Error('Test error');
-        }
+        },
       };
 
       expect(() => controller.handleDetails(formData)).toThrow('Test error');
@@ -295,7 +294,7 @@ describe('NewJourneyController', () => {
         'journeyDate-month': '6',
         'journeyDate-year': '2024',
         journeyDuration: '2 weeks',
-        journeyDescription: 'Business trip to London'
+        journeyDescription: 'Business trip to London',
       };
 
       // Mock the logger to throw an error
@@ -306,7 +305,7 @@ describe('NewJourneyController', () => {
         }),
         error: jest.fn().mockImplementation(() => {}),
         log: jest.fn().mockImplementation(() => {}),
-        warn: jest.fn().mockImplementation(() => {})
+        warn: jest.fn().mockImplementation(() => {}),
       };
 
       expect(() => controller.handleDetails(formData)).toThrow('Logger error');
@@ -319,7 +318,7 @@ describe('NewJourneyController', () => {
   describe('confirmation', () => {
     it('should redirect to index when no start form data exists', () => {
       const result = controller.confirmation();
-      
+
       expect(result).toEqual({ redirect: '/new-journey' });
     });
 
@@ -328,11 +327,11 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       const result = controller.confirmation();
-      
+
       expect(result).toEqual({ redirect: '/new-journey' });
     });
 
@@ -341,14 +340,14 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       // Explicitly set details to undefined to test the OR condition branch
       (controller as any).formData.details = undefined;
-      
+
       const result = controller.confirmation();
-      
+
       expect(result).toEqual({ redirect: '/new-journey' });
     });
 
@@ -357,32 +356,32 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       // Explicitly set details to null to test the OR condition branch
       (controller as any).formData.details = null;
-      
+
       const result = controller.confirmation();
-      
+
       expect(result).toEqual({ redirect: '/new-journey' });
     });
 
     it('should test short-circuit evaluation when start form data is falsy', () => {
       // Set start form data to a falsy value (empty string)
       (controller as any).formData.start = '';
-      
+
       // Set details form data to a truthy value
       (controller as any).formData.details = {
         'journeyDate-day': '15',
         'journeyDate-month': '6',
         'journeyDate-year': '2024',
         journeyDuration: '2 weeks',
-        journeyDescription: 'Business trip to London'
+        journeyDescription: 'Business trip to London',
       };
-      
+
       const result = controller.confirmation();
-      
+
       // Should redirect because !this.formData.start is true (short-circuit)
       expect(result).toEqual({ redirect: '/new-journey' });
     });
@@ -392,19 +391,19 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'John Doe',
         email: 'john@example.com',
-        journeyType: 'business' as const
+        journeyType: 'business' as const,
       };
-      
+
       (controller as any).formData.details = {
         'journeyDate-day': '15',
         'journeyDate-month': '6',
         'journeyDate-year': '2024',
         journeyDuration: '2 weeks',
-        journeyDescription: 'Business trip to London'
+        journeyDescription: 'Business trip to London',
       };
 
       const result = controller.confirmation();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Confirmation',
         journey: 'new-journey',
@@ -415,8 +414,8 @@ describe('NewJourneyController', () => {
           journeyType: 'business',
           startDate: '15 June 2024',
           duration: '2 weeks',
-          description: 'Business trip to London'
-        }
+          description: 'Business trip to London',
+        },
       });
     });
 
@@ -425,19 +424,19 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'Jane Smith',
         email: 'jane@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       (controller as any).formData.details = {
         'journeyDate-day': '1',
         'journeyDate-month': '12',
         'journeyDate-year': '2024',
         journeyDuration: '1 month',
-        journeyDescription: 'Holiday trip'
+        journeyDescription: 'Holiday trip',
       };
 
       const result = controller.confirmation();
-      
+
       expect(result.formData.startDate).toBe('1 December 2024');
     });
 
@@ -446,19 +445,19 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'Bob Wilson',
         email: 'bob@example.com',
-        journeyType: 'other' as const
+        journeyType: 'other' as const,
       };
-      
+
       (controller as any).formData.details = {
         'journeyDate-day': '5',
         'journeyDate-month': '3',
         'journeyDate-year': '2024',
         journeyDuration: '3 days',
-        journeyDescription: 'Short trip'
+        journeyDescription: 'Short trip',
       };
 
       const result = controller.confirmation();
-      
+
       expect(result.formData.startDate).toBe('5 March 2024');
     });
 
@@ -467,19 +466,19 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'Test User',
         email: 'test@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       (controller as any).formData.details = {
         'journeyDate-day': '10',
         'journeyDate-month': '5',
         'journeyDate-year': '2024',
         journeyDuration: '1 week',
-        journeyDescription: 'Test journey'
+        journeyDescription: 'Test journey',
       };
 
       const result = controller.confirmation();
-      
+
       expect(result.formData.startDate).toBe('10 May 2024');
     });
   });
@@ -490,26 +489,26 @@ describe('NewJourneyController', () => {
       const startFormData = {
         fullName: 'Alice Johnson',
         email: 'alice@example.com',
-        journeyType: 'business' as const
+        journeyType: 'business' as const,
       };
-      
+
       controller.handleStart(startFormData);
-      
+
       // Step 2: Check details page (should not redirect)
       const detailsResult = controller.details();
       expect(detailsResult).not.toEqual({ redirect: '/new-journey/start' });
-      
+
       // Step 3: Handle details form
       const detailsFormData = {
         'journeyDate-day': '20',
         'journeyDate-month': '7',
         'journeyDate-year': '2024',
         journeyDuration: '1 week',
-        journeyDescription: 'Conference attendance'
+        journeyDescription: 'Conference attendance',
       };
-      
+
       controller.handleDetails(detailsFormData);
-      
+
       // Step 4: Check confirmation page (should not redirect)
       const confirmationResult = controller.confirmation();
       expect(confirmationResult).not.toEqual({ redirect: '/new-journey' });
@@ -524,15 +523,15 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'Test User',
         email: 'test@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       (controller as any).formData.details = {
         'journeyDate-day': 'invalid',
         'journeyDate-month': 'invalid',
         'journeyDate-year': 'invalid',
         journeyDuration: '1 day',
-        journeyDescription: 'Test trip'
+        journeyDescription: 'Test trip',
       };
 
       // This should not throw an error but handle the invalid date gracefully
@@ -544,19 +543,19 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'Test User',
         email: 'test@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       // Mock the config service to return undefined
       jest.spyOn(configService, 'get').mockReturnValue(undefined);
-      
+
       const result = controller.details();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Details',
         journey: 'new-journey',
         currentPage: 'details',
-        isDevelopment: false
+        isDevelopment: false,
       });
     });
 
@@ -565,19 +564,19 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'Test User',
         email: 'test@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       // Mock the config service to return null
       jest.spyOn(configService, 'get').mockReturnValue(null);
-      
+
       const result = controller.details();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Details',
         journey: 'new-journey',
         currentPage: 'details',
-        isDevelopment: false
+        isDevelopment: false,
       });
     });
 
@@ -586,20 +585,20 @@ describe('NewJourneyController', () => {
       (controller as any).formData.start = {
         fullName: 'Test User',
         email: 'test@example.com',
-        journeyType: 'personal' as const
+        journeyType: 'personal' as const,
       };
-      
+
       // Mock the config service to return empty string
       jest.spyOn(configService, 'get').mockReturnValue('');
-      
+
       const result = controller.details();
-      
+
       expect(result).toEqual({
         title: 'New Journey - Details',
         journey: 'new-journey',
         currentPage: 'details',
-        isDevelopment: false
+        isDevelopment: false,
       });
     });
   });
-}); 
+});

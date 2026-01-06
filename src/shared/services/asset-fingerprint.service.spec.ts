@@ -28,7 +28,9 @@ describe('AssetFingerprintService', () => {
 
     service = module.get<AssetFingerprintService>(AssetFingerprintService);
     configService = module.get<ConfigService>(ConfigService);
-    mockGenerateFingerprintMap = generateFingerprintMap as jest.MockedFunction<typeof generateFingerprintMap>;
+    mockGenerateFingerprintMap = generateFingerprintMap as jest.MockedFunction<
+      typeof generateFingerprintMap
+    >;
   });
 
   afterEach(() => {
@@ -224,7 +226,7 @@ describe('AssetFingerprintService', () => {
     it('should use configured static directory when regenerating', () => {
       (configService.get as jest.Mock).mockReturnValue('custom-static');
       const newService = new AssetFingerprintService(configService);
-      
+
       const newMap = new Map([['/css/app.css', '/css/app.12345678.css']]);
       mockGenerateFingerprintMap.mockReturnValue(newMap);
 
@@ -259,7 +261,7 @@ describe('AssetFingerprintService', () => {
     it('should be called when regenerateFingerprintMap is invoked', () => {
       const initialMap = new Map([['/css/app.css', '/css/app.12345678.css']]);
       const newMap = new Map([['/css/app.css', '/css/app.12345678.css']]);
-      
+
       (service as any).fingerprintMap = initialMap;
       mockGenerateFingerprintMap.mockClear();
       mockGenerateFingerprintMap.mockReturnValue(newMap);

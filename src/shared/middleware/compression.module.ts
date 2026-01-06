@@ -7,4 +7,4 @@ import { CompressionMiddleware } from './compression.middleware';
   providers: [CompressionMiddleware],
   exports: [CompressionMiddleware],
 })
-export class CompressionModule {} 
+export class CompressionModule {}

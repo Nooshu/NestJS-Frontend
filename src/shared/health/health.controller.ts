@@ -84,8 +84,14 @@ export class HealthController {
         () => this.application.checkDependencies('app_dependencies'),
 
         // External dependencies (with error handling)
-        () => this.database.isHealthy('database').catch(() => ({ database: { status: 'down', message: 'Database check failed' } })),
-        () => this.redis.isHealthy('redis').catch(() => ({ redis: { status: 'down', message: 'Redis check failed' } })),
+        () =>
+          this.database
+            .isHealthy('database')
+            .catch(() => ({ database: { status: 'down', message: 'Database check failed' } })),
+        () =>
+          this.redis
+            .isHealthy('redis')
+            .catch(() => ({ redis: { status: 'down', message: 'Redis check failed' } })),
       ]);
     } catch (error) {
       // If health check fails, return a partial result with available information
@@ -111,9 +117,7 @@ export class HealthController {
   @Get('database')
   @HealthCheck()
   checkDatabase() {
-    return this.health.check([
-      () => this.database.isHealthy('database'),
-    ]);
+    return this.health.check([() => this.database.isHealthy('database')]);
   }
 
   /**
@@ -205,7 +209,10 @@ export class HealthController {
       () => this.application.checkConfiguration('config_ready'),
       () => this.application.checkDependencies('dependencies_ready'),
       // Add database/redis checks if they're critical for readiness
-      () => this.database.isHealthy('database_ready').catch(() => ({ database_ready: { status: 'down', message: 'Database not ready' } })),
+      () =>
+        this.database
+          .isHealthy('database_ready')
+          .catch(() => ({ database_ready: { status: 'down', message: 'Database not ready' } })),
     ]);
   }
 

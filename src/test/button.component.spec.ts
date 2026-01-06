@@ -27,16 +27,25 @@ describe('Button Component', () => {
    */
   beforeAll(() => {
     // Set up Nunjucks environment with paths to both local views and govuk-frontend templates
-    const govukTemplatesPath = path.join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk');
+    const govukTemplatesPath = path.join(
+      process.cwd(),
+      'node_modules',
+      'govuk-frontend',
+      'dist',
+      'govuk'
+    );
     const localViewsPath = path.join(process.cwd(), 'src', 'views');
-    
-    env = new nunjucks.Environment([
-      new nunjucks.FileSystemLoader(localViewsPath),
-      new nunjucks.FileSystemLoader(govukTemplatesPath)
-    ], {
-      autoescape: true,
-      noCache: true,
-    });
+
+    env = new nunjucks.Environment(
+      [
+        new nunjucks.FileSystemLoader(localViewsPath),
+        new nunjucks.FileSystemLoader(govukTemplatesPath),
+      ],
+      {
+        autoescape: true,
+        noCache: true,
+      }
+    );
 
     // Add paths to the Nunjucks environment
     env.addGlobal('govukTemplatesPath', govukTemplatesPath);

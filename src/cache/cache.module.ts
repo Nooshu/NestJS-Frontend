@@ -30,7 +30,7 @@ import { CacheService } from './cache.service';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService): Promise<CacheOptions> => {
         const redisEnabled = configService.get('redis.enabled', false);
-        
+
         if (redisEnabled) {
           // Use Redis cache
           return {

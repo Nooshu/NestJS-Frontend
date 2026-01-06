@@ -118,6 +118,5 @@ export class AppModule {
         { path: 'find-a-court-or-tribunal/*path', method: RequestMethod.ALL }
       )
       .forRoutes({ path: '*path', method: RequestMethod.ALL });
-
   }
 }

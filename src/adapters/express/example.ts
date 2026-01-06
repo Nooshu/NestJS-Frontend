@@ -38,7 +38,10 @@ export async function startServer() {
   console.log(`Server is running on port ${port}`);
 }
 
-export async function runIfMain(isMain: boolean = require.main === module, startServerFn: () => Promise<void> = startServer) {
+export async function runIfMain(
+  isMain: boolean = require.main === module,
+  startServerFn: () => Promise<void> = startServer
+) {
   if (isMain) {
     try {
       await startServerFn();

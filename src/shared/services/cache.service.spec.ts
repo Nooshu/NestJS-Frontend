@@ -431,7 +431,7 @@ describe('CacheService', () => {
       // Arrange
       const testKey = 'workflow-key';
       const testValue = { workflow: 'test', step: 1 };
-      
+
       // Mock set to resolve successfully
       cacheManager.set.mockResolvedValue(undefined);
       // Mock get to return the value we just set
@@ -459,15 +459,19 @@ describe('CacheService', () => {
       cacheManager.set.mockResolvedValue(undefined);
       // Mock get to return values
       cacheManager.get.mockImplementation((key) => {
-        const op = operations.find(o => o.key === key);
+        const op = operations.find((o) => o.key === key);
         return Promise.resolve(op ? op.value : null);
       });
 
       // Act & Assert
       for (const operation of operations) {
         await service.set(operation.key, operation.value, operation.ttl);
-        expect(cacheManager.set).toHaveBeenCalledWith(operation.key, operation.value, operation.ttl);
-        
+        expect(cacheManager.set).toHaveBeenCalledWith(
+          operation.key,
+          operation.value,
+          operation.ttl
+        );
+
         const retrievedValue = await service.get(operation.key);
         expect(retrievedValue).toEqual(operation.value);
       }
@@ -477,7 +481,7 @@ describe('CacheService', () => {
       // Arrange
       const testKey = 'concurrent-key';
       const testValue = 'concurrent-value';
-      
+
       cacheManager.set.mockResolvedValue(undefined);
       cacheManager.get.mockResolvedValue(testValue);
 
@@ -541,4 +545,4 @@ describe('CacheService', () => {
       await expect(service.set(testKey, 'value')).rejects.toThrow('Connection refused');
     });
   });
-}); 
+});

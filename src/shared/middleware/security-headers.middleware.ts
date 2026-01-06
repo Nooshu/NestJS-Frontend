@@ -110,32 +110,33 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
   private isHtmlResponse(req: Request, res: Response): boolean {
     // Check if request accepts HTML
     const acceptsHtml = Boolean(req.accepts('html'));
-    
+
     // Check if response will be HTML (based on content-type)
     const contentType = res.getHeader('content-type') as string;
     const isHtmlContentType = Boolean(contentType?.includes('text/html'));
-    
+
     // Check if this is likely an HTML page route (not API, health, or static assets)
     const path = req.path || '';
-    const isHtmlRoute = !path.startsWith('/api') && 
-                       !path.startsWith('/health') && 
-                       !this.isStaticAsset(path) &&
-                       !path.includes('.') &&
-                       !path.startsWith('/auth') &&
-                       !path.startsWith('/login') &&
-                       !path.startsWith('/logout') &&
-                       !path.startsWith('/admin') &&
-                       !path.startsWith('/dashboard') &&
-                       !path.startsWith('/profile') &&
-                       !path.startsWith('/settings') &&
-                       !path.startsWith('/account');
-    
+    const isHtmlRoute =
+      !path.startsWith('/api') &&
+      !path.startsWith('/health') &&
+      !this.isStaticAsset(path) &&
+      !path.includes('.') &&
+      !path.startsWith('/auth') &&
+      !path.startsWith('/login') &&
+      !path.startsWith('/logout') &&
+      !path.startsWith('/admin') &&
+      !path.startsWith('/dashboard') &&
+      !path.startsWith('/profile') &&
+      !path.startsWith('/settings') &&
+      !path.startsWith('/account');
+
     return acceptsHtml || isHtmlContentType || isHtmlRoute;
   }
 
   private isSensitiveRoute(path: string): boolean {
     if (!path) return false;
-    
+
     const sensitivePatterns = [
       '/api',
       '/auth',
@@ -145,17 +146,30 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
       '/dashboard',
       '/profile',
       '/settings',
-      '/account'
+      '/account',
     ];
 
-    return sensitivePatterns.some(pattern => path.startsWith(pattern));
+    return sensitivePatterns.some((pattern) => path.startsWith(pattern));
   }
 
   private isStaticAsset(path: string): boolean {
     if (!path) return false;
-    
-    const staticExtensions = ['.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.woff', '.woff2', '.ttf', '.eot'];
-    return staticExtensions.some(ext => path.endsWith(ext));
+
+    const staticExtensions = [
+      '.css',
+      '.js',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.gif',
+      '.svg',
+      '.ico',
+      '.woff',
+      '.woff2',
+      '.ttf',
+      '.eot',
+    ];
+    return staticExtensions.some((ext) => path.endsWith(ext));
   }
 
   private kebabCase(str: string): string {

@@ -106,10 +106,7 @@ async function bootstrap() {
   );
 
   // Add this line to apply the global error filter
-  app.useGlobalFilters(
-    new SecurityErrorFilter(),
-    new NotFoundExceptionFilter()
-  );
+  app.useGlobalFilters(new SecurityErrorFilter(), new NotFoundExceptionFilter());
 
   /**
    * Security Middleware Configuration
@@ -131,10 +128,12 @@ async function bootstrap() {
    *
    * @see https://github.com/expressjs/compression
    */
-  app.use(compression({
-    ...performanceConfig.compression,
-    // Note: Content-Encoding header is now handled by OptimizedHtmlHeadersMiddleware
-  }));
+  app.use(
+    compression({
+      ...performanceConfig.compression,
+      // Note: Content-Encoding header is now handled by OptimizedHtmlHeadersMiddleware
+    })
+  );
 
   // Add cookie-parser middleware, required for csrf token storage
   app.use(cookieParser());
@@ -176,19 +175,19 @@ async function bootstrap() {
    * Static Asset Configuration
    *
    * Configures static asset serving with performance optimizations for fingerprinted assets:
-   * 
+   *
    * - maxAge: 1 year (31,536,000 seconds) - Long cache duration is safe with fingerprinted assets
    *   since the URL changes when the content changes
-   * 
+   *
    * - immutable: true - The immutable directive tells browsers that the asset will never
    *   change as long as the URL remains the same, which is guaranteed with fingerprinting.
    *   This prevents unnecessary revalidation requests even when users press the refresh button.
-   * 
-   * - etag: true - Provides a validator for conditional requests, allowing efficient 
+   *
+   * - etag: true - Provides a validator for conditional requests, allowing efficient
    *   304 Not Modified responses
-   * 
+   *
    * - lastModified: true - Another validator for conditional requests
-   * 
+   *
    * - setHeaders: Sets 'Cache-Control: public, max-age=31536000, immutable' which instructs
    *   browsers to cache the asset for a year and never revalidate it during that time,
    *   significantly improving load times for returning visitors
@@ -202,7 +201,10 @@ async function bootstrap() {
     lastModified: true,
     setHeaders: (res: any) => {
       // Set Cache-Control with immutable flag and stale-while-revalidate for fingerprinted assets
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
+      res.setHeader(
+        'Cache-Control',
+        'public, max-age=31536000, immutable, stale-while-revalidate=2592000'
+      );
     },
   };
 
@@ -254,7 +256,7 @@ async function bootstrap() {
   const port = process.env.PORT || 3002;
   const host = process.env.HOST || '0.0.0.0';
   await app.listen(port, host);
-  
+
   // Display localhost for better user experience, even though we bind to 0.0.0.0 for Docker
   const displayHost = host === '0.0.0.0' ? 'localhost' : host;
   logger.info(`Application is running on: http://${displayHost}:${port}`);

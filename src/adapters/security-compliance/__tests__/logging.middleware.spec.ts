@@ -1,5 +1,8 @@
 // Mock express-request-id to avoid ESM import issues in Jest
-jest.mock('express-request-id', () => () => (req: any, _res: any, next: any) => { req.id = 'mock-id'; next(); });
+jest.mock('express-request-id', () => () => (req: any, _res: any, next: any) => {
+  req.id = 'mock-id';
+  next();
+});
 
 import express from 'express';
 import type { Logger } from 'pino';
@@ -170,7 +173,11 @@ describe('Logging Middleware', () => {
           sensitiveFields: ['password'],
         },
         base: { appName: 'test-app', level: 'info', environment: 'test' },
-        monitoring: { enabled: false, alerting: { enabled: false, thresholds: { responseTime: 1000, memoryUsage: 80 } }, metrics: { system: false } },
+        monitoring: {
+          enabled: false,
+          alerting: { enabled: false, thresholds: { responseTime: 1000, memoryUsage: 80 } },
+          metrics: { system: false },
+        },
       };
       const auditMiddleware = (req: any, res: any, next: any) => {
         const auditData: Record<string, unknown> = {
@@ -191,7 +198,15 @@ describe('Logging Middleware', () => {
         mockLogger.info({ type: 'audit', ...maskedData });
         next();
       };
-      const mockReq = { method: 'POST', url: '/sensitive', user: { id: 'user1' }, ip: '127.0.0.1', id: 'mock-id', body: { password: 'secret123' }, get: () => 'test-agent' };
+      const mockReq = {
+        method: 'POST',
+        url: '/sensitive',
+        user: { id: 'user1' },
+        ip: '127.0.0.1',
+        id: 'mock-id',
+        body: { password: 'secret123' },
+        get: () => 'test-agent',
+      };
       const mockRes = {};
       const mockNext = jest.fn();
       auditMiddleware(mockReq, mockRes, mockNext);

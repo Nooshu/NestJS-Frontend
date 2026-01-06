@@ -33,7 +33,9 @@ describe('UserService', () => {
     } as unknown as jest.Mocked<JavaApiClient>;
 
     // Mock the JavaApiClient constructor
-    (JavaApiClient as jest.MockedClass<typeof JavaApiClient>).mockImplementation(() => mockApiClient);
+    (JavaApiClient as jest.MockedClass<typeof JavaApiClient>).mockImplementation(
+      () => mockApiClient
+    );
 
     // Default config
     config = {
@@ -76,7 +78,9 @@ describe('UserService', () => {
 
       mockApiClient.get.mockRejectedValue(axiosError);
 
-      await expect(userService.getUserById(userId)).rejects.toThrow(`User with ID ${userId} not found`);
+      await expect(userService.getUserById(userId)).rejects.toThrow(
+        `User with ID ${userId} not found`
+      );
       expect(mockApiClient.get).toHaveBeenCalledWith(`/api/users/${userId}`);
     });
 
@@ -147,7 +151,9 @@ describe('UserService', () => {
 
       mockApiClient.post.mockRejectedValue(axiosError);
 
-      await expect(userService.createUser(userData)).rejects.toThrow('Invalid user data: Validation failed');
+      await expect(userService.createUser(userData)).rejects.toThrow(
+        'Invalid user data: Validation failed'
+      );
       expect(mockApiClient.post).toHaveBeenCalledWith('/api/users', userData);
     });
 
@@ -196,12 +202,12 @@ describe('UserService', () => {
         address: {
           street: '123 Main St',
           city: 'London',
-          postcode: 'SW1A 1AA'
+          postcode: 'SW1A 1AA',
         },
         preferences: {
           notifications: true,
-          theme: 'dark'
-        }
+          theme: 'dark',
+        },
       };
       mockApiClient.post.mockResolvedValue({ id: '789', ...complexUserData });
 
@@ -232,7 +238,9 @@ describe('UserService', () => {
 
       mockApiClient.put.mockRejectedValue(axiosError);
 
-      await expect(userService.updateUser(userId, userData)).rejects.toThrow(`User with ID ${userId} not found`);
+      await expect(userService.updateUser(userId, userData)).rejects.toThrow(
+        `User with ID ${userId} not found`
+      );
       expect(mockApiClient.put).toHaveBeenCalledWith(`/api/users/${userId}`, userData);
     });
 
@@ -294,7 +302,9 @@ describe('UserService', () => {
 
       mockApiClient.delete.mockRejectedValue(axiosError);
 
-      await expect(userService.deleteUser(userId)).rejects.toThrow(`User with ID ${userId} not found`);
+      await expect(userService.deleteUser(userId)).rejects.toThrow(
+        `User with ID ${userId} not found`
+      );
       expect(mockApiClient.delete).toHaveBeenCalledWith(`/api/users/${userId}`);
     });
 
@@ -372,4 +382,4 @@ describe('UserService', () => {
       expect(result).toEqual({});
     });
   });
-}); 
+});

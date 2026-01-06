@@ -52,22 +52,24 @@ export class RateLimitingMiddleware implements NestMiddleware {
     },
   };
 
-  constructor(
-    private readonly logger: LoggerService
-  ) {
+  constructor(private readonly logger: LoggerService) {
     this.logger.setContext('RateLimitingMiddleware');
 
     // Clean up expired entries every 5 minutes
-    this.cleanupInterval = setInterval(() => {
-      this.cleanup();
-    }, 5 * 60 * 1000);
+    this.cleanupInterval = setInterval(
+      () => {
+        this.cleanup();
+      },
+      5 * 60 * 1000
+    );
   }
 
   private getClientIdentifier(req: Request): string {
     // Use multiple identifiers for better accuracy
     const forwarded = req.headers['x-forwarded-for'] as string;
     const realIp = req.headers['x-real-ip'] as string;
-    const ip = forwarded?.split(',')[0] || realIp || req.ip || req.connection.remoteAddress || 'unknown';
+    const ip =
+      forwarded?.split(',')[0] || realIp || req.ip || req.connection.remoteAddress || 'unknown';
 
     // Include user agent for additional fingerprinting
     const userAgent = req.headers['user-agent'] || 'unknown';
@@ -80,7 +82,7 @@ export class RateLimitingMiddleware implements NestMiddleware {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(16);
@@ -89,7 +91,7 @@ export class RateLimitingMiddleware implements NestMiddleware {
   private getConfigForPath(path: string): RateLimitConfig {
     // Find the most specific matching config
     const sortedPaths = Object.keys(this.configs)
-      .filter(p => p !== 'default')
+      .filter((p) => p !== 'default')
       .sort((a, b) => b.length - a.length);
 
     for (const configPath of sortedPaths) {
@@ -142,7 +144,10 @@ export class RateLimitingMiddleware implements NestMiddleware {
     return false;
   }
 
-  private incrementCounter(key: string, config: RateLimitConfig): { count: number; resetTime: number; blocked: boolean } {
+  private incrementCounter(
+    key: string,
+    config: RateLimitConfig
+  ): { count: number; resetTime: number; blocked: boolean } {
     const now = Date.now();
 
     if (!this.store[key]) {
@@ -223,7 +228,7 @@ export class RateLimitingMiddleware implements NestMiddleware {
     let responseIntercepted = false;
     const self = this;
 
-    res.end = function(this: Response, chunk?: any, encoding?: any, cb?: () => void): Response {
+    res.end = function (this: Response, chunk?: any, encoding?: any, cb?: () => void): Response {
       if (!responseIntercepted) {
         responseIntercepted = true;
 

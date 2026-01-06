@@ -126,10 +126,7 @@ describe('CspMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
-      expect(mockResponse.setHeader).toHaveBeenCalledWith(
-        'Content-Security-Policy',
-        ''
-      );
+      expect(mockResponse.setHeader).toHaveBeenCalledWith('Content-Security-Policy', '');
     });
 
     it('should handle directives with single values', () => {
@@ -210,7 +207,7 @@ describe('CspMiddleware', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
 
       const cspHeader = (mockResponse.setHeader as jest.Mock).mock.calls[0][1];
-      
+
       expect(cspHeader).toContain("defaultSrc 'none'");
       expect(cspHeader).toContain("scriptSrc 'self' 'unsafe-inline' 'unsafe-eval'");
       expect(cspHeader).toContain("styleSrc 'self' 'unsafe-inline'");
@@ -223,7 +220,7 @@ describe('CspMiddleware', () => {
       expect(cspHeader).toContain("baseUri 'self'");
       expect(cspHeader).toContain("formAction 'self'");
       expect(cspHeader).toContain("frameAncestors 'none'");
-      expect(cspHeader).toContain("upgradeInsecureRequests");
+      expect(cspHeader).toContain('upgradeInsecureRequests');
     });
   });
 
@@ -272,8 +269,8 @@ describe('CspMiddleware', () => {
 
       const expectedCspHeader = [
         "defaultSrc 'self'",
-        "scriptSrc 123",
-        "styleSrc true",
+        'scriptSrc 123',
+        'styleSrc true',
         "imgSrc 'self'",
       ].join('; ');
 

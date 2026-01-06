@@ -68,16 +68,16 @@ export class ApplicationHealthIndicator extends HealthIndicator {
         { name: 'PORT', value: port, required: true },
       ];
 
-      const missingConfigs = criticalConfigs.filter(config =>
-        config.required && (!config.value || config.value === '')
+      const missingConfigs = criticalConfigs.filter(
+        (config) => config.required && (!config.value || config.value === '')
       );
 
       if (missingConfigs.length > 0) {
         throw new HealthCheckError(
           'Configuration check failed',
           this.getStatus(key, false, {
-            missingConfigs: missingConfigs.map(c => c.name),
-            message: `Missing required configuration: ${missingConfigs.map(c => c.name).join(', ')}`,
+            missingConfigs: missingConfigs.map((c) => c.name),
+            message: `Missing required configuration: ${missingConfigs.map((c) => c.name).join(', ')}`,
           })
         );
       }
@@ -182,7 +182,7 @@ export class ApplicationHealthIndicator extends HealthIndicator {
         dependencies[1].responseTime = 5000;
       }
 
-      const unhealthyDependencies = dependencies.filter(dep => dep.status !== 'healthy');
+      const unhealthyDependencies = dependencies.filter((dep) => dep.status !== 'healthy');
 
       if (unhealthyDependencies.length > 0) {
         throw new HealthCheckError(

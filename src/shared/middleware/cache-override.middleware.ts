@@ -1,9 +1,9 @@
 /**
  * Cache Override Middleware
- * 
+ *
  * This middleware ensures that static assets get proper cache headers
  * regardless of other middleware or configuration issues.
- * 
+ *
  * It specifically targets static assets and overrides any existing
  * cache headers with optimal caching configuration.
  */
@@ -22,10 +22,13 @@ export class CacheOverrideMiddleware implements NestMiddleware {
     // Check if this is a static asset
     const isStaticAsset = this.isStaticAsset(req.path);
     const isHtmlPage = this.isHtmlPage(req.path);
-    
+
     if (isStaticAsset) {
       // Override any existing cache headers for static assets
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable, stale-while-revalidate=2592000');
+      res.setHeader(
+        'Cache-Control',
+        'public, max-age=31536000, immutable, stale-while-revalidate=2592000'
+      );
       res.setHeader('Vary', 'Accept-Encoding');
     } else if (isHtmlPage) {
       // Set cache headers for HTML pages (including root route)
@@ -39,17 +42,27 @@ export class CacheOverrideMiddleware implements NestMiddleware {
   private isStaticAsset(path: string): boolean {
     // Check for static asset extensions
     const staticExtensions = [
-      '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.svg',
-      '.woff', '.woff2', '.ttf', '.eot', '.webp', '.avif'
+      '.css',
+      '.js',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.gif',
+      '.ico',
+      '.svg',
+      '.woff',
+      '.woff2',
+      '.ttf',
+      '.eot',
+      '.webp',
+      '.avif',
     ];
-    
-    return staticExtensions.some(ext => path.toLowerCase().endsWith(ext));
+
+    return staticExtensions.some((ext) => path.toLowerCase().endsWith(ext));
   }
 
   private isHtmlPage(path: string): boolean {
     // Check if this is an HTML page (not API routes)
-    return !path.startsWith('/api') && 
-           !path.startsWith('/health') && 
-           !path.includes('.');
+    return !path.startsWith('/api') && !path.startsWith('/health') && !path.includes('.');
   }
 }

@@ -28,17 +28,17 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
    * @example
    * // Exact match
    * shouldExcludePath('/.well-known/appspecific/com.chrome.devtools.json') // true
-   * 
+   *
    * // Extension match
    * shouldExcludePath('/static/main.js.map') // true
    */
   private shouldExcludePath(path: string): boolean {
-    return loggingConfig.base.excludePaths.some(pattern => {
+    return loggingConfig.base.excludePaths.some((pattern) => {
       // Handle exact matches (e.g., '/favicon.ico')
       if (!pattern.includes('*')) {
         return path === pattern;
       }
-      
+
       // Handle *.extension patterns (e.g., '*.js.map')
       if (pattern.startsWith('*.')) {
         const extension = pattern.slice(1); // Remove the *
@@ -89,4 +89,4 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
       message: 'Not Found',
     });
   }
-} 
+}

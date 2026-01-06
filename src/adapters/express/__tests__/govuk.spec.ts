@@ -9,11 +9,11 @@ describe('GOV.UK Frontend Setup', () => {
 
   beforeEach(() => {
     app = express();
-    
+
     // Configure Nunjucks with both views and GOV.UK Frontend template directories
     const viewsPath = join(process.cwd(), 'src', 'views');
     const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist');
-    
+
     // Create a FileSystemLoader with both paths
     const loader = new nunjucks.FileSystemLoader([viewsPath, govukPath], {
       noCache: true,
@@ -89,4 +89,4 @@ describe('GOV.UK Frontend Setup', () => {
       expect(renderedInput).toContain('govuk-input--width-10');
     });
   });
-}); 
+});

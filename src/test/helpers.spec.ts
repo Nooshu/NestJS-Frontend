@@ -94,34 +94,34 @@ describe('Test Helpers', () => {
 
     it('should pass when value is within range', () => {
       const result = customMatchers.toBeWithinRange(5, 1, 10);
-      
+
       expect(result.pass).toBe(true);
       expect(result.message()).toBe('expected 5 not to be within range 1 - 10');
     });
 
     it('should fail when value is below range', () => {
       const result = customMatchers.toBeWithinRange(0, 1, 10);
-      
+
       expect(result.pass).toBe(false);
       expect(result.message()).toBe('expected 0 to be within range 1 - 10');
     });
 
     it('should fail when value is above range', () => {
       const result = customMatchers.toBeWithinRange(15, 1, 10);
-      
+
       expect(result.pass).toBe(false);
       expect(result.message()).toBe('expected 15 to be within range 1 - 10');
     });
 
     it('should pass when value equals floor boundary', () => {
       const result = customMatchers.toBeWithinRange(1, 1, 10);
-      
+
       expect(result.pass).toBe(true);
     });
 
     it('should pass when value equals ceiling boundary', () => {
       const result = customMatchers.toBeWithinRange(10, 1, 10);
-      
+
       expect(result.pass).toBe(true);
     });
 
@@ -129,11 +129,11 @@ describe('Test Helpers', () => {
       // Test with negative numbers
       const result1 = customMatchers.toBeWithinRange(-5, -10, 0);
       expect(result1.pass).toBe(true);
-      
+
       // Test with decimal numbers
       const result2 = customMatchers.toBeWithinRange(5.5, 1, 10);
       expect(result2.pass).toBe(true);
-      
+
       // Test with same floor and ceiling
       const result3 = customMatchers.toBeWithinRange(5, 5, 5);
       expect(result3.pass).toBe(true);
@@ -142,7 +142,7 @@ describe('Test Helpers', () => {
     it('should return proper message format for all cases', () => {
       const passResult = customMatchers.toBeWithinRange(5, 1, 10);
       const failResult = customMatchers.toBeWithinRange(15, 1, 10);
-      
+
       expect(passResult.message()).toContain('expected 5 not to be within range 1 - 10');
       expect(failResult.message()).toContain('expected 15 to be within range 1 - 10');
       expect(typeof passResult.message).toBe('function');
@@ -169,7 +169,7 @@ describe('Test Helpers', () => {
 
     it('should mock console globally', () => {
       setupTestEnvironment();
-      
+
       expect(global.console).toEqual({
         ...originalConsole,
         ...mockConsole,
@@ -178,19 +178,19 @@ describe('Test Helpers', () => {
 
     it('should mock performance globally', () => {
       setupTestEnvironment();
-      
+
       expect(global.performance).toBe(mockPerformance);
     });
 
     it('should add custom matchers', () => {
       setupTestEnvironment();
-      
+
       expect(extendSpy).toHaveBeenCalledWith(customMatchers);
     });
 
     it('should preserve original console methods while adding mocks', () => {
       setupTestEnvironment();
-      
+
       // Check that original console methods are still available
       expect(global.console.log).toBeDefined();
       expect(global.console.error).toBeDefined();
@@ -202,7 +202,7 @@ describe('Test Helpers', () => {
     it('should set global test timeout', () => {
       // Test that the function can be called without errors
       expect(() => setupTestEnvironment()).not.toThrow();
-      
+
       // Verify that the environment was set up
       expect(global.performance).toBe(mockPerformance);
       expect(global.console).toEqual({
@@ -235,7 +235,7 @@ describe('Test Helpers', () => {
 
     it('should create a test application instance', async () => {
       app = await createTestApp();
-      
+
       expect(app).toBeDefined();
       expect(typeof app.close).toBe('function');
       expect(typeof app.useGlobalPipes).toBe('function');
@@ -245,35 +245,35 @@ describe('Test Helpers', () => {
 
     it('should have global prefix set to api', async () => {
       app = await createTestApp();
-      
+
       // The global prefix is set internally, we can verify the app was created successfully
       expect(app).toBeDefined();
     });
 
     it('should have logger configured', async () => {
       app = await createTestApp();
-      
+
       // The logger is set internally, we can verify the app was created successfully
       expect(app).toBeDefined();
     });
 
     it('should have validation pipes configured', async () => {
       app = await createTestApp();
-      
+
       // The validation pipes are set internally, we can verify the app was created successfully
       expect(app).toBeDefined();
     });
 
     it('should have Swagger documentation configured', async () => {
       app = await createTestApp();
-      
+
       // The Swagger setup is done internally, we can verify the app was created successfully
       expect(app).toBeDefined();
     });
 
     it('should be able to close the application', async () => {
       app = await createTestApp();
-      
+
       expect(app).toBeDefined();
       await expect(app.close()).resolves.not.toThrow();
     });
@@ -290,7 +290,7 @@ describe('Test Helpers', () => {
 
     it('should create a test module instance', async () => {
       module = await createTestModule();
-      
+
       expect(module).toBeDefined();
       expect(typeof module.createNestApplication).toBe('function');
       expect(typeof module.close).toBe('function');
@@ -298,17 +298,17 @@ describe('Test Helpers', () => {
 
     it('should be able to create a nest application from the module', async () => {
       module = await createTestModule();
-      
+
       const app = module.createNestApplication();
       expect(app).toBeDefined();
       expect(typeof app.close).toBe('function');
-      
+
       await app.close();
     });
 
     it('should be able to close the module', async () => {
       module = await createTestModule();
-      
+
       expect(module).toBeDefined();
       await expect(module.close()).resolves.not.toThrow();
     });
@@ -318,17 +318,17 @@ describe('Test Helpers', () => {
     it('should work together in a test setup and cleanup cycle', () => {
       // Setup test environment
       setupTestEnvironment();
-      
+
       // Verify setup worked
       expect(global.performance).toBe(mockPerformance);
       expect(global.console).toEqual({
         ...console,
         ...mockConsole,
       });
-      
+
       // Cleanup test environment
       cleanupTestEnvironment();
-      
+
       // Verify cleanup worked by checking that the functions exist and can be called
       expect(typeof jest.clearAllMocks).toBe('function');
       expect(typeof jest.resetAllMocks).toBe('function');
@@ -340,12 +340,12 @@ describe('Test Helpers', () => {
       setupTestEnvironment();
       expect(global.performance).toBe(mockPerformance);
       cleanupTestEnvironment();
-      
+
       // Second cycle
       setupTestEnvironment();
       expect(global.performance).toBe(mockPerformance);
       cleanupTestEnvironment();
-      
+
       // Third cycle
       setupTestEnvironment();
       expect(global.performance).toBe(mockPerformance);
@@ -356,10 +356,10 @@ describe('Test Helpers', () => {
       // Test that both functions can be used together
       const module = await createTestModule();
       const app = await createTestApp();
-      
+
       expect(module).toBeDefined();
       expect(app).toBeDefined();
-      
+
       await app.close();
       await module.close();
     });

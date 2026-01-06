@@ -7,4 +7,4 @@ import { AssetFingerprintService } from '../services/asset-fingerprint.service';
   providers: [AssetFingerprintService],
   exports: [AssetFingerprintService],
 })
-export class AssetFingerprintModule {} 
+export class AssetFingerprintModule {}

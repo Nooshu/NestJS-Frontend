@@ -1,12 +1,12 @@
 /**
  * Remove Legacy Headers Middleware
- * 
+ *
  * This middleware removes legacy security headers that don't provide meaningful security anymore.
  * It runs after Helmet to ensure these headers are removed from HTML responses.
- * 
+ *
  * Headers removed:
  * - X-DNS-Prefetch-Control
- * - X-Permitted-Cross-Domain-Policies  
+ * - X-Permitted-Cross-Domain-Policies
  * - X-XSS-Protection
  */
 
@@ -17,7 +17,7 @@ import { Request, Response, NextFunction } from 'express';
 export class RemoveLegacyHeadersMiddleware implements NestMiddleware {
   /**
    * Middleware implementation that removes legacy headers from HTML responses
-   * 
+   *
    * @param {Request} req - The incoming request
    * @param {Response} res - The outgoing response
    * @param {NextFunction} next - The next middleware function
@@ -30,7 +30,7 @@ export class RemoveLegacyHeadersMiddleware implements NestMiddleware {
       res.removeHeader('X-Permitted-Cross-Domain-Policies');
       res.removeHeader('X-XSS-Protection');
     }
-    
+
     next();
   }
 
@@ -40,18 +40,19 @@ export class RemoveLegacyHeadersMiddleware implements NestMiddleware {
   private isHtmlResponse(req: Request, res: Response): boolean {
     // Check if request accepts HTML
     const acceptsHtml = Boolean(req.accepts('html'));
-    
+
     // Check if response will be HTML (based on content-type)
     const contentType = res.getHeader('content-type') as string;
     const isHtmlContentType = Boolean(contentType?.includes('text/html'));
-    
+
     // Check if this is likely an HTML page route (not API, health, or static assets)
     const path = req.path || '';
-    const isHtmlRoute = !path.startsWith('/api') && 
-                       !path.startsWith('/health') && 
-                       !this.isStaticAsset(path) &&
-                       !path.includes('.');
-    
+    const isHtmlRoute =
+      !path.startsWith('/api') &&
+      !path.startsWith('/health') &&
+      !this.isStaticAsset(path) &&
+      !path.includes('.');
+
     return acceptsHtml || isHtmlContentType || isHtmlRoute;
   }
 
@@ -60,10 +61,23 @@ export class RemoveLegacyHeadersMiddleware implements NestMiddleware {
    */
   private isStaticAsset(path: string): boolean {
     const staticExtensions = [
-      '.css', '.js', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.svg',
-      '.woff', '.woff2', '.ttf', '.eot', '.webp', '.avif', '.map'
+      '.css',
+      '.js',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.gif',
+      '.ico',
+      '.svg',
+      '.woff',
+      '.woff2',
+      '.ttf',
+      '.eot',
+      '.webp',
+      '.avif',
+      '.map',
     ];
-    
-    return staticExtensions.some(ext => path.toLowerCase().endsWith(ext));
+
+    return staticExtensions.some((ext) => path.toLowerCase().endsWith(ext));
   }
 }

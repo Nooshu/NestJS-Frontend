@@ -24,10 +24,7 @@ describe('SecurityAuditMiddleware', () => {
     } as any;
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        SecurityAuditMiddleware,
-        { provide: LoggerService, useValue: mockLogger },
-      ],
+      providers: [SecurityAuditMiddleware, { provide: LoggerService, useValue: mockLogger }],
     }).compile();
 
     middleware = module.get<SecurityAuditMiddleware>(SecurityAuditMiddleware);
@@ -74,7 +71,7 @@ describe('SecurityAuditMiddleware', () => {
 
     it('should audit authentication requests', () => {
       const authRequest = { ...mockRequest, path: '/auth/login' };
-      
+
       middleware.use(authRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -82,7 +79,7 @@ describe('SecurityAuditMiddleware', () => {
 
     it('should audit admin requests', () => {
       const adminRequest = { ...mockRequest, path: '/admin/users' };
-      
+
       middleware.use(adminRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -90,7 +87,7 @@ describe('SecurityAuditMiddleware', () => {
 
     it('should audit API requests', () => {
       const apiRequest = { ...mockRequest, path: '/api/users' };
-      
+
       middleware.use(apiRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -101,7 +98,7 @@ describe('SecurityAuditMiddleware', () => {
         ...mockRequest,
         headers: { ...mockRequest.headers, 'x-suspicious-request': 'true' },
       };
-      
+
       middleware.use(suspiciousRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalled();
@@ -303,9 +300,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                expect.stringContaining('Suspicious URL pattern'),
-              ]),
+              reasons: expect.arrayContaining([expect.stringContaining('Suspicious URL pattern')]),
             }),
           }),
         })
@@ -327,9 +322,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                expect.stringContaining('Suspicious URL pattern'),
-              ]),
+              reasons: expect.arrayContaining([expect.stringContaining('Suspicious URL pattern')]),
             }),
           }),
         })
@@ -351,9 +344,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                expect.stringContaining('Suspicious URL pattern'),
-              ]),
+              reasons: expect.arrayContaining([expect.stringContaining('Suspicious URL pattern')]),
             }),
           }),
         })
@@ -375,9 +366,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                expect.stringContaining('Suspicious URL pattern'),
-              ]),
+              reasons: expect.arrayContaining([expect.stringContaining('Suspicious URL pattern')]),
             }),
           }),
         })
@@ -399,9 +388,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                expect.stringContaining('Suspicious user agent'),
-              ]),
+              reasons: expect.arrayContaining([expect.stringContaining('Suspicious user agent')]),
             }),
           }),
         })
@@ -425,9 +412,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                'POST request without content-type header',
-              ]),
+              reasons: expect.arrayContaining(['POST request without content-type header']),
             }),
           }),
         })
@@ -452,9 +437,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                'Multiple proxy forwarding detected',
-              ]),
+              reasons: expect.arrayContaining(['Multiple proxy forwarding detected']),
             }),
           }),
         })
@@ -480,9 +463,7 @@ describe('SecurityAuditMiddleware', () => {
         expect.objectContaining({
           securityEvent: expect.objectContaining({
             details: expect.objectContaining({
-              reasons: expect.arrayContaining([
-                'Suspicious header: x-cluster-client-ip',
-              ]),
+              reasons: expect.arrayContaining(['Suspicious header: x-cluster-client-ip']),
             }),
           }),
         })
@@ -846,4 +827,4 @@ describe('SecurityAuditMiddleware', () => {
       expect(mockLogger.info).toHaveBeenCalled();
     });
   });
-}); 
+});

@@ -34,4 +34,4 @@ export class AssetFingerprintService {
   regenerateFingerprintMap(): void {
     this.initializeFingerprintMap();
   }
-} 
+}

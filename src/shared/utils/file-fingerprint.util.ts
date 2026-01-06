@@ -22,12 +22,12 @@ export function generateFileHash(filePath: string): string {
 export function addHashToFilename(filePath: string): string {
   const hash = generateFileHash(filePath);
   const lastDotIndex = filePath.lastIndexOf('.');
-  
+
   if (lastDotIndex === -1) {
     // No extension
     return `${filePath}.${hash}`;
   }
-  
+
   const ext = filePath.slice(lastDotIndex + 1);
   const baseName = filePath.slice(0, lastDotIndex);
   return `${baseName}.${hash}.${ext}`;
@@ -39,11 +39,14 @@ export function addHashToFilename(filePath: string): string {
  * @param filePatterns - Array of file patterns to process (e.g., ['*.css', '*.js'])
  * @returns Map of original filenames to hashed filenames
  */
-export function generateFingerprintMap(staticDir: string, filePatterns: string[]): Map<string, string> {
+export function generateFingerprintMap(
+  staticDir: string,
+  filePatterns: string[]
+): Map<string, string> {
   const fingerprintMap = new Map<string, string>();
   const glob = require('glob');
-  
-  filePatterns.forEach(pattern => {
+
+  filePatterns.forEach((pattern) => {
     const files = glob.sync(join(staticDir, pattern));
     files.forEach((file: string) => {
       const hashedPath = addHashToFilename(file);
@@ -52,6 +55,6 @@ export function generateFingerprintMap(staticDir: string, filePatterns: string[]
       fingerprintMap.set(relativePath, relativeHashedPath);
     });
   });
-  
+
   return fingerprintMap;
-} 
+}

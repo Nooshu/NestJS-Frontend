@@ -107,4 +107,4 @@ describe('error-handling.ts', () => {
       expect(consoleErrorSpy).toHaveBeenCalledWith('test stack trace');
     });
   });
-}); 
+});

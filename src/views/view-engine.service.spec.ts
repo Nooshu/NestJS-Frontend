@@ -4,17 +4,17 @@ import { FingerprintService } from '../shared/services/fingerprint.service';
 
 // Mock the configuration module
 const mockConfiguration = jest.fn(() => ({
-  nodeEnv: 'test'
+  nodeEnv: 'test',
 }));
 
 jest.mock('../shared/config/configuration', () => ({
   __esModule: true,
-  default: mockConfiguration
+  default: mockConfiguration,
 }));
 
 // Mock the path module
 jest.mock('path', () => ({
-  join: jest.fn((...args) => args.join('/'))
+  join: jest.fn((...args) => args.join('/')),
 }));
 
 describe('ViewEngineService', () => {
@@ -24,14 +24,14 @@ describe('ViewEngineService', () => {
   beforeEach(async () => {
     // Reset all mocks
     jest.clearAllMocks();
-    
+
     // Mock process.cwd before creating the service
     const originalCwd = process.cwd;
     process.cwd = jest.fn(() => '/mock/workspace');
 
     // Create mock for FingerprintService
     mockFingerprintService = {
-      getAssetPath: jest.fn((path: string) => `/fingerprinted${path}`)
+      getAssetPath: jest.fn((path: string) => `/fingerprinted${path}`),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -39,8 +39,8 @@ describe('ViewEngineService', () => {
         ViewEngineService,
         {
           provide: FingerprintService,
-          useValue: mockFingerprintService
-        }
+          useValue: mockFingerprintService,
+        },
       ],
     }).compile();
 
@@ -88,7 +88,7 @@ describe('ViewEngineService', () => {
       // Test that the dependency injection works correctly
       expect(service).toBeDefined();
       expect(service.getEnv()).toBeDefined();
-      
+
       // Verify that the fingerprint service is being used by testing the service behavior
       expect(service).toBeInstanceOf(ViewEngineService);
       expect(typeof service.render).toBe('function');
@@ -107,7 +107,7 @@ describe('ViewEngineService', () => {
       // Test to ensure constructor parameter property assignment is covered
       const testService = new ViewEngineService(mockFingerprintService as FingerprintService);
       expect(testService).toBeInstanceOf(ViewEngineService);
-      
+
       // Test that the private property was assigned correctly by testing behavior
       expect(testService).toBeDefined();
       expect(typeof testService.render).toBe('function');
@@ -129,12 +129,12 @@ describe('ViewEngineService', () => {
     it('should test constructor with different fingerprint service implementations', () => {
       // Test with a different mock implementation
       const altFingerprintService = {
-        getAssetPath: jest.fn((path: string) => `/alt-fingerprinted${path}`)
+        getAssetPath: jest.fn((path: string) => `/alt-fingerprinted${path}`),
       };
-      
+
       const altService = new ViewEngineService(altFingerprintService as any);
       expect(altService).toBeDefined();
-      
+
       // Test that the alternative service is used by checking service methods exist
       expect(typeof altService.render).toBe('function');
       expect(typeof altService.getEnv).toBe('function');
@@ -143,7 +143,7 @@ describe('ViewEngineService', () => {
     it('should handle constructor with undefined configuration', () => {
       // Mock configuration to return undefined to test edge case
       mockConfiguration.mockReturnValueOnce(undefined as any);
-      
+
       try {
         const testService = new ViewEngineService(mockFingerprintService as FingerprintService);
         expect(testService).toBeDefined();
@@ -156,7 +156,7 @@ describe('ViewEngineService', () => {
     it('should handle constructor with missing nodeEnv in configuration', () => {
       // Mock configuration to return object without nodeEnv
       mockConfiguration.mockReturnValueOnce({} as any);
-      
+
       try {
         const testService = new ViewEngineService(mockFingerprintService as FingerprintService);
         expect(testService).toBeDefined();
@@ -171,7 +171,7 @@ describe('ViewEngineService', () => {
     it('should render template with provided data', () => {
       const template = 'index.njk';
       const data = { title: 'Test Title', user: 'Test User' };
-      
+
       // This will use the actual template if it exists, or throw an error if not
       // We're testing that the method exists and can be called
       expect(typeof service.render).toBe('function');
@@ -181,7 +181,7 @@ describe('ViewEngineService', () => {
     it('should render template with empty data', () => {
       const template = 'index.njk';
       const data = {};
-      
+
       // Test that the method can handle empty data
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -192,14 +192,14 @@ describe('ViewEngineService', () => {
       const data = {
         users: [
           { id: 1, name: 'User 1' },
-          { id: 2, name: 'User 2' }
+          { id: 2, name: 'User 2' },
         ],
         settings: {
           theme: 'dark',
-          language: 'en'
-        }
+          language: 'en',
+        },
       };
-      
+
       // Test that the method can handle complex data
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -208,7 +208,7 @@ describe('ViewEngineService', () => {
     it('should handle template rendering errors gracefully', () => {
       const template = 'non-existent-template.njk';
       const data = { title: 'Error Test' };
-      
+
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -230,7 +230,7 @@ describe('ViewEngineService', () => {
   describe('getEnv', () => {
     it('should return the Nunjucks environment instance', () => {
       const env = service.getEnv();
-      
+
       expect(env).toBeDefined();
       expect(typeof env.render).toBe('function');
     });
@@ -238,7 +238,7 @@ describe('ViewEngineService', () => {
     it('should return the same environment instance on multiple calls', () => {
       const env1 = service.getEnv();
       const env2 = service.getEnv();
-      
+
       expect(env1).toBe(env2);
       expect(env1).toBeDefined();
     });
@@ -296,7 +296,7 @@ describe('ViewEngineService', () => {
   describe('error handling', () => {
     it('should handle undefined template gracefully', () => {
       const data = { title: 'Test' };
-      
+
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -304,7 +304,7 @@ describe('ViewEngineService', () => {
 
     it('should handle null data gracefully', () => {
       const template = 'index.njk';
-      
+
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -315,7 +315,7 @@ describe('ViewEngineService', () => {
     it('should work with GOV.UK Frontend templates', () => {
       const template = 'govuk/button.njk';
       const data = { text: 'Continue', href: '/next-page' };
-      
+
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -324,7 +324,7 @@ describe('ViewEngineService', () => {
     it('should work with custom application templates', () => {
       const template = 'components/button.njk';
       const data = { label: 'Submit', type: 'submit' };
-      
+
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -380,7 +380,7 @@ describe('ViewEngineService', () => {
     it('should configure for production environment', async () => {
       // Mock configuration for production
       mockConfiguration.mockReturnValueOnce({
-        nodeEnv: 'production'
+        nodeEnv: 'production',
       });
 
       const module: TestingModule = await Test.createTestingModule({
@@ -388,8 +388,8 @@ describe('ViewEngineService', () => {
           ViewEngineService,
           {
             provide: FingerprintService,
-            useValue: mockFingerprintService
-          }
+            useValue: mockFingerprintService,
+          },
         ],
       }).compile();
 
@@ -402,7 +402,7 @@ describe('ViewEngineService', () => {
     it('should configure for development environment', async () => {
       // Mock configuration for development
       mockConfiguration.mockReturnValueOnce({
-        nodeEnv: 'development'
+        nodeEnv: 'development',
       });
 
       const module: TestingModule = await Test.createTestingModule({
@@ -410,8 +410,8 @@ describe('ViewEngineService', () => {
           ViewEngineService,
           {
             provide: FingerprintService,
-            useValue: mockFingerprintService
-          }
+            useValue: mockFingerprintService,
+          },
         ],
       }).compile();
 
@@ -424,7 +424,7 @@ describe('ViewEngineService', () => {
     it('should configure for test environment', async () => {
       // Mock configuration for test (current default)
       mockConfiguration.mockReturnValueOnce({
-        nodeEnv: 'test'
+        nodeEnv: 'test',
       });
 
       const module: TestingModule = await Test.createTestingModule({
@@ -432,8 +432,8 @@ describe('ViewEngineService', () => {
           ViewEngineService,
           {
             provide: FingerprintService,
-            useValue: mockFingerprintService
-          }
+            useValue: mockFingerprintService,
+          },
         ],
       }).compile();
 

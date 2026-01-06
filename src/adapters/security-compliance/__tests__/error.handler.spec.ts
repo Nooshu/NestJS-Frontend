@@ -212,19 +212,9 @@ describe('securityErrorHandler middleware', () => {
     // Spy on the SecurityErrorHandler.handle method
     const handleSpy = jest.spyOn(SecurityErrorHandler, 'handle');
 
-    securityErrorHandler(
-      securityError,
-      mockRequest as Request,
-      mockResponse as Response,
-      mockNext
-    );
+    securityErrorHandler(securityError, mockRequest as Request, mockResponse as Response, mockNext);
 
-    expect(handleSpy).toHaveBeenCalledWith(
-      securityError,
-      mockRequest,
-      mockResponse,
-      mockNext
-    );
+    expect(handleSpy).toHaveBeenCalledWith(securityError, mockRequest, mockResponse, mockNext);
 
     handleSpy.mockRestore();
   });
@@ -235,12 +225,7 @@ describe('securityErrorHandler middleware', () => {
       'Access denied'
     );
 
-    securityErrorHandler(
-      securityError,
-      mockRequest as Request,
-      mockResponse as Response,
-      mockNext
-    );
+    securityErrorHandler(securityError, mockRequest as Request, mockResponse as Response, mockNext);
 
     expect(mockResponse.status).toHaveBeenCalledWith(403);
     expect(mockResponse.json).toHaveBeenCalledWith({
@@ -275,4 +260,4 @@ describe('securityErrorHandler middleware', () => {
       timestamp: expect.any(String),
     });
   });
-}); 
+});

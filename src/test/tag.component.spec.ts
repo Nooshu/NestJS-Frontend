@@ -27,16 +27,25 @@ describe('Tag Component', () => {
    */
   beforeAll(() => {
     // Set up Nunjucks environment with paths to both local views and govuk-frontend templates
-    const govukTemplatesPath = path.join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk');
+    const govukTemplatesPath = path.join(
+      process.cwd(),
+      'node_modules',
+      'govuk-frontend',
+      'dist',
+      'govuk'
+    );
     const localViewsPath = path.join(process.cwd(), 'src', 'views');
-    
-    env = new nunjucks.Environment([
-      new nunjucks.FileSystemLoader(localViewsPath),
-      new nunjucks.FileSystemLoader(govukTemplatesPath)
-    ], {
-      autoescape: true,
-      noCache: true,
-    });
+
+    env = new nunjucks.Environment(
+      [
+        new nunjucks.FileSystemLoader(localViewsPath),
+        new nunjucks.FileSystemLoader(govukTemplatesPath),
+      ],
+      {
+        autoescape: true,
+        noCache: true,
+      }
+    );
 
     // Add paths to the Nunjucks environment
     env.addGlobal('govukTemplatesPath', govukTemplatesPath);
@@ -80,13 +89,33 @@ describe('Tag Component', () => {
       { text: 'Alpha', classes: undefined, expectedClass: 'govuk-tag' },
       { text: 'Inactive', classes: 'govuk-tag--grey', expectedClass: 'govuk-tag govuk-tag--grey' },
       { text: 'New', classes: 'govuk-tag--green', expectedClass: 'govuk-tag govuk-tag--green' },
-      { text: 'Active', classes: 'govuk-tag--turquoise', expectedClass: 'govuk-tag govuk-tag--turquoise' },
-      { text: 'In progress', classes: 'govuk-tag--light-blue', expectedClass: 'govuk-tag govuk-tag--light-blue' },
-      { text: 'Received', classes: 'govuk-tag--purple', expectedClass: 'govuk-tag govuk-tag--purple' },
+      {
+        text: 'Active',
+        classes: 'govuk-tag--turquoise',
+        expectedClass: 'govuk-tag govuk-tag--turquoise',
+      },
+      {
+        text: 'In progress',
+        classes: 'govuk-tag--light-blue',
+        expectedClass: 'govuk-tag govuk-tag--light-blue',
+      },
+      {
+        text: 'Received',
+        classes: 'govuk-tag--purple',
+        expectedClass: 'govuk-tag govuk-tag--purple',
+      },
       { text: 'Sent', classes: 'govuk-tag--pink', expectedClass: 'govuk-tag govuk-tag--pink' },
       { text: 'Rejected', classes: 'govuk-tag--red', expectedClass: 'govuk-tag govuk-tag--red' },
-      { text: 'Declined', classes: 'govuk-tag--orange', expectedClass: 'govuk-tag govuk-tag--orange' },
-      { text: 'Delayed', classes: 'govuk-tag--yellow', expectedClass: 'govuk-tag govuk-tag--yellow' },
+      {
+        text: 'Declined',
+        classes: 'govuk-tag--orange',
+        expectedClass: 'govuk-tag govuk-tag--orange',
+      },
+      {
+        text: 'Delayed',
+        classes: 'govuk-tag--yellow',
+        expectedClass: 'govuk-tag govuk-tag--yellow',
+      },
     ];
 
     tagVariants.forEach((variant) => {
@@ -97,11 +126,11 @@ describe('Tag Component', () => {
         `;
 
         const rendered = env.renderString(template);
-        
+
         // Check that the expected class is present
         expect(rendered).toContain(variant.expectedClass);
         expect(rendered).toContain(variant.text);
-        
+
         // Ensure it's wrapped in a strong tag
         expect(rendered).toMatch(/<strong[^>]*class="[^"]*govuk-tag[^"]*"[^>]*>/);
         expect(rendered).toMatch(/<\/strong>/);
@@ -126,7 +155,7 @@ describe('Tag Component', () => {
     `;
 
     const rendered = env.renderString(template);
-    
+
     expect(rendered).toContain('data-test="custom-tag"');
     expect(rendered).toContain('id="test-tag"');
     expect(rendered).toContain('Custom Tag');
@@ -146,9 +175,8 @@ describe('Tag Component', () => {
     `;
 
     const rendered = env.renderString(template);
-    
+
     expect(rendered).toContain('<span>HTML Tag</span>');
     expect(rendered).toContain('govuk-tag--blue');
   });
 });
-

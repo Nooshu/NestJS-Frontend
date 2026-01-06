@@ -3,7 +3,13 @@ import { Request, Response, NextFunction } from 'express';
 import { LoggerService } from '../../logger/logger.service';
 
 interface SecurityEvent {
-  type: 'authentication' | 'authorization' | 'suspicious_activity' | 'rate_limit' | 'validation_error' | 'access_denied';
+  type:
+    | 'authentication'
+    | 'authorization'
+    | 'suspicious_activity'
+    | 'rate_limit'
+    | 'validation_error'
+    | 'access_denied';
   severity: 'low' | 'medium' | 'high' | 'critical';
   timestamp: string;
   clientInfo: {
@@ -33,14 +39,7 @@ export class SecurityAuditMiddleware implements NestMiddleware {
     'x-access-token',
   ];
 
-  private readonly sensitiveParams = [
-    'password',
-    'token',
-    'secret',
-    'key',
-    'auth',
-    'credential',
-  ];
+  private readonly sensitiveParams = ['password', 'token', 'secret', 'key', 'auth', 'credential'];
 
   constructor(private readonly logger: LoggerService) {
     this.logger.setContext('SecurityAuditMiddleware');
@@ -64,13 +63,13 @@ export class SecurityAuditMiddleware implements NestMiddleware {
     }
 
     if (Array.isArray(obj)) {
-      return obj.map(item => this.sanitizeObject(item));
+      return obj.map((item) => this.sanitizeObject(item));
     }
 
     const sanitized: any = {};
     for (const [key, value] of Object.entries(obj)) {
       const lowerKey = key.toLowerCase();
-      const isSensitive = this.sensitiveParams.some(param => lowerKey.includes(param));
+      const isSensitive = this.sensitiveParams.some((param) => lowerKey.includes(param));
 
       if (isSensitive) {
         sanitized[key] = '[REDACTED]';
@@ -87,7 +86,8 @@ export class SecurityAuditMiddleware implements NestMiddleware {
   private getClientInfo(req: Request) {
     const forwarded = req.headers['x-forwarded-for'] as string;
     const realIp = req.headers['x-real-ip'] as string;
-    const ip = forwarded?.split(',')[0] || realIp || req.ip || req.connection.remoteAddress || 'unknown';
+    const ip =
+      forwarded?.split(',')[0] || realIp || req.ip || req.connection.remoteAddress || 'unknown';
 
     return {
       ip,
@@ -177,7 +177,10 @@ export class SecurityAuditMiddleware implements NestMiddleware {
       reasons.push('POST request without content-type header');
     }
 
-    if (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].toString().split(',').length > 3) {
+    if (
+      req.headers['x-forwarded-for'] &&
+      req.headers['x-forwarded-for'].toString().split(',').length > 3
+    ) {
       reasons.push('Multiple proxy forwarding detected');
     }
 
@@ -254,7 +257,7 @@ export class SecurityAuditMiddleware implements NestMiddleware {
     const originalEnd = res.end.bind(res);
     const self = this;
 
-    res.end = function(this: Response, chunk?: any, encoding?: any, cb?: () => void): Response {
+    res.end = function (this: Response, chunk?: any, encoding?: any, cb?: () => void): Response {
       const endTime = Date.now();
       const duration = endTime - startTime;
 

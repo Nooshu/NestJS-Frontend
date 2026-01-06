@@ -33,7 +33,7 @@ import { CsrfMiddleware } from '../middleware/csrf.middleware';
     ThrottlerModule.forRoot([
       {
         ttl: 60000, // 1 minute
-        limit: 10,  // 10 requests per minute (fallback)
+        limit: 10, // 10 requests per minute (fallback)
       },
     ]),
   ],
@@ -63,33 +63,21 @@ export class EnhancedSecurityModule implements NestModule {
     // Apply middleware in order of importance for security
 
     // 1. Request sanitization - first line of defense
-    consumer
-      .apply(RequestSanitizationMiddleware)
-      .forRoutes('*');
+    consumer.apply(RequestSanitizationMiddleware).forRoutes('*');
 
     // 2. Rate limiting - prevent abuse
-    consumer
-      .apply(RateLimitingMiddleware)
-      .forRoutes('*');
+    consumer.apply(RateLimitingMiddleware).forRoutes('*');
 
     // 3. Security headers - set security policies
-    consumer
-      .apply(SecurityHeadersMiddleware)
-      .forRoutes('*');
+    consumer.apply(SecurityHeadersMiddleware).forRoutes('*');
 
     // 4. CSP middleware - content security policy
-    consumer
-      .apply(CspMiddleware)
-      .forRoutes('*');
+    consumer.apply(CspMiddleware).forRoutes('*');
 
     // 5. CSRF protection - for form submissions
-    consumer
-      .apply(CsrfMiddleware)
-      .forRoutes('*');
+    consumer.apply(CsrfMiddleware).forRoutes('*');
 
     // 6. Security audit logging - monitor and log security events
-    consumer
-      .apply(SecurityAuditMiddleware)
-      .forRoutes('*');
+    consumer.apply(SecurityAuditMiddleware).forRoutes('*');
   }
 }

@@ -87,7 +87,7 @@ describe('CacheService (redis store)', () => {
 
   beforeEach(() => {
     // Reset all mock calls
-    Object.values(mockRedis).forEach(fn => fn && fn.mockClear && fn.mockClear());
+    Object.values(mockRedis).forEach((fn) => fn && fn.mockClear && fn.mockClear());
     config = {
       enabled: true,
       ttl: 100,
@@ -143,4 +143,4 @@ describe('CacheService (redis store)', () => {
     const result = await service.get<{ foo: string }>(defaultKey);
     expect(result).toBeNull();
   });
-}); 
+});

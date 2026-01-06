@@ -6,7 +6,7 @@ import { govukTestConfig } from './govuk-components.test.config';
 import { GovukTestUtils } from './utils/govuk-test.utils';
 
 describe('GOV.UK Components', () => {
-  let testResults: any[] = [];
+  const testResults: any[] = [];
   let module: TestingModule;
 
   beforeAll(async () => {

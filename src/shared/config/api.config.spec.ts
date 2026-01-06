@@ -71,7 +71,7 @@ describe('apiConfig', () => {
     it('should use custom caching settings from environment', () => {
       const config = getConfigWithEnv({
         API_CACHE_ENABLED: 'true',
-        API_CACHE_TTL: '600000'
+        API_CACHE_TTL: '600000',
       });
       expect(config.caching.enabled).toBe(true);
       expect(config.caching.ttl).toBe(600000);
@@ -128,4 +128,4 @@ describe('apiConfig', () => {
       expect(config3.caching.enabled).toBe(false);
     });
   });
-}); 
+});

@@ -13,22 +13,22 @@ jest.mock('../../config/logging.config', () => ({
         '/favicon.ico',
         '*.js.map',
         '*.css.map',
-        '/api/*/test' // Add a pattern that contains * but doesn't start with *.
-      ]
+        '/api/*/test', // Add a pattern that contains * but doesn't start with *.
+      ],
     },
     monitoring: {
       enabled: true,
       alerting: {
         enabled: true,
         thresholds: {
-          responseTime: 1000
-        }
-      }
+          responseTime: 1000,
+        },
+      },
     },
     audit: {
-      enabled: true
-    }
-  }
+      enabled: true,
+    },
+  },
 }));
 
 describe('LoggerMiddleware', () => {
@@ -52,10 +52,7 @@ describe('LoggerMiddleware', () => {
     } as any;
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        LoggerMiddleware,
-        { provide: LoggerService, useValue: mockLogger },
-      ],
+      providers: [LoggerMiddleware, { provide: LoggerService, useValue: mockLogger }],
     }).compile();
 
     middleware = module.get<LoggerMiddleware>(LoggerMiddleware);
@@ -66,13 +63,13 @@ describe('LoggerMiddleware', () => {
       ip: '127.0.0.1',
       id: 'test-request-id',
       get: jest.fn().mockReturnValue('test-user-agent'),
-      user: { id: 'user-123' }
+      user: { id: 'user-123' },
     };
 
     mockResponse = {
       statusCode: 200,
       get: jest.fn().mockReturnValue('1024'),
-      on: jest.fn()
+      on: jest.fn(),
     };
 
     mockNext = jest.fn();
@@ -91,16 +88,18 @@ describe('LoggerMiddleware', () => {
   describe('shouldExcludePath', () => {
     it('should exclude exact path matches', () => {
       const middleware = new LoggerMiddleware(mockLogger);
-      
+
       // Test exact matches
       expect((middleware as any).shouldExcludePath('/favicon.ico')).toBe(true);
-      expect((middleware as any).shouldExcludePath('/.well-known/appspecific/com.chrome.devtools.json')).toBe(true);
+      expect(
+        (middleware as any).shouldExcludePath('/.well-known/appspecific/com.chrome.devtools.json')
+      ).toBe(true);
       expect((middleware as any).shouldExcludePath('/test')).toBe(false);
     });
 
     it('should exclude paths with extension patterns', () => {
       const middleware = new LoggerMiddleware(mockLogger);
-      
+
       // Test extension patterns
       expect((middleware as any).shouldExcludePath('/test.js.map')).toBe(true);
       expect((middleware as any).shouldExcludePath('/styles.css.map')).toBe(true);
@@ -109,7 +108,7 @@ describe('LoggerMiddleware', () => {
 
     it('should return false for patterns that do not match any exclusion rules', () => {
       const middleware = new LoggerMiddleware(mockLogger);
-      
+
       // Test patterns that don't match any exclusion rules
       expect((middleware as any).shouldExcludePath('/some/random/path')).toBe(false);
       expect((middleware as any).shouldExcludePath('/api/users')).toBe(false);
@@ -118,14 +117,14 @@ describe('LoggerMiddleware', () => {
 
     it('should return false for patterns with * that do not start with *.', () => {
       const middleware = new LoggerMiddleware(mockLogger);
-      
+
       // Test patterns that contain * but don't start with *.
       // This will trigger the return false on line 59
       // We need to test with a pattern that contains * but doesn't start with *.
       // Since our mock includes '/api/*/test', let's test with a path that doesn't match
       expect((middleware as any).shouldExcludePath('/api/users/test')).toBe(false);
       expect((middleware as any).shouldExcludePath('/api/products/test')).toBe(false);
-      
+
       // Test with a pattern that contains * but doesn't start with *.
       // This should trigger the return false on line 59
       expect((middleware as any).shouldExcludePath('/some/path/with/star')).toBe(false);
@@ -133,23 +132,23 @@ describe('LoggerMiddleware', () => {
 
     it('should handle complex pattern matching edge cases', () => {
       const middleware = new LoggerMiddleware(mockLogger);
-      
+
       // Test a path that would match a pattern with * in the middle but not at the start
       // This should trigger the return false on line 59
       expect((middleware as any).shouldExcludePath('/api/users/test')).toBe(false);
-      
+
       // Test with a path that doesn't match any pattern
       expect((middleware as any).shouldExcludePath('/completely/different/path')).toBe(false);
     });
 
     it('should test edge case for pattern matching with * in middle', () => {
       const middleware = new LoggerMiddleware(mockLogger);
-      
+
       // Test with a path that would trigger the return false on line 59
       // This happens when a pattern contains * but doesn't start with *.
       // We need to test with a path that doesn't match the '/api/*/test' pattern
       expect((middleware as any).shouldExcludePath('/api/users/test')).toBe(false);
-      
+
       // Test with a path that would match a pattern with * in the middle but not at the start
       // This should trigger the return false on line 59
       expect((middleware as any).shouldExcludePath('/api/users/test')).toBe(false);
@@ -159,37 +158,37 @@ describe('LoggerMiddleware', () => {
   describe('use', () => {
     it('should skip logging for excluded paths', () => {
       mockRequest.originalUrl = '/favicon.ico';
-      
+
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      
+
       expect(mockLogger.info).not.toHaveBeenCalled();
       expect(mockNext).toHaveBeenCalled();
     });
 
     it('should log incoming request for non-excluded paths', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith('Incoming request', {
         method: 'GET',
         url: '/test',
         ip: '127.0.0.1',
         userAgent: 'test-user-agent',
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
       expect(mockNext).toHaveBeenCalled();
     });
 
     it('should handle missing user agent', () => {
       mockRequest.get = jest.fn().mockReturnValue(undefined);
-      
+
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith('Incoming request', {
         method: 'GET',
         url: '/test',
         ip: '127.0.0.1',
         userAgent: '',
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
     });
 
@@ -202,17 +201,17 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      
+
       // Trigger the finish event
       finishCallback!();
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith('Request completed', {
         method: 'GET',
         url: '/test',
         status: 200,
         duration: expect.stringMatching(/\d+ms/),
         contentLength: '1024',
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
     });
 
@@ -226,12 +225,12 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      
+
       // Trigger the finish event
       if (finishCallback) {
         finishCallback();
       }
-      
+
       // Should not log response for excluded paths
       expect(mockLogger.info).toHaveBeenCalledTimes(0);
     });
@@ -249,14 +248,14 @@ describe('LoggerMiddleware', () => {
 
       // Clear any previous calls
       jest.clearAllMocks();
-      
+
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      
+
       // Trigger the finish event
       if (finishCallback) {
         finishCallback();
       }
-      
+
       // Should not log response for excluded paths (this covers line 110)
       expect(mockLogger.info).toHaveBeenCalledTimes(0);
     });
@@ -272,14 +271,14 @@ describe('LoggerMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
       finishCallback!();
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith('Request completed', {
         method: 'GET',
         url: '/test',
         status: 200,
         duration: expect.stringMatching(/\d+ms/),
         contentLength: 0,
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
     });
 
@@ -294,12 +293,12 @@ describe('LoggerMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
       finishCallback!();
-      
+
       expect(mockLogger.warn).toHaveBeenCalledWith('High error rate detected', {
         method: 'GET',
         url: '/test',
         status: 500,
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
     });
 
@@ -324,13 +323,13 @@ describe('LoggerMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
       finishCallback!();
-      
+
       expect(mockLogger.warn).toHaveBeenCalledWith('Slow response detected', {
         method: 'GET',
         url: '/test',
         duration: '1500ms',
         threshold: '1000ms',
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
 
       // Restore Date.now
@@ -347,7 +346,7 @@ describe('LoggerMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
       finishCallback!();
-      
+
       expect(mockLogger.audit).toHaveBeenCalledWith('HTTP Request', {
         method: 'GET',
         url: '/test',
@@ -356,7 +355,7 @@ describe('LoggerMiddleware', () => {
         ip: '127.0.0.1',
         userAgent: 'test-user-agent',
         requestId: 'test-request-id',
-        user: 'user-123'
+        user: 'user-123',
       });
     });
 
@@ -371,7 +370,7 @@ describe('LoggerMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
       finishCallback!();
-      
+
       expect(mockLogger.audit).toHaveBeenCalledWith('HTTP Request', {
         method: 'GET',
         url: '/test',
@@ -380,7 +379,7 @@ describe('LoggerMiddleware', () => {
         ip: '127.0.0.1',
         userAgent: 'test-user-agent',
         requestId: 'test-request-id',
-        user: 'anonymous'
+        user: 'anonymous',
       });
     });
 
@@ -395,14 +394,14 @@ describe('LoggerMiddleware', () => {
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
       finishCallback!();
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith('Request completed', {
         method: 'GET',
         url: '/test',
         status: 200,
         duration: expect.stringMatching(/\d+ms/),
         contentLength: '1024',
-        requestId: undefined
+        requestId: undefined,
       });
     });
   });
@@ -421,7 +420,7 @@ describe('LoggerMiddleware', () => {
       if (finishCallback) {
         finishCallback();
       }
-      
+
       // 4xx should not trigger error rate warning (only 5xx)
       expect(mockLogger.warn).not.toHaveBeenCalled();
     });
@@ -439,12 +438,12 @@ describe('LoggerMiddleware', () => {
       if (finishCallback) {
         finishCallback();
       }
-      
+
       expect(mockLogger.warn).toHaveBeenCalledWith('High error rate detected', {
         method: 'GET',
         url: '/test',
         status: 503,
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
     });
   });
@@ -452,41 +451,41 @@ describe('LoggerMiddleware', () => {
   describe('edge cases', () => {
     it('should handle missing IP address', () => {
       mockRequest.ip = undefined;
-      
+
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      
+
       expect(mockLogger.info).toHaveBeenCalledWith('Incoming request', {
         method: 'GET',
         url: '/test',
         ip: undefined,
         userAgent: 'test-user-agent',
-        requestId: 'test-request-id'
+        requestId: 'test-request-id',
       });
     });
 
     it('should handle different HTTP methods', () => {
       const methods = ['POST', 'PUT', 'DELETE', 'PATCH'];
-      
-      methods.forEach(method => {
+
+      methods.forEach((method) => {
         mockRequest.method = method;
         jest.clearAllMocks();
-        
+
         middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-        
+
         expect(mockLogger.info).toHaveBeenCalledWith('Incoming request', {
           method,
           url: '/test',
           ip: '127.0.0.1',
           userAgent: 'test-user-agent',
-          requestId: 'test-request-id'
+          requestId: 'test-request-id',
         });
       });
     });
 
     it('should handle different status codes', () => {
       const statusCodes = [200, 201, 400, 401, 403, 404, 500, 502, 503];
-      
-      statusCodes.forEach(statusCode => {
+
+      statusCodes.forEach((statusCode) => {
         mockResponse.statusCode = statusCode;
         let finishCallback: () => void;
         mockResponse.on = jest.fn().mockImplementation((event, callback) => {
@@ -496,19 +495,19 @@ describe('LoggerMiddleware', () => {
         });
 
         jest.clearAllMocks();
-        
+
         middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
         if (finishCallback) {
           finishCallback();
         }
-        
+
         expect(mockLogger.info).toHaveBeenCalledWith('Request completed', {
           method: 'GET',
           url: '/test',
           status: statusCode,
           duration: expect.stringMatching(/\d+ms/),
           contentLength: '1024',
-          requestId: 'test-request-id'
+          requestId: 'test-request-id',
         });
       });
     });

@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { HealthCheckService, TerminusModule, HealthIndicator, MemoryHealthIndicator } from '@nestjs/terminus';
+import {
+  HealthCheckService,
+  TerminusModule,
+  HealthIndicator,
+  MemoryHealthIndicator,
+} from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { HealthController } from '../health.controller';
@@ -200,7 +205,9 @@ describe('HealthController', () => {
     mockHttpHealthIndicator = module.get<MockHttpHealthIndicator>(HttpHealthIndicator);
     mockDatabaseHealthIndicator = module.get<MockDatabaseHealthIndicator>(DatabaseHealthIndicator);
     mockRedisHealthIndicator = module.get<MockRedisHealthIndicator>(RedisHealthIndicator);
-    mockApplicationHealthIndicator = module.get<MockApplicationHealthIndicator>(ApplicationHealthIndicator);
+    mockApplicationHealthIndicator = module.get<MockApplicationHealthIndicator>(
+      ApplicationHealthIndicator
+    );
     mockMemoryHealthIndicator = module.get<MockMemoryHealthIndicator>(MemoryHealthIndicator);
   });
 

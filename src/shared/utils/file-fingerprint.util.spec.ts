@@ -1,6 +1,10 @@
 import { join } from 'path';
 import { writeFileSync, unlinkSync, mkdirSync, rmdirSync } from 'fs';
-import { generateFileHash, addHashToFilename, generateFingerprintMap } from './file-fingerprint.util';
+import {
+  generateFileHash,
+  addHashToFilename,
+  generateFingerprintMap,
+} from './file-fingerprint.util';
 
 describe('FileFingerprintUtil', () => {
   const testDir = join(__dirname, 'test-files');
@@ -30,12 +34,12 @@ describe('FileFingerprintUtil', () => {
     it('should generate different hashes for different content', () => {
       const differentFile = join(testDir, 'different.txt');
       writeFileSync(differentFile, 'Different content');
-      
+
       const hash1 = generateFileHash(testFile);
       const hash2 = generateFileHash(differentFile);
-      
+
       expect(hash1).not.toBe(hash2);
-      
+
       unlinkSync(differentFile);
     });
 
@@ -64,7 +68,7 @@ describe('FileFingerprintUtil', () => {
 
     it('should add hash to filename while preserving extension', () => {
       const hashedPath = addHashToFilename(testFileWithExt);
-      
+
       // Extract just the filename part for testing
       const filename = hashedPath.split('/').pop();
       expect(filename).toMatch(/^testfile\.[a-f0-9]{8}\.css$/);
@@ -73,7 +77,7 @@ describe('FileFingerprintUtil', () => {
 
     it('should handle filenames without extension', () => {
       const hashedPath = addHashToFilename(testFileWithoutExt);
-      
+
       // Extract just the filename part for testing
       const filename = hashedPath.split('/').pop();
       expect(filename).toMatch(/^testfile\.[a-f0-9]{8}$/);
@@ -102,12 +106,12 @@ describe('FileFingerprintUtil', () => {
 
     it('should generate a map of original to hashed filenames', () => {
       const map = generateFingerprintMap(testDir, ['*.css', '*.js']);
-      
+
       expect(map.size).toBe(2); // Only CSS and JS files
       expect(map.has('/test1.css')).toBe(true);
       expect(map.has('/test2.js')).toBe(true);
       expect(map.has('/test3.txt')).toBe(false); // Should not include .txt files
-      
+
       // Check that the mapped values contain hashes
       map.forEach((hashedPath, originalPath) => {
         expect(hashedPath).toMatch(/\/test[12]\.[a-f0-9]{8}\.(css|js)$/);
@@ -130,4 +134,4 @@ describe('FileFingerprintUtil', () => {
       expect(map.size).toBe(0);
     });
   });
-}); 
+});
