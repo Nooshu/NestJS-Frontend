@@ -3,8 +3,174 @@
   "extends": [
     "local>hmcts/.github:renovate-config"
   ],
+  "description": [
+    "Renovate configuration for NestJS Frontend application",
+    "All dependencies are pinned to exact versions with SHA integrity verification"
+  ],
   "dependencyDashboard": true,
+  "dependencyDashboardTitle": "🔄 Dependency Dashboard",
+  "dependencyDashboardAutoclose": true,
+  "rebaseWhen": "behind-base-branch",
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2,
+  
   "npm": {
-    "postUpdateOptions": ["--legacy-peer-deps"]
-  }
+    "postUpdateOptions": ["--legacy-peer-deps"],
+    "rangeStrategy": "replace",
+    "lockFileMaintenance": {
+      "enabled": true,
+      "schedule": ["before 10am on monday"]
+    }
+  },
+
+  "packageRules": [
+    {
+      "description": "Group NestJS core packages together",
+      "matchPackagePatterns": ["^@nestjs/"],
+      "groupName": "NestJS packages",
+      "schedule": ["before 10am on monday"],
+      "prPriority": 10
+    },
+    {
+      "description": "Group Babel packages together",
+      "matchPackagePatterns": ["^@babel/"],
+      "groupName": "Babel packages",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "description": "Group TypeScript ESLint packages together",
+      "matchPackagePatterns": ["^@typescript-eslint/"],
+      "groupName": "TypeScript ESLint packages",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "description": "Group testing library packages together",
+      "matchPackagePatterns": ["^@testing-library/"],
+      "groupName": "Testing Library packages",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "description": "Group TypeScript type definitions together",
+      "matchPackagePatterns": ["^@types/"],
+      "groupName": "TypeScript type definitions",
+      "schedule": ["before 10am on monday"]
+    },
+    {
+      "description": "Security updates - high priority",
+      "matchUpdateTypes": ["security"],
+      "prPriority": 20,
+      "schedule": ["at any time"],
+      "labels": ["security", "dependencies"],
+      "automerge": false
+    },
+    {
+      "description": "Patch updates for dev dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch"],
+      "prPriority": 5,
+      "schedule": ["before 10am on monday"],
+      "labels": ["dependencies", "dev-dependencies", "patch"]
+    },
+    {
+      "description": "Minor updates for dev dependencies",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["minor"],
+      "prPriority": 3,
+      "schedule": ["before 10am on monday"],
+      "labels": ["dependencies", "dev-dependencies", "minor"]
+    },
+    {
+      "description": "Patch updates for production dependencies",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["patch"],
+      "prPriority": 8,
+      "schedule": ["before 10am on monday"],
+      "labels": ["dependencies", "production", "patch"]
+    },
+    {
+      "description": "Minor updates for production dependencies",
+      "matchDepTypes": ["dependencies"],
+      "matchUpdateTypes": ["minor"],
+      "prPriority": 6,
+      "schedule": ["before 10am on monday"],
+      "labels": ["dependencies", "production", "minor"]
+    },
+    {
+      "description": "Major updates - require manual review",
+      "matchUpdateTypes": ["major"],
+      "prPriority": 1,
+      "schedule": ["before 10am on monday"],
+      "labels": ["dependencies", "major", "breaking-change"],
+      "automerge": false
+    },
+    {
+      "description": "GOV.UK Frontend - important package",
+      "matchPackageNames": ["govuk-frontend"],
+      "prPriority": 15,
+      "labels": ["dependencies", "govuk-frontend", "frontend"]
+    },
+    {
+      "description": "Node.js and npm engine updates",
+      "matchPackageNames": ["node", "npm"],
+      "matchDepTypes": ["engines"],
+      "prPriority": 12,
+      "labels": ["engines", "node", "npm"]
+    },
+    {
+      "description": "TypeScript - important dev dependency",
+      "matchPackageNames": ["typescript"],
+      "prPriority": 10,
+      "labels": ["dependencies", "dev-dependencies", "typescript"]
+    },
+    {
+      "description": "Jest and testing framework updates",
+      "matchPackagePatterns": ["^jest", "^@playwright/"],
+      "prPriority": 8,
+      "labels": ["dependencies", "dev-dependencies", "testing"]
+    }
+  ],
+
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+
+  "commitMessagePrefix": "chore:",
+  "commitMessageAction": "update",
+  "commitMessageTopic": "{{depName}}",
+  "commitMessageExtra": "to {{newVersion}}",
+
+  "prTitle": "{{#if isMajor}}⬆️{{else if isMinor}}⬆️{{else}}🔧{{/if}} Update {{depName}} to {{newVersion}}",
+  "prBodyNotes": [
+    "This PR updates {{depName}} from {{currentVersion}} to {{newVersion}}.",
+    "",
+    "**Note:** All dependencies in this project are pinned to exact versions with SHA integrity verification.",
+    "Please ensure tests pass and review any breaking changes before merging."
+  ],
+
+  "ignoreDeps": [],
+
+  "vulnerabilityAlerts": {
+    "enabled": true,
+    "labels": ["security", "vulnerability"],
+    "prPriority": 25,
+    "schedule": ["at any time"]
+  },
+
+  "schedule": [
+    "before 10am on monday"
+  ],
+
+  "timezone": "Europe/London",
+
+  "automerge": false,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+
+  "reviewers": [],
+  "assignees": [],
+
+  "platform": "github",
+  "onboarding": false,
+  "requireConfig": false
 }

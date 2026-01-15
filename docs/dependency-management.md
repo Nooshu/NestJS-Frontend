@@ -1,46 +1,48 @@
 # Dependency Management
 
 ## Overview
-This project uses npm for dependency management. The project requires Node.js version 20.11.1 or higher.
+This project uses npm for dependency management with all dependencies pinned to exact versions for security and reproducibility. The project requires Node.js version 24.13.0 or higher (LTS Krypton).
 
 ## Key Dependencies
 
 ### Core Dependencies
-- @nestjs/common: ^11.1.6
-- @nestjs/core: ^11.1.6
-- @nestjs/platform-express: ^11.1.6
-- govuk-frontend: ^5.11.2
-- nunjucks: ^3.2.4
+- @nestjs/common: 11.1.12
+- @nestjs/core: 11.1.12
+- @nestjs/platform-express: 11.1.12
+- govuk-frontend: 5.14.0
+- nunjucks: 3.2.4
 
 ### Security Dependencies
-- helmet: ^8.1.0
-- @nestjs/throttler: ^6.4.0
+- helmet: 8.1.0
+- @nestjs/throttler: 6.5.0
 
 ### API and Integration
-- @nestjs/axios: ^4.0.1
-- axios: ^1.11.0
-- @nestjs/swagger: ^11.2.0
-- swagger-ui-express: ^5.0.1
+- @nestjs/axios: 4.0.1
+- axios: 1.13.2
+- @nestjs/swagger: 11.2.5
+- swagger-ui-express: 5.0.1
 
 ### Caching
-- @nestjs/cache-manager: ^3.0.1
-- cache-manager: ^7.2.0
-- cache-manager-redis-store: ^3.0.1
-- ioredis: ^5.7.0
+- @nestjs/cache-manager: 3.1.0
+- cache-manager: 7.2.8
+- cache-manager-redis-store: 3.0.1
+- ioredis: 5.9.2
 
 ### Logging and Monitoring
-- nest-winston: ^1.10.2
-- winston: ^3.17.0
-- pino: ^9.9.0
-- pino-pretty: ^13.1.1
+- nest-winston: 1.10.2
+- winston: 3.19.0
+- pino: 10.2.0
+- pino-pretty: 13.1.3
 
 ### Development Dependencies
-- @nestjs/cli: ^11.0.10
-- jest: ^30.1.1
-- typescript: ^5.9.2
-- prettier: ^3.6.2
-- sass: ^1.91.0
-- @playwright/test: ^1.55.0
+- @nestjs/cli: 11.0.15
+- jest: 30.2.0
+- typescript: 5.9.3
+- prettier: 3.8.0
+- sass: 1.97.2
+- @playwright/test: 1.57.0
+- @babel/core: 7.28.6
+- @babel/preset-env: 7.28.6
 
 ## Table of Contents
 
@@ -103,25 +105,29 @@ This project uses npm for dependency management. The project requires Node.js ve
 
 ### Version Policies
 
+**All dependencies are pinned to exact versions** (no `^` or `~` prefixes) for security and reproducibility. This ensures:
+- Consistent builds across environments
+- SHA integrity verification via package-lock.json
+- Predictable behavior in production
+- Easier security auditing
+
 1. **Version Constraints**
    ```json
    {
      "dependencies": {
-       // Exact version
+       // Exact version (required for all packages)
        "package-a": "1.2.3",
-       // Compatible with version
-       "package-b": "~1.2.3",
-       // Any compatible version
-       "package-c": "^1.2.3"
+       "package-b": "1.2.3",
+       "package-c": "1.2.3"
      }
    }
    ```
 
 2. **Version Management**
-   - Semantic versioning
-   - Version locking
-   - Update policies
-   - Breaking changes
+   - All dependencies use exact versions (no ranges)
+   - SHA integrity checksums in package-lock.json
+   - Automated updates via Renovate Bot
+   - Manual review required for major updates
 
 ### Version Updates
 
@@ -183,24 +189,74 @@ This project uses npm for dependency management. The project requires Node.js ve
    - Update notifications
    - Action items
 
-## Update Procedures
+## Automated Dependency Updates with Renovate Bot
+
+This project uses [Renovate Bot](https://renovatebot.com/) to automatically manage dependency updates. The configuration is defined in `renovate.json`.
+
+### Renovate Configuration Features
+
+1. **Update Scheduling**
+   - Regular updates: Monday mornings (before 10am)
+   - Security updates: Anytime (high priority)
+   - Timezone: Europe/London
+
+2. **Update Grouping**
+   - NestJS packages grouped together
+   - Babel packages grouped together
+   - TypeScript ESLint packages grouped together
+   - Testing library packages grouped together
+   - TypeScript type definitions grouped together
+
+3. **Priority Levels**
+   - Security updates: Priority 20 (highest)
+   - GOV.UK Frontend: Priority 15
+   - Node.js/npm engines: Priority 12
+   - NestJS packages: Priority 10
+   - Production patch updates: Priority 8
+   - Production minor updates: Priority 6
+   - Dev dependency updates: Priority 3-5
+   - Major updates: Priority 1 (requires manual review)
+
+4. **Labels and Categorization**
+   - Security updates: `security`, `vulnerability`
+   - Production dependencies: `dependencies`, `production`
+   - Dev dependencies: `dependencies`, `dev-dependencies`
+   - Major updates: `breaking-change`
+   - Package-specific labels (e.g., `govuk-frontend`, `typescript`)
+
+5. **Automerge Settings**
+   - Automerge disabled by default (manual review required)
+   - Security updates require manual approval
+   - Major updates require manual approval
 
 ### Update Process
 
-1. **Update Checklist**
+1. **Automated Update Checklist**
    ```markdown
-   - [ ] Check for updates
-   - [ ] Review changelog
-   - [ ] Test updates
-   - [ ] Update documentation
-   - [ ] Deploy changes
+   - [ ] Renovate creates PR with updates
+   - [ ] Review changelog and breaking changes
+   - [ ] Run tests: `npm test`
+   - [ ] Verify build: `npm run build:prod`
+   - [ ] Check for security issues: `npm audit`
+   - [ ] Update documentation if needed
+   - [ ] Merge PR after approval
    ```
 
-2. **Update Steps**
-   - Identify updates
-   - Review changes
-   - Test updates
-   - Deploy changes
+2. **Manual Update Steps** (if needed)
+   ```bash
+   # Check for outdated packages
+   npm outdated
+   
+   # Update specific package
+   npm install --save-exact package-name@latest
+   
+   # Update all packages (use with caution)
+   npm update
+   
+   # Verify integrity
+   npm audit
+   npm test
+   ```
 
 ### Rollback Procedures
 
