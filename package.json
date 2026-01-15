@@ -165,6 +165,7 @@
   },
   "overrides": {
     "multer": "2.0.2",
+    "diff": "8.0.3",
     "jest": {
       "engines": {
         "node": ">=18.14.0"
