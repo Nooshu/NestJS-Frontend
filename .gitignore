@@ -4,9 +4,26 @@ dist
 
 # OS
 .DS_store
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
 
 # Logs
 logs/*
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 test-results.json
 
 # Playwright
@@ -17,7 +34,42 @@ test-results.json
 
 # Coverage
 /coverage/
+/temp-coverage/
 .nyc_output/
 *.lcov
 coverage-final.json
 coverage-summary.json
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Build artifacts
+.tsbuildinfo
+*.tsbuildinfo
+build/
+.next/
+out/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Package manager
+.pnpm-debug.log*
+.yarn/
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# Misc
+*.pem
+*.key
+*.cert
+.cache/

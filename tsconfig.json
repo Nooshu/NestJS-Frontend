@@ -12,6 +12,7 @@
     "ignoreDeprecations": "5.0",
     "importHelpers": true,
     "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
     "isolatedModules": true,
     "lib": ["ES2022"],
     "module": "commonjs",
