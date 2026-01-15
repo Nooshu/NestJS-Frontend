@@ -1,8 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>hmcts/.github:renovate-config"
-  ],
+  "extends": ["local>hmcts/.github:renovate-config"],
   "description": [
     "Renovate configuration for NestJS Frontend application",
     "All dependencies are pinned to exact versions with SHA integrity verification"
@@ -13,7 +11,6 @@
   "rebaseWhen": "behind-base-branch",
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
-  
   "npm": {
     "postUpdateOptions": ["--legacy-peer-deps"],
     "rangeStrategy": "replace",
@@ -22,38 +19,37 @@
       "schedule": ["before 10am on monday"]
     }
   },
-
   "packageRules": [
     {
       "description": "Group NestJS core packages together",
-      "matchPackagePatterns": ["^@nestjs/"],
       "groupName": "NestJS packages",
       "schedule": ["before 10am on monday"],
-      "prPriority": 10
+      "prPriority": 10,
+      "matchPackageNames": ["/^@nestjs//"]
     },
     {
       "description": "Group Babel packages together",
-      "matchPackagePatterns": ["^@babel/"],
       "groupName": "Babel packages",
-      "schedule": ["before 10am on monday"]
+      "schedule": ["before 10am on monday"],
+      "matchPackageNames": ["/^@babel//"]
     },
     {
       "description": "Group TypeScript ESLint packages together",
-      "matchPackagePatterns": ["^@typescript-eslint/"],
       "groupName": "TypeScript ESLint packages",
-      "schedule": ["before 10am on monday"]
+      "schedule": ["before 10am on monday"],
+      "matchPackageNames": ["/^@typescript-eslint//"]
     },
     {
       "description": "Group testing library packages together",
-      "matchPackagePatterns": ["^@testing-library/"],
       "groupName": "Testing Library packages",
-      "schedule": ["before 10am on monday"]
+      "schedule": ["before 10am on monday"],
+      "matchPackageNames": ["/^@testing-library//"]
     },
     {
       "description": "Group TypeScript type definitions together",
-      "matchPackagePatterns": ["^@types/"],
       "groupName": "TypeScript type definitions",
-      "schedule": ["before 10am on monday"]
+      "schedule": ["before 10am on monday"],
+      "matchPackageNames": ["/^@types//"]
     },
     {
       "description": "Security updates - high priority",
@@ -124,22 +120,16 @@
     },
     {
       "description": "Jest and testing framework updates",
-      "matchPackagePatterns": ["^jest", "^@playwright/"],
       "prPriority": 8,
-      "labels": ["dependencies", "dev-dependencies", "testing"]
+      "labels": ["dependencies", "dev-dependencies", "testing"],
+      "matchPackageNames": ["/^jest/", "/^@playwright//"]
     }
   ],
-
-  "labels": [
-    "dependencies",
-    "renovate"
-  ],
-
+  "labels": ["dependencies", "renovate"],
   "commitMessagePrefix": "chore:",
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
-
   "prTitle": "{{#if isMajor}}⬆️{{else if isMinor}}⬆️{{else}}🔧{{/if}} Update {{depName}} to {{newVersion}}",
   "prBodyNotes": [
     "This PR updates {{depName}} from {{currentVersion}} to {{newVersion}}.",
@@ -147,30 +137,21 @@
     "**Note:** All dependencies in this project are pinned to exact versions with SHA integrity verification.",
     "Please ensure tests pass and review any breaking changes before merging."
   ],
-
   "ignoreDeps": [],
-
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": ["security", "vulnerability"],
     "prPriority": 25,
     "schedule": ["at any time"]
   },
-
-  "schedule": [
-    "before 10am on monday"
-  ],
-
+  "schedule": ["before 10am on monday"],
   "timezone": "Europe/London",
-
   "automerge": false,
   "automergeType": "pr",
   "automergeStrategy": "squash",
-
   "reviewers": [],
   "assignees": [],
-
   "platform": "github",
   "onboarding": false,
-  "requireConfig": false
+  "requireConfig": "optional"
 }
