@@ -15,8 +15,7 @@
     "postUpdateOptions": ["--legacy-peer-deps"],
     "rangeStrategy": "replace",
     "lockFileMaintenance": {
-      "enabled": true,
-      "schedule": ["before 10am on monday"]
+      "enabled": false
     }
   },
   "packageRules": [
