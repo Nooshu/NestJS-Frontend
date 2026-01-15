@@ -18,7 +18,7 @@ The Docker setup provides containerized deployment for both development and prod
 - **Location**: `./Dockerfile`
 - **Purpose**: Multi-stage build configuration
 - **Features**:
-  - Base stage with Node.js 20 Alpine
+  - Base stage with Node.js 24 Alpine (LTS Krypton)
   - Development stage with hot reload
   - Production stage with security hardening
   - Non-root user for security

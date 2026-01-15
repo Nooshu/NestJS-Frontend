@@ -1,4 +1,4 @@
-# Use Node.js 20 LTS as the base image
+# Use Node.js 24 LTS (Krypton) as the base image
 FROM node:24-alpine AS base
 
 # Update npm to the latest version

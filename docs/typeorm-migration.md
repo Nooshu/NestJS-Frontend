@@ -19,7 +19,7 @@ This guide provides step-by-step instructions for migrating your database layer 
 
 - NestJS application
 - Existing database setup
-- Node.js v20 or later
+- Node.js v24.13.0 or later (LTS Krypton)
 - npm or yarn
 
 ## Installation

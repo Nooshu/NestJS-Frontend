@@ -7,18 +7,18 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 | Category | Status |
 |----------|--------|
 | **Build** | ✅ Passing |
-| **Tests** | ✅ All tests passing (1,113 tests across 50 test suites) |
+| **Tests** | ✅ All tests passing (1,116 tests across 50 test suites) |
 | **Dependencies** | ✅ Up to date (January 2026) - All pinned to exact versions |
 | **Security** | ✅ 0 vulnerabilities |
-| **GOV.UK Frontend** | ✅ v5.13.0 (Latest) |
-| **Node.js** | ✅ v24.12.0 LTS (Krypton) |
+| **GOV.UK Frontend** | ✅ v5.14.0 (Latest) |
+| **Node.js** | ✅ v24.13.0 LTS (Krypton) |
 | **npm** | ✅ v11.7.0 |
 
 ### Current Features
 
 - ✅ Full GOV.UK Design System integration with component parity testing
-- ✅ NestJS v11.1.11 with Express v5.2.1 adapter
-- ✅ Comprehensive test suite (Jest + Playwright) - 1,113 tests passing
+- ✅ NestJS v11.1.12 with Express v5.2.1 adapter
+- ✅ Comprehensive test suite (Jest + Playwright) - 1,116 tests passing
 - ✅ Asset fingerprinting for optimal caching
 - ✅ Docker support for development and production
 - ✅ Swagger/OpenAPI documentation
@@ -231,16 +231,16 @@ Access the prototype at `/find-a-court-or-tribunal` when running the application
 This project uses the following key package versions (last updated: January 2026):
 
 ### Core Dependencies
-- NestJS Framework: v11.1.11
+- NestJS Framework: v11.1.12
 - Express.js: v5.2.1
-- GOV.UK Frontend: v5.13.0
+- GOV.UK Frontend: v5.14.0
 - TypeScript: v5.9.3
-- Node.js: >=24.12.0 (LTS Krypton)
+- Node.js: >=24.13.0 (LTS Krypton)
 - npm: >=11.7.0
 
 ### Key Features
-- NestJS Core: v11.1.11
-- NestJS Swagger: v11.2.4
+- NestJS Core: v11.1.12
+- NestJS Swagger: v11.2.5
 - NestJS Config: v4.0.2
 - NestJS Axios: v4.0.1
 - NestJS Cache Manager: v3.1.0
@@ -250,10 +250,10 @@ This project uses the following key package versions (last updated: January 2026
 ### Testing & Development
 - Jest: v30.2.0
 - Playwright: v1.57.0
-- Prettier: v3.7.4
+- Prettier: v3.8.0
 - ESLint: v9.39.2
 - SASS: v1.97.2
-- Babel: v7.28.5
+- Babel: v7.28.6
 - Supertest: v7.2.2
 
 For a complete list of dependencies and their versions, please refer to the `package.json` file.
@@ -426,16 +426,16 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 ## Dependencies
 
 ### Core Dependencies
-- [NestJS](https://nestjs.com/) v11.1.11
+- [NestJS](https://nestjs.com/) v11.1.12
 - [Express](https://expressjs.com/) v5.2.1
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.13.0
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.14.0
 - [TypeScript](https://www.typescriptlang.org/) v5.9.3
-- [Node.js](https://github.com/nodejs/release#release-schedule) v24.12.0 LTS (Krypton)
+- [Node.js](https://github.com/nodejs/release#release-schedule) v24.13.0 LTS (Krypton)
 - [npm](https://www.npmjs.com/) v11.7.0
 
 ### Key Features
 - Axios HTTP client for API integration v1.13.2
-- Redis caching with cache-manager v7.2.7
+- Redis caching with cache-manager v7.2.8
 - Winston logging with structured output v3.19.0
 - Swagger/OpenAPI documentation
 - Rate limiting with @nestjs/throttler v6.5.0
@@ -462,14 +462,14 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 ### Development Tools
 - Jest v30.2.0 for unit and integration testing
 - Playwright v1.57.0 for end-to-end testing
-- Prettier v3.7.4 for code formatting
+- Prettier v3.8.0 for code formatting
 - ESLint v9.39.2 for code linting
 - TypeScript strict mode enabled
 - SASS v1.97.2 for CSS preprocessing
 - Supertest v7.2.2 for API testing
 - Renovate bot for dependency updates
 - PostCSS v8.5.6 for CSS optimisation
-- Babel v7.28.5 for JavaScript transpilation
+- Babel v7.28.6 for JavaScript transpilation
 - All dependencies pinned to exact versions with SHA integrity verification
 
 ## Dependency Management
