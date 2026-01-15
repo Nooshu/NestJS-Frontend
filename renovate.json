@@ -54,9 +54,9 @@
     {
       "description": "Security updates - high priority",
       "matchUpdateTypes": ["security"],
-      "prPriority": 20,
+      "prPriority": 25,
       "schedule": ["at any time"],
-      "labels": ["security", "dependencies"],
+      "labels": ["security", "dependencies", "vulnerability"],
       "automerge": false
     },
     {
@@ -126,11 +126,10 @@
     }
   ],
   "labels": ["dependencies", "renovate"],
-  "commitMessagePrefix": "chore:",
+  "commitMessagePrefix": "{{#if isMajor}}⬆️{{else if isMinor}}⬆️{{else}}🔧{{/if}} chore:",
   "commitMessageAction": "update",
   "commitMessageTopic": "{{depName}}",
   "commitMessageExtra": "to {{newVersion}}",
-  "prTitle": "{{#if isMajor}}⬆️{{else if isMinor}}⬆️{{else}}🔧{{/if}} Update {{depName}} to {{newVersion}}",
   "prBodyNotes": [
     "This PR updates {{depName}} from {{currentVersion}} to {{newVersion}}.",
     "",
@@ -141,7 +140,6 @@
   "vulnerabilityAlerts": {
     "enabled": true,
     "labels": ["security", "vulnerability"],
-    "prPriority": 25,
     "schedule": ["at any time"]
   },
   "schedule": ["before 10am on monday"],
@@ -150,8 +148,5 @@
   "automergeType": "pr",
   "automergeStrategy": "squash",
   "reviewers": [],
-  "assignees": [],
-  "platform": "github",
-  "onboarding": false,
-  "requireConfig": "optional"
+  "assignees": []
 }
