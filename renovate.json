@@ -7,7 +7,7 @@
   ],
   "dependencyDashboard": true,
   "dependencyDashboardTitle": "🔄 Dependency Dashboard",
-  "dependencyDashboardAutoclose": true,
+  "dependencyDashboardAutoclose": false,
   "rebaseWhen": "behind-base-branch",
   "prConcurrentLimit": 5,
   "prHourlyLimit": 2,
