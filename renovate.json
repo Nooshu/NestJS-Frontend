@@ -24,31 +24,31 @@
       "groupName": "NestJS packages",
       "schedule": ["before 10am on monday"],
       "prPriority": 10,
-      "matchPackagePatterns": ["^@nestjs/"]
+      "matchPackageNames": ["/^@nestjs//"]
     },
     {
       "description": "Group Babel packages together",
       "groupName": "Babel packages",
       "schedule": ["before 10am on monday"],
-      "matchPackagePatterns": ["^@babel/"]
+      "matchPackageNames": ["/^@babel//"]
     },
     {
       "description": "Group TypeScript ESLint packages together",
       "groupName": "TypeScript ESLint packages",
       "schedule": ["before 10am on monday"],
-      "matchPackagePatterns": ["^@typescript-eslint/"]
+      "matchPackageNames": ["/^@typescript-eslint//"]
     },
     {
       "description": "Group testing library packages together",
       "groupName": "Testing Library packages",
       "schedule": ["before 10am on monday"],
-      "matchPackagePatterns": ["^@testing-library/"]
+      "matchPackageNames": ["/^@testing-library//"]
     },
     {
       "description": "Group TypeScript type definitions together",
       "groupName": "TypeScript type definitions",
       "schedule": ["before 10am on monday"],
-      "matchPackagePatterns": ["^@types/"]
+      "matchPackageNames": ["/^@types//"]
     },
     {
       "description": "Security updates - high priority",
@@ -121,7 +121,7 @@
       "description": "Jest and testing framework updates",
       "prPriority": 8,
       "labels": ["dependencies", "dev-dependencies", "testing"],
-      "matchPackagePatterns": ["^jest", "^@playwright/"]
+      "matchPackageNames": ["/^jest/", "/^@playwright//"]
     }
   ],
   "labels": ["dependencies", "renovate"],
