@@ -123,7 +123,7 @@
   "devDependencies": {
     "@babel/core": "7.28.6",
     "@babel/preset-env": "7.28.6",
-    "@nestjs/cli": "11.0.15",
+    "@nestjs/cli": "11.0.16",
     "@nestjs/testing": "11.1.12",
     "@playwright/test": "1.57.0",
     "@testing-library/dom": "10.4.1",
@@ -133,7 +133,7 @@
     "@types/cors": "2.8.19",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
-    "@types/node": "25.0.8",
+    "@types/node": "25.0.9",
     "@types/nunjucks": "3.2.6",
     "@types/serve-static": "2.2.0",
     "@types/supertest": "6.0.3",
