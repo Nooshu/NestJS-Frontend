@@ -13,6 +13,7 @@
     "prebuild": "rimraf dist",
     "build": "cross-env NODE_ENV=production nest build --config tsconfig.build.json",
     "postbuild": "npm run copy:views && npm run copy:public-assets",
+    "postinstall": "patch-package",
     "build:prod": "npm run build && npm run build:frontend",
     "format": "prettier --write \"src/**/*.{ts,js,json,njk}\"",
     "start": "cross-env NODE_ENV=production PORT=3002 nest start",
@@ -154,6 +155,7 @@
     "npm-run-all2": "8.0.4",
     "onchange": "7.1.0",
     "postcss": "8.5.6",
+    "patch-package": "8.0.0",
     "prettier": "3.8.0",
     "rimraf": "6.1.2",
     "sass": "1.97.2",
@@ -170,7 +172,7 @@
   "overrides": {
     "multer": "2.0.2",
     "diff": "8.0.3",
-    "char-regex": "1.0.2",
+    "char-regex": "2.0.2",
     "jest": {
       "engines": {
         "node": ">=18.14.0"

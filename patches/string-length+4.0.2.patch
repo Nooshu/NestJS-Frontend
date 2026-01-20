@@ -1,0 +1,13 @@
+diff --git a/node_modules/string-length/index.js b/node_modules/string-length/index.js
+index c2589a2..40b5482 100644
+--- a/node_modules/string-length/index.js
++++ b/node_modules/string-length/index.js
+@@ -1,6 +1,7 @@
+ 'use strict';
+ const stripAnsi = require('strip-ansi');
+-const charRegex = require('char-regex');
++const charRegexImport = require('char-regex');
++const charRegex = typeof charRegexImport === 'function' ? charRegexImport : charRegexImport.default;
+ 
+ const stringLength = string => {
+ 	if (string === '') {
