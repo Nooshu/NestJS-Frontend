@@ -1,2 +1,3 @@
+Use the Chat title "Update Dependencies" if required.
 Make sure node.js and npm are up to date
 also that all packages are updated, pinned and SHA verified
