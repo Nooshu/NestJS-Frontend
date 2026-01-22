@@ -173,6 +173,7 @@
     "multer": "2.0.2",
     "diff": "8.0.3",
     "char-regex": "2.0.2",
+    "lodash": "4.17.23",
     "jest": {
       "engines": {
         "node": ">=18.14.0"
