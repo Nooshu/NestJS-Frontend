@@ -1,0 +1,7 @@
+Always keep Node.js and npm versions current and reflected in the engines field.
+Keep .npmrc and .nvmrc aligned with Node.js and npm versions.
+Prefer patch and minor dependency updates unless explicitly instructed otherwise.
+Pin dependency versions and preserve lockfile integrity.
+Verify package integrity and avoid introducing breaking changes.
+Always run tests after dependency changes.
+Summaries must include risks and unresolved issues.
