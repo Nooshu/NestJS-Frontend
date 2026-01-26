@@ -18,7 +18,7 @@ This project uses npm for dependency management with all dependencies pinned to 
 
 ### API and Integration
 - @nestjs/axios: 4.0.1
-- axios: 1.13.2
+- axios: 1.13.3
 - @nestjs/swagger: 11.2.5
 - swagger-ui-express: 5.0.1
 
@@ -40,7 +40,7 @@ This project uses npm for dependency management with all dependencies pinned to 
 - typescript: 5.9.3
 - prettier: 3.8.0
 - sass: 1.97.2
-- @playwright/test: 1.57.0
+- @playwright/test: 1.58.0
 - @babel/core: 7.28.6
 - @babel/preset-env: 7.28.6
 

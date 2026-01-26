@@ -249,7 +249,7 @@ This project uses the following key package versions (last updated: January 2026
 
 ### Testing & Development
 - Jest: v30.2.0
-- Playwright: v1.57.0
+- Playwright: v1.58.0
 - Prettier: v3.8.0
 - ESLint: v9.39.2
 - SASS: v1.97.2
