@@ -109,7 +109,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Built-in validation and transformation
 - Clear error messages and debugging support
 - Supertest v7.2.2 for API testing
-- Node.js v24.13.0+ support with modern features
+- Node.js v25.5.0+ support with modern features
 - PostCSS v8.5.6 for modern CSS processing
 - Babel v7.28.6 for JavaScript transpilation
 

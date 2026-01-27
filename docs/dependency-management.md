@@ -1,7 +1,7 @@
 # Dependency Management
 
 ## Overview
-This project uses npm for dependency management with all dependencies pinned to exact versions for security and reproducibility. The project requires Node.js version 24.13.0 or higher (LTS Krypton).
+This project uses npm for dependency management with all dependencies pinned to exact versions for security and reproducibility. The project requires Node.js version 25.5.0 or higher (LTS Krypton).
 
 ## Key Dependencies
 

@@ -122,7 +122,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [24.13.0]
+        node-version: [25.5.0]
     
     steps:
       - uses: actions/checkout@v4
@@ -144,7 +144,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 24.13.0
+          node-version: 25.5.0
           cache: 'npm'
       
       - run: npm ci

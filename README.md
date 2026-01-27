@@ -11,7 +11,7 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 | **Dependencies** | ✅ Up to date (January 2026) - All pinned to exact versions |
 | **Security** | ✅ 0 vulnerabilities |
 | **GOV.UK Frontend** | ✅ v5.14.0 (Latest) |
-| **Node.js** | ✅ v24.13.0 LTS (Krypton) |
+| **Node.js** | ✅ v25.5.0 LTS (Krypton) |
 | **npm** | ✅ v11.7.0 |
 
 ### Current Features
@@ -235,7 +235,7 @@ This project uses the following key package versions (last updated: January 2026
 - Express.js: v5.2.1
 - GOV.UK Frontend: v5.14.0
 - TypeScript: v5.9.3
-- Node.js: >=24.13.0 (LTS Krypton)
+- Node.js: >=25.5.0 (LTS Krypton)
 - npm: >=11.7.0
 
 ### Key Features
@@ -430,7 +430,7 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 - [Express](https://expressjs.com/) v5.2.1
 - [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.14.0
 - [TypeScript](https://www.typescriptlang.org/) v5.9.3
-- [Node.js](https://github.com/nodejs/release#release-schedule) v24.13.0 LTS (Krypton)
+- [Node.js](https://github.com/nodejs/release#release-schedule) v25.5.0 LTS (Krypton)
 - [npm](https://www.npmjs.com/) v11.7.0
 
 ### Key Features

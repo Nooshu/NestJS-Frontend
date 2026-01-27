@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-- Node.js (v24.13.0 or later, LTS Krypton)
+- Node.js (v25.5.0 or later, LTS Krypton)
 - npm or yarn
 
 ## Installation
