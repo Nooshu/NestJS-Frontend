@@ -94,7 +94,7 @@
     "@nestjs/swagger": "11.2.5",
     "@nestjs/terminus": "11.0.0",
     "@nestjs/throttler": "6.5.0",
-    "axios": "1.13.3",
+    "axios": "1.13.4",
     "brace-expansion": "4.0.1",
     "cache-manager": "7.2.8",
     "cache-manager-redis-store": "3.0.1",
@@ -166,8 +166,8 @@
     "typescript": "5.9.3"
   },
   "engines": {
-    "node": ">=25.5.0",
-    "npm": ">=11.7.0"
+    "node": ">=25.5.0 <26",
+    "npm": ">=11.7.0 <12"
   },
   "overrides": {
     "multer": "2.0.2",

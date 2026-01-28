@@ -18,7 +18,7 @@ This project uses npm for dependency management with all dependencies pinned to 
 
 ### API and Integration
 - @nestjs/axios: 4.0.1
-- axios: 1.13.3
+- axios: 1.13.4
 - @nestjs/swagger: 11.2.5
 - swagger-ui-express: 5.0.1
 

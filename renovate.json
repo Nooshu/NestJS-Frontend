@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["local>hmcts/.github:renovate-config"],
+  "extends": [":preserveSemverRanges", "local>hmcts/.github:renovate-config"],
   "description": [
     "Renovate configuration for NestJS Frontend application",
     "All dependencies are pinned to exact versions with SHA integrity verification"
