@@ -1,11 +1,8 @@
 // Suppress GOV.UK Frontend warnings
-$govuk-suppressed-warnings: (
-  "legacy-organisation-colours",
-  "import-using-all"
-);
+$govuk-suppressed-warnings: ('legacy-organisation-colours');
 
 // Import GOV.UK Frontend
-@use "govuk-frontend/dist/govuk/index" as govuk;
+@use 'govuk-frontend/dist/govuk/index' as govuk;
 
 // Custom styles
 .govuk-header {
@@ -50,4 +47,4 @@ $govuk-suppressed-warnings: (
   .govuk-footer {
     display: none;
   }
-} 
+}

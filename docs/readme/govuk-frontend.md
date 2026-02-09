@@ -1,6 +1,6 @@
 # GOV.UK Frontend Integration
 
-The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling and components. The current version is 5.11.2 as specified in `package.json`.
+The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling and components. The current version is 6.0.0 as specified in `package.json`.
 
 ## Before Updating
 
@@ -11,9 +11,11 @@ The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling 
    - Required migration steps
 
 2. Review the current integration:
+
    ```bash
    npm list govuk-frontend
    ```
+
    Current version should be 5.11.2
 
 3. Review the current configuration:
@@ -24,15 +26,19 @@ The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling 
 ## Update Process
 
 1. Update the package version:
+
    ```bash
    npm install govuk-frontend@latest
    ```
+
    Or for a specific version:
+
    ```bash
    npm install govuk-frontend@x.x.x
    ```
 
 2. Update the package-lock.json file:
+
    ```bash
    npm install
    ```
@@ -53,9 +59,11 @@ The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling 
      ```
 
 4. Run component tests:
+
    ```bash
    npm run test:govuk
    ```
+
    This ensures all GOV.UK components still render correctly after the update.
 
 5. Update asset fingerprinting:
@@ -78,6 +86,7 @@ The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling 
 ## Post-Update Checklist
 
 1. Verify template paths in `view-engine.service.ts` are correct:
+
    ```typescript
    const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist');
    ```
@@ -200,9 +209,9 @@ For detailed information about GOV.UK Frontend versions and migration guides, vi
 
 ## Version History
 
-| Version | Date Updated | Changes |
-|---------|--------------|---------|
-| 5.11.2  | Current      | Latest stable release |
+| Version | Date Updated | Changes                 |
+| ------- | ------------ | ----------------------- |
+| 5.11.2  | Current      | Latest stable release   |
 | 5.11.1  | Previous     | Previous stable release |
 | 5.10.2  | Previous     | Previous stable release |
 | 5.10.1  | Previous     | Previous stable release |
@@ -216,10 +225,10 @@ For detailed information about GOV.UK Frontend versions and migration guides, vi
 | 5.3.0   | Previous     | Previous stable release |
 | 5.2.0   | Previous     | Previous stable release |
 | 5.1.0   | Previous     | Previous stable release |
-| 5.0.0   | Initial      | Initial implementation |
+| 5.0.0   | Initial      | Initial implementation  |
 
 ## Related Documentation
 
 - [Asset Fingerprinting](../asset-fingerprinting.md)
 - [Frontend Performance](./frontend-performance.md)
-- [Build Scripts](../build-scripts.md) 
+- [Build Scripts](../build-scripts.md)

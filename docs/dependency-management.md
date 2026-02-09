@@ -1,40 +1,47 @@
 # Dependency Management
 
 ## Overview
+
 This project uses npm for dependency management with all dependencies pinned to exact versions for security and reproducibility. The project requires Node.js version 25.5.0 or higher (LTS Krypton).
 
 ## Key Dependencies
 
 ### Core Dependencies
+
 - @nestjs/common: 11.1.12
 - @nestjs/core: 11.1.12
 - @nestjs/platform-express: 11.1.12
-- govuk-frontend: 5.14.0
+- govuk-frontend: 6.0.0
 - nunjucks: 3.2.4
 
 ### Security Dependencies
+
 - helmet: 8.1.0
 - @nestjs/throttler: 6.5.0
 
 ### API and Integration
+
 - @nestjs/axios: 4.0.1
 - axios: 1.13.4
 - @nestjs/swagger: 11.2.5
 - swagger-ui-express: 5.0.1
 
 ### Caching
+
 - @nestjs/cache-manager: 3.1.0
 - cache-manager: 7.2.8
 - cache-manager-redis-store: 3.0.1
 - ioredis: 5.9.2
 
 ### Logging and Monitoring
+
 - nest-winston: 1.10.2
 - winston: 3.19.0
 - pino: 10.2.0
 - pino-pretty: 13.1.3
 
 ### Development Dependencies
+
 - @nestjs/cli: 11.0.15
 - jest: 30.2.0
 - typescript: 5.9.3
@@ -59,6 +66,7 @@ This project uses npm for dependency management with all dependencies pinned to 
 ### Package Configuration
 
 1. **Package.json Structure**
+
    ```json
    {
      "name": "nest-frontend",
@@ -84,13 +92,14 @@ This project uses npm for dependency management with all dependencies pinned to 
 ### Package Installation
 
 1. **Installation Commands**
+
    ```bash
    # Install production dependencies
    npm install --save package-name
-   
+
    # Install development dependencies
    npm install --save-dev package-name
-   
+
    # Install peer dependencies
    npm install --save-peer package-name
    ```
@@ -106,12 +115,14 @@ This project uses npm for dependency management with all dependencies pinned to 
 ### Version Policies
 
 **All dependencies are pinned to exact versions** (no `^` or `~` prefixes) for security and reproducibility. This ensures:
+
 - Consistent builds across environments
 - SHA integrity verification via package-lock.json
 - Predictable behavior in production
 - Easier security auditing
 
 1. **Version Constraints**
+
    ```json
    {
      "dependencies": {
@@ -132,13 +143,14 @@ This project uses npm for dependency management with all dependencies pinned to 
 ### Version Updates
 
 1. **Update Process**
+
    ```bash
    # Check for updates
    npm outdated
-   
+
    # Update packages
    npm update
-   
+
    # Update specific package
    npm update package-name
    ```
@@ -154,6 +166,7 @@ This project uses npm for dependency management with all dependencies pinned to 
 ### Security Tools
 
 1. **Scanning Configuration**
+
    ```json
    {
      "scripts": {
@@ -173,13 +186,14 @@ This project uses npm for dependency management with all dependencies pinned to 
 ### Security Monitoring
 
 1. **Monitoring Setup**
+
    ```typescript
    // Security monitoring configuration
    const securityConfig = {
      scanFrequency: 'daily',
      alertThreshold: 'high',
      autoUpdate: false,
-     reportFormat: 'json'
+     reportFormat: 'json',
    };
    ```
 
@@ -232,6 +246,7 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 ### Update Process
 
 1. **Automated Update Checklist**
+
    ```markdown
    - [ ] Renovate creates PR with updates
    - [ ] Review changelog and breaking changes
@@ -243,16 +258,17 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
    ```
 
 2. **Manual Update Steps** (if needed)
+
    ```bash
    # Check for outdated packages
    npm outdated
-   
+
    # Update specific package
    npm install --save-exact package-name@latest
-   
+
    # Update all packages (use with caution)
    npm update
-   
+
    # Verify integrity
    npm audit
    npm test
@@ -261,12 +277,13 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 ### Rollback Procedures
 
 1. **Rollback Configuration**
+
    ```typescript
    // Rollback configuration
    const rollbackConfig = {
      maxVersions: 5,
      backupEnabled: true,
-     autoRollback: false
+     autoRollback: false,
    };
    ```
 
@@ -281,6 +298,7 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 ### Documentation Requirements
 
 1. **Required Information**
+
    ```markdown
    - Package name
    - Version
@@ -315,18 +333,12 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 ### License Types
 
 1. **License Categories**
+
    ```typescript
    // License configuration
    const licenseConfig = {
-     allowed: [
-       'MIT',
-       'Apache-2.0',
-       'BSD-3-Clause'
-     ],
-     restricted: [
-       'GPL',
-       'AGPL'
-     ]
+     allowed: ['MIT', 'Apache-2.0', 'BSD-3-Clause'],
+     restricted: ['GPL', 'AGPL'],
    };
    ```
 
@@ -339,10 +351,11 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 ### License Compliance
 
 1. **Compliance Checks**
+
    ```bash
    # Check licenses
    npm license-checker
-   
+
    # Generate report
    npm license-checker --json
    ```
@@ -358,6 +371,7 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 ### Performance Monitoring
 
 1. **Metrics Collection**
+
    ```typescript
    // Performance metrics
    interface DependencyMetrics {
@@ -377,13 +391,14 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 ### Optimisation Strategies
 
 1. **Optimisation Techniques**
+
    ```typescript
    // Optimisation configuration
    const optimizationConfig = {
      treeShaking: true,
      codeSplitting: true,
      lazyLoading: true,
-     caching: true
+     caching: true,
    };
    ```
 
@@ -398,4 +413,4 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 - [npm Documentation](https://docs.npmjs.com/)
 - [Security Best Practices](https://www.gov.uk/service-manual/technology/vulnerability-management)
 - [License Management](https://www.gov.uk/government/publications/open-source-guidance)
-- [Performance Optimization](https://www.gov.uk/service-manual/technology/performance) 
+- [Performance Optimization](https://www.gov.uk/service-manual/technology/performance)

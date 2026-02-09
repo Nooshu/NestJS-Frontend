@@ -91,20 +91,24 @@ describe('Tag Component', () => {
       { text: 'New', classes: 'govuk-tag--green', expectedClass: 'govuk-tag govuk-tag--green' },
       {
         text: 'Active',
-        classes: 'govuk-tag--turquoise',
-        expectedClass: 'govuk-tag govuk-tag--turquoise',
+        classes: 'govuk-tag--teal',
+        expectedClass: 'govuk-tag govuk-tag--teal',
       },
       {
         text: 'In progress',
-        classes: 'govuk-tag--light-blue',
-        expectedClass: 'govuk-tag govuk-tag--light-blue',
+        classes: 'govuk-tag--blue',
+        expectedClass: 'govuk-tag govuk-tag--blue',
       },
       {
         text: 'Received',
         classes: 'govuk-tag--purple',
         expectedClass: 'govuk-tag govuk-tag--purple',
       },
-      { text: 'Sent', classes: 'govuk-tag--pink', expectedClass: 'govuk-tag govuk-tag--pink' },
+      {
+        text: 'Sent',
+        classes: 'govuk-tag--magenta',
+        expectedClass: 'govuk-tag govuk-tag--magenta',
+      },
       { text: 'Rejected', classes: 'govuk-tag--red', expectedClass: 'govuk-tag govuk-tag--red' },
       {
         text: 'Declined',
@@ -144,8 +148,8 @@ describe('Tag Component', () => {
   it('should render tag with custom attributes', () => {
     const template = `
       {% from "components/tag/macro.njk" import govukTag %}
-      {{ govukTag({ 
-        text: "Custom Tag", 
+      {{ govukTag({
+        text: "Custom Tag",
         classes: "govuk-tag--green",
         attributes: {
           "data-test": "custom-tag",
@@ -168,8 +172,8 @@ describe('Tag Component', () => {
   it('should render tag with HTML content', () => {
     const template = `
       {% from "components/tag/macro.njk" import govukTag %}
-      {{ govukTag({ 
-        html: "<span>HTML Tag</span>", 
+      {{ govukTag({
+        html: "<span>HTML Tag</span>",
         classes: "govuk-tag--blue"
       }) }}
     `;

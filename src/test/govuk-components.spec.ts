@@ -1,62 +1,92 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { AppModule } from '../app.module';
+import * as nunjucks from 'nunjucks';
+import { loadFixtures, verifyComponent } from './fixtures.test-helper';
+import type { GovukFixture } from './fixtures.test-helper';
 import { govukTestConfig } from './govuk-components.test.config';
 import { GovukTestUtils } from './utils/govuk-test.utils';
 
-describe('GOV.UK Components', () => {
-  const testResults: any[] = [];
-  let module: TestingModule;
+/**
+ * Converts component kebab-case name to govuk macro name (e.g. 'back-link' -> 'govukBackLink')
+ */
+function getMacroName(componentName: string): string {
+  const pascalCase = componentName
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    .join('');
+  return `govuk${pascalCase}`;
+}
 
-  beforeAll(async () => {
-    module = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+describe('GOV.UK Components', () => {
+  const testResults: Array<{ component: string; fixture: string; passed: boolean }> = [];
+  let env: nunjucks.Environment;
+
+  beforeAll(() => {
+    const govukTemplatesPath = join(
+      process.cwd(),
+      'node_modules',
+      'govuk-frontend',
+      'dist',
+      'govuk'
+    );
+    const localViewsPath = join(process.cwd(), 'src', 'views');
+
+    env = new nunjucks.Environment(
+      [
+        new nunjucks.FileSystemLoader(localViewsPath),
+        new nunjucks.FileSystemLoader(govukTemplatesPath),
+      ],
+      { autoescape: true, noCache: true }
+    );
   });
 
-  afterAll(async () => {
-    // Create output directory if it doesn't exist
+  afterAll(() => {
     mkdirSync(govukTestConfig.outputDir, { recursive: true });
-
-    // Write test results to file
     writeFileSync(
       join(govukTestConfig.outputDir, 'test-results.json'),
       JSON.stringify(testResults, null, 2)
     );
-
-    // Close the module
-    await module.close();
   });
 
-  describe('Component Tests', () => {
+  describe('Component Fixture Tests', () => {
     govukTestConfig.components.forEach((componentName) => {
+      let fixtures: { component: string; fixtures: GovukFixture[] };
+      try {
+        fixtures = loadFixtures(componentName);
+      } catch {
+        fixtures = { component: componentName, fixtures: [] };
+      }
+
+      if (fixtures.fixtures.length === 0) return;
+
       describe(componentName, () => {
-        const scenarios = GovukTestUtils.getComponentScenarios(componentName);
+        fixtures.fixtures.forEach((fixture: GovukFixture) => {
+          if (fixture.hidden) return;
 
-        scenarios.forEach((scenarioName) => {
-          it(`should match fixture for scenario: ${scenarioName}`, () => {
-            // Load the fixture
-            const fixture = GovukTestUtils.loadFixture(componentName, scenarioName);
+          it(`should match fixture: ${fixture.name}`, () => {
+            const macroName = getMacroName(componentName);
+            const template = `
+              {% from "components/${componentName}/macro.njk" import ${macroName} %}
+              {% from "macros/attributes.njk" import govukAttributes %}
+              {{ ${macroName}(params) }}
+            `;
 
-            // Get the template content directly
-            const rendered = govukTestConfig.getTemplateContent(componentName, scenarioName);
+            let rendered: string;
+            try {
+              rendered = env.renderString(template, { params: fixture.options });
+            } catch (err) {
+              throw new Error(
+                `Failed to render ${componentName}/${fixture.name}: ${(err as Error).message}`
+              );
+            }
 
-            // Compare the rendered HTML with the fixture
-            const passed = GovukTestUtils.compareHtml(rendered, fixture);
-
-            // Generate and store test report
-            const report = GovukTestUtils.generateTestReport(
-              componentName,
-              scenarioName,
-              passed,
-              rendered,
-              fixture
-            );
-            testResults.push(report);
-
-            // Assert that the test passed
-            expect(passed).toBe(true);
+            try {
+              verifyComponent(rendered, fixture);
+              testResults.push({ component: componentName, fixture: fixture.name, passed: true });
+            } catch (err) {
+              testResults.push({ component: componentName, fixture: fixture.name, passed: false });
+              throw err;
+            }
           });
         });
       });

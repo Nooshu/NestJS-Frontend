@@ -4,15 +4,15 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 
 ## Project Status
 
-| Category | Status |
-|----------|--------|
-| **Build** | ✅ Passing |
-| **Tests** | ✅ All tests passing (1,116 tests across 50 test suites) |
-| **Dependencies** | ✅ Up to date (January 2026) - All pinned to exact versions |
-| **Security** | ✅ 0 vulnerabilities |
-| **GOV.UK Frontend** | ✅ v5.14.0 (Latest) |
-| **Node.js** | ✅ v25.5.0 LTS (Krypton) |
-| **npm** | ✅ v11.7.0 |
+| Category            | Status                                                      |
+| ------------------- | ----------------------------------------------------------- |
+| **Build**           | ✅ Passing                                                  |
+| **Tests**           | ✅ All tests passing (1,116 tests across 50 test suites)    |
+| **Dependencies**    | ✅ Up to date (January 2026) - All pinned to exact versions |
+| **Security**        | ✅ 0 vulnerabilities                                        |
+| **GOV.UK Frontend** | ✅ v5.14.0 (Latest)                                         |
+| **Node.js**         | ✅ v25.5.0 LTS (Krypton)                                    |
+| **npm**             | ✅ v11.7.0                                                  |
 
 ### Current Features
 
@@ -31,6 +31,7 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 ## Super Quick Start guide
 
 ### Development Mode
+
 ```bash
 # Install dependencies
 npm install
@@ -40,6 +41,7 @@ npm run start:dev
 ```
 
 ### Production Build
+
 ```bash
 # Install dependencies
 npm install
@@ -52,6 +54,7 @@ npm run start:prod
 ```
 
 ### Testing
+
 ```bash
 # Run all tests (unit, integration, GOV.UK, and E2E)
 npm run test:all
@@ -78,6 +81,7 @@ npm run test:cov
 ### Running with Docker
 
 #### Production Mode
+
 ```bash
 # Prepare the project for Docker build (recommended)
 ./scripts/prepare-docker.sh
@@ -93,6 +97,7 @@ docker-compose up -d
 ```
 
 #### Development Mode
+
 ```bash
 # Build and run in development mode
 docker-compose --profile dev up frontend-dev
@@ -102,13 +107,16 @@ docker-compose --profile dev up -d frontend-dev
 ```
 
 #### Accessing the Application
+
 Once the container is running, you can access the application at:
+
 - **Production**: https://localhost:3002
 - **Development**: https://localhost:3101
 
 The application will serve a basic home page with GOV.UK Frontend styling.
 
 #### Docker Commands
+
 ```bash
 # Stop the application
 docker-compose down
@@ -137,6 +145,7 @@ The application uses a clear separation of test types:
   - Use `npm run test:e2e:local` for local development with proper setup
 
 For detailed information about testing:
+
 - [Testing Strategy](docs/testing.md) - Comprehensive testing documentation
 - [End-to-End Testing with Playwright](docs/playwright-testing.md) - Guide for E2E testing
 - [Playwright Test Improvements](docs/playwright-improvements.md) - Recent fixes and enhancements
@@ -145,17 +154,20 @@ For detailed information about testing:
 ### Available Scripts
 
 #### Development
+
 - `npm run start:dev` - Start development server with hot reload, automatically builds frontend assets and watches for changes
 - `npm run start:debug` - Start in debug mode with watch enabled
 - `npm run build:frontend:dev` - Build frontend assets optimized for development (skips fingerprinting)
 - `npm run build:frontend:watch` - Watch and rebuild frontend assets
 
 #### Building
+
 - `npm run build` - Build the backend application
 - `npm run build:prod` - Build both backend and frontend for production
 - `npm run build:frontend` - Build frontend assets for production (SCSS, copy assets, fingerprint)
 
 #### Testing
+
 - `npm run test:unit` - Run all unit tests
 - `npm run test:integration` - Run all integration tests
 - `npm run test:unit:watch` - Run unit tests in watch mode
@@ -181,6 +193,7 @@ For detailed information about testing:
 - `npm run test:all:watch` - Run all tests in watch mode (concurrently)
 
 #### Code Quality
+
 - `npm run format` - Format code with Prettier
 - `npm run lint` - Lint code with ESLint
 - `npm run lint:check` - Check code style without fixing
@@ -217,6 +230,7 @@ This application is a modern web application built with NestJS and GOV.UK Fronte
 #### Find a Court or Tribunal (FaCT)
 
 A prototype user journey demonstrating GOV.UK Design System patterns including:
+
 - Radio button selection with server-side validation
 - Search functionality with filtered results
 - GOV.UK Error Summary and field-level error messages
@@ -231,6 +245,7 @@ Access the prototype at `/find-a-court-or-tribunal` when running the application
 This project uses the following key package versions (last updated: January 2026):
 
 ### Core Dependencies
+
 - NestJS Framework: v11.1.12
 - Express.js: v5.2.1
 - GOV.UK Frontend: v5.14.0
@@ -239,6 +254,7 @@ This project uses the following key package versions (last updated: January 2026
 - npm: >=11.7.0
 
 ### Key Features
+
 - NestJS Core: v11.1.12
 - NestJS Swagger: v11.2.5
 - NestJS Config: v4.0.2
@@ -248,6 +264,7 @@ This project uses the following key package versions (last updated: January 2026
 - NestJS Throttler: v6.5.0
 
 ### Testing & Development
+
 - Jest: v30.2.0
 - Playwright: v1.58.0
 - Prettier: v3.8.0
@@ -269,6 +286,7 @@ We provide comprehensive documentation for migrating from the [HMCTS Express.js 
 - [Technical Examples](./docs/technical-migration-examples.md) - Code comparisons and parallel running strategies
 
 The migration documentation includes:
+
 - Multiple migration strategies
 - Technical considerations
 - Risk mitigation approaches
@@ -285,11 +303,13 @@ The migration documentation includes:
 ### Quick Links
 
 #### 🚀 Getting Started
+
 - [Installation and Setup](./docs/readme/getting-started.md) - Get up and running quickly
 - [Project Structure](./docs/readme/project-structure.md) - Understand the codebase organization
 - [Development Guidelines](./docs/readme/development-guidelines.md) - Best practices and coding standards
 
 #### 🏗️ Core Features
+
 - [Key Features](./docs/KEYFEATURES.md) - Why NestJS over vanilla Express.js
 - [API Documentation](./docs/readme/api-documentation.md) - Swagger/OpenAPI documentation
 - [GOV.UK Frontend Integration](./docs/readme/govuk-frontend.md) - Using GOV.UK Design System
@@ -297,28 +317,33 @@ The migration documentation includes:
 - [Security Features](./docs/security.md) - Built-in security implementations
 
 #### ✅ Testing & Quality
+
 - [Testing Guide](./docs/testing.md) - Unit, integration, and E2E testing
 - [Playwright E2E Testing](./docs/playwright-testing.md) - End-to-end testing with Playwright
 - [Playwright Test Improvements](./docs/playwright-improvements.md) - Recent fixes and enhancements
 - [Request Validation](./docs/readme/validation.md) - Input validation and sanitization
 
 #### 🚀 Performance & Optimization
+
 - [Frontend Performance](./docs/readme/frontend-performance.md) - Optimization strategies
 - [Asset Fingerprinting](./docs/asset-fingerprinting.md) - Cache-busting and performance
 - [Performance Monitoring](./docs/performance-monitoring.md) - Application monitoring
 
 #### 🔄 Migration & Integration
+
 - [Migration Guide](./docs/migration-guide.md) - Migrating from Express.js template
 - [API Integration Patterns](./docs/api-integration-patterns.md) - External API integration
 - [API Mocking & Prototypes](./docs/api-mocking-prototype.md) - Development with mock APIs
 
 #### 🔧 Advanced Features
+
 - [Microservices Architecture](./docs/microservices-architecture.md) - Scaling with microservices
 - [Process Isolation](./docs/process-isolation.md) - CPU-intensive task handling
 - [Health Checks](./docs/health-checks.md) - Application health monitoring
 - [Error Handling](./docs/error-handling.md) - Comprehensive error management
 
 #### 🛠️ Development Tools
+
 - [Build Scripts](./docs/build-scripts.md) - Understanding the build process
 - [TypeScript & Babel Setup](./docs/typescript-babel-setup.md) - TypeScript configuration
 - [Dependency Management](./docs/dependency-management.md) - Managing dependencies
@@ -397,6 +422,7 @@ npm run test:e2e:local       # Run E2E tests locally with proper setup
 For detailed information about all build scripts, see the [Build Scripts Documentation](docs/build-scripts.md).
 
 For detailed information about testing:
+
 - [Testing Strategy](docs/testing.md)
 - [Unit Testing Guide](docs/unit-testing.md)
 - [End-to-End Testing with Playwright](docs/playwright-testing.md)
@@ -416,6 +442,7 @@ In templates, use the `assetPath` function to resolve paths to fingerprinted ass
 ```
 
 Key benefits:
+
 - Long-term caching (1 year) with immutable flag for optimal performance
 - No revalidation requests when users refresh the page
 - Automatic cache busting when content changes
@@ -426,14 +453,16 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 ## Dependencies
 
 ### Core Dependencies
+
 - [NestJS](https://nestjs.com/) v11.1.12
 - [Express](https://expressjs.com/) v5.2.1
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v5.14.0
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v6.0.0
 - [TypeScript](https://www.typescriptlang.org/) v5.9.3
 - [Node.js](https://github.com/nodejs/release#release-schedule) v25.5.0 LTS (Krypton)
 - [npm](https://www.npmjs.com/) v11.7.0
 
 ### Key Features
+
 - Axios HTTP client for API integration v1.13.2
 - Redis caching with cache-manager v7.2.8
 - Winston logging with structured output v3.19.0
@@ -460,6 +489,7 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 - robots.txt configured to prevent search engine crawling
 
 ### Development Tools
+
 - Jest v30.2.0 for unit and integration testing
 - Playwright v1.57.0 for end-to-end testing
 - Prettier v3.8.0 for code formatting

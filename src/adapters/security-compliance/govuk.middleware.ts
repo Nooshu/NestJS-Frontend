@@ -6,7 +6,7 @@ import { type GovukConfig } from './govuk.config';
  */
 export function applyGovukFrontend(app: Application, config: GovukConfig): void {
   // Add GOV.UK Frontend assets
-  app.use('/assets', express.static('node_modules/govuk-frontend/govuk/assets'));
+  app.use('/assets', express.static('node_modules/govuk-frontend/dist/govuk/assets'));
 
   // Add GOV.UK Frontend configuration to all responses
   app.use((_req: Request, res: Response, next: NextFunction) => {

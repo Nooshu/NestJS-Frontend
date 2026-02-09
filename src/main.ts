@@ -208,6 +208,17 @@ async function bootstrap() {
     },
   };
 
+  // Serve GOV.UK Frontend assets from node_modules (enables dev without full build)
+  const govukPath = join(process.cwd(), 'node_modules', 'govuk-frontend', 'dist', 'govuk');
+  app.useStaticAssets(join(govukPath), {
+    ...staticOptions,
+    prefix: '/govuk',
+  });
+  app.useStaticAssets(join(govukPath, 'assets'), {
+    ...staticOptions,
+    prefix: '/assets',
+  });
+
   // Serve all static assets from dist/public
   app.useStaticAssets(join(process.cwd(), 'dist', 'public'), staticOptions);
 
