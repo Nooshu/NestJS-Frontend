@@ -1,54 +1,58 @@
+# Code owners: Matt Hobbs
+# Principal Engineer, Solirius Consulting Centre of Excellence team
+# matt.hobbs@solirius.com | GitHub: @nooshu
+
 # Global owners
-* @[username]
+* @nooshu
 
 # Core application files
-/src/ @[username]
-/src/app.* @[username]
-/src/main.ts @[username]
+/src/ @nooshu
+/src/app.* @nooshu
+/src/main.ts @nooshu
 
 # Adapters and integrations
-/src/adapters/ @[username]
-/src/adapters/express/ @[username]
-/src/adapters/java-api/ @[username]
-/src/adapters/security-compliance/ @[username]
+/src/adapters/ @nooshu
+/src/adapters/express/ @nooshu
+/src/adapters/java-api/ @nooshu
+/src/adapters/security-compliance/ @nooshu
 
 # API and controllers
-/src/api/ @[username]
-/src/views/journeys/ @[username]
-/src/views/controllers/ @[username]
+/src/api/ @nooshu
+/src/views/journeys/ @nooshu
+/src/views/controllers/ @nooshu
 
 # Shared modules and utilities
-/src/shared/ @[username]
-/src/shared/config/ @[username]
-/src/shared/health/ @[username]
-/src/shared/middleware/ @[username]
-/src/shared/services/ @[username]
+/src/shared/ @nooshu
+/src/shared/config/ @nooshu
+/src/shared/health/ @nooshu
+/src/shared/middleware/ @nooshu
+/src/shared/services/ @nooshu
 
 # Testing and configuration
-/tests/ @[username]
-/test/ @[username]
-jest.config.js @[username]
-playwright.config.ts @[username]
-tsconfig*.json @[username]
+/tests/ @nooshu
+/test/ @nooshu
+jest.config.js @nooshu
+playwright.config.ts @nooshu
+tsconfig*.json @nooshu
 
 # Documentation
-/docs/ @[username]
-README.md @[username]
-CONTRIBUTING.md @[username]
-SECURITY.md @[username]
+/docs/ @nooshu
+README.md @nooshu
+CONTRIBUTING.md @nooshu
+SECURITY.md @nooshu
 
 # CI/CD and workflows
-/.github/ @[username]
-/.github/workflows/ @[username]
-docker-compose.yml @[username]
-Dockerfile @[username]
+/.github/ @nooshu
+/.github/workflows/ @nooshu
+docker-compose.yml @nooshu
+Dockerfile @nooshu
 
 # Frontend assets
-/src/frontend/ @[username]
-/src/public/ @[username]
-/src/views/ @[username]
+/src/frontend/ @nooshu
+/src/public/ @nooshu
+/src/views/ @nooshu
 
 # Dependencies and package management
-package.json @[username]
-package-lock.json @[username]
-renovate.json @[username]
+package.json @nooshu
+package-lock.json @nooshu
+renovate.json @nooshu
