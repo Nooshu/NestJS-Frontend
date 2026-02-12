@@ -31,7 +31,7 @@ This project uses npm for dependency management with all dependencies pinned to 
 - @nestjs/cache-manager: 3.1.0
 - cache-manager: 7.2.8
 - cache-manager-redis-store: 3.0.1
-- ioredis: 5.9.2
+- ioredis: 5.9.3
 
 ### Logging and Monitoring
 

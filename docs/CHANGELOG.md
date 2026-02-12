@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Changed
+
 - Updated Node.js engine requirement from `>=20.12.2` to `>=20.11.1` to use standard LTS version
 - Synchronized all package version numbers in documentation with current package.json versions
 - Updated documentation to reflect current dependency versions:
@@ -14,11 +15,12 @@ All notable changes to this project will be documented in this file.
   - Playwright: `1.55.0`
   - Jest: `30.1.1`
   - Cache Manager: `7.2.0`
-  - ioredis: `5.7.0`
+  - ioredis: `5.9.3`
   - Pino: `9.9.0`
   - Sass: `1.91.0`
 
 ### Documentation
+
 - Updated `docs/dependency-management.md` with correct version numbers
 - Updated `docs/keyfeatures.md` with current package versions
 - Updated `docs/configuration.md` with Node.js version requirement

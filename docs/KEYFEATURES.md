@@ -1,11 +1,13 @@
 # Key Features and Advantages
 
 ## Overview
+
 This project combines the power of NestJS with GOV.UK Frontend to create a robust, secure, and maintainable web application framework specifically designed for UK government services. The framework provides a complete solution for building government digital services that are secure, accessible, and maintainable.
 
 ## Core Features
 
 ### 1. Modern Framework Architecture
+
 - Built on NestJS v11.1.6, providing a scalable and maintainable architecture
 - TypeScript v5.9.2 with strict mode enabled for maximum type safety
 - Modular design following SOLID principles with clear separation of concerns
@@ -18,12 +20,14 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Monorepo architecture support for managing multiple related applications
 
 ### 2. Framework Popularity
+
 - Second most popular Node.js web framework after Express.js, demonstrating strong community adoption and reliability
 - Growing adoption rate with increasing number of downloads and active users
 - [View detailed popularity trends on npmtrends.com](https://npmtrends.com/@nestjs/core-vs-fastify-vs-hapi-vs-koa)
-![NestJS Popularity Trends](./assets/nestjs-popularity-graph.png)
+  ![NestJS Popularity Trends](./assets/nestjs-popularity-graph.png)
 
 ### 3. GOV.UK Frontend Integration
+
 - Seamless integration with GOV.UK Frontend v5.11.2 components
 - Nunjucks templating engine - the official and default templating language used by [GOV.UK Design System](https://design-system.service.gov.uk/), ensuring perfect compatibility and maintainability
 - Built-in support for [GOV.UK Design System patterns](https://design-system.service.gov.uk/)
@@ -35,6 +39,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Automatic HTML updates with each [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) release through Nunjucks macros, ensuring seamless upgrades and compatibility
 
 ### 4. Security Features
+
 - Helmet.js v8.1.0 integration with custom security configurations
 - Built-in rate limiting with @nestjs/throttler v6.4.0
 - Compression middleware for optimised performance
@@ -59,6 +64,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Express v5.1.0 with enhanced security features
 
 ### 5. Developer Experience
+
 - Comprehensive testing setup
   - Jest v30.1.1 for unit and integration testing
     - Full Performance API mocking for accurate performance testing
@@ -114,6 +120,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Babel v7.28.6 for JavaScript transpilation
 
 ### 6. Performance Optimisation
+
 - Redis caching support with cache-manager v7.2.8
 - Static file serving optimisation with custom headers
 - Compression middleware with configurable options
@@ -122,7 +129,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Connection pooling
 - Response compression
 - Asset versioning and caching
-- ioredis v5.7.0 for Redis operations
+- ioredis v5.9.3 for Redis operations
 - Code splitting and lazy loading
 - CSS optimisation with PostCSS
 - Service worker for offline support
@@ -162,6 +169,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
   - Error handling
 
 ### 7. Asset Fingerprinting
+
 - Content-based fingerprinting without Webpack or other bundlers
 - Automatic hash generation based on file content
 - Manifest file for mapping original paths to fingerprinted versions
@@ -187,6 +195,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ## Government Service Benefits
 
 ### 1. Security and Compliance
+
 - Built-in security features aligned with government security standards
 - Automatic compliance with GOV.UK Design System
 - Structured logging for audit trails
@@ -198,6 +207,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Strict permissions policy
 
 ### 2. Accessibility and Standards
+
 - Automatic compliance with WCAG 2.2 standards through GOV.UK Frontend
 - Built-in support for accessibility testing
 - Consistent user experience across government services
@@ -205,6 +215,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Support for assistive technologies
 
 ### 3. Performance and Scalability
+
 - Optimised for high-traffic government services
 - Built-in caching for improved performance
 - Automatic handling of peak loads
@@ -219,6 +230,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Immutable asset caching for maximum performance
 
 ### 4. Development and Maintenance
+
 - Reduced development time through built-in features
 - Easier onboarding for new developers
 - Better code quality through enforced patterns
@@ -234,18 +246,21 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 ## Java API Integration Advantages
 
 ### 1. Seamless Backend Integration
+
 - **Axios HTTP Client**: Built-in support for making HTTP requests to Java APIs
 - **Type Safety**: TypeScript interfaces can mirror Java DTOs for end-to-end type safety
 - **Request/Response Transformation**: Built-in class-transformer for mapping between Java and TypeScript objects
 - **Validation**: Class-validator integration for consistent validation between frontend and Java backend
 
 ### 2. API Documentation Integration
+
 - **Swagger/OpenAPI Support**: Native support for consuming Java Spring Boot Swagger documentation
 - **Type Generation**: Automatic TypeScript type generation from Java API documentation
 - **API Client Generation**: Tools for generating strongly-typed API clients from Java API specs
 - **Documentation Synchronisation**: Easy to keep frontend and backend documentation in sync
 
 ### 3. Security Integration
+
 - **JWT Support**: Built-in support for JWT authentication commonly used in Java applications
 - **Session Management**: Flexible session handling compatible with Java session management
 - **CORS Configuration**: Easy configuration for cross-origin requests to Java APIs
@@ -255,6 +270,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Permissions Policy**: Strict permissions policy
 
 ### 4. Performance Optimisation
+
 - **Caching Layer**: Redis caching can be used to reduce load on Java APIs
 - **Request Batching**: Support for batching multiple API calls to reduce network overhead
 - **Response Compression**: Built-in compression for efficient data transfer
@@ -268,6 +284,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Asset Fingerprinting**: Content-based fingerprinting for optimal caching
 
 ### 5. Development Workflow
+
 - **Environment Configuration**: Easy configuration management for different Java API environments
 - **Mocking Support**: Built-in tools for mocking Java API responses during development
 - **Error Handling**: Consistent error handling patterns between Java and TypeScript
@@ -275,6 +292,7 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - **Frontend Tooling**: Modern frontend development tools and optimisation
 
 ## Use Cases
+
 This framework is particularly well-suited for:
 
 - UK government digital services requiring:
@@ -297,12 +315,14 @@ This framework is particularly well-suited for:
 The project includes comprehensive support for implementing microservices architecture:
 
 ### 1. Built-in Microservices Capabilities
+
 - **Transport-agnostic messaging**: Support for TCP, Redis, MQTT, NATS, RabbitMQ, Kafka, and gRPC
 - **Message patterns**: Request-response, event-based, and hybrid approaches
 - **Multiple server instances**: Run HTTP and microservice servers simultaneously
 - **Serialization support**: JSON, MessagePack, and protocol-specific serializers
 
 ### 2. Microservices Implementation Patterns
+
 - **Backend-for-Frontend (BFF)**: Optimized frontend services for specific clients
 - **API Gateway**: Route and transform requests to appropriate services
 - **Event-driven architecture**: Publish and subscribe to events across services
@@ -311,6 +331,7 @@ The project includes comprehensive support for implementing microservices archit
 - **Distributed tracing**: Track requests across multiple services
 
 ### 3. Microservices Benefits
+
 - **Independent deployability**: Update services without affecting others
 - **Team autonomy**: Different teams can own different services
 - **Technology flexibility**: Use optimal technologies for each service
@@ -324,6 +345,7 @@ See our [Microservices Architecture Guide](./microservices-architecture.md) for 
 ## Performance Optimizations
 
 ### Response Compression
+
 The application implements response compression to reduce bandwidth usage and improve load times:
 
 - **Compression Middleware**
@@ -340,6 +362,7 @@ The application implements response compression to reduce bandwidth usage and im
   - Better user experience
 
 ### Browser Caching
+
 Browser-side caching is implemented to improve performance and reduce server load:
 
 - **Cache Middleware**
@@ -347,6 +370,7 @@ Browser-side caching is implemented to improve performance and reduce server loa
   - Automatic cache invalidation for authenticated routes
 
 ### Asset Fingerprinting
+
 Content-based fingerprinting for static assets enables optimal browser caching:
 
 - **Implementation**
@@ -368,4 +392,4 @@ Content-based fingerprinting for static assets enables optimal browser caching:
   - Lower server load
   - Automatic cache invalidation when content changes
   - No complex bundler configuration needed
-  - Transparent integration in templates 
+  - Transparent integration in templates
