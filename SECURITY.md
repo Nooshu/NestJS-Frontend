@@ -114,6 +114,35 @@ Our application implements comprehensive security measures to protect against co
 - **Medium**: 30-day response time
 - **Low**: 90-day response time
 
+## Open Security Advisories
+
+### ajv ReDoS (CVE / $data option) — Under Review
+
+**Component**: ajv (Another JSON Schema Validator)  
+**Affected versions**: Through 8.17.1  
+**Status**: Open — monitor for upstream fix and upgrade when available.
+
+**Summary**
+
+ajv through version 8.17.1 is vulnerable to **Regular Expression Denial of Service (ReDoS)** when the `$data` option is enabled. The `pattern` keyword accepts runtime data via JSON Pointer syntax (`$data` reference), which is passed directly to the JavaScript `RegExp()` constructor without validation.
+
+**Impact**
+
+- An attacker can inject a malicious regex pattern (e.g. `"^(a|a)*$"`) combined with crafted input to cause catastrophic backtracking.
+- A 31-character payload can cause approximately 44 seconds of CPU blocking, with each additional character roughly doubling execution time.
+- This can enable **complete denial of service** with a single HTTP request against any API using ajv with `$data: true` for dynamic schema validation.
+
+**Mitigation**
+
+- **Upgrade**: Apply an ajv upgrade to a patched version as soon as one is released; check [ajv security advisories](https://github.com/ajv-validator/ajv/security/advisories) and [npm](https://www.npmjs.com/package/ajv) for updates.
+- **Configuration**: If you use ajv directly in application code, avoid enabling `$data: true` when validating untrusted or user-controlled input until a fix is available.
+- **Transitive use**: ajv may appear as a dependency of other packages (e.g. validation, tooling). Run `npm audit` and `npm ls ajv` to see where it is used; prioritise upgrades of direct dependencies that expose schema validation to user input.
+
+**References**
+
+- [ajv GitHub Security Advisories](https://github.com/ajv-validator/ajv/security/advisories)
+- [OWASP – Regular Expression Denial of Service (ReDoS)](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
+
 ## Compliance & Standards
 
 Our application adheres to the following security standards and frameworks:
@@ -175,6 +204,6 @@ We appreciate the security research community and individuals who responsibly re
 
 ---
 
-**Last Updated**: December 2024  
+**Last Updated**: February 2026  
 **Version**: 1.0.0  
 **Maintainer**: HMCTS Development Team
