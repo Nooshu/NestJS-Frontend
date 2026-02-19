@@ -173,6 +173,9 @@
     "npm": ">=11.8.0 <12"
   },
   "overrides": {
+    "@nestjs/cli": {
+      "ajv": ">=8.18.0"
+    },
     "minimatch": ">=10.2.1",
     "multer": "2.0.2",
     "diff": "8.0.3",
