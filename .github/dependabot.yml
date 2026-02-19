@@ -9,3 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    # ajv: no patched version compatible with eslint/@eslint/eslintrc (they require ajv 6;
+    # fix is 8.18.0+). Forcing ajv 8 breaks ESLint at runtime. Ignore until upstream fixes.
+    ignore:
+      - dependency-name: "ajv"
