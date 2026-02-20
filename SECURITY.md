@@ -116,32 +116,38 @@ Our application implements comprehensive security measures to protect against co
 
 ## Open Security Advisories
 
-### ajv ReDoS (CVE / $data option) — Under Review
+### ajv ReDoS (GHSA-2g4f-4pwh-qvx6 / $data option) — Accepted risk
 
 **Component**: ajv (Another JSON Schema Validator)  
-**Affected versions**: Through 8.17.1  
-**Status**: Open — monitor for upstream fix and upgrade when available.
+**Affected versions**: Through 8.17.1 (fixed in 8.18.0+)  
+**Status**: **Accepted risk** — no compatible patched version for this project; Dependabot alert can be dismissed with "No fix available".
 
-**Summary**
+**In this project**
 
-ajv through version 8.17.1 is vulnerable to **Regular Expression Denial of Service (ReDoS)** when the `$data` option is enabled. The `pattern` keyword accepts runtime data via JSON Pointer syntax (`$data` reference), which is passed directly to the JavaScript `RegExp()` constructor without validation.
+- ajv is only a **transitive devDependency** of **ESLint** and **@eslint/eslintrc** (used for ESLint rule config schema validation at build/lint time).
+- The earliest fixed version is **8.18.0**, but ESLint and @eslint/eslintrc require **ajv 6** and use internal paths that do not exist in ajv 8. Forcing ajv 8 via npm overrides breaks ESLint at runtime (`Cannot find module 'ajv/lib/refs/json-schema-draft-04.json'`).
+- ESLint upstream has not yet shipped a release that uses ajv 8 or a fork; see [eslint/eslint#13888](https://github.com/eslint/eslint/issues/13888), [eslint/eslint#18947](https://github.com/eslint/eslint/issues/18947).
 
-**Impact**
+**Risk assessment**
 
-- An attacker can inject a malicious regex pattern (e.g. `"^(a|a)*$"`) combined with crafted input to cause catastrophic backtracking.
-- A 31-character payload can cause approximately 44 seconds of CPU blocking, with each additional character roughly doubling execution time.
-- This can enable **complete denial of service** with a single HTTP request against any API using ajv with `$data: true` for dynamic schema validation.
+- **Dev-only**: ajv is not used in production runtime; it is used only when running `eslint` (e.g. `npm run lint`).
+- **$data**: The ReDoS issue requires the `$data` option to be enabled. ESLint’s use of ajv is for static rule/config schema validation and does not enable `$data` for user-controlled input in the same way as an API validator.
+- We will upgrade when ESLint (or @eslint/eslintrc) supports a patched ajv.
 
-**Mitigation**
+**Actions taken**
 
-- **Upgrade**: Apply an ajv upgrade to a patched version as soon as one is released; check [ajv security advisories](https://github.com/ajv-validator/ajv/security/advisories) and [npm](https://www.npmjs.com/package/ajv) for updates.
-- **Configuration**: If you use ajv directly in application code, avoid enabling `$data: true` when validating untrusted or user-controlled input until a fix is available.
-- **Transitive use**: ajv may appear as a dependency of other packages (e.g. validation, tooling). Run `npm audit` and `npm ls ajv` to see where it is used; prioritise upgrades of direct dependencies that expose schema validation to user input.
+- **Dependabot**: `.github/dependabot.yml` ignores version updates for `ajv` with a comment explaining the conflict.
+- **Dismissal**: In GitHub → Security → Dependabot alerts, dismiss the ajv alert with reason **"No fix available"** and optional comment pointing to this section.
+
+**Summary of the vulnerability**
+
+ajv through 8.17.1 is vulnerable to **Regular Expression Denial of Service (ReDoS)** when the `$data` option is enabled. The `pattern` keyword can accept runtime data via JSON Pointer (`$data`), which is passed to the JavaScript `RegExp()` constructor without validation, allowing crafted input to cause catastrophic backtracking (e.g. ~44 s CPU for a 31-character payload).
 
 **References**
 
+- [GHSA-2g4f-4pwh-qvx6](https://github.com/advisories/GHSA-2g4f-4pwh-qvx6)
 - [ajv GitHub Security Advisories](https://github.com/ajv-validator/ajv/security/advisories)
-- [OWASP – Regular Expression Denial of Service (ReDoS)](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
+- [OWASP – ReDoS](https://owasp.org/www-community/attacks/Regular_expression_Denial_of_Service_-_ReDoS)
 
 ## Compliance & Standards
 
@@ -204,6 +210,6 @@ We appreciate the security research community and individuals who responsibly re
 
 ---
 
-**Last Updated**: February 2026  
+**Last Updated**: 19 February 2026  
 **Version**: 1.0.0  
 **Maintainer**: HMCTS Development Team
