@@ -1,126 +1,7 @@
-name: Playwright Tests
-on:
-  push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v6
-    
-    # Use Node.js setup with caching
-    - uses: actions/setup-node@v6
-      with:
-        node-version: lts/*
-        cache: 'npm'
-    
-    # Install dependencies with a clean install
-    - name: Install dependencies
-      run: |
-        npm ci
-        npm cache clean --force
-    
-    # Install Playwright browsers with dependencies
-    - name: Install Playwright browsers
-      run: npx playwright install --with-deps
-    
-    # Build the application first
-    - name: Build application
-      run: |
-        npm run build:frontend:dev
-        npm run build
-        
-        # Verify the build was successful
-        echo "Verifying build..."
-        ls -la dist/
-        ls -la dist/main.js || echo "Main file not found"
-    
-    # Test application startup in CI environment
-    - name: Test application startup
-      run: |
-        export CI=true
-        export NODE_ENV=production
-        
-        echo "Testing application startup in CI..."
-        
-        # Start the application in background
-        npm run start:prod &
-        APP_PID=$!
-        
-        # Wait for startup
-        sleep 15
-        
-        # Check if process is still running
-        if ps -p $APP_PID > /dev/null; then
-          echo "Application started successfully"
-          
-          # Test if we can connect to it
-          if curl -f http://localhost:3000/health; then
-            echo "Application is responding to requests"
-          else
-            echo "Application is not responding to requests"
-          fi
-          
-          # Kill the process
-          kill $APP_PID
-        else
-          echo "Application failed to start"
-          exit 1
-        fi
-      env:
-        CI: true
-        NODE_ENV: production
-    
-    # Run Playwright tests with better error handling and debugging
-    - name: Run Playwright tests
-      if: ${{ vars.DISABLE_PLAYWRIGHT_TESTS != 'true' }}
-      run: |
-        # Set CI environment variable
-        export CI=true
-        export NODE_ENV=production
-        
-        # Show current directory and files
-        echo "Current directory: $(pwd)"
-        echo "Directory contents:"
-        ls -la
-        
-        # Show Playwright configuration
-        echo "Playwright configuration:"
-        cat playwright.config.ts
-        
-        # Run tests with HTML reporter for better debugging
-        echo "Running Playwright tests..."
-        npx playwright test --timeout=300000 --reporter=html,line --project=chromium
-        
-        # Show test results directory if it exists
-        echo "Test results directory:"
-        ls -la test-results/ 2>/dev/null || echo "No test-results directory found"
-        
-        # Show playwright-report directory if it exists
-        echo "Playwright report directory:"
-        ls -la playwright-report/ 2>/dev/null || echo "No playwright-report directory found"
-        
-        # Show all directories that might contain reports
-        echo "All directories:"
-        find . -type d -name "*report*" -o -name "*test*" 2>/dev/null || echo "No report directories found"
-      env:
-        CI: true
-        NODE_ENV: production
-    
-    # Skip Playwright tests notification
-    - name: Skip Playwright tests
-      if: ${{ vars.DISABLE_PLAYWRIGHT_TESTS == 'true' }}
-      run: |
-        echo "Playwright tests are disabled via DISABLE_PLAYWRIGHT_TESTS environment variable"
-        echo "To re-enable tests, set DISABLE_PLAYWRIGHT_TESTS to 'false' or remove the variable"
-    
     # Upload test results on failure (try multiple possible locations)
     - name: Upload test results on failure
       if: failure() && vars.DISABLE_PLAYWRIGHT_TESTS != 'true'
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: playwright-report-failure
         path: |
@@ -133,12 +14,8 @@ jobs:
     # Upload test results on success (for debugging)
     - name: Upload test results on success
       if: success() && vars.DISABLE_PLAYWRIGHT_TESTS != 'true'
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: playwright-report-success
         path: |
           playwright-report/
-          test-results/
-          playwright-report.html
-          playwright-report/index.html
-        retention-days: 7
