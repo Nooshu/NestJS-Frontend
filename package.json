@@ -124,7 +124,7 @@
   "devDependencies": {
     "@babel/core": "7.29.0",
     "@babel/preset-env": "7.29.0",
-    "@eslint/eslintrc": "3.3.4",
+    "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "10.0.1",
     "@nestjs/cli": "11.0.16",
     "@nestjs/testing": "11.1.16",
@@ -146,7 +146,7 @@
     "concurrently": "9.2.1",
     "cpy-cli": "7.0.0",
     "cross-env": "10.1.0",
-    "eslint": "10.0.2",
+    "eslint": "10.0.3",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.5",
     "globals": "17.4.0",
