@@ -176,6 +176,7 @@
     "@nestjs/cli": {
       "ajv": ">=8.18.0"
     },
+    "file-type": ">=21.3.1",
     "serialize-javascript": ">=7.0.3",
     "minimatch": ">=10.2.1",
     "multer": "2.1.1",
