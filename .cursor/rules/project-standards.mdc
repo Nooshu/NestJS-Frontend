@@ -14,5 +14,5 @@ alwaysApply: true
 - Before making any code changes after opening the project, sync with upstream `hmcts`:
   - If the working tree is not clean, ask for confirmation (or create a branch) before syncing.
   - Run: `git fetch hmcts`
-  - Then run `git pull --rebase hmcts master` if that branch exists; otherwise run `git pull --rebase hmcts main`.
+  - Then run: `git pull --rebase hmcts main`
 - Summaries must include risks and unresolved issues.
