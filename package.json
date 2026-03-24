@@ -111,7 +111,7 @@
     "govuk-frontend": "6.1.0",
     "helmet": "8.1.0",
     "ioredis": "5.10.1",
-    "joi": "18.0.2",
+    "joi": "18.1.1",
     "nest-winston": "1.10.2",
     "nunjucks": "3.2.4",
     "pino": "10.3.1",
@@ -140,8 +140,8 @@
     "@types/nunjucks": "3.2.6",
     "@types/serve-static": "2.2.0",
     "@types/supertest": "7.2.0",
-    "@typescript-eslint/eslint-plugin": "8.57.1",
-    "@typescript-eslint/parser": "8.57.1",
+    "@typescript-eslint/eslint-plugin": "8.57.2",
+    "@typescript-eslint/parser": "8.57.2",
     "autoprefixer": "10.4.27",
     "concurrently": "9.2.1",
     "cpy-cli": "7.0.0",
@@ -166,7 +166,7 @@
     "ts-jest": "29.4.6",
     "ts-node": "10.9.2",
     "tsconfig-paths": "4.2.0",
-    "typescript": "5.9.3"
+    "typescript": "6.0.2"
   },
   "engines": {
     "node": ">=24.14.0 <26",
@@ -182,7 +182,7 @@
     "undici": ">=7.24.0",
     "minimatch": ">=10.2.1",
     "multer": "2.1.1",
-    "diff": "8.0.3",
+    "diff": "8.0.4",
     "char-regex": "2.0.2",
     "lodash": "4.17.23",
     "jest": {

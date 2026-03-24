@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "exactOptionalPropertyTypes": true,
     "experimentalDecorators": true,
-    "ignoreDeprecations": "5.0",
+    "ignoreDeprecations": "6.0",
     "importHelpers": true,
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
@@ -24,6 +24,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
+    "rootDir": ".",
     "outDir": "./dist",
     "paths": {
       "@/*": ["src/*"],
