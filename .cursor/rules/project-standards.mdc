@@ -15,4 +15,9 @@ alwaysApply: true
   - If the working tree is not clean, ask for confirmation (or create a branch) before syncing.
   - Run: `git fetch hmcts`
   - Then run: `git pull --rebase hmcts main`
+- If the change is a simple package update only (for example version bumps in `package.json`/`package-lock.json` with no code changes), once checks pass:
+  - Sync with `origin` automatically.
+  - Run: `git fetch origin`
+  - Then run: `git pull --rebase origin main`
+  - Then push: `git push origin main` (or `git push --force-with-lease origin main` only when history was rebased).
 - Summaries must include risks and unresolved issues.
