@@ -169,13 +169,14 @@
     "typescript": "6.0.2"
   },
   "engines": {
-    "node": ">=24.14.1 <26",
+    "node": ">=25.8.2 <26",
     "npm": ">=11.8.0 <12"
   },
   "overrides": {
     "@nestjs/cli": {
       "ajv": ">=8.18.0"
     },
+    "baseline-browser-mapping": "2.10.11",
     "picomatch@^2.0.0": "2.3.2",
     "picomatch@^4.0.0": "4.0.4",
     "yaml": "2.8.3",
