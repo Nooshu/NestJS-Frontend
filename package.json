@@ -176,7 +176,7 @@
     "@nestjs/cli": {
       "ajv": ">=8.18.0"
     },
-    "baseline-browser-mapping": "2.10.11",
+    "baseline-browser-mapping": "2.10.12",
     "picomatch@^2.0.0": "2.3.2",
     "picomatch@^4.0.0": "4.0.4",
     "yaml": "2.8.3",
