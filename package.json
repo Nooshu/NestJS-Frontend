@@ -94,7 +94,7 @@
     "@nestjs/swagger": "11.2.6",
     "@nestjs/terminus": "11.1.1",
     "@nestjs/throttler": "6.5.0",
-    "axios": "1.14.1",
+    "axios": "1.13.6",
     "brace-expansion": "5.0.5",
     "cache-manager": "7.2.8",
     "cache-manager-redis-store": "3.0.1",
@@ -128,7 +128,7 @@
     "@eslint/js": "10.0.1",
     "@nestjs/cli": "11.0.17",
     "@nestjs/testing": "11.1.17",
-    "@playwright/test": "1.58.2",
+    "@playwright/test": "1.59.0",
     "@testing-library/dom": "10.4.1",
     "@testing-library/jest-dom": "6.9.1",
     "@types/compression": "1.8.1",
@@ -176,7 +176,7 @@
     "@nestjs/cli": {
       "ajv": ">=8.18.0"
     },
-    "baseline-browser-mapping": "2.10.12",
+    "baseline-browser-mapping": "2.10.13",
     "picomatch@^2.0.0": "2.3.2",
     "picomatch@^4.0.0": "4.0.4",
     "yaml": "2.8.3",
