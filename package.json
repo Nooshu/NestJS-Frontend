@@ -169,7 +169,7 @@
     "typescript": "6.0.2"
   },
   "engines": {
-    "node": ">=25.8.2 <26",
+    "node": ">=25.9.0 <26",
     "npm": ">=11.8.0 <12"
   },
   "overrides": {
@@ -190,7 +190,7 @@
     "multer": "2.1.1",
     "diff": "8.0.4",
     "char-regex": "2.0.2",
-    "lodash": "4.17.23",
+    "lodash": "4.18.1",
     "jest": {
       "engines": {
         "node": ">=18.14.0"
