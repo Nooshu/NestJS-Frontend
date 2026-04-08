@@ -4,9 +4,14 @@
  * This stub provides document/window so tests and @testing-library/jest-dom work.
  */
 
-function createMockDocument(): Document {
+function createMockDocument(): any {
   const doc = {
-    createElement: () => ({ style: {}, setAttribute: () => {}, appendChild: () => {}, removeChild: () => {} }),
+    createElement: () => ({
+      style: {},
+      setAttribute: () => {},
+      appendChild: () => {},
+      removeChild: () => {},
+    }),
     createTextNode: (text: string) => ({ nodeValue: text }),
     getElementById: () => null,
     getElementsByClassName: () => [],
@@ -19,16 +24,22 @@ function createMockDocument(): Document {
     addEventListener: () => {},
     removeEventListener: () => {},
     dispatchEvent: () => true,
-  } as unknown as Document;
+  };
   return doc;
 }
 
-function JSDOM(_html = ''): { window: Window & { document: Document } } {
-  const document = createMockDocument();
-  const window = {
+function JSDOM(_html = ''): { window: any } {
+  const document: any = createMockDocument();
+  const window: any = {
     document,
-    window: null as unknown as Window,
-    location: { href: 'http://localhost', origin: 'http://localhost', pathname: '/', search: '', hash: '' },
+    window: null,
+    location: {
+      href: 'http://localhost',
+      origin: 'http://localhost',
+      pathname: '/',
+      search: '',
+      hash: '',
+    },
     getComputedStyle: () => ({ getPropertyValue: () => '' }),
     addEventListener: () => {},
     removeEventListener: () => {},
@@ -38,7 +49,7 @@ function JSDOM(_html = ''): { window: Window & { document: Document } } {
     HTMLElement: function () {},
     Element: function () {},
     Node: function () {},
-  } as Window & { document: Document };
+  };
   window.window = window;
   return { window };
 }

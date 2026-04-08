@@ -117,7 +117,7 @@ describe('Logging Middleware', () => {
         setBindings: jest.fn(),
         flush: jest.fn(),
       };
-      const errorMiddleware = (err: Error, req: any, res: any, next: any) => {
+      const errorMiddleware = (err: Error, req: any, _res: any, next: any) => {
         mockLogger.error({
           type: 'error',
           error: err.message,
@@ -179,7 +179,7 @@ describe('Logging Middleware', () => {
           metrics: { system: false },
         },
       };
-      const auditMiddleware = (req: any, res: any, next: any) => {
+      const auditMiddleware = (req: any, _res: any, next: any) => {
         const auditData: Record<string, unknown> = {
           timestamp: new Date().toISOString(),
           user: req.user?.id || 'anonymous',

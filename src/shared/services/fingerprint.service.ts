@@ -97,7 +97,7 @@ export class FingerprintService {
       }
 
       // Generate fingerprinted filename
-      const { original: _, fingerprinted } = this.fingerprintFilename(filePath);
+      const { fingerprinted } = this.fingerprintFilename(filePath);
       const content = readFileSync(filePath);
 
       // Write the fingerprinted file
@@ -135,7 +135,7 @@ export class FingerprintService {
       }
 
       // Generate fingerprinted filename
-      const { original: _, fingerprinted } = this.fingerprintFilename(filePath);
+      const { fingerprinted } = this.fingerprintFilename(filePath);
       const content = readFileSync(filePath);
 
       // Write the fingerprinted file
@@ -236,7 +236,7 @@ export class FingerprintService {
         mkdirSync(outputDir, { recursive: true });
       }
 
-      const { original: _, fingerprinted } = this.fingerprintFilename(file);
+      const { fingerprinted } = this.fingerprintFilename(file);
       const content = readFileSync(file);
 
       // Write the fingerprinted file

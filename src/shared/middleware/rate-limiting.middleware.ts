@@ -226,7 +226,7 @@ export class RateLimitingMiddleware implements NestMiddleware {
     // Store original end function to intercept response
     const originalEnd = res.end.bind(res);
     let responseIntercepted = false;
-    const self = this;
+    const incrementCounter = this.incrementCounter.bind(this);
 
     res.end = function (this: Response, chunk?: any, encoding?: any, cb?: () => void): Response {
       if (!responseIntercepted) {
@@ -238,7 +238,7 @@ export class RateLimitingMiddleware implements NestMiddleware {
           (!config.skipFailedRequests || this.statusCode < 400);
 
         if (shouldCount) {
-          const result = self.incrementCounter(key, config);
+          const result = incrementCounter(key, config);
           const remaining = Math.max(0, config.maxRequests - result.count);
 
           this.set({

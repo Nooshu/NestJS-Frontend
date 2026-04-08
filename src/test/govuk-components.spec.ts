@@ -4,7 +4,6 @@ import * as nunjucks from 'nunjucks';
 import { loadFixtures, verifyComponent } from './fixtures.test-helper';
 import type { GovukFixture } from './fixtures.test-helper';
 import { govukTestConfig } from './govuk-components.test.config';
-import { GovukTestUtils } from './utils/govuk-test.utils';
 
 /**
  * Converts component kebab-case name to govuk macro name (e.g. 'back-link' -> 'govukBackLink')

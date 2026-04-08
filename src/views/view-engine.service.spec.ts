@@ -169,9 +169,6 @@ describe('ViewEngineService', () => {
 
   describe('render', () => {
     it('should render template with provided data', () => {
-      const template = 'index.njk';
-      const data = { title: 'Test Title', user: 'Test User' };
-
       // This will use the actual template if it exists, or throw an error if not
       // We're testing that the method exists and can be called
       expect(typeof service.render).toBe('function');
@@ -179,36 +176,18 @@ describe('ViewEngineService', () => {
     });
 
     it('should render template with empty data', () => {
-      const template = 'index.njk';
-      const data = {};
-
       // Test that the method can handle empty data
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
     });
 
     it('should render template with complex data', () => {
-      const template = 'index.njk';
-      const data = {
-        users: [
-          { id: 1, name: 'User 1' },
-          { id: 2, name: 'User 2' },
-        ],
-        settings: {
-          theme: 'dark',
-          language: 'en',
-        },
-      };
-
       // Test that the method can handle complex data
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
     });
 
     it('should handle template rendering errors gracefully', () => {
-      const template = 'non-existent-template.njk';
-      const data = { title: 'Error Test' };
-
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -295,16 +274,12 @@ describe('ViewEngineService', () => {
 
   describe('error handling', () => {
     it('should handle undefined template gracefully', () => {
-      const data = { title: 'Test' };
-
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
     });
 
     it('should handle null data gracefully', () => {
-      const template = 'index.njk';
-
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
@@ -313,18 +288,12 @@ describe('ViewEngineService', () => {
 
   describe('integration scenarios', () => {
     it('should work with GOV.UK Frontend templates', () => {
-      const template = 'govuk/button.njk';
-      const data = { text: 'Continue', href: '/next-page' };
-
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();
     });
 
     it('should work with custom application templates', () => {
-      const template = 'components/button.njk';
-      const data = { label: 'Submit', type: 'submit' };
-
       // Test that the method exists and can be called
       expect(typeof service.render).toBe('function');
       expect(service.render).toBeDefined();

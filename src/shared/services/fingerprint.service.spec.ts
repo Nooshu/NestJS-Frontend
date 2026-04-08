@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { Logger } from '@nestjs/common';
 import { FingerprintService } from './fingerprint.service';
 import { join } from 'path';
 

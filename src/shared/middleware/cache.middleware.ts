@@ -69,7 +69,7 @@ export class CacheMiddleware implements NestMiddleware {
       let currentEnv: string;
       try {
         currentEnv = this.configService.get<string>('environment') || 'production';
-      } catch (_error) {
+      } catch {
         // If config service fails, default to production settings
         currentEnv = 'production';
       }
@@ -85,7 +85,7 @@ export class CacheMiddleware implements NestMiddleware {
         let isAuthenticated = false;
         try {
           isAuthenticated = req.isAuthenticated?.() || false;
-        } catch (_error) {
+        } catch {
           // If auth check fails, treat as unauthenticated
           isAuthenticated = false;
         }
@@ -119,7 +119,7 @@ export class CacheMiddleware implements NestMiddleware {
           pageStaleTime =
             this.configService.get<number>('performance.browserCache.pages.staleWhileRevalidate') ||
             pageStaleTime;
-        } catch (_error) {
+        } catch {
           // If config service fails, use default values
         }
 
@@ -143,7 +143,7 @@ export class CacheMiddleware implements NestMiddleware {
       res.setHeader('Vary', 'Accept-Encoding');
 
       next();
-    } catch (_error) {
+    } catch {
       // If any unexpected error occurs, proceed without caching
       next();
     }

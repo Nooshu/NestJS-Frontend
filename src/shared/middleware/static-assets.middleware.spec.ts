@@ -32,7 +32,7 @@ jest.mock('../config/performance.config', () => ({
 describe('StaticAssetsMiddleware', () => {
   let middleware: StaticAssetsMiddleware;
   let assetFingerprintService: AssetFingerprintService;
-  let mockRequest: Partial<Request>;
+  let mockRequest: any;
   let mockResponse: Partial<Response>;
   let nextFunction: jest.Mock;
 
@@ -144,8 +144,8 @@ describe('StaticAssetsMiddleware', () => {
     });
 
     it('should find file in src/public directory', async () => {
-      mockExistsSync.mockImplementation((path: string) => {
-        return path.includes('src/public');
+      mockExistsSync.mockImplementation((path: any) => {
+        return String(path).includes('src/public');
       });
       mockStat.mockResolvedValue({
         isFile: () => true,
@@ -168,12 +168,12 @@ describe('StaticAssetsMiddleware', () => {
       mockRequest.path = '/govuk/test.css';
       // Make sure the hashed path equals the original path so it doesn't redirect
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/govuk/test.css');
-      mockExistsSync.mockImplementation((path: string) => {
+      mockExistsSync.mockImplementation((path: any) => {
         // The middleware will check paths like: /path/to/project/node_modules/govuk-frontend/dist/govuk/test.css
         return (
-          path.includes('node_modules/govuk-frontend/dist/govuk') &&
-          !path.includes('assets') &&
-          !path.includes('src/public')
+          String(path).includes('node_modules/govuk-frontend/dist/govuk') &&
+          !String(path).includes('assets') &&
+          !String(path).includes('src/public')
         );
       });
       mockStat.mockResolvedValue({
@@ -193,11 +193,11 @@ describe('StaticAssetsMiddleware', () => {
       mockRequest.path = '/govuk/test.css';
       // Make sure the hashed path equals the original path so it doesn't redirect
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/govuk/test.css');
-      mockExistsSync.mockImplementation((path: string) => {
+      mockExistsSync.mockImplementation((path: any) => {
         // The middleware will check paths like: /path/to/project/node_modules/govuk-frontend/dist/govuk/assets/test.css
         return (
-          path.includes('node_modules/govuk-frontend/dist/govuk/assets') &&
-          !path.includes('src/public')
+          String(path).includes('node_modules/govuk-frontend/dist/govuk/assets') &&
+          !String(path).includes('src/public')
         );
       });
       mockStat.mockResolvedValue({
@@ -476,9 +476,10 @@ describe('StaticAssetsMiddleware', () => {
         '/govuk/assets/css/main.css'
       );
 
-      mockExistsSync.mockImplementation((path: string) => {
+      mockExistsSync.mockImplementation((path: any) => {
         // Should search for 'assets/css/main.css' (without /govuk/ prefix)
-        return path.includes('assets/css/main.css') && !path.includes('/govuk/');
+        const p = String(path);
+        return p.includes('assets/css/main.css') && !p.includes('/govuk/');
       });
       mockStat.mockResolvedValue({
         isFile: () => true,
@@ -498,9 +499,9 @@ describe('StaticAssetsMiddleware', () => {
       mockRequest.path = '/public/css/main.css';
       (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/public/css/main.css');
 
-      mockExistsSync.mockImplementation((path: string) => {
+      mockExistsSync.mockImplementation((path: any) => {
         // Should search for the full path including /public/
-        return path.includes('public/css/main.css');
+        return String(path).includes('public/css/main.css');
       });
       mockStat.mockResolvedValue({
         isFile: () => true,

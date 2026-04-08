@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Request, Response, NextFunction } from 'express';
 import { LoggerMiddleware } from '../logger.middleware';
 import { LoggerService } from '../../../logger/logger.service';
-import { loggingConfig } from '../../config/logging.config';
 
 // Mock the logging config
 jest.mock('../../config/logging.config', () => ({
@@ -34,8 +33,8 @@ jest.mock('../../config/logging.config', () => ({
 describe('LoggerMiddleware', () => {
   let middleware: LoggerMiddleware;
   let mockLogger: jest.Mocked<LoggerService>;
-  let mockRequest: Partial<Request>;
-  let mockResponse: Partial<Response>;
+  let mockRequest: any;
+  let mockResponse: any;
   let mockNext: jest.MockedFunction<NextFunction>;
 
   beforeEach(async () => {
@@ -193,7 +192,7 @@ describe('LoggerMiddleware', () => {
     });
 
     it('should log response when finish event is triggered', () => {
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -203,7 +202,7 @@ describe('LoggerMiddleware', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
 
       // Trigger the finish event
-      finishCallback!();
+      finishCallback?.();
 
       expect(mockLogger.info).toHaveBeenCalledWith('Request completed', {
         method: 'GET',
@@ -217,7 +216,7 @@ describe('LoggerMiddleware', () => {
 
     it('should skip response logging for excluded paths', () => {
       mockRequest.originalUrl = '/favicon.ico';
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -227,9 +226,7 @@ describe('LoggerMiddleware', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
 
       // Trigger the finish event
-      if (finishCallback) {
-        finishCallback();
-      }
+      finishCallback?.();
 
       // Should not log response for excluded paths
       expect(mockLogger.info).toHaveBeenCalledTimes(0);
@@ -239,7 +236,7 @@ describe('LoggerMiddleware', () => {
       // This test covers line 110 - the return statement in the response handler
       // when the path should be excluded
       mockRequest.originalUrl = '/favicon.ico';
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -252,9 +249,7 @@ describe('LoggerMiddleware', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
 
       // Trigger the finish event
-      if (finishCallback) {
-        finishCallback();
-      }
+      finishCallback?.();
 
       // Should not log response for excluded paths (this covers line 110)
       expect(mockLogger.info).toHaveBeenCalledTimes(0);
@@ -262,7 +257,7 @@ describe('LoggerMiddleware', () => {
 
     it('should handle missing content length', () => {
       mockResponse.get = jest.fn().mockReturnValue(undefined);
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -270,7 +265,7 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      finishCallback!();
+      finishCallback?.();
 
       expect(mockLogger.info).toHaveBeenCalledWith('Request completed', {
         method: 'GET',
@@ -284,7 +279,7 @@ describe('LoggerMiddleware', () => {
 
     it('should log error rate warning for 5xx status codes', () => {
       mockResponse.statusCode = 500;
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -292,7 +287,7 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      finishCallback!();
+      finishCallback?.();
 
       expect(mockLogger.warn).toHaveBeenCalledWith('High error rate detected', {
         method: 'GET',
@@ -314,7 +309,7 @@ describe('LoggerMiddleware', () => {
         return startTime + 1500; // 1.5 seconds
       });
 
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -322,7 +317,7 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      finishCallback!();
+      finishCallback?.();
 
       expect(mockLogger.warn).toHaveBeenCalledWith('Slow response detected', {
         method: 'GET',
@@ -337,7 +332,7 @@ describe('LoggerMiddleware', () => {
     });
 
     it('should log audit information when audit is enabled', () => {
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -345,7 +340,7 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      finishCallback!();
+      finishCallback?.();
 
       expect(mockLogger.audit).toHaveBeenCalledWith('HTTP Request', {
         method: 'GET',
@@ -361,7 +356,7 @@ describe('LoggerMiddleware', () => {
 
     it('should log anonymous user when user is not present', () => {
       mockRequest.user = undefined;
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -369,7 +364,7 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      finishCallback!();
+      finishCallback?.();
 
       expect(mockLogger.audit).toHaveBeenCalledWith('HTTP Request', {
         method: 'GET',
@@ -385,7 +380,7 @@ describe('LoggerMiddleware', () => {
 
     it('should handle missing request ID', () => {
       mockRequest.id = undefined;
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -409,7 +404,7 @@ describe('LoggerMiddleware', () => {
   describe('monitoring scenarios', () => {
     it('should log error rate warning for 4xx status codes', () => {
       mockResponse.statusCode = 400;
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -417,9 +412,7 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      if (finishCallback) {
-        finishCallback();
-      }
+      finishCallback?.();
 
       // 4xx should not trigger error rate warning (only 5xx)
       expect(mockLogger.warn).not.toHaveBeenCalled();
@@ -427,7 +420,7 @@ describe('LoggerMiddleware', () => {
 
     it('should log error rate warning for 5xx status codes', () => {
       mockResponse.statusCode = 503;
-      let finishCallback: () => void;
+      let finishCallback: (() => void) | undefined;
       mockResponse.on = jest.fn().mockImplementation((event, callback) => {
         if (event === 'finish') {
           finishCallback = callback;
@@ -435,9 +428,7 @@ describe('LoggerMiddleware', () => {
       });
 
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-      if (finishCallback) {
-        finishCallback();
-      }
+      finishCallback?.();
 
       expect(mockLogger.warn).toHaveBeenCalledWith('High error rate detected', {
         method: 'GET',
@@ -487,7 +478,7 @@ describe('LoggerMiddleware', () => {
 
       statusCodes.forEach((statusCode) => {
         mockResponse.statusCode = statusCode;
-        let finishCallback: () => void;
+        let finishCallback: (() => void) | undefined;
         mockResponse.on = jest.fn().mockImplementation((event, callback) => {
           if (event === 'finish') {
             finishCallback = callback;
@@ -497,9 +488,7 @@ describe('LoggerMiddleware', () => {
         jest.clearAllMocks();
 
         middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
-        if (finishCallback) {
-          finishCallback();
-        }
+        finishCallback?.();
 
         expect(mockLogger.info).toHaveBeenCalledWith('Request completed', {
           method: 'GET',

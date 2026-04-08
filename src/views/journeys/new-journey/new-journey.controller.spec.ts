@@ -277,7 +277,7 @@ describe('NewJourneyController', () => {
         get details() {
           throw new Error('Test error');
         },
-        set details(value) {
+        set details(_value) {
           throw new Error('Test error');
         },
       };
@@ -437,7 +437,8 @@ describe('NewJourneyController', () => {
 
       const result = controller.confirmation();
 
-      expect(result.formData.startDate).toBe('1 December 2024');
+      expect(result.formData).toBeDefined();
+      expect(result.formData!.startDate).toBe('1 December 2024');
     });
 
     it('should handle single digit day and month correctly', () => {
@@ -458,7 +459,8 @@ describe('NewJourneyController', () => {
 
       const result = controller.confirmation();
 
-      expect(result.formData.startDate).toBe('5 March 2024');
+      expect(result.formData).toBeDefined();
+      expect(result.formData!.startDate).toBe('5 March 2024');
     });
 
     it('should handle confirmation page rendering correctly', () => {
@@ -479,7 +481,8 @@ describe('NewJourneyController', () => {
 
       const result = controller.confirmation();
 
-      expect(result.formData.startDate).toBe('10 May 2024');
+      expect(result.formData).toBeDefined();
+      expect(result.formData!.startDate).toBe('10 May 2024');
     });
   });
 
@@ -512,8 +515,9 @@ describe('NewJourneyController', () => {
       // Step 4: Check confirmation page (should not redirect)
       const confirmationResult = controller.confirmation();
       expect(confirmationResult).not.toEqual({ redirect: '/new-journey' });
-      expect(confirmationResult.formData.fullName).toBe('Alice Johnson');
-      expect(confirmationResult.formData.startDate).toBe('20 July 2024');
+      expect(confirmationResult.formData).toBeDefined();
+      expect(confirmationResult.formData!.fullName).toBe('Alice Johnson');
+      expect(confirmationResult.formData!.startDate).toBe('20 July 2024');
     });
   });
 

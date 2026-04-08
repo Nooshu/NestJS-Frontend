@@ -62,7 +62,7 @@ export class AppController {
       res.setHeader('Content-Type', 'text/plain');
       res.setHeader('Cache-Control', 'public, max-age=86400');
       res.send(robotsContent);
-    } catch (error) {
+    } catch {
       // Fallback if file doesn't exist
       res.setHeader('Content-Type', 'text/plain');
       res.setHeader('Cache-Control', 'public, max-age=86400');

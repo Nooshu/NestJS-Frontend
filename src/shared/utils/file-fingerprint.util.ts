@@ -1,6 +1,7 @@
 import { createHash } from 'crypto';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import { globSync } from 'glob';
 
 /**
  * Generates a hash of a file's contents
@@ -44,10 +45,9 @@ export function generateFingerprintMap(
   filePatterns: string[]
 ): Map<string, string> {
   const fingerprintMap = new Map<string, string>();
-  const glob = require('glob');
 
   filePatterns.forEach((pattern) => {
-    const files = glob.sync(join(staticDir, pattern));
+    const files = globSync(join(staticDir, pattern));
     files.forEach((file: string) => {
       const hashedPath = addHashToFilename(file);
       const relativePath = file.replace(staticDir, '');

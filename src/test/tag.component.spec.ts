@@ -129,7 +129,7 @@ describe('Tag Component', () => {
           {{ govukTag({ text: "${variant.text}", classes: "${variant.classes || ''}" }) }}
         `;
 
-        const rendered = env.renderString(template);
+        const rendered = env.renderString(template, {});
 
         // Check that the expected class is present
         expect(rendered).toContain(variant.expectedClass);
@@ -158,7 +158,7 @@ describe('Tag Component', () => {
       }) }}
     `;
 
-    const rendered = env.renderString(template);
+    const rendered = env.renderString(template, {});
 
     expect(rendered).toContain('data-test="custom-tag"');
     expect(rendered).toContain('id="test-tag"');
@@ -178,7 +178,7 @@ describe('Tag Component', () => {
       }) }}
     `;
 
-    const rendered = env.renderString(template);
+    const rendered = env.renderString(template, {});
 
     expect(rendered).toContain('<span>HTML Tag</span>');
     expect(rendered).toContain('govuk-tag--blue');

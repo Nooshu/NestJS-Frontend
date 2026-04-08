@@ -4,7 +4,7 @@ import { OptimizedHtmlHeadersMiddleware } from './optimized-html-headers.middlew
 
 describe('OptimizedHtmlHeadersMiddleware', () => {
   let middleware: OptimizedHtmlHeadersMiddleware;
-  let mockRequest: Partial<Request>;
+  let mockRequest: any;
   let mockResponse: Partial<Response>;
   let mockNext: NextFunction;
 

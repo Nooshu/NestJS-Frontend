@@ -1,6 +1,5 @@
-import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
-import type { NextFunction, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { SecurityConfig } from '../../config/security.config';
 import { CspMiddleware } from './csp.middleware';
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HealthIndicator, HealthIndicatorResult, HealthCheckError } from '@nestjs/terminus';
 import { ConfigService } from '@nestjs/config';
+import { loadavg } from 'os';
 
 /**
  * Application health indicator for monitoring application-specific metrics.
@@ -114,7 +115,7 @@ export class ApplicationHealthIndicator extends HealthIndicator {
     try {
       const memoryUsage = process.memoryUsage();
       const cpuUsage = process.cpuUsage();
-      const loadAverage = process.platform !== 'win32' ? require('os').loadavg() : [0, 0, 0];
+      const loadAverage = process.platform !== 'win32' ? loadavg() : [0, 0, 0];
 
       // Convert memory usage to MB
       const memoryUsageMB = {

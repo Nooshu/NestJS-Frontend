@@ -5,12 +5,14 @@
 
 import '@testing-library/jest-dom';
 
+const globalAny = globalThis as any;
+
 // Mock the document object for Node.js environment
-if (typeof document === 'undefined') {
-  const { JSDOM } = require('jsdom');
+if (typeof globalAny.document === 'undefined') {
+  const { JSDOM } = require('@test/mocks/jsdom');
   const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>');
-  global.document = dom.window.document;
-  global.window = dom.window;
+  globalAny.document = dom.window.document;
+  globalAny.window = dom.window;
 }
 
 import type { INestApplication } from '@nestjs/common';
@@ -44,7 +46,7 @@ global.performance = {
   getEntriesByType: jest.fn(),
   getEntriesByName: jest.fn(),
   now: jest.fn(),
-  eventCounts: new Map() as unknown as EventCounts,
+  eventCounts: new Map() as any,
   navigation: {},
   onresourcetimingbufferfull: null,
   timing: {},

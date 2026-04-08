@@ -255,7 +255,7 @@ export class SecurityAuditMiddleware implements NestMiddleware {
 
     // Store original end function to capture response details
     const originalEnd = res.end.bind(res);
-    const self = this;
+    const logSecurityEvent = this.logSecurityEvent.bind(this);
 
     res.end = function (this: Response, chunk?: any, encoding?: any, cb?: () => void): Response {
       const endTime = Date.now();
@@ -292,7 +292,7 @@ export class SecurityAuditMiddleware implements NestMiddleware {
           },
         };
 
-        self.logSecurityEvent(event);
+        logSecurityEvent(event);
       }
 
       // Log successful authentication events
@@ -310,7 +310,7 @@ export class SecurityAuditMiddleware implements NestMiddleware {
           },
         };
 
-        self.logSecurityEvent(event);
+        logSecurityEvent(event);
       }
 
       return originalEnd(chunk, encoding, cb);

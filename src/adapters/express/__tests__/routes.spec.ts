@@ -1,23 +1,13 @@
-import type { Express, Request, Response } from 'express';
+import type { Express } from 'express';
 import { setupRoutes } from '../routes';
 
 describe('routes.ts', () => {
   let mockApp: Partial<Express>;
-  let mockReq: Partial<Request>;
-  let mockRes: Partial<Response>;
 
   beforeEach(() => {
     // Mock Express app
     mockApp = {
       get: jest.fn(),
-    };
-
-    // Mock request
-    mockReq = {};
-
-    // Mock response
-    mockRes = {
-      render: jest.fn(),
     };
   });
 

@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  HealthCheckService,
   TerminusModule,
   HealthIndicator,
   MemoryHealthIndicator,
@@ -156,12 +155,9 @@ class MockMemoryHealthIndicator extends HealthIndicator {
 
 describe('HealthController', () => {
   let controller: HealthController;
-  let healthCheckService: HealthCheckService;
   let mockHttpHealthIndicator: MockHttpHealthIndicator;
   let mockDatabaseHealthIndicator: MockDatabaseHealthIndicator;
   let mockRedisHealthIndicator: MockRedisHealthIndicator;
-  let mockApplicationHealthIndicator: MockApplicationHealthIndicator;
-  let mockMemoryHealthIndicator: MockMemoryHealthIndicator;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -201,14 +197,9 @@ describe('HealthController', () => {
     }).compile();
 
     controller = module.get<HealthController>(HealthController);
-    healthCheckService = module.get<HealthCheckService>(HealthCheckService);
     mockHttpHealthIndicator = module.get<MockHttpHealthIndicator>(HttpHealthIndicator);
     mockDatabaseHealthIndicator = module.get<MockDatabaseHealthIndicator>(DatabaseHealthIndicator);
     mockRedisHealthIndicator = module.get<MockRedisHealthIndicator>(RedisHealthIndicator);
-    mockApplicationHealthIndicator = module.get<MockApplicationHealthIndicator>(
-      ApplicationHealthIndicator
-    );
-    mockMemoryHealthIndicator = module.get<MockMemoryHealthIndicator>(MemoryHealthIndicator);
   });
 
   afterEach(() => {

@@ -6,9 +6,8 @@ import { LoggerService } from '../../logger/logger.service';
 
 describe('SecurityHeadersMiddleware', () => {
   let middleware: SecurityHeadersMiddleware;
-  let securityConfig: SecurityConfig;
   let loggerService: LoggerService;
-  let mockRequest: Partial<Request>;
+  let mockRequest: any;
   let mockResponse: Partial<Response>;
   let mockNext: NextFunction;
 
@@ -54,7 +53,6 @@ describe('SecurityHeadersMiddleware', () => {
     }).compile();
 
     middleware = module.get<SecurityHeadersMiddleware>(SecurityHeadersMiddleware);
-    securityConfig = module.get<SecurityConfig>(SecurityConfig);
     loggerService = module.get<LoggerService>(LoggerService);
 
     // Reset mocks
@@ -80,7 +78,7 @@ describe('SecurityHeadersMiddleware', () => {
 
   describe('Basic Security Headers', () => {
     it('should set basic security headers', () => {
-      middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
+      middleware.use(mockRequest as unknown as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Frame-Options', 'DENY');
       expect(mockResponse.setHeader).toHaveBeenCalledWith('X-Content-Type-Options', 'nosniff');
@@ -489,7 +487,7 @@ describe('SecurityHeadersMiddleware', () => {
         accepts: jest.fn().mockReturnValue(false),
       };
 
-      middleware.use(minimalRequest as Request, mockResponse as Response, mockNext);
+      middleware.use(minimalRequest as unknown as Request, mockResponse as Response, mockNext);
 
       expect(mockNext).toHaveBeenCalledTimes(1);
       expect(mockResponse.setHeader).toHaveBeenCalled();

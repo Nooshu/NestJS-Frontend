@@ -1,4 +1,4 @@
-import type { Application, NextFunction, Request, Response } from 'express';
+import type { Application, Request, Response } from 'express';
 import express from 'express';
 import {
   applyGovernmentSecurity,
@@ -892,7 +892,7 @@ describe('Security Middleware', () => {
       const middleware = dataProtectionMiddleware(config);
       const res = {
         ...mockResponse,
-        send: function (body: any) {
+        send: function (_body: any) {
           throw new Error('Send error');
         },
       } as Response;

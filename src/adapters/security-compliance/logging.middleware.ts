@@ -3,15 +3,12 @@ import requestId from 'express-request-id';
 import pino, { type LoggerOptions } from 'pino';
 import type { LoggingConfig } from './logging.config';
 
-// Extend Express Request type
-declare global {
-  namespace Express {
-    interface Request {
+declare module 'express-serve-static-core' {
+  interface Request {
+    id: string;
+    user?: {
       id: string;
-      user?: {
-        id: string;
-      };
-    }
+    };
   }
 }
 
