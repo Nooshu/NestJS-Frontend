@@ -94,7 +94,7 @@
     "@nestjs/swagger": "11.2.6",
     "@nestjs/terminus": "11.1.1",
     "@nestjs/throttler": "6.5.0",
-    "axios": "1.14.0",
+    "axios": "1.15.0",
     "brace-expansion": "5.0.5",
     "cache-manager": "7.2.8",
     "cache-manager-redis-store": "3.0.1",
@@ -176,7 +176,7 @@
     "@nestjs/cli": {
       "ajv": ">=8.18.0"
     },
-    "axios": "1.14.0",
+    "axios": "1.15.0",
     "baseline-browser-mapping": "2.10.16",
     "picomatch@^2.0.0": "2.3.2",
     "picomatch@^4.0.0": "4.0.4",
