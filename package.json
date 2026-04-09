@@ -126,7 +126,7 @@
     "@babel/preset-env": "7.29.2",
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "10.0.1",
-    "@nestjs/cli": "11.0.18",
+    "@nestjs/cli": "11.0.19",
     "@nestjs/testing": "11.1.18",
     "@playwright/test": "1.59.1",
     "@testing-library/dom": "10.4.1",
