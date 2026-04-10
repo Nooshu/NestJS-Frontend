@@ -1,21 +1,10 @@
-    # Upload test results on failure (try multiple possible locations)
-    - name: Upload test results on failure
-      if: failure() && vars.DISABLE_PLAYWRIGHT_TESTS != 'true'
-      uses: actions/upload-artifact@v7
-      with:
-        name: playwright-report-failure
-        path: |
-          playwright-report/
-          test-results/
-          playwright-report.html
-          playwright-report/index.html
-        retention-days: 30
-    
-    # Upload test results on success (for debugging)
-    - name: Upload test results on success
-      if: success() && vars.DISABLE_PLAYWRIGHT_TESTS != 'true'
-      uses: actions/upload-artifact@v7
-      with:
-        name: playwright-report-success
-        path: |
-          playwright-report/
+name: Archived repository (Playwright disabled)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  archived:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This repository is archived; Playwright is disabled."

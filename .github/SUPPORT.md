@@ -1,22 +1,15 @@
 # Support
 
-We're here to help! If you need assistance with this project, here are several ways to get support.
+**This repository is archived / unmaintained and is not supported.** Issues and pull requests are not monitored.
 
 ## 📚 Documentation
 
-- **[Project README](https://github.com/[username]/NestJS-frontend/blob/main/README.md)** - Start here for project overview and setup
-- **[Contributing Guidelines](https://github.com/[username]/NestJS-frontend/blob/main/CONTRIBUTING.md)** - How to contribute to the project
-- **[API Documentation](https://github.com/[username]/NestJS-frontend/blob/main/docs/README.md)** - API endpoints and usage
-- **[Security Policy](https://github.com/[username]/NestJS-frontend/blob/main/SECURITY.md)** - How to report security vulnerabilities
+- **[Project README](https://github.com/hmcts/NestJS-frontend/blob/main/README.md)** - Project overview and setup (historical)
+- **[Security Policy](https://github.com/hmcts/NestJS-frontend/blob/main/SECURITY.md)** - How to report security vulnerabilities
 
 ## 🐛 Issues and Bug Reports
 
-If you've found a bug or have a feature request:
-
-1. **Search existing issues** to see if your problem has already been reported
-2. **Create a new issue** using the appropriate template:
-   - [Bug Report](https://github.com/[username]/NestJS-frontend/issues/new?template=bug_report.md)
-   - [Feature Request](https://github.com/[username]/NestJS-frontend/issues/new?template=feature_request.md)
+Issues are not monitored for this archived repository.
 
 ## 💬 Community Support
 
@@ -52,9 +45,7 @@ If you're having trouble setting up the development environment:
 
 ## 📞 Contact
 
-- **Project Maintainers** - [@maintainers]
-- **Security Issues** - See [SECURITY.md](https://github.com/[username]/NestJS-frontend/blob/main/SECURITY.md)
-- **General Questions** - Open a [GitHub Discussion](https://github.com/[username]/NestJS-frontend/discussions)
+- **Security issues**: see [SECURITY.md](https://github.com/hmcts/NestJS-frontend/blob/main/SECURITY.md)
 
 ## 🚀 Getting Help Faster
 

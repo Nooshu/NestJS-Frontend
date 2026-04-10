@@ -1,18 +1,25 @@
 # PoC: NestJS Frontend Application
 
+## Archived / unmaintained
+
+**This repository is no longer maintained and is intended to be archived in the HMCTS organisation.**
+
+- **Support**: No ongoing support or feature development.
+- **Security**: No security patches will be released from this repository.
+- **Issues / PRs**: Not monitored.
+
+If you need a supported starting point for an HMCTS service, use the current HMCTS templates (for example, the [HMCTS Express.js template](https://github.com/hmcts/expressjs-template)).
+
 A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend integration, designed to replace the existing [HMCTS Express.js template](https://github.com/hmcts/expressjs-template).
 
 ## Project Status
 
-| Category            | Status                                                      |
-| ------------------- | ----------------------------------------------------------- |
-| **Build**           | ✅ Passing                                                  |
-| **Tests**           | ✅ All tests passing (1,116 tests across 50 test suites)    |
-| **Dependencies**    | ✅ Up to date (January 2026) - All pinned to exact versions |
-| **Security**        | ✅ 0 vulnerabilities                                        |
-| **GOV.UK Frontend** | ✅ v5.14.0 (Latest)                                         |
-| **Node.js**         | ✅ v25.5.0 LTS (Krypton)                                    |
-| **npm**             | ✅ v11.7.0                                                  |
+| Category            | Status |
+| ------------------- | ------ |
+| **Maintenance**     | ❌ Unmaintained / archived |
+| **Build / tests**   | ⚠️ Not monitored |
+| **Dependencies**    | ⚠️ Not updated |
+| **Security**        | ⚠️ No fixes will be provided |
 
 ### Current Features
 

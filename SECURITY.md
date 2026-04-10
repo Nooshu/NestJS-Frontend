@@ -2,15 +2,15 @@
 
 ## Supported Versions
 
-This project is actively maintained and security updates are provided for the following versions:
+**This repository is archived / unmaintained.** No security updates are provided for any versions of this project.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
+| 0.1.x   | :x: |
 
 ## Reporting a Vulnerability
 
-We take the security of our NestJS-frontend application seriously. If you believe you have found a security vulnerability, please report it to us as described below.
+If you believe you have found a security vulnerability, please report it using the HMCTS security process below. **Note:** because this repository is archived, a report may be triaged but fixes may not be produced in this repository.
 
 **Please do not report security vulnerabilities through public GitHub issues, discussions, or pull requests.**
 
@@ -34,10 +34,7 @@ Please include the following information in your report:
 
 ### Response Timeline
 
-- **Initial Response**: Within 48 hours of receiving your report
-- **Status Update**: Within 7 days with an assessment
-- **Resolution**: Target resolution within 30 days for critical issues
-- **Public Disclosure**: Coordinated disclosure after fixes are deployed
+- **Initial response / updates / resolution**: Best-effort only for an archived repository.
 
 ## Security Features
 

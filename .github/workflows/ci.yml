@@ -1,11 +1,10 @@
+name: Archived repository (CI disabled)
 
-      - name: Run E2E tests
-        run: npm run test:e2e
+on:
+  workflow_dispatch:
 
-      - name: Upload Playwright report
-        uses: actions/upload-artifact@v7
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+jobs:
+  archived:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This repository is archived; CI is disabled."
