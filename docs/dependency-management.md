@@ -2,54 +2,55 @@
 
 ## Overview
 
-This project uses npm for dependency management with all dependencies pinned to exact versions for security and reproducibility. The project requires Node.js version 25.5.0 or higher (LTS Krypton).
+This project uses npm for dependency management with all dependencies pinned to exact versions for security and reproducibility. The project requires Node.js `>=26.5.0 <27` and npm `>=11.18.0 <12` (see `package.json` engines and `.nvmrc`).
 
 ## Key Dependencies
 
 ### Core Dependencies
 
-- @nestjs/common: 11.1.12
-- @nestjs/core: 11.1.12
-- @nestjs/platform-express: 11.1.12
-- govuk-frontend: 6.0.0
+- @nestjs/common: 11.1.28
+- @nestjs/core: 11.1.28
+- @nestjs/platform-express: 11.1.28
+- express: 5.2.1
+- govuk-frontend: 6.3.0
 - nunjucks: 3.2.4
 
 ### Security Dependencies
 
-- helmet: 8.1.0
+- helmet: 8.3.0
 - @nestjs/throttler: 6.5.0
 
 ### API and Integration
 
 - @nestjs/axios: 4.0.1
-- axios: 1.13.4
-- @nestjs/swagger: 11.2.5
+- axios: 1.18.1
+- @nestjs/swagger: 11.4.5
 - swagger-ui-express: 5.0.1
 
 ### Caching
 
-- @nestjs/cache-manager: 3.1.0
-- cache-manager: 7.2.8
+- @nestjs/cache-manager: 3.1.3
+- cache-manager: 7.2.9
 - cache-manager-redis-store: 3.0.1
-- ioredis: 5.9.3
+- ioredis: 5.11.1
 
 ### Logging and Monitoring
 
 - nest-winston: 1.10.2
 - winston: 3.19.0
-- pino: 10.2.0
+- pino: 10.3.1
 - pino-pretty: 13.1.3
 
 ### Development Dependencies
 
-- @nestjs/cli: 11.0.15
-- jest: 30.2.0
-- typescript: 5.9.3
-- prettier: 3.8.0
-- sass: 1.97.2
-- @playwright/test: 1.58.0
-- @babel/core: 7.28.6
-- @babel/preset-env: 7.28.6
+- @nestjs/cli: 11.0.24
+- jest: 30.4.2
+- typescript: 6.0.3 (pinned; not 7 because of ts-jest)
+- prettier: 3.9.5
+- sass: 1.101.0
+- @playwright/test: 1.61.1
+- @babel/core: 7.29.7
+- @babel/preset-env: 7.29.7
 
 ## Table of Contents
 
@@ -70,15 +71,15 @@ This project uses npm for dependency management with all dependencies pinned to 
    ```json
    {
      "name": "nest-frontend",
-     "version": "1.0.0",
+     "version": "0.1.0",
      "dependencies": {
-       "@nestjs/common": "^9.0.0",
-       "@nestjs/core": "^9.0.0",
-       "govuk-frontend": "^4.0.0"
+       "@nestjs/common": "11.1.28",
+       "@nestjs/core": "11.1.28",
+       "govuk-frontend": "6.3.0"
      },
      "devDependencies": {
-       "@types/node": "^16.0.0",
-       "typescript": "^4.0.0"
+       "@types/node": "26.1.1",
+       "typescript": "6.0.3"
      }
    }
    ```
@@ -120,6 +121,14 @@ This project uses npm for dependency management with all dependencies pinned to 
 - SHA integrity verification via package-lock.json
 - Predictable behavior in production
 - Easier security auditing
+
+After updating multiple packages in one task, update all targets and refresh the lockfile first, then run pin + SHA integrity verification **once**:
+
+```bash
+bash scripts/verify-package-security.sh
+```
+
+Do not treat the verify script as a per-package step.
 
 1. **Version Constraints**
 
@@ -268,6 +277,9 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 
    # Update all packages (use with caution)
    npm update
+
+   # Verify pinning and lockfile SHA integrity (once after a batch of updates)
+   bash scripts/verify-package-security.sh
 
    # Verify integrity
    npm audit

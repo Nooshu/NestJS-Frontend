@@ -21,8 +21,8 @@ Thank you for your interest in contributing to the NestJS Frontend application! 
 
 Before contributing, ensure you have the following installed:
 
-- **Node.js** >= 20.12.2
-- **npm** (comes with Node.js)
+- **Node.js** `>=26.5.0 <27` (see `.nvmrc` / `package.json` engines)
+- **npm** `>=11.18.0 <12`
 - **Git**
 - **Docker** (optional, for containerized development)
 
@@ -34,14 +34,35 @@ Before contributing, ensure you have the following installed:
    git clone https://github.com/YOUR_USERNAME/NestJS-frontend.git
    cd NestJS-frontend
    ```
-3. Add the upstream remote:
+3. Add the upstream remote (`hmcts`); default push remote is your fork (`origin`):
    ```bash
-   git remote add upstream https://github.com/hmcts/NestJS-frontend.git
+   git remote add hmcts https://github.com/hmcts/NestJS-frontend.git
    ```
 
 ## Development Setup
 
-### Install Dependencies
+Full onboarding (local Node **and** Docker): [Getting Started](docs/readme/getting-started.md).
+
+### Option A — Local Node.js (no Docker)
+
+```bash
+nvm use   # Node >=26.5.0 <27
+npm install
+npm run start:dev
+```
+
+Open **http://localhost:3002**
+
+### Option B — Docker
+
+```bash
+./scripts/prepare-docker.sh
+docker compose up --build frontend
+```
+
+Open **http://localhost:3100**
+
+### Install Dependencies (local)
 
 ```bash
 npm install
@@ -57,7 +78,8 @@ cp .env.example .env
 
 Key environment variables:
 - `NODE_ENV` - Environment (development, production, test)
-- `PORT` - Application port
+- `PORT` - Application port (local default **3002**; Docker Compose uses **3100**)
+- `HOST` - Listen address (`0.0.0.0` in Docker so published ports work)
 - `LOG_LEVEL` - Logging level
 - `REDIS_URL` - Redis connection string (optional)
 
@@ -220,9 +242,8 @@ npm run test:e2e:local
 
 ### Test Coverage Requirements
 
-- **Unit Tests**: Minimum 80% coverage
-- **Integration Tests**: Minimum 70% coverage
-- **All Tests**: Minimum 75% overall coverage
+- **Statements, branches, functions, and lines**: 100% coverage thresholds for collected sources (see `jest.config.js`)
+- Playwright e2e tests are separate from the Jest suite (~1,505 tests across ~68 suites)
 
 ## Development Workflow
 
@@ -237,7 +258,8 @@ npm run test:e2e:local
 ```bash
 # Ensure you're on the latest main branch
 git checkout main
-git pull upstream main
+git fetch hmcts
+git pull --rebase hmcts main
 
 # Create and checkout a new feature branch
 git checkout -b feature/your-feature-name
@@ -290,14 +312,14 @@ git commit -m "test(user): add unit tests for user service"
 ### Keeping Your Branch Updated
 
 ```bash
-# Fetch latest changes
-git fetch upstream
+# Fetch latest upstream changes
+git fetch hmcts
 
 # Rebase your branch on latest main
-git rebase upstream/main
+git rebase hmcts/main
 
 # Or merge (if you prefer)
-git merge upstream/main
+git merge hmcts/main
 ```
 
 ## Submitting Changes
@@ -404,14 +426,25 @@ npm run build:frontend
 
 ### Docker Issues
 
+Prefer Compose V2. Default app URL after `docker compose up frontend` is **http://localhost:3100**.
+
 ```bash
 # Clean Docker environment
-docker-compose down --rmi all --volumes --remove-orphans
+docker compose down --rmi local --volumes --remove-orphans
 
-# Rebuild containers
-docker-compose build --no-cache
-docker-compose up
+# Rebuild and start the default service
+docker compose build --no-cache frontend
+docker compose up frontend
 ```
+
+If `node:26-alpine` will not pull from Docker Hub:
+
+```bash
+NODE_IMAGE=public.ecr.aws/docker/library/node:26-alpine \
+  docker compose up --build frontend
+```
+
+See [Getting Started](docs/readme/getting-started.md) and [Docker Setup](docs/docker-setup.md).
 
 ## Getting Help
 

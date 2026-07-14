@@ -28,8 +28,8 @@ If applicable, add screenshots to help explain your problem.
 - **OS**: [e.g. macOS, Windows, Linux]
 - **Browser**: [e.g. Chrome, Safari, Firefox]
 - **Version**: [e.g. 22]
-- **Node.js Version**: [e.g. 18.17.0]
-- **NestJS Version**: [e.g. 10.0.0]
+- **Node.js Version**: [e.g. 26.5.0]
+- **NestJS Version**: [e.g. 11.1.28]
 
 ## Additional Context
 Add any other context about the problem here, such as:

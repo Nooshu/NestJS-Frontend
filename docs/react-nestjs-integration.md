@@ -18,7 +18,7 @@
 > - Increases the risk of accessibility issues
 > - Makes it harder to maintain consistency with other government services
 > 
-> For government services, we strongly recommend using Nunjucks Macros from GOV.UK Frontend, which provides:
+> For government services, we strongly recommend using Nunjucks macros from GOV.UK Frontend as the **single source of truth** for component HTML, which provides:
 > - Smaller bundle sizes
 > - Better performance on all devices
 > - Improved accessibility out of the box
@@ -60,7 +60,7 @@ This guide demonstrates how to integrate React with NestJS, focusing on server-s
 ## Prerequisites
 
 Before starting, ensure you have the following installed:
-- Node.js (v25.5.0 or higher, LTS Krypton)
+- Node.js (v26.5.0 or higher; see `package.json` engines `>=26.5.0 <27`)
 - npm or yarn
 - NestJS CLI (`npm install -g @nestjs/cli`)
 
@@ -69,7 +69,7 @@ Before starting, ensure you have the following installed:
 1. First, install the required dependencies:
 
 ```bash
-npm install @nestjs/platform-express@^11.1.6 @nestjs/serve-static@^5.0.3 react react-dom next @types/react @types/react-dom
+npm install @nestjs/platform-express@11.1.28 @nestjs/serve-static@5.0.5 react react-dom next @types/react @types/react-dom
 ```
 
 2. Create a Next.js configuration file (`next.config.js`):

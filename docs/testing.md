@@ -80,10 +80,10 @@ module.exports = {
   coverageReporters: ['text', 'lcov', 'clover', 'html'],
   coverageThreshold: {
     global: {
-      branches: 80,
-      functions: 80,
-      lines: 80,
-      statements: 80,
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
     },
   },
   testEnvironment: 'jsdom',
@@ -234,7 +234,7 @@ E2E tests verify the entire application flow:
 - Validate state changes
 
 ### 4. Coverage
-- Maintain 80% coverage threshold
+- Maintain 100% coverage threshold (statements, branches, functions, lines)
 - Focus on critical paths
 - Test error scenarios
 - Verify edge cases

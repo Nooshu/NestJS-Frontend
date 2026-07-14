@@ -7,49 +7,67 @@ A proof of concept (PoC) for a HMCTS NestJS application with GOV.UK Frontend int
 | Category            | Status                                                      |
 | ------------------- | ----------------------------------------------------------- |
 | **Build**           | ✅ Passing                                                  |
-| **Tests**           | ✅ All tests passing (1,116 tests across 50 test suites)    |
-| **Dependencies**    | ✅ Up to date (January 2026) - All pinned to exact versions |
-| **Security**        | ✅ 0 vulnerabilities                                        |
-| **GOV.UK Frontend** | ✅ v5.14.0 (Latest)                                         |
-| **Node.js**         | ✅ v25.5.0 LTS (Krypton)                                    |
-| **npm**             | ✅ v11.7.0                                                  |
+| **Tests**           | ✅ All tests passing (~1,505 Jest tests across ~68 suites; Playwright e2e separate) |
+| **Dependencies**    | ✅ Up to date (July 2026) - All pinned to exact versions                           |
+| **Security**        | ✅ 0 vulnerabilities                                                              |
+| **GOV.UK Frontend** | ✅ v6.3.0 (Latest) — macros are the UI source of truth                             |
+| **Node.js**         | ✅ >=26.5.0 <27 (.nvmrc 26.5.0)                                                    |
+| **npm**             | ✅ >=11.18.0 <12                                                                  |
 
 ### Current Features
 
 - ✅ Full GOV.UK Design System integration with component parity testing
-- ✅ NestJS v11.1.12 with Express v5.2.1 adapter
-- ✅ Comprehensive test suite (Jest + Playwright) - 1,116 tests passing
+- ✅ NestJS v11.1.28 with Express v5.2.1 adapter
+- ✅ Comprehensive test suite (Jest + Playwright) - ~1,505 Jest tests across ~68 suites
+- ✅ Jest coverage thresholds at 100% (statements, branches, functions, lines)
 - ✅ Asset fingerprinting for optimal caching
 - ✅ Docker support for development and production
 - ✅ Swagger/OpenAPI documentation
 - ✅ Security headers and CSRF protection
 - ✅ Performance monitoring and metrics
 - ✅ **Find a Court or Tribunal (FaCT) prototype journey** with form validation
-- ✅ All dependencies pinned to exact versions with SHA verification
+- ✅ All dependencies pinned to exact versions; SHA verification via `bash scripts/verify-package-security.sh` after batch updates
 - ✅ robots.txt configured to prevent search engine crawling
 
 ## Super Quick Start guide
 
-### Development Mode
+Full walkthrough for **local Node** and **Docker**: [Getting Started](./docs/readme/getting-started.md).
+
+### Option A — Local Node.js (no Docker)
 
 ```bash
-# Install dependencies
+# Install dependencies (use Node from .nvmrc: nvm use)
 npm install
 
-# Start development server with hot reload (automatically builds and watches frontend assets)
+# Start development server with hot reload (builds and watches frontend assets)
 npm run start:dev
 ```
 
-### Production Build
+Open **http://localhost:3002**
+
+### Option B — Docker
 
 ```bash
-# Install dependencies
+# Prepare lockfile (recommended)
+./scripts/prepare-docker.sh
+
+# Build and run the default Compose service on port 3100
+docker compose up --build frontend
+```
+
+Open **http://localhost:3100**
+
+Optional bind-mount profile (host **3101** → container **3100**):
+
+```bash
+docker compose --profile dev up --build frontend-dev
+```
+
+### Production Build (local)
+
+```bash
 npm install
-
-# Build for production (includes frontend assets)
 npm run build:prod
-
-# Start production server
 npm run start:prod
 ```
 
@@ -74,61 +92,54 @@ npm run test:e2e:browsers
 # Run end-to-end tests locally (with proper setup)
 npm run test:e2e:local
 
-# Run tests with coverage
+# Run tests with coverage (thresholds are 100%)
 npm run test:cov
 ```
 
-### Running with Docker
+### Running with Docker (detail)
 
-#### Production Mode
+Prefer Compose V2: `docker compose` (`docker-compose` also works if installed).
+
+#### Default service (`frontend`)
 
 ```bash
-# Prepare the project for Docker build (recommended)
 ./scripts/prepare-docker.sh
-
-# Build the Docker image
-docker-compose build
-
-# Run the application
-docker-compose up
-
-# Or run in detached mode
-docker-compose up -d
+docker compose build frontend
+docker compose up frontend
+# Or: docker compose up -d frontend
 ```
 
-#### Development Mode
+#### Bind-mount profile (`frontend-dev`)
 
 ```bash
-# Build and run in development mode
-docker-compose --profile dev up frontend-dev
-
-# Or run in detached mode
-docker-compose --profile dev up -d frontend-dev
+docker compose --profile dev up --build frontend-dev
+# Or: docker compose --profile dev up -d frontend-dev
 ```
 
 #### Accessing the Application
 
-Once the container is running, you can access the application at:
+Use **http** unless you terminate TLS elsewhere:
 
-- **Production**: https://localhost:3002
-- **Development**: https://localhost:3101
-
-The application will serve a basic home page with GOV.UK Frontend styling.
+| Mode | URL |
+|------|-----|
+| Local Node (`npm run start:dev`) | http://localhost:3002 |
+| Docker `frontend` | http://localhost:3100 |
+| Docker `frontend-dev` | http://localhost:3101 |
 
 #### Docker Commands
 
 ```bash
-# Stop the application
-docker-compose down
+docker compose down
+docker compose logs -f frontend
+docker compose up --build frontend
+docker compose down --rmi local --volumes --remove-orphans
+```
 
-# View logs
-docker-compose logs -f
+Validate without a long build:
 
-# Rebuild and restart
-docker-compose up --build
-
-# Clean up containers and images
-docker-compose down --rmi all --volumes --remove-orphans
+```bash
+./scripts/validate-docker.sh
+./scripts/test-docker-config.sh
 ```
 
 The application uses a clear separation of test types:
@@ -242,35 +253,35 @@ Access the prototype at `/find-a-court-or-tribunal` when running the application
 
 ## Package Versions
 
-This project uses the following key package versions (last updated: January 2026):
+This project uses the following key package versions (last updated: July 2026):
 
 ### Core Dependencies
 
-- NestJS Framework: v11.1.12
+- NestJS Framework: v11.1.28
 - Express.js: v5.2.1
-- GOV.UK Frontend: v5.14.0
-- TypeScript: v5.9.3
-- Node.js: >=25.5.0 (LTS Krypton)
-- npm: >=11.7.0
+- GOV.UK Frontend: v6.3.0
+- TypeScript: v6.0.3 (pinned; not 7 because of ts-jest compatibility)
+- Node.js: >=26.5.0 <27
+- npm: >=11.18.0 <12
 
 ### Key Features
 
-- NestJS Core: v11.1.12
-- NestJS Swagger: v11.2.5
-- NestJS Config: v4.0.2
+- NestJS Core: v11.1.28
+- NestJS Swagger: v11.4.5
+- NestJS Config: v4.0.4
 - NestJS Axios: v4.0.1
-- NestJS Cache Manager: v3.1.0
-- NestJS Terminus: v11.0.0
+- NestJS Cache Manager: v3.1.3
+- NestJS Terminus: v11.1.1
 - NestJS Throttler: v6.5.0
 
 ### Testing & Development
 
-- Jest: v30.2.0
-- Playwright: v1.58.0
-- Prettier: v3.8.0
-- ESLint: v9.39.2
-- SASS: v1.97.2
-- Babel: v7.28.6
+- Jest: v30.4.2 (100% coverage thresholds)
+- Playwright: v1.61.1
+- Prettier: v3.9.5
+- ESLint: v10.7.0
+- SASS: v1.101.0
+- Babel: v7.29.7
 - Supertest: v7.2.2
 
 For a complete list of dependencies and their versions, please refer to the `package.json` file.
@@ -454,25 +465,25 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 
 ### Core Dependencies
 
-- [NestJS](https://nestjs.com/) v11.1.12
+- [NestJS](https://nestjs.com/) v11.1.28
 - [Express](https://expressjs.com/) v5.2.1
-- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v6.0.0
-- [TypeScript](https://www.typescriptlang.org/) v5.9.3
-- [Node.js](https://github.com/nodejs/release#release-schedule) v25.5.0 LTS (Krypton)
-- [npm](https://www.npmjs.com/) v11.7.0
+- [GOV.UK Frontend](https://github.com/alphagov/govuk-frontend/releases/latest) v6.3.0 (Nunjucks macros are the UI source of truth)
+- [TypeScript](https://www.typescriptlang.org/) v6.0.3
+- [Node.js](https://github.com/nodejs/release#release-schedule) >=26.5.0 <27
+- [npm](https://www.npmjs.com/) >=11.18.0 <12
 
 ### Key Features
 
-- Axios HTTP client for API integration v1.13.2
-- Redis caching with cache-manager v7.2.8
+- Axios HTTP client for API integration v1.18.1
+- Redis caching with cache-manager v7.2.9
 - Winston logging with structured output v3.19.0
 - Swagger/OpenAPI documentation
 - Rate limiting with @nestjs/throttler v6.5.0
 - Compression middleware with configurable settings
 - Browser-side caching with smart invalidation
-- Helmet.js security headers v8.1.0
+- Helmet.js security headers v8.3.0
 - Nunjucks templating engine - the official and default templating language used by GOV.UK Design System
-- Class-validator v0.14.3 for request validation
+- Class-validator v0.15.1 for request validation
 - Class-transformer v0.5.1 for object transformation
 - TypeORM for database operations
 - Prisma ORM support
@@ -490,17 +501,17 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 
 ### Development Tools
 
-- Jest v30.2.0 for unit and integration testing
-- Playwright v1.57.0 for end-to-end testing
-- Prettier v3.8.0 for code formatting
-- ESLint v9.39.2 for code linting
+- Jest v30.4.2 for unit and integration testing (100% coverage thresholds)
+- Playwright v1.61.1 for end-to-end testing
+- Prettier v3.9.5 for code formatting
+- ESLint v10.7.0 for code linting
 - TypeScript strict mode enabled
-- SASS v1.97.2 for CSS preprocessing
+- SASS v1.101.0 for CSS preprocessing
 - Supertest v7.2.2 for API testing
 - Renovate bot for dependency updates
-- PostCSS v8.5.6 for CSS optimisation
-- Babel v7.28.6 for JavaScript transpilation
-- All dependencies pinned to exact versions with SHA integrity verification
+- PostCSS v8.5.19 for CSS optimisation
+- Babel v7.29.7 for JavaScript transpilation
+- All dependencies pinned to exact versions; SHA verification via `bash scripts/verify-package-security.sh` after batch updates
 
 ## Dependency Management
 

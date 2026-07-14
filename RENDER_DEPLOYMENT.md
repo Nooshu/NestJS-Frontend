@@ -6,7 +6,7 @@ This guide will help you deploy your NestJS application to Render.com.
 
 1. A Render.com account
 2. Your code pushed to a Git repository (GitHub, GitLab, or Bitbucket)
-3. Node.js 22+ (as specified in package.json engines)
+3. Node.js `>=26.5.0 <27` (as specified in package.json engines)
 
 ## Deployment Steps
 

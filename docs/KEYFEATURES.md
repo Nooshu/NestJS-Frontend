@@ -8,8 +8,8 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ### 1. Modern Framework Architecture
 
-- Built on NestJS v11.1.6, providing a scalable and maintainable architecture
-- TypeScript v5.9.2 with strict mode enabled for maximum type safety
+- Built on NestJS v11.1.28, providing a scalable and maintainable architecture
+- TypeScript v6.0.3 with strict mode enabled for maximum type safety (pinned; not 7 because of ts-jest)
 - Modular design following SOLID principles with clear separation of concerns
 - Dependency injection for better testability and maintainability
 - Built-in support for microservices architecture
@@ -28,7 +28,8 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ### 3. GOV.UK Frontend Integration
 
-- Seamless integration with GOV.UK Frontend v5.11.2 components
+- Seamless integration with GOV.UK Frontend v6.3.0 components
+- **GOV.UK Frontend Nunjucks macros are the single source of truth** for component HTML — do not hand-write GOV.UK component markup when a macro exists
 - Nunjucks templating engine - the official and default templating language used by [GOV.UK Design System](https://design-system.service.gov.uk/), ensuring perfect compatibility and maintainability
 - Built-in support for [GOV.UK Design System patterns](https://design-system.service.gov.uk/)
 - [WCAG 2.2 Accessibility compliance](https://design-system.service.gov.uk/accessibility/wcag-2.2/) built into the codebase
@@ -40,8 +41,8 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 
 ### 4. Security Features
 
-- Helmet.js v8.1.0 integration with custom security configurations
-- Built-in rate limiting with @nestjs/throttler v6.4.0
+- Helmet.js v8.3.0 integration with custom security configurations
+- Built-in rate limiting with @nestjs/throttler v6.5.0
 - Compression middleware for optimised performance
 - Environment-based configuration management
 - Custom CSRF protection with cryptographic token generation:
@@ -57,22 +58,22 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
 - Strict permissions policy
 - CORS configuration
 - CSP violation reporting
-- Request validation using class-validator v0.14.2
+- Request validation using class-validator v0.15.1
 - Security error filtering and logging
 - Session management
 - JWT support for authentication
-- Express v5.1.0 with enhanced security features
+- Express v5.2.1 with enhanced security features
 
 ### 5. Developer Experience
 
 - Comprehensive testing setup
-  - Jest v30.1.1 for unit and integration testing
+  - Jest v30.4.2 for unit and integration testing (100% coverage thresholds)
     - Full Performance API mocking for accurate performance testing
     - Type-safe test utilities with TypeScript
     - Custom test matchers for common assertions
     - Global test configuration and setup
     - Mock utilities for common browser APIs
-  - Playwright v1.55.0 for end-to-end testing
+  - Playwright v1.61.1 for end-to-end testing
     - Cross-browser testing (Chrome, Firefox, Safari)
     - Automatic waiting and retry mechanisms
     - Screenshot and video capture
@@ -109,27 +110,27 @@ This project combines the power of NestJS with GOV.UK Frontend to create a robus
     - Coverage reporting and analysis
 - Swagger/OpenAPI documentation with automatic generation
 - Winston v3.19.0 logging integration with structured logging
-- Prettier v3.8.0 and ESLint for code quality
+- Prettier v3.9.5 and ESLint for code quality
 - Hot-reload development environment
 - TypeScript decorators for clean code
 - Built-in validation and transformation
 - Clear error messages and debugging support
 - Supertest v7.2.2 for API testing
-- Node.js v25.5.0+ support with modern features
-- PostCSS v8.5.6 for modern CSS processing
-- Babel v7.28.6 for JavaScript transpilation
+- Node.js >=26.5.0 <27 support with modern features
+- PostCSS v8.5.19 for modern CSS processing
+- Babel v7.29.7 for JavaScript transpilation
 
 ### 6. Performance Optimisation
 
-- Redis caching support with cache-manager v7.2.8
+- Redis caching support with cache-manager v7.2.9
 - Static file serving optimisation with custom headers
 - Compression middleware with configurable options
-- Axios v1.11.0 HTTP client for efficient API calls
+- Axios v1.18.1 HTTP client for efficient API calls
 - Request batching support
 - Connection pooling
 - Response compression
 - Asset versioning and caching
-- ioredis v5.9.3 for Redis operations
+- ioredis v5.11.1 for Redis operations
 - Code splitting and lazy loading
 - CSS optimisation with PostCSS
 - Service worker for offline support

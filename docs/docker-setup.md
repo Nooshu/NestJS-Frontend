@@ -1,323 +1,194 @@
 # Docker Setup for NestJS Frontend
 
-This document describes the Docker configuration for the NestJS Frontend application.
+Containerised runbook for the NestJS Frontend application. For a side-by-side **Docker vs local Node** quick start, see [Getting Started](./readme/getting-started.md).
 
 ## Overview
 
-The Docker setup provides containerized deployment for both development and production environments. The application runs on port 3002 and includes:
+- Multi-stage `Dockerfile` on **Node 26 Alpine** (matches `package.json` engines `>=26.5.0 <27`)
+- Compose V2 (`docker compose`) with:
+  - `frontend` — default service on host **3100**
+  - `frontend-dev` — optional bind-mount profile on host **3101**
+- Application binds `HOST=0.0.0.0` inside containers (see `src/main.ts`)
+- Container default `PORT=3100` (local non-Docker default remains **3002**)
 
-- Multi-stage Docker build for optimization
-- Production and development configurations
-- Health checks
-- Security best practices (non-root user)
-- Asset fingerprinting and caching
+## Files
 
-## Files Created
+| File | Purpose |
+|------|---------|
+| `Dockerfile` | Multi-stage: `base` → `development` → `production` |
+| `Dockerfile.render` | Render.com-oriented production build |
+| `docker-compose.yml` | `frontend` + optional `frontend-dev` profile |
+| `.dockerignore` | Keeps build context small |
+| `scripts/prepare-docker.sh` | Sync lockfile before `docker compose build` |
+| `scripts/validate-docker.sh` | Presence + Compose config + port checks |
+| `scripts/test-docker-config.sh` | Base image / port smoke checks |
+| `scripts/setup-docker.sh` | Docker Desktop / Compose detection |
 
-### Dockerfile
-- **Location**: `./Dockerfile`
-- **Purpose**: Multi-stage build configuration
-- **Features**:
-  - Base stage with Node.js 24 Alpine (LTS Krypton)
-  - Development stage with hot reload
-  - Production stage with security hardening
-  - Non-root user for security
-  - Health checks
-  - Legacy peer deps support for dependency conflicts
+## Prerequisites
 
-### docker-compose.yml
-- **Location**: `./docker-compose.yml`
-- **Purpose**: Container orchestration
-- **Services**:
-  - `frontend`: Production service on port 3002
-  - `frontend-dev`: Development service on port 3101 (optional)
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop) (or Engine + Compose V2)
+2. Confirm:
 
-### .dockerignore
-- **Location**: `./.dockerignore`
-- **Purpose**: Exclude unnecessary files from Docker build context
-- **Excludes**: node_modules, dist, test files, documentation, etc.
+```bash
+docker --version
+docker compose version
+```
 
-### Scripts
-- **Location**: `./scripts/`
-- **Files**:
-  - `setup-docker.sh`: Docker installation and setup verification
-  - `validate-docker.sh`: Configuration validation
-  - `prepare-docker.sh`: Prepare project for Docker builds
-  - `test-docker-config.sh`: Test Docker configuration without Docker
+3. Prepare dependencies:
+
+```bash
+./scripts/prepare-docker.sh
+```
 
 ## Quick Start
 
-### Prerequisites
-1. Install Docker Desktop: https://www.docker.com/products/docker-desktop
-2. Start Docker Desktop
-3. Verify installation: `docker --version`
-4. Prepare the project: `./scripts/prepare-docker.sh`
+### Default service (`frontend`)
 
-### Production Mode
 ```bash
-# Build the Docker image
-docker-compose build
+docker compose build frontend
+docker compose up frontend
 
-# Run the application
-docker-compose up
-
-# Or run in detached mode
-docker-compose up -d
+# Detached
+docker compose up -d frontend
 ```
 
-### Development Mode
-```bash
-# Build and run in development mode
-docker-compose --profile dev up frontend-dev
+Open **http://localhost:3100**
 
-# Or run in detached mode
-docker-compose --profile dev up -d frontend-dev
+### Bind-mount profile (`frontend-dev`)
+
+```bash
+docker compose --profile dev up --build frontend-dev
+# Detached: docker compose --profile dev up -d frontend-dev
 ```
 
-### Access the Application
-- **Production**: https://localhost:3002
-- **Development**: https://localhost:3101
+Open **http://localhost:3101**
 
-## Configuration Details
+### Production Dockerfile stage
 
-### Port Configuration
-The application is configured to run on port 3002 by default:
-- Updated `src/main.ts` to use port 3002
-- Docker containers expose port 3002
-- Environment variable `PORT` can override default
+Compose uses the `development` stage by default (convenient for this PoC). Lean production image:
 
-### Environment Variables
-- `NODE_ENV`: Set to `production` or `development`
-- `PORT`: Application port (default: 3002)
-
-### Health Checks
-The application includes health checks that verify:
-- Application is responding on port 3002
-- Health endpoint returns 200 status
-- Checks run every 30 seconds with 3 retries
-
-## Docker Commands
-
-### Basic Operations
 ```bash
-# Build image
-docker-compose build
-
-# Start services
-docker-compose up
-
-# Start in background
-docker-compose up -d
-
-# Stop services
-docker-compose down
-
-# View logs
-docker-compose logs -f
-
-# Rebuild and start
-docker-compose up --build
+docker build --target production -t nestjs-frontend:prod .
+docker run --rm -p 3100:3100 \
+  -e NODE_ENV=production \
+  -e HOST=0.0.0.0 \
+  -e PORT=3100 \
+  nestjs-frontend:prod
 ```
 
-### Development Commands
+## Everyday commands
+
 ```bash
-# Start development service
-docker-compose --profile dev up frontend-dev
-
-# Rebuild development image
-docker-compose --profile dev build frontend-dev
-
-# View development logs
-docker-compose --profile dev logs -f frontend-dev
+docker compose logs -f frontend
+docker compose down
+docker compose up --build frontend
+docker compose --profile dev logs -f frontend-dev
+docker compose down --rmi local --volumes --remove-orphans
 ```
 
-### Maintenance Commands
-```bash
-# Clean up everything
-docker-compose down --rmi all --volumes --remove-orphans
+Validate without building:
 
-# Remove all images
-docker system prune -a
-
-# View resource usage
-docker stats
-```
-
-## Security Features
-
-### Production Security
-- Non-root user (`nestjs:nodejs`)
-- Minimal Alpine Linux base image
-- No development dependencies in production
-- Health checks for monitoring
-
-### Development Security
-- Volume mounting for hot reload
-- Development dependencies included
-- Source code mounted for debugging
-
-## Success Verification
-
-### Testing the Application
-```bash
-# Test the main application
-curl http://localhost:3002
-
-# Test the health endpoint
-curl http://localhost:3002/health
-
-# Expected responses:
-# - Main page: HTML content with GOV.UK styling
-# - Health: {"status":"ok","info":{...},"error":{},"details":{...}}
-```
-
-### Verification Checklist
-- ✅ Docker container builds successfully
-- ✅ Application starts without errors
-- ✅ Main page loads with GOV.UK styling
-- ✅ Health endpoint returns 200 OK
-- ✅ Static assets are served correctly
-- ✅ Template rendering works properly
-- ✅ Asset fingerprinting is functional
-
-## Troubleshooting
-
-### Common Issues
-
-#### Port Already in Use
-```bash
-# Check what's using port 3002
-lsof -i :3002
-
-# Kill the process or use different port
-docker-compose up -p 3003:3002
-```
-
-#### Build Failures
-```bash
-# Clean build cache
-docker-compose build --no-cache
-
-# Check Docker logs
-docker-compose logs build
-
-# If you see peer dependency conflicts, the Dockerfile uses --legacy-peer-deps
-# This is already configured to handle chokidar and other dependency conflicts
-```
-
-#### Permission Issues
-```bash
-# Fix file permissions
-sudo chown -R $USER:$USER .
-
-# Rebuild with proper permissions
-docker-compose build --no-cache
-```
-
-### Validation
-Run the validation script to check configuration:
 ```bash
 ./scripts/validate-docker.sh
-```
-
-### Configuration Testing
-Test Docker configuration without Docker:
-```bash
 ./scripts/test-docker-config.sh
 ```
 
-### Setup Verification
-Run the setup script to verify Docker installation:
+## Port map
+
+| Mode | URL | Notes |
+|------|-----|--------|
+| Local Node | http://localhost:3002 | `PORT` default in `src/main.ts` |
+| Compose `frontend` | http://localhost:3100 | `PORT=3100` in Compose |
+| Compose `frontend-dev` | http://localhost:3101 | Host 3101 → container 3100 |
+| `docker run` (prod target) | http://localhost:3100 | Image `ENV PORT=3100` |
+
+## Environment variables
+
+| Variable | Typical Docker value | Purpose |
+|----------|----------------------|---------|
+| `NODE_ENV` | `development` / `production` | Runtime mode |
+| `HOST` | `0.0.0.0` | Listen address (required for published ports) |
+| `PORT` | `3100` | HTTP listen port inside the container |
+
+## Health checks
+
+Compose and the production image probe `GET /health` on the container port.
+
 ```bash
-./scripts/setup-docker.sh
+curl -f http://localhost:3100/health
 ```
 
-## Performance Considerations
+## Troubleshooting
 
-### Build Optimization
-- Multi-stage builds reduce final image size
-- `.dockerignore` excludes unnecessary files
-- Layer caching for faster rebuilds
-- Legacy peer deps handling for dependency conflicts
+### Cannot pull `node:26-alpine`
 
-### Dependency Management
-- Uses `--legacy-peer-deps` to handle peer dependency conflicts
-- Resolves issues with chokidar and other conflicting dependencies
-- Ensures consistent builds across different environments
+Docker Hub / network timeouts. Pull first, then build:
 
-### Runtime Performance
-- Alpine Linux for smaller image size
-- Production-only dependencies
-- Asset fingerprinting for caching
-- Compression middleware enabled
+```bash
+docker pull node:26-alpine
+docker compose build frontend
+```
 
-### Development Performance
-- Volume mounting for instant file changes
-- Hot reload support
-- Development dependencies for debugging
+Or build with the AWS public mirror of the same official image:
 
-## Integration with CI/CD
+```bash
+docker build \
+  --build-arg NODE_IMAGE=public.ecr.aws/docker/library/node:26-alpine \
+  --target development \
+  -t nestjs-frontend:dev \
+  .
+docker run --rm -p 3100:3100 -e HOST=0.0.0.0 -e PORT=3100 nestjs-frontend:dev
+```
 
-### GitHub Actions Example
+Compose can pass the same arg via:
+
 ```yaml
-name: Docker Build and Test
-
-on: [push, pull_request]
-
-jobs:
-  docker-build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Build Docker image
-        run: docker-compose build
-      - name: Test Docker image
-        run: docker-compose up -d && sleep 30 && curl -f http://localhost:3002/health
+# under frontend.build
+args:
+  NODE_IMAGE: public.ecr.aws/docker/library/node:26-alpine
 ```
 
-## Monitoring and Logging
+(or `docker compose build --build-arg NODE_IMAGE=public.ecr.aws/docker/library/node:26-alpine frontend`).
 
-### Health Monitoring
-- Health checks every 30 seconds
-- Automatic restart on failure
-- Status endpoint at `/health`
+### Port already in use
 
-### Logging
-- Winston-based logging
-- Structured JSON logs
-- Log levels: error, warn, info, debug
+```bash
+lsof -i :3100
+docker compose down
+```
 
-### Metrics
-- Application metrics via `/health`
-- Docker stats via `docker stats`
-- Resource monitoring via Docker Desktop
+### Peer dependency / lockfile issues
 
-## Best Practices
+```bash
+./scripts/prepare-docker.sh
+docker compose build --no-cache frontend
+```
 
-### Development
-1. Use development profile for local development
-2. Mount source code for hot reload
-3. Use volume mounts for node_modules
-4. Enable debugging with source maps
+The Dockerfile already uses `npm install --legacy-peer-deps`.
 
-### Production
-1. Use production profile
-2. Implement proper health checks
-3. Use non-root user
-4. Minimize image size
-5. Enable security headers
+### Permission issues (bind mounts)
 
-### Security
-1. Regular base image updates
-2. Vulnerability scanning
-3. Non-root user execution
-4. Minimal attack surface
-5. Proper .dockerignore
+```bash
+sudo chown -R "$USER:$USER" .
+```
+
+## CI sketch
+
+```yaml
+- uses: actions/checkout@v4
+- name: Build
+  run: docker compose build frontend
+- name: Smoke health
+  run: |
+    docker compose up -d frontend
+    sleep 40
+    curl -f http://localhost:3100/health
+    docker compose down
+```
 
 ## References
 
-- [Docker Documentation](https://docs.docker.com/)
-- [Docker Compose Documentation](https://docs.docker.com/compose/)
-- [NestJS Docker Guide](https://docs.nestjs.com/deployment)
-- [Alpine Linux](https://alpinelinux.org/)
-- [Node.js Docker Images](https://hub.docker.com/_/node) 
+- [Getting Started](./readme/getting-started.md) — Docker and non-Docker onboarding
+- [Docker docs](https://docs.docker.com/)
+- [Compose V2](https://docs.docker.com/compose/)
+- [Node official images](https://hub.docker.com/_/node)

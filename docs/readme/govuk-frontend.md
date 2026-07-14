@@ -1,6 +1,17 @@
 # GOV.UK Frontend Integration
 
-The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling and components. The current version is 6.0.0 as specified in `package.json`.
+The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling and components. The current version is 6.3.0 as specified in `package.json`.
+
+## Macros as the single source of truth
+
+**GOV.UK Frontend Nunjucks macros are mandatory** and are the **single source of truth** for GOV.UK Design System component HTML.
+
+- All component markup must come from official macros (for example `govukButton`, `govukInput`, `govukHeader`, `govukFooter`, `govukSkipLink`, `govukErrorSummary`)
+- Prefer `{% from "govuk/components/.../macro.njk" import ... %}` and macro calls over duplicated HTML
+- Do **not** hand-write GOV.UK component markup (classes like `govuk-button`, `govuk-error-summary`, `govuk-breadcrumbs`, and similar) when a macro exists
+- Layout chrome (skip link, header, footer, breadcrumbs, pagination wrappers) must use macros, not custom reimplementations
+- Typography and layout utility classes (`govuk-heading-*`, `govuk-body`, `govuk-grid-*`, `govuk-!-*-*`) are allowed for page composition; component structure must still come from macros
+- After GOV.UK Frontend upgrades, rely on macros for HTML updates; do not patch markup by hand to match a new release
 
 ## Before Updating
 
@@ -16,7 +27,7 @@ The application uses the GOV.UK Frontend package (`govuk-frontend`) for styling 
    npm list govuk-frontend
    ```
 
-   Current version should be 5.11.2
+   Current version should be 6.3.0
 
 3. Review the current configuration:
    - Check `src/adapters/security-compliance/govuk.config.ts` for any configuration changes
@@ -211,7 +222,11 @@ For detailed information about GOV.UK Frontend versions and migration guides, vi
 
 | Version | Date Updated | Changes                 |
 | ------- | ------------ | ----------------------- |
-| 5.11.2  | Current      | Latest stable release   |
+| 6.3.0   | Current      | Latest stable release   |
+| 6.1.0   | Previous     | Previous stable release |
+| 6.0.0   | Previous     | Major release           |
+| 5.14.0  | Previous     | Previous v5 release     |
+| 5.11.2  | Previous     | Previous stable release |
 | 5.11.1  | Previous     | Previous stable release |
 | 5.10.2  | Previous     | Previous stable release |
 | 5.10.1  | Previous     | Previous stable release |

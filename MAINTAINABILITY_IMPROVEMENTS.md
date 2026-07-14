@@ -6,7 +6,7 @@ This document outlines recommended improvements to enhance the maintainability o
 
 - ✅ All dependencies pinned to exact versions
 - ✅ SHA integrity verification
-- ✅ Comprehensive test suite (1,116 tests)
+- ✅ Comprehensive test suite (~1,505 Jest tests across ~68 suites)
 - ✅ Renovate Bot configuration
 - ✅ TypeScript strict mode
 - ✅ ESLint and Prettier configuration
@@ -122,7 +122,7 @@ jobs:
     
     strategy:
       matrix:
-        node-version: [25.5.0]
+        node-version: [26.5.0]
     
     steps:
       - uses: actions/checkout@v4
@@ -144,7 +144,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 25.5.0
+          node-version: 26.5.0
           cache: 'npm'
       
       - run: npm ci
