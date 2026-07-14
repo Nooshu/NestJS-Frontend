@@ -1,0 +1,31 @@
+---
+description: Keep repository docs current and require comprehensive code comments for future developers
+alwaysApply: true
+---
+
+# Documentation and code comments
+
+## Documentation
+
+- Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change.
+- Update the README, `docs/**`, `AGENTS.md`, changelogs, and any feature-specific markdown in the same change set when those topics are affected — do not leave stale version numbers, test counts, Node/npm ranges, or archived/outdated guidance.
+- Prefer linking to canonical docs (`AGENTS.md`, `.cursor/rules/*.mdc`, `docs/readme/*`) rather than duplicating conflicting instructions.
+- Document **why** a decision was made when it is non-obvious (for example Nest DI coverage transform, pinned TypeScript 6 vs 7, GOV.UK macro usage).
+- After dependency or GOV.UK Frontend upgrades, sync version tables and status sections in README and docs.
+
+## Code comments
+
+- Write **comprehensive comments for future developers**: every public module, class, and non-trivial function should have a clear documentation block describing purpose, inputs/outputs, side effects, and important constraints.
+- Explain **why** and **constraints**, not a line-by-line restatement of obvious code.
+- Call out security-sensitive behaviour (CSRF, headers, sanitisation), performance traps, and GOV.UK Frontend macro/template requirements.
+- Keep Nunjucks templates annotated where macros are composed or where client scripts depend on macro-rendered markup.
+- Prefer JSDoc / structured block comments that match existing NestJS style in this repository.
+- When changing code, update nearby comments and any related documentation in the same change — never leave comments that contradict the code.
+
+## Agent checklist
+
+When finishing a change:
+
+1. Docs touched or confirmed still accurate for that change
+2. Public/complex APIs have up-to-date comments
+3. `AGENTS.md` / `.cursor/rules` updated if a standing convention changed

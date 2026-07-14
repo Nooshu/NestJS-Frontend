@@ -1,0 +1,35 @@
+---
+description: Prioritise frontend performance, DB performance, and accessible UI on every change
+alwaysApply: true
+---
+
+# Performance and accessibility priorities
+
+Treat **frontend performance**, **database performance**, and **accessible UI** as top priorities on every change — not as optional follow-ups.
+
+## Frontend performance
+
+- Avoid unnecessary client JS, blocking scripts, and layout thrashing
+- Prefer efficient assets (fingerprinting, caching headers, compressed CSS) and avoid shipping unused GOV.UK or app JS/CSS
+- Watch Core Web Vitals risks: large assets, long tasks, layout shift, late LCP
+- Prefer progressive enhancement on macro-rendered markup over heavy client rendering
+
+## Database performance
+
+- Prefer indexed, selective Prisma/PostgreSQL queries; avoid N+1 and unbounded `findMany` without pagination or limits
+- Use transactions only where needed; avoid chatty round-trips when a single query or `$transaction` batch is enough
+- Do not add migrations or schema changes that ignore query cost or lock impact without calling them out
+- Prefer Nest/Prisma patterns already in the stack over ad-hoc SQL that bypasses reviewable query shapes
+
+## Accessible UI
+
+- Prefer GOV.UK Frontend macros, CSS, and JS so accessibility patterns from the Design System are preserved
+- Keep keyboard, focus, error summary, labels, and skip-link behaviour intact when changing templates or app JS
+- Do not “fix” accessibility by breaking GOV.UK Frontend to satisfy a single axe rule — see `.cursor/rules/prefer-govuk-over-axe.mdc`
+- Manual and automated checks should remain green for journeys you touch; if a conflict is intentional, document it
+
+## On every change
+
+- Ask whether the change hurts load time, query cost, or accessibility before shipping
+- Prefer the smaller, clearer fix that keeps all three priorities intact over clever but expensive alternatives
+- Call out residual performance or a11y risks in summaries when they remain

@@ -1,0 +1,16 @@
+---
+description: Prefer NestJS, TypeScript, and Prisma/PostgreSQL over ad-hoc server patterns
+alwaysApply: true
+---
+
+# Prefer NestJS / TypeScript / Prisma–PostgreSQL in apps/server
+
+For server and application logic, use the platform stack — not one-off patterns.
+
+- Put Nest/server application code in **`apps/server`** when that package exists; otherwise keep it in the Nest app (`src/`) using the same conventions — do not invent a parallel runtime (bare Express apps, ad-hoc Node scripts as the app server, etc.)
+- Prefer **NestJS** building blocks: modules, providers, controllers, pipes, guards, interceptors, config, and DI — over hand-rolled singletons, global mutable state, or unstructured middleware stacks
+- Prefer **TypeScript** end-to-end on the server: typed DTOs, interfaces, and Nest validation — avoid untyped `any`-heavy helpers or plain JS server modules unless there is a clear, documented exception
+- Prefer **Prisma** with **PostgreSQL** for persistence when a database is required: schema, migrations, and `PrismaClient` / Nest `PrismaService` — not ad-hoc SQL string builders, raw `pg` wrappers, JSON file “databases”, or inventing a second ORM unless explicitly required
+- Prefer Nest/Prisma transactions, typed queries, and migrations over scattered SQL scripts or manual connection pools outside DI
+- Reuse existing Nest config, logging, and error-handling patterns instead of new bespoke frameworks inside the same app
+- If choosing an alternative (e.g. TypeORM, Redis-only, no DB), document **why** in the change and keep it within Nest modules — do not bypass the stack casually

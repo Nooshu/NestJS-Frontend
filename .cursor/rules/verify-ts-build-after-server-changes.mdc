@@ -1,0 +1,15 @@
+---
+description: After server TypeScript changes, verify build/tests and fix compile errors
+alwaysApply: true
+---
+
+# Verify build and tests after server TypeScript changes
+
+When you change server/app TypeScript (`src/**/*.ts`, `apps/server/**`, Nest modules, DTOs, services, controllers, Prisma typings, etc.):
+
+1. Run a TypeScript check and/or Nest build before considering the work done — prefer `npm run type-check` and, when the change affects the compiled app, `npm run build` (or the project’s equivalent)
+2. Run relevant tests (`npm test`, focused Jest suites, or the closest suite that covers the touched modules)
+3. **Fix compile errors** (and failing type-check) in the same change — do not leave `tsc` / Nest build red
+4. Fix test failures caused by the TypeScript change in the same change when they are clear regressions
+5. If a failure is environmental or pre-existing and unrelated, say so in the summary; do not ignore new compile errors introduced by your edit
+6. Prefer fixing types properly (interfaces, DTO classes, Prisma types) over silencing with `any` or `@ts-ignore` unless explicitly required and documented

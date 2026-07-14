@@ -1,0 +1,16 @@
+---
+description: Pin all dependency updates and run SHA integrity checks once after all packages are updated
+alwaysApply: true
+---
+
+# Dependency pinning and SHA verification
+
+- Pin every dependency and devDependency to an exact version (no `^`, `~`, or ranges).
+- Keep `.npmrc` with `save-exact=true` so installs stay pinned.
+- Preserve `package-lock.json` integrity hashes (`integrity": "sha512-...`) for all packages.
+- When updating multiple packages in one task:
+  - Update all target packages first (and refresh the lockfile as needed).
+  - Run pin + SHA integrity verification **once** after every package update is complete — do not re-run it after each individual package.
+  - Use: `./scripts/verify-package-security.sh`
+- Do not treat the verify script as a per-package step; batch updates, then verify once.
+- If verification fails, fix pinning or lockfile integrity issues before finishing the task.
