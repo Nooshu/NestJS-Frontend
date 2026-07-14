@@ -218,19 +218,26 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
 
 ### Renovate Configuration Features
 
-1. **Update Scheduling**
+1. **Release cooldown (7 days)**
+   - npm updates use `minimumReleaseAge: "7 days"` with `internalChecksFilter: "strict"`
+   - Renovate does not open routine update PRs until a version has been on the registry for 7 days
+   - Security / vulnerability alerts are exempt (`minimumReleaseAge: null`)
+   - Local npm installs also enforce this via `.npmrc` `min-release-age=7`
+   - Dependabot version updates use `cooldown.default-days: 7` (security updates are not delayed)
+
+2. **Update Scheduling**
    - Regular updates: Monday mornings (before 10am)
    - Security updates: Anytime (high priority)
    - Timezone: Europe/London
 
-2. **Update Grouping**
+3. **Update Grouping**
    - NestJS packages grouped together
    - Babel packages grouped together
    - TypeScript ESLint packages grouped together
    - Testing library packages grouped together
    - TypeScript type definitions grouped together
 
-3. **Priority Levels**
+4. **Priority Levels**
    - Security updates: Priority 20 (highest)
    - GOV.UK Frontend: Priority 15
    - Node.js/npm engines: Priority 12
@@ -240,14 +247,14 @@ This project uses [Renovate Bot](https://renovatebot.com/) to automatically mana
    - Dev dependency updates: Priority 3-5
    - Major updates: Priority 1 (requires manual review)
 
-4. **Labels and Categorization**
+5. **Labels and Categorization**
    - Security updates: `security`, `vulnerability`
    - Production dependencies: `dependencies`, `production`
    - Dev dependencies: `dependencies`, `dev-dependencies`
    - Major updates: `breaking-change`
    - Package-specific labels (e.g., `govuk-frontend`, `typescript`)
 
-5. **Automerge Settings**
+6. **Automerge Settings**
    - Automerge disabled by default (manual review required)
    - Security updates require manual approval
    - Major updates require manual approval

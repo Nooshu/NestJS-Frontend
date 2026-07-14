@@ -1,5 +1,5 @@
 ---
-description: Pin all dependency updates and run SHA integrity checks once after all packages are updated
+description: Pin dependency updates, SHA checks once, and 7-day release cooldown
 alwaysApply: true
 ---
 
@@ -7,7 +7,11 @@ alwaysApply: true
 
 - Pin every dependency and devDependency to an exact version (no `^`, `~`, or ranges).
 - Keep `.npmrc` with `save-exact=true` so installs stay pinned.
-- Preserve `package-lock.json` integrity hashes (`integrity": "sha512-...`) for all packages.
+- Preserve `package-lock.json` integrity hashes (`integrity": "sha512-..."`) for all packages.
+- **7-day release cooldown:** do not suggest or apply routine dependency updates until the target version has been published for at least **7 days** (aligns with Renovate `minimumReleaseAge`, Dependabot `cooldown`, and `.npmrc` `min-release-age=7`).
+  - Check npm publish time (or wait) before proposing bumps; skip “just released” versions unless the user asks to override.
+  - **Security / vulnerability fixes** may proceed without waiting when clearly required; document the exception.
+  - To install a too-new fix locally, use `min-release-age-exclude` or a temporary relaxation — do not silently drop the cooldown in `.npmrc` permanently without agreement.
 - When updating multiple packages in one task:
   - Update all target packages first (and refresh the lockfile as needed).
   - Run pin + SHA integrity verification **once** after every package update is complete — do not re-run it after each individual package.

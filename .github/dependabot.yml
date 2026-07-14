@@ -9,6 +9,10 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
+    # Wait after publish before opening version-update PRs (supply-chain cooldown).
+    # Security updates are not delayed by cooldown.
+    cooldown:
+      default-days: 7
     # ajv: no patched version compatible with eslint/@eslint/eslintrc (they require ajv 6;
     # fix is 8.18.0+). Forcing ajv 8 breaks ESLint at runtime. Ignore until upstream fixes.
     ignore:

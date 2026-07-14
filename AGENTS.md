@@ -30,6 +30,7 @@ Canonical Cursor rules also live in `.cursor/rules/` (always-applied `.mdc` file
 ## Dependencies
 
 - Prefer **patch and minor** updates unless explicitly asked for latest/major
+- Prefer versions published at least **7 days** ago for routine updates (security fixes may skip the wait) — see `.cursor/rules/dependency-pinning.mdc`
 - **Pin every dependency** to an exact version (no `^`, `~`, or ranges) — see `.cursor/rules/dependency-pinning.mdc`
 - Keep `.npmrc` with `save-exact=true`
 - Preserve `package-lock.json` integrity hashes (`"integrity": "sha512-..."`)
@@ -118,7 +119,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 | File | Purpose |
 |------|---------|
 | `.cursor/rules/project-standards.mdc` | Node/npm, hmcts/origin sync, tests after deps, summary risks |
-| `.cursor/rules/dependency-pinning.mdc` | Exact pins + single post-update SHA check |
+| `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, single post-update SHA check |
 | `.cursor/rules/prefer-nestjs-prisma-stack.mdc` | Prefer NestJS/TS/Prisma–PostgreSQL over ad-hoc patterns |
 | `.cursor/rules/govuk-frontend-ui.mdc` | GOV.UK Frontend macros as UI source of truth |
 | `.cursor/rules/prefer-govuk-over-axe.mdc` | Prefer GOV.UK Frontend over axe when they conflict |

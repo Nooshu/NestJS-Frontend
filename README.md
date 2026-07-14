@@ -518,6 +518,7 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 This project uses [Renovate](https://renovatebot.com/) to automatically keep dependencies up to date. The Renovate configuration is defined in `renovate.json` and includes:
 
 - Automated dependency updates
+- **7-day minimum release age** before routine update PRs (security alerts are not delayed)
 - Scheduled update checks
 - Version constraint management
 - Update grouping
