@@ -7,11 +7,12 @@ WORKDIR /app
 # Install dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package files
+# Copy package files and patches (required for postinstall → patch-package)
 COPY package*.json ./
+COPY patches ./patches
 
-# Install dependencies
-RUN npm ci --only=production --legacy-peer-deps && npm cache clean --force
+# Install dependencies (production-only tree; skip postinstall — patch-package is a devDependency)
+RUN npm ci --omit=dev --ignore-scripts --legacy-peer-deps && npm cache clean --force
 
 # Development stage for building
 FROM node:26-alpine AS development
@@ -21,8 +22,9 @@ WORKDIR /app
 # Install dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package files
+# Copy package files and patches (required for postinstall → patch-package)
 COPY package*.json ./
+COPY patches ./patches
 
 # Install all dependencies (including dev dependencies for building)
 RUN npm ci --legacy-peer-deps && npm cache clean --force

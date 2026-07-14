@@ -58,7 +58,7 @@
     "build:scss": "sass src/frontend/scss/main.scss:dist/public/css/main.css --style=compressed --load-path=node_modules",
     "build:scss:watch": "sass src/frontend/scss/main.scss:dist/public/css/main.css --watch --load-path=node_modules",
     "copy:assets": "npm-run-all -c copy:images copy:js copy:govuk-assets copy:govuk-dist copy:public-assets",
-    "copy:images": "cpy 'src/frontend/images/**/*' 'dist/public/images'",
+    "copy:images": "cpy 'src/frontend/images/**/*' 'dist/public/images' --dot",
     "copy:js": "cpy 'src/frontend/js/**/*' 'dist/public/js'",
     "copy:govuk-assets": "cpy 'node_modules/govuk-frontend/dist/govuk/assets/**/*' 'dist/public/assets'",
     "copy:govuk-dist": "cpy 'node_modules/govuk-frontend/dist/govuk/*.{css,js,css.map,js.map}' 'dist/public/govuk'",

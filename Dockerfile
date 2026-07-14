@@ -7,19 +7,18 @@ FROM ${NODE_IMAGE} AS base
 # Align global npm with engines (>=11.18.0 <12); pin major to avoid npm 12+
 RUN npm install -g npm@11
 
-# Set working directory
 WORKDIR /app
 
-# Container defaults (compose can override). Local non-Docker default remains 3002 in main.ts.
+# Runtime defaults for later stages. Do NOT set NODE_ENV=production here:
+# npm would omit soft/devDependencies and postinstall (patch-package) would fail.
 ENV HOST=0.0.0.0 \
-    PORT=3100 \
-    NODE_ENV=production
+    PORT=3100
 
-# Copy package files
 COPY package*.json ./
+# Required for postinstall → patch-package
+COPY patches ./patches
 
-# Install all dependencies first to ensure lock file is in sync
-# Use npm install instead of npm ci to handle peer dependency conflicts
+# Full install (incl. patch-package) so postinstall can apply patches
 RUN npm install --legacy-peer-deps && npm cache clean --force
 
 # Development stage (full install + build; also used by docker compose `frontend`)
@@ -27,28 +26,25 @@ FROM base AS development
 
 ENV NODE_ENV=development
 
-# Copy source code
 COPY . .
 
-# Build the application
 RUN npm run build:prod
 
-# Expose application port (maps to ENV PORT)
 EXPOSE 3100
 
-# Start the application
 CMD ["node", "dist/main"]
 
 # Production stage (leaner runtime image)
 FROM base AS production
 
-# Copy built application from development stage
+ENV NODE_ENV=production
+
 COPY --from=development /app/dist ./dist
 
-# Install only production dependencies for the final image
-RUN npm install --omit=dev --legacy-peer-deps && npm cache clean --force
+# Prod deps only. Ignore scripts: postinstall needs patch-package (dev-only) and
+# current patches target jest/string-length, which are not installed in production.
+RUN npm install --omit=dev --ignore-scripts --legacy-peer-deps && npm cache clean --force
 
-# Create non-root user for security
 RUN addgroup -g 1001 -S nodejs \
   && adduser -S nestjs -u 1001 \
   && chown -R nestjs:nodejs /app
@@ -56,9 +52,7 @@ USER nestjs
 
 EXPOSE 3100
 
-# Health check against the in-container PORT
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://127.0.0.1:'+(process.env.PORT||3100)+'/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
-# Start the application
 CMD ["node", "dist/main"]
