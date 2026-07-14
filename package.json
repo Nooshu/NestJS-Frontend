@@ -126,7 +126,7 @@
   },
   "devDependencies": {
     "@babel/core": "7.29.7",
-    "@babel/preset-env": "7.29.7",
+    "@babel/preset-env": "8.0.2",
     "@eslint/eslintrc": "3.3.6",
     "@eslint/js": "10.0.1",
     "@happy-dom/jest-environment": "20.10.6",
