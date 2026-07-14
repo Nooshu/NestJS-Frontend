@@ -284,7 +284,7 @@ This project uses the following key package versions (last updated: July 2026):
 - Prettier: v3.9.5
 - ESLint: v10.7.0
 - SASS: v1.101.0
-- Babel: v7.29.7
+- Babel: v8.0.1
 - Supertest: v7.2.2
 
 For a complete list of dependencies and their versions, please refer to the `package.json` file.
@@ -513,7 +513,7 @@ Read more in [Asset Fingerprinting Documentation](docs/asset-fingerprinting.md).
 - Supertest v7.2.2 for API testing
 - Renovate bot for dependency updates
 - PostCSS v8.5.19 for CSS optimisation
-- Babel v7.29.7 for JavaScript transpilation
+- Babel v8.0.1 for JavaScript transpilation
 - All dependencies pinned to exact versions; SHA verification via `bash scripts/verify-package-security.sh` after batch updates
 
 ## Dependency Management
