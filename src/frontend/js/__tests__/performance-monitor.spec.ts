@@ -57,38 +57,65 @@ describe('PerformanceMonitor', () => {
     observeCalls.length = 0;
     jest.useFakeTimers();
 
-    (global as any).PerformanceObserver = MockPerformanceObserver;
-    Object.defineProperty(window, 'performance', {
-      configurable: true,
-      writable: true,
-      value: {
-        timing: mockTiming,
-        now: jest.fn(() => 1000),
-        memory: {
-          usedJSHeapSize: 10 * 1024 * 1024,
-          totalJSHeapSize: 20 * 1024 * 1024,
-          jsHeapSizeLimit: 100 * 1024 * 1024,
-        },
-        getEntriesByType: jest.fn(() => [
-          { name: 'https://cdn.example.com/app.js', transferSize: 2048 },
-          { name: 'https://cdn.example.com/main.css', transferSize: 1024 },
-          { name: 'https://cdn.example.com/image.png', transferSize: 5000 },
-        ]),
+    (globalThis as any).PerformanceObserver = MockPerformanceObserver;
+    (window as any).PerformanceObserver = MockPerformanceObserver;
+
+    const performanceMock = {
+      timing: mockTiming,
+      now: jest.fn(() => 1000),
+      memory: {
+        usedJSHeapSize: 10 * 1024 * 1024,
+        totalJSHeapSize: 20 * 1024 * 1024,
+        jsHeapSizeLimit: 100 * 1024 * 1024,
       },
-    });
+      getEntriesByType: jest.fn(() => [
+        { name: 'https://cdn.example.com/app.js', transferSize: 2048 },
+        { name: 'https://cdn.example.com/main.css', transferSize: 1024 },
+        { name: 'https://cdn.example.com/image.png', transferSize: 5000 },
+      ]),
+    };
+
+    // Production code uses both `window.performance` and bare `performance`
+    for (const target of [window, globalThis] as object[]) {
+      Object.defineProperty(target, 'performance', {
+        configurable: true,
+        writable: true,
+        value: performanceMock,
+      });
+    }
+
+    // Bare `history` (used by observeRouteChanges) must resolve in the test realm
+    if (typeof (globalThis as any).history === 'undefined') {
+      Object.defineProperty(globalThis, 'history', {
+        configurable: true,
+        writable: true,
+        value: window.history,
+      });
+    }
 
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
     consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
     consoleGroupSpy = jest.spyOn(console, 'group').mockImplementation();
     consoleGroupEndSpy = jest.spyOn(console, 'groupEnd').mockImplementation();
 
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     ({ PerformanceMonitor } = require('../performance-monitor.js'));
     monitor = new PerformanceMonitor();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Flush Jest fake timers, then abort happy-dom's own timer queue so
+    // load→setTimeout (core web vitals) cannot log after the suite ends.
+    try {
+      jest.runOnlyPendingTimers();
+    } catch {
+      // No pending fake timers
+    }
+    jest.clearAllTimers();
     jest.useRealTimers();
+    const happyDOM = (window as any).happyDOM;
+    if (happyDOM?.abort) {
+      await happyDOM.abort();
+    }
     consoleLogSpy.mockRestore();
     consoleErrorSpy.mockRestore();
     consoleGroupSpy.mockRestore();
@@ -103,11 +130,13 @@ describe('PerformanceMonitor', () => {
   });
 
   it('skips observers when window.performance is missing', () => {
-    Object.defineProperty(window, 'performance', {
-      configurable: true,
-      writable: true,
-      value: undefined,
-    });
+    for (const target of [window, globalThis] as object[]) {
+      Object.defineProperty(target, 'performance', {
+        configurable: true,
+        writable: true,
+        value: undefined,
+      });
+    }
     monitor.init();
     expect(observerCallbacks).toHaveLength(0);
   });
@@ -118,9 +147,7 @@ describe('PerformanceMonitor', () => {
     expect(observeCalls.some((c) => c.entryTypes?.includes('longtask'))).toBe(true);
     expect(observeCalls.some((c) => c.entryTypes?.includes('layout-shift'))).toBe(true);
     expect(observeCalls.some((c) => c.entryTypes?.includes('first-input'))).toBe(true);
-    expect(observeCalls.some((c) => c.entryTypes?.includes('largest-contentful-paint'))).toBe(
-      true
-    );
+    expect(observeCalls.some((c) => c.entryTypes?.includes('largest-contentful-paint'))).toBe(true);
     expect(observeCalls.some((c) => c.entryTypes?.includes('paint'))).toBe(true);
   });
 
@@ -214,9 +241,7 @@ describe('PerformanceMonitor', () => {
     const cb = observerCallbacks[observerCallbacks.length - 1];
 
     cb({
-      getEntries: () => [
-        { value: 0.1, startTime: 5, sources: [], hadRecentInput: false },
-      ],
+      getEntries: () => [{ value: 0.1, startTime: 5, sources: [], hadRecentInput: false }],
     });
     expect(monitor.metrics.layoutShifts).toHaveLength(1);
 
@@ -252,9 +277,7 @@ describe('PerformanceMonitor', () => {
 
     monitor.observeLargestContentfulPaint();
     observerCallbacks[observerCallbacks.length - 1]({
-      getEntries: () => [
-        { startTime: 150, size: 1000, element: 'IMG', url: '/a.png' },
-      ],
+      getEntries: () => [{ startTime: 150, size: 1000, element: 'IMG', url: '/a.png' }],
     });
     expect(monitor.metrics.largestContentfulPaint.size).toBe(1000);
 
@@ -266,9 +289,7 @@ describe('PerformanceMonitor', () => {
 
     monitor.observeFirstContentfulPaint();
     observerCallbacks[observerCallbacks.length - 1]({
-      getEntries: () => [
-        { startTime: 80, size: 10, element: 'P', url: '' },
-      ],
+      getEntries: () => [{ startTime: 80, size: 10, element: 'P', url: '' }],
     });
     expect(monitor.metrics.firstContentfulPaint.startTime).toBe(80);
   });
@@ -289,10 +310,7 @@ describe('PerformanceMonitor', () => {
     const cb = observerCallbacks[observerCallbacks.length - 1];
 
     cb({
-      getEntries: () => [
-        { duration: 10 },
-        { duration: 100 },
-      ],
+      getEntries: () => [{ duration: 10 }, { duration: 100 }],
     });
     expect(monitor.metrics.totalBlockingTime.value).toBe(50);
     expect(observer).toHaveBeenCalledWith('totalBlockingTime', expect.any(Object));
@@ -315,6 +333,7 @@ describe('PerformanceMonitor', () => {
 
   it('skips memory observation when performance.memory is missing', () => {
     (window.performance as any).memory = undefined;
+    (globalThis.performance as any).memory = undefined;
     monitor.observeMemoryUsage();
     expect(monitor.metrics.memoryUsage).toBeUndefined();
   });
@@ -334,7 +353,7 @@ describe('PerformanceMonitor', () => {
 
     // Missing transferSize fallback — fresh monitor with console disabled
     jest.resetModules();
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+
     const { PerformanceMonitor: PM2 } = require('../performance-monitor.js');
     const quiet = new PM2();
     quiet.setConfig({ enableConsoleOutput: false });
@@ -373,7 +392,7 @@ describe('PerformanceMonitor', () => {
     expect(observer).not.toHaveBeenCalledWith('routeChange', expect.anything());
 
     // Quiet route-change config path (console covered via memoryUsage tests)
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+
     const { PerformanceMonitor: PM3 } = require('../performance-monitor.js');
     const quiet = new PM3();
     quiet.setConfig({ enableConsoleOutput: false });
@@ -390,7 +409,6 @@ describe('PerformanceMonitor', () => {
     }
 
     jest.isolateModules(() => {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const { PerformanceMonitor } = require('../performance-monitor.js');
       const quiet = new PerformanceMonitor();
       quiet.setConfig({ enableConsoleOutput: false });
@@ -409,7 +427,7 @@ describe('PerformanceMonitor', () => {
   it('tracks user interactions and trims to 50', () => {
     const observer = jest.fn();
     // Fresh instance so document listeners aren't shared with prior tests
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+
     const { PerformanceMonitor: PM4 } = require('../performance-monitor.js');
     const local = new PM4();
     local.addObserver(observer);

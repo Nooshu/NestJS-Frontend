@@ -229,7 +229,10 @@ describe('FingerprintService', () => {
         if (pattern.includes(`${join(publicDir, 'js')}`)) return [jsMain, jsOther];
         if (pattern.includes(join(assetsDir, 'images'))) return [imageFile];
         if (pattern === join(govukDir, '*.css') || pattern.endsWith('*.css')) return [govukCss];
-        if (pattern === join(govukDir, '*.js') || (pattern.endsWith('*.js') && pattern.includes('govuk')))
+        if (
+          pattern === join(govukDir, '*.js') ||
+          (pattern.endsWith('*.js') && pattern.includes('govuk'))
+        )
           return [govukJs];
         if (pattern.includes(join(govukDir, 'assets'))) return [govukFont, govukImg];
         return [];

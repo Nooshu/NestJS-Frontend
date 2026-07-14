@@ -362,9 +362,7 @@ describe('RateLimitingMiddleware', () => {
       middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
 
       expect(mockResponse.status).toHaveBeenCalledWith(429);
-      expect(mockResponse.json).toHaveBeenCalledWith(
-        expect.objectContaining({ retryAfter: 60 })
-      );
+      expect(mockResponse.json).toHaveBeenCalledWith(expect.objectContaining({ retryAfter: 60 }));
     });
   });
 

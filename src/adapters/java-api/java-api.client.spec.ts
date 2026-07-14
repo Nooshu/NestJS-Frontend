@@ -397,9 +397,9 @@ describe('JavaApiClient', () => {
           auth: { username: 'u', password: 'p' },
         })
       ).rejects.toBe('weird');
-      await expect(client.post('/x', undefined, { headers: { authorization: 'secret' } })).rejects.toBe(
-        'weird'
-      );
+      await expect(
+        client.post('/x', undefined, { headers: { authorization: 'secret' } })
+      ).rejects.toBe('weird');
       await expect(client.put('/x', 'text', { headers: { cookie: 'c' } })).rejects.toBe('weird');
       await expect(client.delete('/x', { headers: { 'x-api-key': 'k' } })).rejects.toBe('weird');
 

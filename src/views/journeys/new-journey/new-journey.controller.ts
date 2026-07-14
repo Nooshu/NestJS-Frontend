@@ -7,7 +7,6 @@
  * - Confirmation page
  *
  * The journey follows a sequential flow with data persistence between steps.
- * @class NewJourneyController
  */
 
 import { Controller, Get, Post, Body, Render, Redirect, Logger } from '@nestjs/common';
@@ -15,7 +14,6 @@ import { ConfigService } from '@nestjs/config';
 
 /**
  * Interface representing the data collected in the journey start form.
- * @interface StartFormData
  */
 interface StartFormData {
   /** User's full name */
@@ -28,7 +26,6 @@ interface StartFormData {
 
 /**
  * Interface representing the data collected in the journey details form.
- * @interface DetailsFormData
  */
 interface DetailsFormData {
   /** Day component of the journey start date */
@@ -60,7 +57,7 @@ export class NewJourneyController {
 
   /**
    * Renders the welcome page for the new journey.
-   * @returns {Object} View model containing page title and navigation data
+   * @returns View model containing page title and navigation data
    */
   @Get()
   @Render('journeys/new-journey/index')
@@ -74,7 +71,7 @@ export class NewJourneyController {
 
   /**
    * Renders the journey start form page.
-   * @returns {Object} View model containing page title and navigation data
+   * @returns View model containing page title and navigation data
    */
   @Get('start')
   @Render('journeys/new-journey/start')
@@ -89,8 +86,8 @@ export class NewJourneyController {
   /**
    * Handles the submission of the journey start form.
    * Stores the form data and redirects to the details page.
-   * @param {StartFormData} formData - The submitted form data
-   * @returns {Object} Empty object (redirect handled by decorator)
+   * @param formData - The submitted form data
+   * @returns Empty object (redirect handled by decorator)
    */
   @Post('start')
   @Redirect('/new-journey/details')
@@ -102,7 +99,7 @@ export class NewJourneyController {
   /**
    * Renders the journey details form page.
    * Redirects to start page if no start form data exists.
-   * @returns {Object} View model containing page title, navigation data, and environment info
+   * @returns View model containing page title, navigation data, and environment info
    */
   @Get('details')
   @Render('journeys/new-journey/details')
@@ -122,9 +119,9 @@ export class NewJourneyController {
    * Handles the submission of the journey details form.
    * Stores the form data and redirects to the confirmation page.
    * Includes detailed logging for debugging purposes.
-   * @param {DetailsFormData} formData - The submitted form data
-   * @returns {Object} Empty object (redirect handled by decorator)
-   * @throws {Error} If there's an error processing the form data
+   * @param formData - The submitted form data
+   * @returns Empty object (redirect handled by decorator)
+   * @throws Error - If there's an error processing the form data
    */
   @Post('details')
   @Redirect('/new-journey/confirmation')
@@ -151,7 +148,7 @@ export class NewJourneyController {
    * Renders the journey confirmation page.
    * Shows a summary of all collected journey information.
    * Redirects to start if required form data is missing.
-   * @returns {Object} View model containing page title, navigation data, and formatted journey details
+   * @returns View model containing page title, navigation data, and formatted journey details
    */
   @Get('confirmation')
   @Render('journeys/new-journey/confirmation')

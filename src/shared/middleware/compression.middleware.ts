@@ -2,12 +2,11 @@
  * Compression Middleware for NestJS applications.
  * Implements response compression to reduce bandwidth usage and improve performance.
  *
- * @module CompressionMiddleware
- * @description Middleware that compresses response bodies using the compression package
  *
  * @example
- * // Apply compression middleware to routes
+ * ```ts
  * consumer.apply(CompressionMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
+ * ```
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
@@ -30,17 +29,15 @@ export class CompressionMiddleware implements NestMiddleware {
   /**
    * Middleware implementation that compresses response bodies
    *
-   * @param {Request} req - The incoming request
-   * @param {Response} res - The outgoing response
-   * @param {NextFunction} next - The next middleware function
+   * @param req - The incoming request
+   * @param res - The outgoing response
+   * @param next - The next middleware function
    *
    * @remarks
    * This middleware:
    * - Uses compression level 6 (balanced between speed and compression)
    * - Only compresses responses larger than 1kb
    * - Configurable through the ConfigService
-   *
-   * @returns {void}
    */
   use(req: Request, res: Response, next: NextFunction) {
     const compressionOptions = this.configService.get('performance.compression') || {

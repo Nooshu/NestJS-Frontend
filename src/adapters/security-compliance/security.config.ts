@@ -57,7 +57,7 @@ export interface SecurityConfig {
 
 /**
  * Validates required environment variables
- * @throws Error if required environment variables are missing
+ * @throws Error - if required environment variables are missing
  */
 function validateEnvironment(): void {
   const requiredEnvVars = ['NODE_ENV', 'SESSION_SECRET', 'CORS_ORIGIN'];

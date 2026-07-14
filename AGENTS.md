@@ -84,7 +84,10 @@ See `.cursor/rules/docs-and-comments.mdc`.
 
 - Keep **all** project documentation accurate when behaviour, versions, remotes, tooling, or standards change (README, `docs/**`, changelogs, templates, this file)
 - Document **why** for non-obvious decisions; after dependency or GOV.UK upgrades, sync version/status tables
-- Write **comprehensive comments** on public modules/classes and non-trivial functions: purpose, inputs/outputs, side effects, security/performance/GOV.UK constraints
+- Use **TSDoc-compatible** `/** */` comments: summary first, `@remarks` for longer constraints, `{@link}` / `@see` / `@deprecated` when useful
+- **Do not** put TypeScript types in JSDoc braces (`@param {string} x` is wrong in `.ts`); use `@param x - Description`
+- **Do not** use `@module`, `@requires`, `@class`, `@function`, or `@async` tags
+- Write **comprehensive comments** on public modules/classes and non-trivial functions: purpose, behaviour, side effects, security/performance/GOV.UK constraints
 - Annotate Nunjucks where macros are composed or client scripts depend on macro-rendered markup
 - Explain **why** and constraints — not a line-by-line restatement of obvious code
 - When changing code, update nearby comments and related docs in the same change
@@ -131,7 +134,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 | `.cursor/rules/reuse-nunjucks-partials.mdc` | Reuse partials/macros; no duplicate account/feedback markup |
 | `.cursor/rules/performance-and-accessibility.mdc` | Frontend/DB performance + accessible UI priorities |
 | `.cursor/rules/verify-ts-build-after-server-changes.mdc` | After server TS changes, verify build/tests; fix compile errors |
-| `.cursor/rules/docs-and-comments.mdc` | Keep docs current; comprehensive code comments |
+| `.cursor/rules/docs-and-comments.mdc` | Keep docs current; TSDoc-compatible comments (no typed `{Type}` braces) |
 | `.cursor/rules/no-cursor-agent-commits.mdc` | Never attribute Cursor agent on commits/pushes |
 
 Older tooling may look for `AGENT.md`; that path is a symlink to this file.

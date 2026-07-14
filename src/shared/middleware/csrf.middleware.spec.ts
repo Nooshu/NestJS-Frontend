@@ -322,10 +322,7 @@ describe('CsrfMiddleware', () => {
       });
       const result = (middleware as any).verifyToken('aaa', 'bbb');
       expect(result).toBe(false);
-      expect(logger.error).toHaveBeenCalledWith(
-        'CSRF token validation error',
-        'Unknown error'
-      );
+      expect(logger.error).toHaveBeenCalledWith('CSRF token validation error', 'Unknown error');
     });
 
     it('verifyToken returns false and logs Error.stack for Error throws', () => {

@@ -4,8 +4,8 @@ import { govukTestConfig } from '../govuk-components.test.config';
 export class GovukTestUtils {
   /**
    * Load a component's test fixture
-   * @param componentName Name of the component
-   * @param scenarioName Name of the scenario
+   * @param componentName - Name of the component
+   * @param scenarioName - Name of the scenario
    * @returns The fixture HTML content
    */
   static loadFixture(componentName: string, scenarioName: string): string {
@@ -22,7 +22,7 @@ export class GovukTestUtils {
 
   /**
    * Get all available scenarios for a component
-   * @param componentName Name of the component
+   * @param componentName - Name of the component
    * @returns Array of scenario names
    */
   static getComponentScenarios(componentName: string): string[] {
@@ -40,8 +40,8 @@ export class GovukTestUtils {
 
   /**
    * Compare rendered HTML with fixture
-   * @param rendered HTML rendered by the application
-   * @param fixture HTML from the fixture
+   * @param rendered - HTML rendered by the application
+   * @param fixture - HTML from the fixture
    * @returns true if they match, false otherwise
    */
   static compareHtml(rendered: string, fixture: string): boolean {
@@ -58,11 +58,11 @@ export class GovukTestUtils {
 
   /**
    * Generate a test report
-   * @param componentName Name of the component
-   * @param scenarioName Name of the scenario
-   * @param passed Whether the test passed
-   * @param rendered The rendered HTML
-   * @param fixture The fixture HTML
+   * @param componentName - Name of the component
+   * @param scenarioName - Name of the scenario
+   * @param passed - Whether the test passed
+   * @param rendered - The rendered HTML
+   * @param fixture - The fixture HTML
    * @returns Test report object
    */
   static generateTestReport(
@@ -85,8 +85,8 @@ export class GovukTestUtils {
 
   /**
    * Find differences between rendered and fixture HTML
-   * @param rendered The rendered HTML
-   * @param fixture The fixture HTML
+   * @param rendered - The rendered HTML
+   * @param fixture - The fixture HTML
    * @returns Object containing differences
    */
   private static findDifferences(rendered: string, fixture: string) {

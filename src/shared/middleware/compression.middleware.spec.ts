@@ -1,10 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import type { Request, Response, NextFunction } from 'express';
-import {
-  CompressionMiddleware,
-  compressionFactory,
-} from './compression.middleware';
+import { CompressionMiddleware, compressionFactory } from './compression.middleware';
 
 describe('CompressionMiddleware', () => {
   let middleware: CompressionMiddleware;
@@ -61,7 +58,7 @@ describe('CompressionMiddleware', () => {
       jest.doMock('@nestjs/config', () => ({
         ConfigService: { notAConstructor: true },
       }));
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+
       const { CompressionMiddleware: Reloaded } = require('./compression.middleware');
       expect(Reloaded).toBeDefined();
     });
@@ -78,11 +75,7 @@ describe('CompressionMiddleware', () => {
 
     expect(configService.get).toHaveBeenCalledWith('performance.compression');
     expect(createSpy).toHaveBeenCalledWith(configuredOptions);
-    expect(compressionMiddlewareFn).toHaveBeenCalledWith(
-      mockRequest,
-      mockResponse,
-      nextFunction
-    );
+    expect(compressionMiddlewareFn).toHaveBeenCalledWith(mockRequest, mockResponse, nextFunction);
   });
 
   it('should fall back to default options when config is missing', () => {

@@ -1,8 +1,6 @@
 /**
  * Test helper utilities for GOV.UK Frontend component testing.
  * Provides functions to load and compare component fixtures.
- *
- * @module FixturesTestHelper
  */
 
 import * as fs from 'fs';
@@ -33,8 +31,6 @@ declare module '@jest/globals' {
 
 /**
  * Interface representing a GOV.UK Frontend component fixture.
- *
- * @interface GovukFixture
  */
 export interface GovukFixture {
   /** Name of the fixture */
@@ -49,8 +45,6 @@ export interface GovukFixture {
 
 /**
  * Interface representing a collection of GOV.UK Frontend component fixtures.
- *
- * @interface GovukComponentFixtures
  */
 export interface GovukComponentFixtures {
   /** Name of the component */
@@ -62,10 +56,9 @@ export interface GovukComponentFixtures {
 /**
  * Loads fixtures for a GOV.UK Frontend component.
  *
- * @function loadFixtures
- * @param {string} componentName - Name of the component to load fixtures for
- * @returns {GovukComponentFixtures} The loaded fixtures
- * @throws {Error} If the fixtures file cannot be found
+ * @param componentName - Name of the component to load fixtures for
+ * @returns The loaded fixtures
+ * @throws Error - If the fixtures file cannot be found
  */
 export function loadFixtures(componentName: string): GovukComponentFixtures {
   const fixturesPath = path.join(
@@ -90,9 +83,8 @@ export function loadFixtures(componentName: string): GovukComponentFixtures {
 /**
  * Normalizes HTML by removing extra whitespace and normalizing line endings.
  *
- * @function normalizeHtml
- * @param {string} html - The HTML to normalize
- * @returns {string} The normalized HTML
+ * @param html - The HTML to normalize
+ * @returns The normalized HTML
  */
 export function normalizeHtml(html: string): string {
   return html.replace(/\s+/g, ' ').replace(/>\s+</g, '><').replace(/\n/g, '').trim();
@@ -101,9 +93,8 @@ export function normalizeHtml(html: string): string {
 /**
  * Gets class names from a class list.
  *
- * @function getClassNames
- * @param {string} classList - The class list string
- * @returns {string[]} Array of class names
+ * @param classList - The class list string
+ * @returns Array of class names
  */
 export function getClassNames(classList: string): string[] {
   return classList.split(' ').filter(Boolean);
@@ -146,10 +137,9 @@ export function resolveClassAttribute(root: {
 /**
  * Compares rendered HTML with fixture HTML using @testing-library/jest-dom.
  *
- * @function compareHtml
- * @param {string} rendered - The rendered HTML
- * @param {string} fixture - The fixture HTML
- * @returns {boolean} Whether the HTML matches
+ * @param rendered - The rendered HTML
+ * @param fixture - The fixture HTML
+ * @returns Whether the HTML matches
  */
 export function compareHtml(rendered: string, fixture: string): boolean {
   // Normalize both HTML strings
@@ -251,9 +241,8 @@ export function compareHtml(rendered: string, fixture: string): boolean {
 /**
  * Verifies a component's rendered output against its fixture using @testing-library/jest-dom.
  *
- * @function verifyComponent
- * @param {string} rendered - The rendered HTML
- * @param {GovukFixture} fixture - The fixture to compare against
+ * @param rendered - The rendered HTML
+ * @param fixture - The fixture to compare against
  */
 export function verifyComponent(rendered: string, fixture: GovukFixture): void {
   // Parse the rendered HTML

@@ -27,12 +27,18 @@ describe('PerformanceService', () => {
     global.fetch = jest.fn();
 
     // Re-require after mocks
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+
     ({ PerformanceService } = require('../performance-service.js'));
     service = new PerformanceService();
   });
 
   afterEach(() => {
+    try {
+      jest.runOnlyPendingTimers();
+    } catch {
+      // No pending fake timers
+    }
+    jest.clearAllTimers();
     jest.useRealTimers();
     randomSpy.mockRestore();
     consoleErrorSpy.mockRestore();

@@ -35,9 +35,7 @@ describe('setupLogger', () => {
 
     setupLogger(app);
 
-    expect(winston.createLogger).toHaveBeenCalledWith(
-      expect.objectContaining({ level: 'info' })
-    );
+    expect(winston.createLogger).toHaveBeenCalledWith(expect.objectContaining({ level: 'info' }));
 
     process.env.NODE_ENV = originalEnv;
   });
@@ -48,9 +46,7 @@ describe('setupLogger', () => {
 
     setupLogger(app);
 
-    expect(winston.createLogger).toHaveBeenCalledWith(
-      expect.objectContaining({ level: 'debug' })
-    );
+    expect(winston.createLogger).toHaveBeenCalledWith(expect.objectContaining({ level: 'debug' }));
 
     process.env.NODE_ENV = originalEnv;
   });

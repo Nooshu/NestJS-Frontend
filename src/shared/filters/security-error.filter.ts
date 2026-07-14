@@ -1,10 +1,6 @@
 /**
  * Global exception filter for handling security-related errors.
  * Sanitizes error responses to prevent information leakage in production.
- *
- * @module SecurityErrorFilter
- * @requires @nestjs/common
- * @requires express
  */
 
 import {
@@ -19,8 +15,6 @@ import configuration from '../config/configuration';
 
 /**
  * Interface for sanitized error response
- *
- * @interface SanitizedError
  */
 interface SanitizedError {
   status: number;
@@ -31,8 +25,6 @@ interface SanitizedError {
 /**
  * Global exception filter for security error handling.
  *
- * @class SecurityErrorFilter
- * @description Filters and sanitizes error responses
  *
  * @example
  * // Apply the filter globally in main.ts
@@ -44,10 +36,8 @@ export class SecurityErrorFilter implements ExceptionFilter {
    * Sanitizes error information based on environment.
    * In production, removes stack traces and sensitive information.
    *
-   * @private
-   * @method sanitizeError
-   * @param {unknown} error - The error to sanitize
-   * @returns {SanitizedError} The sanitized error information
+   * @param error - The error to sanitize
+   * @returns The sanitized error information
    */
   private sanitizeError(error: unknown): SanitizedError {
     const isProd = configuration().nodeEnv === 'production';
@@ -78,9 +68,8 @@ export class SecurityErrorFilter implements ExceptionFilter {
   /**
    * Catches and processes exceptions, applying security sanitization.
    *
-   * @method catch
-   * @param {unknown} exception - The exception to handle
-   * @param {ArgumentsHost} host - The arguments host
+   * @param exception - The exception to handle
+   * @param host - The arguments host
    */
   catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -127,9 +116,8 @@ export class SecurityErrorFilter implements ExceptionFilter {
    * Determines if a given path should be excluded from error processing.
    * This prevents unnecessary error handling for browser-generated requests.
    *
-   * @private
-   * @param {string} path - The request path to check
-   * @returns {boolean} True if the path should be excluded, false otherwise
+   * @param path - The request path to check
+   * @returns True if the path should be excluded, false otherwise
    */
   /**
    * Paths excluded from error processing. Exposed for tests to cover wildcard edge cases.

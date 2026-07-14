@@ -4,9 +4,6 @@
  * - Silently handling 404s for known browser requests (DevTools, favicon, etc.)
  * - Providing detailed error responses for legitimate 404s
  * - Supporting pattern-based path exclusions
- *
- * @class NotFoundExceptionFilter
- * @implements {ExceptionFilter}
  */
 
 import { ExceptionFilter, Catch, NotFoundException, ArgumentsHost } from '@nestjs/common';
@@ -21,9 +18,8 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
    * 1. Exact matches (e.g., '/favicon.ico')
    * 2. Extension-based wildcards (e.g., '*.js.map')
    *
-   * @private
-   * @param {string} path - The request path to check
-   * @returns {boolean} True if the path should be excluded, false otherwise
+   * @param path - The request path to check
+   * @returns True if the path should be excluded, false otherwise
    *
    * @example
    * // Exact match
@@ -54,22 +50,12 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
    * For excluded paths (e.g., browser-generated requests), returns a silent 404.
    * For all other paths, returns a detailed JSON response with error information.
    *
-   * @param {NotFoundException} _ - The caught exception (unused)
-   * @param {ArgumentsHost} host - Execution context host
-   * @returns {void}
+   * @param _ - The caught exception (unused)
+   * @param host - Execution context host
    *
    * @example
-   * // For excluded paths:
-   * // Response: 404 with empty body
-   *
-   * // For other paths:
-   * // Response: 404 with JSON body:
-   * // {
-   * //   statusCode: 404,
-   * //   timestamp: '2025-05-14T16:01:54.417Z',
-   * //   path: '/unknown-page',
-   * //   message: 'Not Found'
-   * // }
+   * Excluded paths return an empty 404 body; other paths return JSON:
+   * `\{ statusCode: 404, timestamp, path, message: 'Not Found' \}`.
    */
   catch(_: NotFoundException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

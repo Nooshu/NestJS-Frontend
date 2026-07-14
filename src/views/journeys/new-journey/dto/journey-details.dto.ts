@@ -2,13 +2,6 @@
  * Data Transfer Object (DTO) for the journey details form.
  * Defines the validation rules and transformations for the journey-specific data.
  * Uses class-validator decorators to enforce data integrity and format requirements.
- *
- * @class JourneyDetailsDto
- * @property {string} journeyDate-day - Day component of journey start date (1-31)
- * @property {string} journeyDate-month - Month component of journey start date (1-12)
- * @property {string} journeyDate-year - Year component of journey start date (4 digits)
- * @property {string} journeyDuration - Duration of the journey (predefined options)
- * @property {string} journeyDescription - Detailed description of the journey (10-500 chars)
  */
 import { IsNotEmpty, IsEnum, IsString, MinLength, MaxLength, Matches } from 'class-validator';
 import { Transform } from 'class-transformer';

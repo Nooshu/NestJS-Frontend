@@ -1,8 +1,6 @@
 /**
  * Tests for the GOV.UK Frontend button component.
  * Verifies that the component template matches the official fixtures.
- *
- * @module ButtonComponentTest
  */
 
 import * as nunjucks from 'nunjucks';
@@ -12,8 +10,6 @@ import type { GovukFixture } from './fixtures.test-helper';
 
 /**
  * Test suite for the button component.
- *
- * @describe Button Component
  */
 describe('Button Component', () => {
   /** Nunjucks environment for rendering templates */
@@ -22,8 +18,6 @@ describe('Button Component', () => {
   /**
    * Setup before all tests.
    * Configures the Nunjucks environment.
-   *
-   * @beforeAll
    */
   beforeAll(() => {
     // Set up Nunjucks environment with paths to both local views and govuk-frontend templates

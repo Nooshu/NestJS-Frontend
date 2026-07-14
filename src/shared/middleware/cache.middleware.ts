@@ -9,12 +9,11 @@
  * - Authentication-aware caching to prevent caching sensitive content
  * - Configurable cache durations via application configuration
  *
- * @module CacheMiddleware
- * @description Middleware that sets appropriate cache headers for GET requests
  *
  * @example
- * // Apply cache middleware to routes
+ * ```ts
  * consumer.apply(CacheMiddleware).forRoutes({ path: '*path', method: RequestMethod.GET });
+ * ```
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
@@ -23,8 +22,6 @@ import { ConfigService } from '@nestjs/config';
 
 /**
  * Extended Request interface that includes authentication method
- * @interface AuthenticatedRequest
- * @extends {Request}
  */
 interface AuthenticatedRequest extends Request {
   isAuthenticated?: () => boolean;
@@ -37,9 +34,9 @@ export class CacheMiddleware implements NestMiddleware {
   /**
    * Middleware implementation that sets cache headers for GET requests
    *
-   * @param {AuthenticatedRequest} req - The incoming request
-   * @param {Response} res - The outgoing response
-   * @param {NextFunction} next - The next middleware function
+   * @param req - The incoming request
+   * @param res - The outgoing response
+   * @param next - The next middleware function
    *
    * @remarks
    * This middleware:

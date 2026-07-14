@@ -4,7 +4,7 @@ import type { Express, NextFunction, Request, Response } from 'express';
  * Sets up error handling middleware for the Express.js application.
  * This function configures error handling similar to NestJS's exception filters.
  *
- * @param {Express} app - The Express.js application instance
+ * @param app - The Express.js application instance
  */
 export function setupErrorHandling(app: Express) {
   // 404 handler

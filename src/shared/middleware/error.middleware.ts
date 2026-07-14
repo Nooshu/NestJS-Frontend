@@ -1,10 +1,6 @@
 /**
  * Global error handling middleware.
  * Catches and processes unhandled errors in the application.
- *
- * @module ErrorMiddleware
- * @requires @nestjs/common
- * @requires express
  */
 
 import { HttpException, HttpStatus, Injectable, type NestMiddleware } from '@nestjs/common';
@@ -12,8 +8,6 @@ import type { NextFunction, Request, Response } from 'express';
 
 /**
  * Error response interface.
- *
- * @interface ErrorResponse
  */
 interface ErrorResponse {
   statusCode: number;
@@ -25,19 +19,15 @@ interface ErrorResponse {
 
 /**
  * Global error handling middleware.
- *
- * @class ErrorMiddleware
- * @description Catches and processes unhandled errors
  */
 @Injectable()
 export class ErrorMiddleware implements NestMiddleware {
   /**
    * Process the request and handle any errors.
    *
-   * @method use
-   * @param {Request} req - The request object
-   * @param {Response} res - The response object
-   * @param {NextFunction} next - The next middleware function
+   * @param req - The request object
+   * @param res - The response object
+   * @param next - The next middleware function
    */
   use(req: Request, res: Response, next: NextFunction) {
     try {

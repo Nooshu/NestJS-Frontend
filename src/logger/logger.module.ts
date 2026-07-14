@@ -9,11 +9,6 @@
  *
  * The module exports the LoggerService which can be injected into other parts of
  * the application for consistent logging across all components.
- *
- * @module LoggerModule
- * @requires @nestjs/common
- * @requires nest-winston
- * @requires winston
  */
 import { Module } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';

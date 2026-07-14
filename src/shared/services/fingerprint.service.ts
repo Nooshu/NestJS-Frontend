@@ -52,7 +52,7 @@ export class FingerprintService {
    * Generate a content hash for a file
    * Creates an MD5 hash of the file's content and returns a shortened version (8 characters)
    *
-   * @param filePath Path to the file
+   * @param filePath - Path to the file
    * @returns Shortened MD5 hash of the file content (8 characters)
    */
   private generateHash(filePath: string): string {
@@ -64,7 +64,7 @@ export class FingerprintService {
    * Create a fingerprinted filename based on the file's content
    * Takes the original filename, generates a hash, and inserts it before the extension
    *
-   * @param filePath Path to the file
+   * @param filePath - Path to the file
    * @returns Object containing original and fingerprinted filenames
    */
   private fingerprintFilename(filePath: string): { original: string; fingerprinted: string } {
@@ -83,7 +83,7 @@ export class FingerprintService {
    * Process a file by creating a fingerprinted copy
    * Reads the file, creates a fingerprinted copy, and updates the manifest
    *
-   * @param filePath Path to the file to process
+   * @param filePath - Path to the file to process
    * @returns The path to the fingerprinted file
    */
   private processFile(filePath: string): string {
@@ -122,7 +122,7 @@ export class FingerprintService {
    * Process GOV.UK Frontend assets
    * Handles the fingerprinting of JS files from the GOV.UK Frontend package
    *
-   * @param filePath Path to the file to process
+   * @param filePath - Path to the file to process
    */
   private processGovukFile(filePath: string): void {
     try {
@@ -154,7 +154,7 @@ export class FingerprintService {
    * Process GOV.UK Frontend CSS assets ensuring source maps are properly linked
    * Special handling for CSS files to maintain source map references
    *
-   * @param filePath Path to the CSS file
+   * @param filePath - Path to the CSS file
    */
   private processGovukCssFile(filePath: string): void {
     try {
@@ -207,7 +207,7 @@ export class FingerprintService {
    * Process GOV.UK assets (fonts, images, etc.)
    * Special handling for font files which are already fingerprinted
    *
-   * @param file Path to the file to process
+   * @param file - Path to the file to process
    */
   private processGovukAssetFile(file: string): void {
     try {
@@ -330,7 +330,7 @@ export class FingerprintService {
    * Get the fingerprinted path for an asset
    * This method is used at runtime to resolve asset paths in templates
    *
-   * @param assetPath Original asset path
+   * @param assetPath - Original asset path
    * @returns Fingerprinted asset path if it exists, otherwise the original path
    */
   public getAssetPath(assetPath: string): string {

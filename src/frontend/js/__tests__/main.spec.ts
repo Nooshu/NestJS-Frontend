@@ -38,7 +38,6 @@ describe('main.js', () => {
   });
 
   function loadMain() {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     require('../main.js');
   }
 

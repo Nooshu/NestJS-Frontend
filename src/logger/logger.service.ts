@@ -13,8 +13,6 @@
  * instance with its own context. This is particularly useful for request-scoped
  * services that need their own logging context.
  *
- * @class LoggerService
- * @implements {NestLoggerService}
  * @see https://docs.nestjs.com/techniques/logger
  */
 import { Inject, Injectable, Scope, type LoggerService as NestLoggerService } from '@nestjs/common';
@@ -29,7 +27,7 @@ export class LoggerService implements NestLoggerService {
   /**
    * Creates an instance of LoggerService.
    *
-   * @param {Logger} logger - The Winston logger instance injected by NestJS
+   * @param logger - The Winston logger instance injected by NestJS
    */
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
@@ -40,7 +38,7 @@ export class LoggerService implements NestLoggerService {
    * Sets the context for the logger instance.
    * This is useful for identifying which part of the application is logging.
    *
-   * @param {string} context - The context name (e.g., 'UserService', 'AuthController')
+   * @param context - The context name (e.g., 'UserService', 'AuthController')
    */
   setContext(context: string) {
     this.context = context;
@@ -50,9 +48,9 @@ export class LoggerService implements NestLoggerService {
   /**
    * Logs a message with the 'error' level.
    *
-   * @param {string} message - The error message
-   * @param {string} [trace] - Optional stack trace
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the log
+   * @param message - The error message
+   * @param trace - Optional stack trace
+   * @param meta - Optional metadata to include with the log
    */
   error(message: string, trace?: string, meta?: Record<string, any>) {
     this.logger.error(message, {
@@ -65,8 +63,8 @@ export class LoggerService implements NestLoggerService {
   /**
    * Logs a message with the 'warn' level.
    *
-   * @param {string} message - The warning message
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the warning
+   * @param message - The warning message
+   * @param meta - Optional metadata to include with the warning
    */
   warn(message: string, meta?: Record<string, any>) {
     this.logger.warn(message, {
@@ -79,8 +77,8 @@ export class LoggerService implements NestLoggerService {
    * Logs a message with the 'info' level.
    * This is the default logging method called by NestJS's built-in logging.
    *
-   * @param {string} message - The message to log
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the log
+   * @param message - The message to log
+   * @param meta - Optional metadata to include with the log
    */
   log(message: string, meta?: Record<string, any>) {
     this.info(message, meta);
@@ -89,8 +87,8 @@ export class LoggerService implements NestLoggerService {
   /**
    * Logs a message with the 'info' level.
    *
-   * @param {string} message - The message to log
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the log
+   * @param message - The message to log
+   * @param meta - Optional metadata to include with the log
    */
   info(message: string, meta?: Record<string, any>) {
     this.logger.info(message, {
@@ -102,8 +100,8 @@ export class LoggerService implements NestLoggerService {
   /**
    * Logs a message with the 'debug' level.
    *
-   * @param {string} message - The debug message
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the debug log
+   * @param message - The debug message
+   * @param meta - Optional metadata to include with the debug log
    */
   debug(message: string, meta?: Record<string, any>) {
     this.logger.debug(message, {
@@ -115,8 +113,8 @@ export class LoggerService implements NestLoggerService {
   /**
    * Logs a message with the 'verbose' level.
    *
-   * @param {string} message - The verbose message
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the verbose log
+   * @param message - The verbose message
+   * @param meta - Optional metadata to include with the verbose log
    */
   verbose(message: string, meta?: Record<string, any>) {
     this.logger.verbose(message, {
@@ -128,8 +126,8 @@ export class LoggerService implements NestLoggerService {
   /**
    * Logs an audit event.
    *
-   * @param {string} action - The action being audited
-   * @param {Record<string, any>} data - The audit data
+   * @param action - The action being audited
+   * @param data - The audit data
    */
   audit(action: string, data: Record<string, any>) {
     if (!this.loggingConfig.audit.enabled) return;
@@ -146,9 +144,9 @@ export class LoggerService implements NestLoggerService {
   /**
    * Logs a performance metric.
    *
-   * @param {string} metric - The metric name
-   * @param {number} value - The metric value
-   * @param {Record<string, any>} [meta] - Optional metadata to include with the metric
+   * @param metric - The metric name
+   * @param value - The metric value
+   * @param meta - Optional metadata to include with the metric
    */
   metric(metric: string, value: number, meta?: Record<string, any>) {
     if (!this.loggingConfig.monitoring.enabled) return;
@@ -165,8 +163,8 @@ export class LoggerService implements NestLoggerService {
   /**
    * Masks sensitive data in the audit log.
    *
-   * @param {Record<string, any>} data - The data to mask
-   * @returns {Record<string, any>} The masked data
+   * @param data - The data to mask
+   * @returns The masked data
    */
   private maskSensitiveData(data: Record<string, any>): Record<string, any> {
     if (!this.loggingConfig.audit.maskSensitiveData) return data;

@@ -5,11 +5,6 @@
  * listed here are app-wide (home, views, CSP reporting); journey controllers live
  * in their feature modules. Prefer registering new HTTP middleware in
  * {@link AppModule.configure} so order relative to CSRF and logging stays explicit.
- *
- * @module AppModule
- * @requires @nestjs/common
- * @requires @nestjs/core
- * @requires @nestjs/platform-express
  */
 
 import { type MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
@@ -33,7 +28,6 @@ import { HealthModule } from './shared/health/health.module';
 /**
  * Application composition root. Instantiated by NestFactory in `main.ts`.
  *
- * @class AppModule
  * @example
  * const app = await NestFactory.create(AppModule);
  */
@@ -61,8 +55,7 @@ export class AppModule {
    * redirects without form tokens). Do not reorder without checking TTFB headers
    * and CSRF cookie issuance on first GET.
    *
-   * @param {MiddlewareConsumer} consumer - Nest middleware consumer
-   * @returns {void}
+   * @param consumer - Nest middleware consumer
    */
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ErrorMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });

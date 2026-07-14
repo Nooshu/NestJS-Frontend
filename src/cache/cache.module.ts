@@ -1,12 +1,7 @@
 /**
  * Cache module for the NestJS application.
- * This module provides Redis-based caching functionality using @nestjs/cache-manager.
+ * This module provides Redis-based caching via NestJS cache-manager.
  * It configures the Redis connection and provides a CacheService for use throughout the application.
- *
- * @module AppCacheModule
- * @requires @nestjs/common
- * @requires @nestjs/cache-manager
- * @requires @nestjs/config
  */
 
 import { CacheModule, type CacheOptions } from '@nestjs/cache-manager';
@@ -21,8 +16,6 @@ import { CacheService } from './cache.service';
  * - REDIS_HOST: Redis server host (default: localhost)
  * - REDIS_PORT: Redis server port (default: 6379)
  * - CACHE_TTL: Default time-to-live for cached items in seconds (default: 3600)
- *
- * @class AppCacheModule
  */
 @Module({
   imports: [

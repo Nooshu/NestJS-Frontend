@@ -40,7 +40,7 @@ describe('CspReportController', () => {
       jest.doMock('../../logger/logger.service', () => ({
         LoggerService: { notAConstructor: true },
       }));
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+
       const { CspReportController: Reloaded } = require('./csp-report.controller');
       expect(Reloaded).toBeDefined();
     });

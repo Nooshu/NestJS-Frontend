@@ -6,8 +6,6 @@
  * The module imports:
  * - ViewsModule: For view rendering capabilities
  * - ConfigModule: For accessing environment configuration
- *
- * @module NewJourneyModule
  */
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';

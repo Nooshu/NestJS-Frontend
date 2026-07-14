@@ -5,7 +5,7 @@ import winston from 'winston';
  * Sets up logging middleware for the Express.js application.
  * This function configures Winston logger and request logging middleware.
  *
- * @param {Express} app - The Express.js application instance
+ * @param app - The Express.js application instance
  */
 export function setupLogger(app: Express) {
   // Create Winston logger

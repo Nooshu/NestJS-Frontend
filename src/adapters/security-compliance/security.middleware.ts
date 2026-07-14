@@ -191,8 +191,8 @@ const excludeFields = (
  * - Audit logging
  * - Cache settings
  *
- * @param {SecurityConfig} config - Security configuration object
- * @returns {RequestHandler[]} Array of security middleware functions
+ * @param config - Security configuration object
+ * @returns Array of security middleware functions
  */
 export const securityMiddleware = (config: SecurityConfig) => {
   const cacheConfig: CacheConfig = {

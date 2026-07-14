@@ -530,10 +530,7 @@ describe('LoggerMiddleware', () => {
 
       mockLogger.info.mockClear();
       finishHandler!();
-      expect(mockLogger.info).not.toHaveBeenCalledWith(
-        'Request completed',
-        expect.anything()
-      );
+      expect(mockLogger.info).not.toHaveBeenCalledWith('Request completed', expect.anything());
       excludeSpy.mockRestore();
     });
 

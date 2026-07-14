@@ -12,19 +12,15 @@ import { catchError, retry } from 'rxjs/operators';
  * Interceptor for handling API errors and retrying failed requests.
  * This interceptor provides automatic retry logic for failed API requests
  * and standardizes error responses from external APIs.
- *
- * @class ApiErrorInterceptor
- * @description Handles API errors and implements retry logic
  */
 @Injectable()
 export class ApiErrorInterceptor implements NestInterceptor {
   /**
    * Intercepts HTTP requests and responses to handle errors and retry failed requests.
    *
-   * @method intercept
-   * @param {ExecutionContext} context - The execution context
-   * @param {CallHandler} next - The next handler in the chain
-   * @returns {Observable<any>} An observable that emits the response or error
+   * @param context - The execution context
+   * @param next - The next handler in the chain
+   * @returns An observable that emits the response or error
    */
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(

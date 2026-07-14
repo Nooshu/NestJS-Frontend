@@ -1,10 +1,6 @@
 /**
  * Request logging middleware.
  * Logs information about incoming requests and responses.
- *
- * @module LoggerMiddleware
- * @requires @nestjs/common
- * @requires express
  */
 
 import { Injectable, type NestMiddleware } from '@nestjs/common';
@@ -30,9 +26,6 @@ import { loggingConfig } from '../config/logging.config';
  * - Response time monitoring
  * - Content length tracking
  * - User agent logging
- *
- * @class LoggerMiddleware
- * @implements {NestMiddleware}
  */
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -78,10 +71,9 @@ export class LoggerMiddleware implements NestMiddleware {
    * - Request ID tracking
    * - Sensitive data masking
    *
-   * @method use
-   * @param {Request} req - The request object
-   * @param {Response} res - The response object
-   * @param {NextFunction} next - The next middleware function
+   * @param req - The request object
+   * @param res - The response object
+   * @param next - The next middleware function
    */
   use(req: Request, res: Response, next: NextFunction) {
     const { method, originalUrl, ip } = req;

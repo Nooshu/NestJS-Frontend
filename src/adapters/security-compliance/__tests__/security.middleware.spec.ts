@@ -1284,7 +1284,9 @@ describe('Security Middleware', () => {
 
   describe('applyGovernmentSecurity branch coverage', () => {
     const getRegisteredHandlers = () =>
-      (app.use as jest.Mock).mock.calls.map((call) => call[0]).filter((h) => typeof h === 'function');
+      (app.use as jest.Mock).mock.calls
+        .map((call) => call[0])
+        .filter((h) => typeof h === 'function');
 
     it('should apply helmet with boolean and object configs', () => {
       applyGovernmentSecurity(app, { helmet: true });
@@ -1373,11 +1375,19 @@ describe('Security Middleware', () => {
       expect(next).toHaveBeenCalled();
 
       next.mockClear();
-      rateLimitMiddleware({ rateLimit: null as any })({} as Request, mockResponse as Response, next);
+      rateLimitMiddleware({ rateLimit: null as any })(
+        {} as Request,
+        mockResponse as Response,
+        next
+      );
       expect(next).toHaveBeenCalled();
 
       next.mockClear();
-      rateLimitMiddleware({ rateLimit: 'bad' as any })({} as Request, mockResponse as Response, next);
+      rateLimitMiddleware({ rateLimit: 'bad' as any })(
+        {} as Request,
+        mockResponse as Response,
+        next
+      );
       expect(next).toHaveBeenCalled();
 
       next.mockClear();
@@ -1438,10 +1448,10 @@ describe('Security Middleware', () => {
       applyGovernmentSecurity(app, { audit: { enabled: true } });
 
       const auditMw = getRegisteredHandlers().find((h) => h.length === 3);
-      const handlers: Record<string, Function> = {};
+      const handlers: Record<string, (...args: unknown[]) => void> = {};
       const res = {
         statusCode: 200,
-        on: (event: string, cb: Function) => {
+        on: (event: string, cb: (...args: unknown[]) => void) => {
           handlers[event] = cb;
         },
       } as any;

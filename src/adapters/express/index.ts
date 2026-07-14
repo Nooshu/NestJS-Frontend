@@ -9,8 +9,6 @@
  * Prefer `main.ts` for production unless you explicitly need this compatibility
  * path. Keep security (Helmet, body size limits, autoescape) and compression
  * filters aligned with the Nest bootstrap when changing either.
- *
- * @module adapters/express
  */
 
 import type { INestApplication } from '@nestjs/common';
@@ -32,6 +30,7 @@ import { setupRoutes } from './routes';
 /**
  * Creates and configures a NestJS application with Express.js adapter.
  *
+ * @remarks
  * Side effects: mutates the underlying Express instance (view engine, body
  * parsers, Helmet, compression, static mounts, logger/routes/error handlers).
  * Does not call `listen` — callers start the server.
@@ -39,7 +38,7 @@ import { setupRoutes } from './routes';
  * Security: Helmet defaults, 1MB JSON/urlencoded limits, Nunjucks autoescape.
  * Performance: skips compressing already-compressed binary asset types.
  *
- * @returns {Promise<INestApplication>} Configured Nest app (not yet listening)
+ * @returns Configured Nest app (not yet listening)
  */
 export async function createExpressApp(): Promise<INestApplication> {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(), {

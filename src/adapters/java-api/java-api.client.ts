@@ -13,10 +13,6 @@
  * - TypeScript support with generic response types
  * - Configurable timeouts and base URL management
  *
- * @module JavaApiClient
- * @requires axios
- * @requires winston
- *
  * @example
  * ```typescript
  * const client = new JavaApiClient({
@@ -39,14 +35,6 @@ import { Logger } from 'winston';
  * Configuration interface for the Java API client.
  * Defines all the configuration options available when creating a new JavaApiClient instance.
  *
- * @interface JavaApiClientConfig
- * @property {string} baseUrl - The base URL for all API requests
- * @property {number} [timeout=30000] - Request timeout in milliseconds
- * @property {number} [retryAttempts=3] - Number of retry attempts for failed requests
- * @property {number} [retryDelay=1000] - Delay between retry attempts in milliseconds
- * @property {object} [auth] - Authentication configuration
- * @property {'basic'|'bearer'|'oauth2'} auth.type - Type of authentication to use
- * @property {object} auth.credentials - Authentication credentials based on auth type
  *
  * @example
  * ```typescript
@@ -95,11 +83,6 @@ export interface JavaApiClientConfig {
  * Extends the standard Error class to include additional context specific to Java API responses.
  * This allows for better error handling and debugging when working with Java backend services.
  *
- * @class JavaApiError
- * @extends {Error}
- * @property {number} statusCode - HTTP status code from the API response
- * @property {string} [errorCode] - Application-specific error code from the Java API
- * @property {any} [details] - Additional error details from the API response
  *
  * @example
  * ```typescript
@@ -115,10 +98,10 @@ export class JavaApiError extends Error {
   /**
    * Creates a new JavaApiError instance.
    *
-   * @param {string} message - Human-readable error message
-   * @param {number} statusCode - HTTP status code from the API response
-   * @param {string} [errorCode] - Application-specific error code
-   * @param {any} [details] - Additional error details or context
+   * @param message - Human-readable error message
+   * @param statusCode - HTTP status code from the API response
+   * @param errorCode - Application-specific error code
+   * @param details - Additional error details or context
    */
   constructor(
     message: string,
@@ -150,9 +133,6 @@ export class JavaApiError extends Error {
  * - TypeScript generics for type-safe API responses
  * - Comprehensive timeout and connection management
  *
- * @class JavaApiClient
- * @property {AxiosInstance} client - The underlying Axios HTTP client instance
- * @property {Logger} logger - Winston logger instance for request/response logging
  *
  * @example
  * ```typescript
@@ -180,8 +160,8 @@ export class JavaApiClient {
   /**
    * Creates a new JavaApiClient instance with the specified configuration.
    *
-   * @param {JavaApiClientConfig} config - Configuration options for the API client
-   * @param {Logger} logger - Winston logger instance for logging requests and responses
+   * @param config - Configuration options for the API client
+   * @param logger - Winston logger instance for logging requests and responses
    *
    * @example
    * ```typescript
@@ -227,8 +207,7 @@ export class JavaApiClient {
    * - Bearer: Sets Authorization header with Bearer token
    * - OAuth2: Initializes OAuth2 token management (requires implementation)
    *
-   * @private
-   * @param {JavaApiClientConfig['auth']} [auth] - Authentication configuration object
+   * @param auth - Authentication configuration object
    *
    * @example
    * ```typescript
@@ -279,8 +258,7 @@ export class JavaApiClient {
    * - Token storage and retrieval
    * - Error handling for authentication failures
    *
-   * @private
-   * @param {NonNullable<JavaApiClientConfig['auth']>['credentials']} _credentials - OAuth2 credentials
+   * @param _credentials - OAuth2 credentials
    *
    * @todo Implement OAuth2 token management logic
    * @todo Add token refresh mechanism
@@ -316,9 +294,8 @@ export class JavaApiClient {
    * - Automatic error handling and transformation
    * - Retry logic for transient failures (future enhancement)
    *
-   * @private
-   * @param {number} _retryAttempts - Number of retry attempts for failed requests
-   * @param {number} _retryDelay - Delay between retry attempts in milliseconds
+   * @param _retryAttempts - Number of retry attempts for failed requests
+   * @param _retryDelay - Delay between retry attempts in milliseconds
    *
    * @todo Implement retry logic with exponential backoff
    * @todo Add request timing metrics
@@ -402,9 +379,8 @@ export class JavaApiClient {
   /**
    * Sanitizes HTTP headers to remove sensitive information from logs.
    *
-   * @private
-   * @param {any} headers - The headers object to sanitize
-   * @returns {any} Sanitized headers object
+   * @param headers - The headers object to sanitize
+   * @returns Sanitized headers object
    */
   private sanitizeHeaders(headers: any): any {
     if (!headers) return headers;
@@ -428,9 +404,8 @@ export class JavaApiClient {
    * a standardized error object that includes status codes, error codes, and
    * additional details for better error handling and debugging.
    *
-   * @private
-   * @param {AxiosResponse} response - The error response from the Java API
-   * @returns {JavaApiError} A JavaApiError instance with extracted error information
+   * @param response - The error response from the Java API
+   * @returns A JavaApiError instance with extracted error information
    *
    * @example
    * ```typescript
@@ -463,11 +438,11 @@ export class JavaApiClient {
    * It returns the response data directly, making it easy to work with typed responses.
    *
    * @template T - The expected response data type
-   * @param {string} path - The API endpoint path (relative to base URL)
-   * @param {AxiosRequestConfig} [config] - Optional Axios request configuration
-   * @returns {Promise<T>} Promise that resolves to the response data
-   * @throws {JavaApiError} When the API returns an error response
-   * @throws {Error} When a network or other error occurs
+   * @param path - The API endpoint path (relative to base URL)
+   * @param config - Optional Axios request configuration
+   * @returns Promise that resolves to the response data
+   * @throws JavaApiError - When the API returns an error response
+   * @throws Error - When a network or other error occurs
    *
    * @example
    * ```typescript
@@ -511,12 +486,12 @@ export class JavaApiClient {
    * It includes comprehensive error handling and logging for debugging purposes.
    *
    * @template T - The expected response data type
-   * @param {string} path - The API endpoint path (relative to base URL)
-   * @param {any} [data] - The request body data to send
-   * @param {AxiosRequestConfig} [config] - Optional Axios request configuration
-   * @returns {Promise<T>} Promise that resolves to the response data
-   * @throws {JavaApiError} When the API returns an error response
-   * @throws {Error} When a network or other error occurs
+   * @param path - The API endpoint path (relative to base URL)
+   * @param data - The request body data to send
+   * @param config - Optional Axios request configuration
+   * @returns Promise that resolves to the response data
+   * @throws JavaApiError - When the API returns an error response
+   * @throws Error - When a network or other error occurs
    *
    * @example
    * ```typescript
@@ -564,12 +539,12 @@ export class JavaApiClient {
    * It provides the same comprehensive error handling and logging as other HTTP methods.
    *
    * @template T - The expected response data type
-   * @param {string} path - The API endpoint path (relative to base URL)
-   * @param {any} [data] - The request body data to send
-   * @param {AxiosRequestConfig} [config] - Optional Axios request configuration
-   * @returns {Promise<T>} Promise that resolves to the response data
-   * @throws {JavaApiError} When the API returns an error response
-   * @throws {Error} When a network or other error occurs
+   * @param path - The API endpoint path (relative to base URL)
+   * @param data - The request body data to send
+   * @param config - Optional Axios request configuration
+   * @returns Promise that resolves to the response data
+   * @throws JavaApiError - When the API returns an error response
+   * @throws Error - When a network or other error occurs
    *
    * @example
    * ```typescript
@@ -617,11 +592,11 @@ export class JavaApiClient {
    * It provides comprehensive error handling and logging for audit and debugging purposes.
    *
    * @template T - The expected response data type
-   * @param {string} path - The API endpoint path (relative to base URL)
-   * @param {AxiosRequestConfig} [config] - Optional Axios request configuration
-   * @returns {Promise<T>} Promise that resolves to the response data
-   * @throws {JavaApiError} When the API returns an error response
-   * @throws {Error} When a network or other error occurs
+   * @param path - The API endpoint path (relative to base URL)
+   * @param config - Optional Axios request configuration
+   * @returns Promise that resolves to the response data
+   * @throws JavaApiError - When the API returns an error response
+   * @throws Error - When a network or other error occurs
    *
    * @example
    * ```typescript
@@ -662,9 +637,8 @@ export class JavaApiClient {
    * Sanitizes request configuration for logging purposes.
    * Removes sensitive information from config objects before logging.
    *
-   * @private
-   * @param {AxiosRequestConfig} [config] - The request configuration to sanitize
-   * @returns {any} Sanitized configuration object
+   * @param config - The request configuration to sanitize
+   * @returns Sanitized configuration object
    */
   private sanitizeConfig(config?: AxiosRequestConfig): any {
     if (!config) return undefined;

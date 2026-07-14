@@ -48,9 +48,9 @@ describe('SecurityErrorFilter', () => {
   describe('shouldExcludePath', () => {
     it('should exclude exact path matches', () => {
       expect(filter['shouldExcludePath']('/favicon.ico')).toBe(true);
-      expect(
-        filter['shouldExcludePath']('/.well-known/appspecific/com.chrome.devtools.json')
-      ).toBe(true);
+      expect(filter['shouldExcludePath']('/.well-known/appspecific/com.chrome.devtools.json')).toBe(
+        true
+      );
     });
 
     it('should exclude *.js.map and *.css.map paths', () => {

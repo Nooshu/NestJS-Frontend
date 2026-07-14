@@ -5,10 +5,6 @@
  * `/health/ready` and `/health/live` for orchestration; `/detailed` and
  * dependency-specific routes are for diagnostics and may hit external systems.
  * CSRF is excluded for this path in AppModule.
- *
- * @module HealthController
- * @requires @nestjs/common
- * @requires @nestjs/terminus
  */
 
 import { Controller, Get, Query } from '@nestjs/common';
@@ -27,8 +23,6 @@ import { ApplicationHealthIndicator } from './indicators/application.health';
  * Terminus health controller. Indicators are injected; each handler composes
  * one or more checks and returns Terminus JSON (or a softened error payload
  * from `detailed` when a check throws).
- *
- * @class HealthController
  */
 @Controller('health')
 export class HealthController {
@@ -44,8 +38,6 @@ export class HealthController {
 
   /**
    * Lightweight liveness-style check: heap, RSS, and root disk usage.
-   *
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get()
   @HealthCheck()
@@ -69,7 +61,7 @@ export class HealthController {
    * Side effect: may call external/network indicators; swallows per-indicator
    * failures into "down" status rather than failing the whole probe where caught.
    *
-   * @returns {Promise<object>} Terminus result or partial error-shaped object
+   * @returns Terminus result or partial error-shaped object
    */
   @Get('detailed')
   @HealthCheck()
@@ -120,7 +112,6 @@ export class HealthController {
 
   /**
    * Database connectivity only.
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('database')
   @HealthCheck()
@@ -130,7 +121,6 @@ export class HealthController {
 
   /**
    * Redis connectivity and memory usage.
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('redis')
   @HealthCheck()
@@ -145,8 +135,7 @@ export class HealthController {
    * Outbound HTTP reachability. Optional `urls` query overrides the default
    * public endpoints (comma-separated absolute URLs).
    *
-   * @param {string} [urls] - Comma-separated URL list
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
+   * @param urls - Comma-separated URL list
    */
   @Get('http')
   @HealthCheck()
@@ -175,7 +164,6 @@ export class HealthController {
 
   /**
    * Application process health (uptime, config, performance, dependency stubs).
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('application')
   @HealthCheck()
@@ -190,7 +178,6 @@ export class HealthController {
 
   /**
    * Host resource pressure (memory/disk) plus app performance indicator.
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('system')
   @HealthCheck()
@@ -209,7 +196,6 @@ export class HealthController {
 
   /**
    * Kubernetes readiness: config/deps and optional DB. Fail ⇒ stop sending traffic.
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('ready')
   @HealthCheck()
@@ -228,7 +214,6 @@ export class HealthController {
   /**
    * Kubernetes liveness: process still healthy enough not to restart.
    * Uses a lower heap threshold than readiness-oriented checks.
-   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('live')
   @HealthCheck()

@@ -13,11 +13,6 @@
  * - Custom global functions and filters for templates
  * - Secure template rendering with auto-escaping
  *
- * @module ViewEngineService
- * @requires @nestjs/common
- * @requires nunjucks
- * @requires path
- *
  * @example
  * ```typescript
  * // Inject the service in a controller
@@ -46,8 +41,6 @@ import { FingerprintService } from '../shared/services/fingerprint.service';
  * - Custom globals (`assetPath`) and secure auto-escaping
  *
  * Template load order: application templates (`dist/views`) then GOV.UK Frontend.
- *
- * @class ViewEngineService
  */
 @Injectable()
 export class ViewEngineService {
@@ -63,7 +56,7 @@ export class ViewEngineService {
    * - Security settings (auto-escaping, error handling)
    * - Custom global functions for asset management
    *
-   * @param {FingerprintService} fingerprintService - Service for resolving fingerprinted asset paths
+   * @param fingerprintService - Service for resolving fingerprinted asset paths
    *
    * @example
    * ```typescript
@@ -139,8 +132,8 @@ export class ViewEngineService {
      * - No manual cache busting required
      * - Improved page load performance for returning visitors
      *
-     * @param {string} path - The original asset path
-     * @returns {string} The fingerprinted asset path or original path as fallback
+     * @param path - The original asset path
+     * @returns The fingerprinted asset path or original path as fallback
      *
      * @example
      * ```nunjucks
@@ -171,10 +164,10 @@ export class ViewEngineService {
    * 4. Executes any template logic (loops, conditionals, etc.)
    * 5. Returns the final HTML string
    *
-   * @param {string} template - The template filename (relative to template paths)
-   * @param {any} data - The data context to pass to the template
-   * @returns {string} The rendered HTML string
-   * @throws {Error} If the template file is not found or contains syntax errors
+   * @param template - The template filename (relative to template paths)
+   * @param data - The data context to pass to the template
+   * @returns The rendered HTML string
+   * @throws Error - If the template file is not found or contains syntax errors
    *
    * @example
    * ```typescript
@@ -210,7 +203,7 @@ export class ViewEngineService {
    * - Accessing advanced Nunjucks features
    * - Testing template functionality
    *
-   * @returns {nunjucks.Environment} The configured Nunjucks environment instance
+   * @returns The configured Nunjucks environment instance
    *
    * @example
    * ```typescript

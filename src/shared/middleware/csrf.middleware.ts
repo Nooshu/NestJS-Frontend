@@ -16,11 +16,6 @@
  *
  * Not a substitute for authn/z or CSP; pairs with Helmet and ValidationPipe.
  *
- * @module CsrfMiddleware
- * @requires @nestjs/common
- * @requires cookie-parser
- * @requires crypto
- *
  * @example
  * ```typescript
  * consumer.apply(CsrfMiddleware)
@@ -39,10 +34,6 @@ import { SecurityConfig } from '../config/security.config';
 /**
  * Extended Request interface that includes optional CSRF token generator.
  * This is primarily used for testing scenarios where we need to mock token generation.
- *
- * @interface RequestWithCsrf
- * @extends {Request}
- * @property {Function} [csrfToken] - Optional mock token generator function for testing
  */
 interface RequestWithCsrf extends Request {
   csrfToken?: () => string;
@@ -51,8 +42,6 @@ interface RequestWithCsrf extends Request {
 /**
  * Type definition for SameSite cookie attribute values.
  * Restricts the possible values to the standard SameSite options.
- *
- * @type SameSite
  */
 type SameSite = 'strict' | 'lax' | 'none';
 
@@ -68,8 +57,6 @@ type SameSite = 'strict' | 'lax' | 'none';
  * 3. Uses HMAC-SHA256 with a random salt for cryptographically secure token generation
  * 4. Implements proper cookie security flags (httpOnly, secure, sameSite)
  *
- * @class CsrfMiddleware
- * @implements {NestMiddleware}
  *
  * @example
  * ```typescript
@@ -105,8 +92,8 @@ export class CsrfMiddleware implements NestMiddleware {
    * - Security configuration from the application config
    * - Logging context for debugging and monitoring
    *
-   * @param {LoggerService} logger - Logger service for debugging and security monitoring
-   * @param {SecurityConfig} securityConfig - Security configuration containing CSRF settings
+   * @param logger - Logger service for debugging and security monitoring
+   * @param securityConfig - Security configuration containing CSRF settings
    *
    * @example
    * ```typescript
@@ -168,9 +155,8 @@ export class CsrfMiddleware implements NestMiddleware {
    * 2. Create HMAC-SHA256 hash using the salt and secret
    * 3. Combine salt and hash in hex format
    *
-   * @private
-   * @param {RequestWithCsrf} [req] - Optional request object (used for testing with mock tokens)
-   * @returns {string} A cryptographically secure CSRF token
+   * @param req - Optional request object (used for testing with mock tokens)
+   * @returns A cryptographically secure CSRF token
    *
    * @example
    * ```typescript
@@ -207,10 +193,9 @@ export class CsrfMiddleware implements NestMiddleware {
    * - Comprehensive logging without exposing sensitive data
    * - Graceful error handling for malformed tokens
    *
-   * @private
-   * @param {string} token - The token from the cookie
-   * @param {string} providedToken - The token from the form data
-   * @returns {boolean} True if tokens match, false otherwise
+   * @param token - The token from the cookie
+   * @param providedToken - The token from the form data
+   * @returns True if tokens match, false otherwise
    *
    * @example
    * ```typescript
@@ -265,11 +250,10 @@ export class CsrfMiddleware implements NestMiddleware {
    * - Development-only detailed error information
    * - Security audit logging
    *
-   * @private
-   * @param {Response} res - Express response object
-   * @param {Error} [error] - Optional error object for additional context
-   * @param {Record<string, any>} [details] - Additional error details for logging
-   * @returns {Response} HTTP 403 response with error details
+   * @param res - Express response object
+   * @param error - Optional error object for additional context
+   * @param details - Additional error details for logging
+   * @returns HTTP 403 response with error details
    *
    * @example
    * ```typescript
@@ -313,9 +297,9 @@ export class CsrfMiddleware implements NestMiddleware {
    * - HEAD/OPTIONS: Skip validation (safe methods)
    * - API routes: Skip validation (handled separately)
    *
-   * @param {RequestWithCsrf} req - Express request object with optional CSRF extensions
-   * @param {Response} res - Express response object
-   * @param {NextFunction} next - Express next function to continue middleware chain
+   * @param req - Express request object with optional CSRF extensions
+   * @param res - Express response object
+   * @param next - Express next function to continue middleware chain
    *
    * @example
    * ```typescript

@@ -19,7 +19,7 @@ export class AssetPathExtension {
 
   /**
    * Resolve an asset path to its fingerprinted version
-   * @param assetPath Original asset path
+   * @param assetPath - Original asset path
    */
   getExtension(): (assetPath: string) => string {
     return (assetPath: string): string => {

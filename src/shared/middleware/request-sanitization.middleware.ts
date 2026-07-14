@@ -4,7 +4,6 @@
  * Defence-in-depth layer that rejects or cleans inbound HTTP input before it
  * reaches controllers. Registered via EnhancedSecurityModule for all routes.
  *
- * Purpose:
  * - Enforce size/method limits (URL, headers, body) to reduce abuse surface
  * - Block common injection / XSS / path-traversal signatures early (400)
  * - Flag suspicious scanners/UA patterns without blocking (`x-suspicious-*`)
@@ -19,9 +18,6 @@
  *
  * Performance: runs on every request that uses EnhancedSecurityModule; keep
  * regex lists focused — hot-path cost grows with body size and pattern count.
- *
- * @module RequestSanitizationMiddleware
- * @requires @nestjs/common
  */
 
 import { Injectable, NestMiddleware } from '@nestjs/common';
@@ -30,8 +26,6 @@ import { LoggerService } from '../../logger/logger.service';
 
 /**
  * Tunables for size limits, allowed methods, and pattern lists.
- *
- * @interface SanitizationConfig
  */
 interface SanitizationConfig {
   maxBodySize: number;
@@ -44,9 +38,6 @@ interface SanitizationConfig {
 
 /**
  * Nest middleware that validates and sanitises request URL, headers, body, and query.
- *
- * @class RequestSanitizationMiddleware
- * @implements {NestMiddleware}
  */
 @Injectable()
 export class RequestSanitizationMiddleware implements NestMiddleware {
@@ -82,7 +73,7 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   };
 
   /**
-   * @param {LoggerService} logger - Structured logger (context set to this middleware)
+   * @param logger - Structured logger (context set to this middleware)
    */
   constructor(private readonly logger: LoggerService) {
     this.logger.setContext('RequestSanitizationMiddleware');
@@ -91,8 +82,8 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   /**
    * Escapes HTML-sensitive characters and strips null bytes from a string.
    *
-   * @param {string} input - Raw string
-   * @returns {string} Sanitised string (unchanged if empty)
+   * @param input - Raw string
+   * @returns Sanitised string (unchanged if empty)
    */
   private sanitizeString(input: string): string {
     if (!input) return input;
@@ -114,9 +105,9 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   /**
    * Deep-sanitises plain objects/arrays (keys and string values).
    *
-   * @param {any} obj - Value to sanitise
-   * @param {number} [depth=0] - Current recursion depth
-   * @returns {any} Sanitised value, or `{}` if depth exceeds the limit
+   * @param obj - Value to sanitise
+   * @param depth - Current recursion depth
+   * @returns Sanitised value, or `{}` if depth exceeds the limit
    */
   private sanitizeObject(obj: any, depth = 0): any {
     if (depth > 10) {
@@ -153,16 +144,16 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   }
 
   /**
-   * @param {string} input - Haystack to scan
-   * @returns {boolean} True if any blocked pattern matches
+   * @param input - Haystack to scan
+   * @returns True if any blocked pattern matches
    */
   private checkBlockedPatterns(input: string): boolean {
     return this.config.blockedPatterns.some((pattern) => pattern.test(input));
   }
 
   /**
-   * @param {string} input - Haystack to scan
-   * @returns {boolean} True if any suspicious (warn-only) pattern matches
+   * @param input - Haystack to scan
+   * @returns True if any suspicious (warn-only) pattern matches
    */
   private checkSuspiciousPatterns(input: string): boolean {
     return this.config.suspiciousPatterns.some((pattern) => pattern.test(input));
@@ -171,8 +162,8 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   /**
    * Validates method, URL length, headers, and body against size and pattern rules.
    *
-   * @param {Request} req - Incoming request
-   * @returns {{ valid: boolean, reason?: string, suspicious?: boolean }} Outcome; invalid ⇒ block
+   * @param req - Incoming request
+   * @returns Outcome; invalid ⇒ block
    */
   private validateRequest(req: Request): { valid: boolean; reason?: string; suspicious?: boolean } {
     // Check HTTP method
@@ -237,8 +228,8 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   /**
    * Best-effort client metadata for security logs (IP, UA, referer).
    *
-   * @param {Request} req - Incoming request
-   * @returns {object} Client info snapshot for logging
+   * @param req - Incoming request
+   * @returns Client info snapshot for logging
    */
   private getClientInfo(req: Request) {
     const forwarded = req.headers['x-forwarded-for'] as string;
@@ -259,13 +250,13 @@ export class RequestSanitizationMiddleware implements NestMiddleware {
   /**
    * Validates, optionally flags, then sanitises body/query and continues the chain.
    *
+   * @remarks
    * Side effects: may set `x-suspicious-request` / `x-suspicious-reason` headers;
    * mutates `req.body` and `req.query`; may end the response with 400.
    *
-   * @param {Request} req - Express request
-   * @param {Response} res - Express response
-   * @param {NextFunction} next - Next middleware
-   * @returns {void}
+   * @param req - Express request
+   * @param res - Express response
+   * @param next - Next middleware
    */
   use(req: Request, res: Response, next: NextFunction): void {
     const clientInfo = this.getClientInfo(req);

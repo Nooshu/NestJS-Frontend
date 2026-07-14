@@ -2,6 +2,8 @@ const { defineConfig, globalIgnores } = require('eslint/config');
 
 const tsParser = require('@typescript-eslint/parser');
 const typescriptEslintEslintPlugin = require('@typescript-eslint/eslint-plugin');
+const jsdoc = require('eslint-plugin-jsdoc');
+const tsdoc = require('eslint-plugin-tsdoc');
 const globals = require('globals');
 const js = require('@eslint/js');
 
@@ -31,6 +33,34 @@ module.exports = defineConfig([
 
     plugins: {
       '@typescript-eslint': typescriptEslintEslintPlugin,
+      jsdoc,
+      tsdoc,
+    },
+
+    settings: {
+      jsdoc: {
+        mode: 'typescript',
+        tagNamePreference: {
+          // Redundant with TypeScript / Nest / Jest — ban for TSDoc-compatible style
+          module: false,
+          requires: false,
+          class: false,
+          interface: false,
+          function: false,
+          async: false,
+          method: false,
+          property: false,
+          private: false,
+          protected: false,
+          public: false,
+          readonly: false,
+          static: false,
+          type: false,
+          implements: false,
+          extends: false,
+          description: false,
+        },
+      },
     },
 
     extends: compat.extends('plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended'),
@@ -54,6 +84,12 @@ module.exports = defineConfig([
           allow: ['warn', 'error'],
         },
       ],
+
+      // TSDoc-compatible documentation (types live in signatures, not braces)
+      'jsdoc/no-types': 'error',
+      'jsdoc/require-hyphen-before-param-description': ['warn', 'always'],
+      'jsdoc/check-tag-names': ['error', { typed: true }],
+      'tsdoc/syntax': 'warn',
     },
   },
   globalIgnores(['eslint.config.js', 'test/**/*.ts']),
@@ -75,6 +111,9 @@ module.exports = defineConfig([
       '@typescript-eslint/ban-ts-comment': 'warn',
       '@typescript-eslint/no-namespace': 'off',
       'no-console': 'off',
+      // Specs may omit exhaustive param docs
+      'jsdoc/require-hyphen-before-param-description': 'off',
+      'tsdoc/syntax': 'off',
     },
   },
 ]);

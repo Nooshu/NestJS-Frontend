@@ -18,9 +18,9 @@ export class RemoveLegacyHeadersMiddleware implements NestMiddleware {
   /**
    * Middleware implementation that removes legacy headers from HTML responses
    *
-   * @param {Request} req - The incoming request
-   * @param {Response} res - The outgoing response
-   * @param {NextFunction} next - The next middleware function
+   * @param req - The incoming request
+   * @param res - The outgoing response
+   * @param next - The next middleware function
    */
   use(req: Request, res: Response, next: NextFunction) {
     // Only remove headers for HTML responses

@@ -4,9 +4,6 @@
  * Journey pages belong in feature controllers under `views/journeys/`. View
  * rendering uses Nunjucks via `@Render`; Cache-Control on HTML favours shared
  * CDN/proxy caching (`s-maxage`) while keeping browser cache short.
- *
- * @module AppController
- * @requires @nestjs/common
  */
 
 import { Controller, Get, Render, Header, Res } from '@nestjs/common';
@@ -17,8 +14,6 @@ import { join } from 'path';
 
 /**
  * Handles `/` and `/robots.txt`. Registered on {@link AppModule}.
- *
- * @class AppController
  */
 @ApiTags('app')
 @Controller()
@@ -26,11 +21,11 @@ export class AppController {
   /**
    * Serves `robots.txt` (PoC defaults to disallow-all).
    *
+   * @remarks
    * Side effects: reads from `dist/public/robots.txt`; on missing file responds
    * with a hardcoded disallow policy. Cache-Control is 24h (public).
    *
-   * @param {Response} res - Express response (bypasses Nest interceptors via `@Res`)
-   * @returns {void}
+   * @param res - Express response (bypasses Nest interceptors via `@Res`)
    */
   @Get('robots.txt')
   getRobotsTxt(@Res() res: Response): void {
@@ -51,9 +46,9 @@ export class AppController {
   /**
    * Disk read seam for robots.txt (extractable in unit tests).
    *
-   * @param {string} robotsPath - Absolute path to robots.txt
-   * @returns {string} File contents
-   * @throws {Error} If the file cannot be read
+   * @param robotsPath - Absolute path to robots.txt
+   * @returns File contents
+   * @throws Error - If the file cannot be read
    */
   readRobotsFile(robotsPath: string): string {
     return readFileSync(robotsPath, 'utf-8');
@@ -65,7 +60,7 @@ export class AppController {
    * Headers: browser `max-age=0`, shared cache `s-maxage=86400`, with
    * stale-while-revalidate for resilience. Vary Accept-Encoding for compression.
    *
-   * @returns {{ title: string, message: string }} Template context
+   * @returns Template context
    */
   @ApiOperation({ summary: 'Get home page' })
   @ApiResponse({

@@ -18,8 +18,6 @@ import { ApplicationHealthIndicator } from './indicators/application.health';
  *
  * Controllers: {@link HealthController}. Exported indicators can be reused by
  * other modules for composed checks.
- *
- * @module HealthModule
  */
 @Module({
   imports: [

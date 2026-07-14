@@ -4,8 +4,6 @@ import { Controller, Get, Render } from '@nestjs/common';
  * Controller for handling view rendering requests.
  * This controller manages all routes that render Nunjucks templates using the GOV.UK Frontend components.
  *
- * @module ViewsController
- * @description Controller for handling view rendering with GOV.UK Frontend
  *
  * @example
  * // Accessing routes
@@ -19,8 +17,7 @@ export class ViewsController {
   /**
    * Renders the home page
    *
-   * @method home
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get()
   @Render('index')
@@ -31,8 +28,7 @@ export class ViewsController {
   /**
    * Renders the second page
    *
-   * @method secondPage
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get('second-page')
   @Render('second-page')
@@ -43,8 +39,7 @@ export class ViewsController {
   /**
    * Renders the third page
    *
-   * @method thirdPage
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get('third-page')
   @Render('third-page')
@@ -55,8 +50,7 @@ export class ViewsController {
   /**
    * Renders the form components demo page
    *
-   * @method formComponents
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get('form-components')
   @Render('form-components')
@@ -67,8 +61,7 @@ export class ViewsController {
   /**
    * Renders the layout components demo page
    *
-   * @method layoutComponents
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get('layout-components')
   @Render('layout-components')
@@ -79,8 +72,7 @@ export class ViewsController {
   /**
    * Renders the feedback components demo page
    *
-   * @method feedbackComponents
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get('feedback-components')
   @Render('feedback-components')
@@ -91,8 +83,7 @@ export class ViewsController {
   /**
    * Renders the missing components demo page
    *
-   * @method missingComponents
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get('missing-components')
   @Render('missing-components')
@@ -103,8 +94,7 @@ export class ViewsController {
   /**
    * Renders the performance metrics demo page
    *
-   * @method performanceDemo
-   * @returns {Object} Template data with page title
+   * @returns Template data with page title
    */
   @Get('performance-demo')
   @Render('performance-demo')

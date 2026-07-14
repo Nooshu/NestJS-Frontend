@@ -1,9 +1,6 @@
+import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import {
-  TerminusModule,
-  HealthIndicator,
-  MemoryHealthIndicator,
-} from '@nestjs/terminus';
+import { TerminusModule, HealthIndicator, MemoryHealthIndicator } from '@nestjs/terminus';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { HealthController } from '../health.controller';
@@ -158,8 +155,13 @@ describe('HealthController', () => {
   let mockHttpHealthIndicator: MockHttpHealthIndicator;
   let mockDatabaseHealthIndicator: MockDatabaseHealthIndicator;
   let mockRedisHealthIndicator: MockRedisHealthIndicator;
+  let loggerErrorSpy: jest.SpyInstance;
 
   beforeEach(async () => {
+    // Terminus logs ERROR when intentional "down" indicators make a check fail;
+    // silence that so integration runs stay readable.
+    loggerErrorSpy = jest.spyOn(Logger.prototype, 'error').mockImplementation(() => undefined);
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         TerminusModule,
@@ -203,6 +205,7 @@ describe('HealthController', () => {
   });
 
   afterEach(() => {
+    loggerErrorSpy?.mockRestore();
     jest.clearAllMocks();
   });
 

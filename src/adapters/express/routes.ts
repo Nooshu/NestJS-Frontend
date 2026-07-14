@@ -4,7 +4,7 @@ import type { Express } from 'express';
  * Sets up the routes for the Express.js application.
  * This function configures all the routes that would normally be handled by NestJS controllers.
  *
- * @param {Express} app - The Express.js application instance
+ * @param app - The Express.js application instance
  */
 export function setupRoutes(app: Express) {
   // Note: Root route (/) is handled by NestJS AppController

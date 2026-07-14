@@ -19,10 +19,7 @@ describe('RequestSanitizationMiddleware', () => {
     };
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        RequestSanitizationMiddleware,
-        { provide: LoggerService, useValue: mockLogger },
-      ],
+      providers: [RequestSanitizationMiddleware, { provide: LoggerService, useValue: mockLogger }],
     }).compile();
 
     middleware = module.get<RequestSanitizationMiddleware>(RequestSanitizationMiddleware);
@@ -74,8 +71,10 @@ describe('RequestSanitizationMiddleware', () => {
       jest.doMock('../../logger/logger.service', () => ({
         LoggerService: { notAConstructor: true },
       }));
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const { RequestSanitizationMiddleware: Reloaded } = require('./request-sanitization.middleware');
+
+      const {
+        RequestSanitizationMiddleware: Reloaded,
+      } = require('./request-sanitization.middleware');
       expect(Reloaded).toBeDefined();
     });
   });

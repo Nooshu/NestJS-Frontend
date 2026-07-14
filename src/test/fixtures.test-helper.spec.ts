@@ -288,10 +288,7 @@ describe('FixturesTestHelper', () => {
   });
 
   describe('resolveClassAttribute and remaining branches', () => {
-    const {
-      resolveClassAttribute,
-      getClassNames,
-    } = require('./fixtures.test-helper');
+    const { resolveClassAttribute, getClassNames } = require('./fixtures.test-helper');
 
     it('getClassNames filters empty tokens', () => {
       expect(getClassNames(' a  b ')).toEqual(['a', 'b']);

@@ -8,23 +8,13 @@
  * in {@link AppModule.configure} — keep bootstrap lean and avoid duplicating
  * those concerns here.
  *
+ * @remarks
  * Side effects: binds HTTP listener (HOST/PORT), replaces Nest's logger with
  * {@link LoggerService}, and exits the process on bootstrap failure.
  *
  * Performance: long-lived Cache-Control on static/GOV.UK assets relies on
  * fingerprinting (immutable URLs). Security: Helmet + ValidationPipe whitelist
  * run early; cookie-parser is required so CSRF middleware can read cookies.
- *
- * @module Main
- * @requires @nestjs/core
- * @requires @nestjs/platform-express
- * @requires @nestjs/swagger
- * @requires path
- * @requires class-validator
- * @requires class-transformer
- * @requires helmet
- * @requires compression
- * @requires cookie-parser
  */
 
 import { ValidationPipe } from '@nestjs/common';
@@ -51,16 +41,16 @@ import cookieParser from 'cookie-parser';
  * ViewEngineService / SecurityConfig; Express view engine and static mounts
  * are platform APIs that belong on the NestExpressApplication instance.
  *
- * @async
- * @function bootstrap
- * @returns {Promise<void>} Resolves after the server is listening
- * @throws {Error} Propagates startup failures to the top-level catch handler
+ * @returns Resolves after the server is listening
+ * @throws Error - Propagates startup failures to the top-level catch handler
  *
  * @example
+ * ```ts
  * bootstrap().catch((err) => {
  *   console.error('Failed to start application:', err);
  *   process.exit(1);
  * });
+ * ```
  */
 async function bootstrap() {
   // Create the NestJS application instance with Express platform
@@ -152,9 +142,9 @@ async function bootstrap() {
    * The view engine service is used to render templates, and any errors
    * during rendering are logged using our Winston logger.
    *
-   * @param {string} filePath - The path to the template file
-   * @param {Record<string, any>} options - The options to pass to the template
-   * @param {Function} callback - The callback function to call with the rendered template or error
+   * @param filePath - The path to the template file
+   * @param options - The options to pass to the template
+   * @param callback - The callback function to call with the rendered template or error
    */
   app.engine(
     'njk',
@@ -232,7 +222,6 @@ async function bootstrap() {
    *
    * The documentation will be available at: http://localhost:3002/api-docs
    *
-   * @swagger
    * - Title: Name of the API documentation
    * - Description: Detailed description of what the API provides
    * - Version: Current version of the API
@@ -245,10 +234,7 @@ async function bootstrap() {
     .build();
 
   /**
-   * Create and setup Swagger documentation
-   * @param {NestExpressApplication} app - The NestJS application instance
-   * @param {SwaggerDocumentOptions} swaggerConfig - Swagger configuration options
-   * @param {string} 'api-docs' - The endpoint where the Swagger UI will be served
+   * Create and setup Swagger documentation at `/api-docs`.
    */
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
@@ -279,7 +265,7 @@ async function bootstrap() {
 
 /**
  * Start the application and handle any startup errors
- * @throws {Error} If the application fails to start
+ * @throws Error - If the application fails to start
  */
 bootstrap().catch((err) => {
   console.error('Failed to start application:', err);

@@ -10,10 +10,7 @@ describe('RedisHealthIndicator', () => {
     quit: jest.fn(),
   };
 
-  const createIndicator = (
-    redisConfig: unknown,
-    options: { attachMockClient?: boolean } = {}
-  ) => {
+  const createIndicator = (redisConfig: unknown, options: { attachMockClient?: boolean } = {}) => {
     const indicator = new RedisHealthIndicator().init({
       get: jest.fn().mockReturnValue(redisConfig),
     } as any);
@@ -98,10 +95,12 @@ describe('RedisHealthIndicator', () => {
         })
       );
 
-      const handlers: Record<string, Function> = {};
-      localMock.on.mock.calls.forEach(([event, handler]: [string, Function]) => {
-        handlers[event] = handler;
-      });
+      const handlers: Record<string, (...args: unknown[]) => void> = {};
+      localMock.on.mock.calls.forEach(
+        ([event, handler]: [string, (...args: unknown[]) => void]) => {
+          handlers[event] = handler;
+        }
+      );
 
       handlers.error?.(new Error('conn err'));
       handlers.connect?.();

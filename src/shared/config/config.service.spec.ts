@@ -26,11 +26,7 @@ type DatabaseConfigKeys =
   | 'database.logging';
 
 type RedisConfigKeys =
-  | 'redis.enabled'
-  | 'redis.host'
-  | 'redis.port'
-  | 'redis.password'
-  | 'redis.db';
+  'redis.enabled' | 'redis.host' | 'redis.port' | 'redis.password' | 'redis.db';
 
 type LoggingConfigKeys =
   | 'APP_NAME'

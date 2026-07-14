@@ -7,9 +7,6 @@ import { ApiService } from '../shared/services/api.service';
 /**
  * API Module for handling HTTP requests and caching.
  * This module configures the HTTP client and caching for API requests.
- *
- * @module ApiModule
- * @description Module for API communication and caching
  */
 @Module({
   imports: [

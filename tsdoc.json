@@ -1,0 +1,27 @@
+/**
+ * Project TSDoc extensions for NestJS application comments.
+ * Core style: TypeScript signatures own types; comments describe behaviour.
+ * Do not set supportForTags here — that would disable the standard TSDoc set.
+ * @see https://tsdoc.org/
+ * @see .cursor/rules/docs-and-comments.mdc
+ */
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
+  "tagDefinitions": [
+    {
+      "tagName": "@template",
+      "syntaxKind": "block",
+      "allowMultiple": true
+    },
+    {
+      "tagName": "@default",
+      "syntaxKind": "block",
+      "allowMultiple": true
+    },
+    {
+      "tagName": "@todo",
+      "syntaxKind": "block",
+      "allowMultiple": true
+    }
+  ]
+}

@@ -2,15 +2,12 @@
  * Performance configuration for the application.
  * Provides settings for compression, caching, and other performance optimizations.
  *
- * @module PerformanceConfig
- * @description Application performance configuration
  *
  * @example
- * // Import and use performance configuration
+ * ```ts
  * import { performanceConfig } from './performance.config';
- *
- * // Apply compression middleware
  * app.use(compression(performanceConfig.compression));
+ * ```
  */
 
 import { Injectable } from '@nestjs/common';
@@ -47,17 +44,10 @@ export class PerformanceConfig {
 
 /**
  * Main performance configuration object
- *
- * @type {Object}
- * @property {CompressionOptions} compression - Response compression settings
- * @property {ServeStaticOptions} staticAssets - Static file serving settings
- * @property {Object} responseCompression - Response compression settings
- * @property {Object} browserCache - Browser caching settings
  */
 export const performanceConfig = {
   /**
    * Response compression settings
-   * @type {CompressionOptions}
    */
   compression: {
     level: 6, // Compression level (0-9)
@@ -131,7 +121,6 @@ export const performanceConfig = {
 
   /**
    * Static file serving settings
-   * @type {ServeStaticOptions}
    */
   staticAssets: {
     maxAge: 31536000, // 1 year in milliseconds (365 days)
@@ -148,7 +137,6 @@ export const performanceConfig = {
 
   /**
    * Response compression settings
-   * @type {Object}
    */
   responseCompression: {
     enabled: true,
@@ -160,7 +148,6 @@ export const performanceConfig = {
 
   /**
    * Browser caching settings
-   * @type {Object}
    *
    * The stale-while-revalidate directive allows browsers to use a cached response
    * immediately while fetching a fresh copy in the background. This significantly
@@ -186,16 +173,10 @@ export const performanceConfig = {
 
 /**
  * API-specific performance configuration
- *
- * @type {Object}
- * @property {Object} connection - Connection settings
- * @property {Object} retry - Retry settings
- * @property {Object} cache - Cache settings
  */
 export const apiPerformanceConfig = {
   /**
    * Connection settings
-   * @type {Object}
    */
   connection: {
     keepAlive: true,
@@ -206,7 +187,6 @@ export const apiPerformanceConfig = {
 
   /**
    * Retry settings
-   * @type {Object}
    */
   retry: {
     retries: 3,
@@ -217,7 +197,6 @@ export const apiPerformanceConfig = {
 
   /**
    * Cache settings
-   * @type {Object}
    */
   cache: {
     standard: 300000, // 5 minutes

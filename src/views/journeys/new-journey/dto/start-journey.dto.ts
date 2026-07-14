@@ -2,11 +2,6 @@
  * Data Transfer Object (DTO) for the journey start form.
  * Defines the validation rules and transformations for the initial journey data.
  * Uses class-validator decorators to enforce data integrity and format requirements.
- *
- * @class StartJourneyDto
- * @property {string} fullName - User's full name (letters, spaces, hyphens, and apostrophes only)
- * @property {string} email - User's email address (must be valid email format)
- * @property {('personal'|'business'|'other')} journeyType - Type of journey being undertaken
  */
 import { IsEmail, IsNotEmpty, IsEnum, Matches } from 'class-validator';
 import { Transform } from 'class-transformer';

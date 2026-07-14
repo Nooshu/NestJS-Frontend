@@ -6,8 +6,8 @@ import { join } from 'path';
  * Sets up GOV.UK Frontend for the Express.js application.
  * This function configures the GOV.UK Frontend assets and Nunjucks environment.
  *
- * @param {Application} app - The Express.js application instance
- * @param {nunjucks.Environment} nunjucksEnv - The Nunjucks environment
+ * @param app - The Express.js application instance
+ * @param nunjucksEnv - The Nunjucks environment
  */
 export function setupGovUKFrontend(_app: Application, nunjucksEnv: nunjucks.Environment) {
   // Add GOV.UK Frontend globals to Nunjucks

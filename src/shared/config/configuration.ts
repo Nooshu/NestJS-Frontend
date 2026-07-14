@@ -2,15 +2,13 @@
  * Default application configuration.
  * Provides centralized configuration management with environment variable support.
  *
- * @module Configuration
- * @description Application configuration settings
  *
  * @example
  * // Import and use configuration
  * import configuration from './configuration';
  * const config = configuration();
  *
- * @returns {Object} Configuration object with application settings
+ * @returns Configuration object with application settings
  */
 export default () => ({
   /**

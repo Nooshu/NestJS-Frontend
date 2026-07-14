@@ -22,8 +22,6 @@ import { CsrfMiddleware } from '../middleware/csrf.middleware';
  * - CSRF protection
  * - Content Security Policy (CSP)
  * - Security error handling
- *
- * @module EnhancedSecurityModule
  */
 @Module({
   imports: [
