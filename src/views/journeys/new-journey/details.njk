@@ -3,6 +3,8 @@
 {% from "govuk/components/button/macro.njk" import govukButton %}
 {% from "govuk/components/date-input/macro.njk" import govukDateInput %}
 {% from "govuk/components/select/macro.njk" import govukSelect %}
+{% from "govuk/components/error-summary/macro.njk" import govukErrorSummary %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 {% from "journeys/shared/navigation.njk" import journeyNavigation %}
 
 {% block content %}
@@ -10,15 +12,18 @@
 
   <h1 class="govuk-heading-xl">Journey details</h1>
 
-  <div id="error-summary" class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" style="display: none;">
-    <h2 class="govuk-error-summary__title" id="error-summary-title">
-      There is a problem
-    </h2>
-    <div class="govuk-error-summary__body">
-      <ul class="govuk-list govuk-error-summary__list">
-        <li id="error-message"></li>
-      </ul>
-    </div>
+  <div id="error-summary-container" hidden>
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: [
+        {
+          html: '<span id="error-message"></span>'
+        }
+      ],
+      attributes: {
+        id: "error-summary"
+      }
+    }) }}
   </div>
 
   <form method="POST" action="/new-journey/details" novalidate id="detailsForm">
@@ -94,11 +99,12 @@
   </form>
 
   {% if isDevelopment %}
-  <div class="govuk-inset-text">
+  {% set debugHtml %}
     <h2 class="govuk-heading-s">Debug Information</h2>
     <p>CSRF Token: <code>{{ csrfToken }}</code></p>
     <p>Cookie Name: <code>XSRF-TOKEN</code></p>
     <p>Current Cookies: <code>{{ cookies | dump }}</code></p>
-  </div>
+  {% endset %}
+  {{ govukInsetText({ html: debugHtml }) }}
   {% endif %}
-{% endblock %} 
+{% endblock %}

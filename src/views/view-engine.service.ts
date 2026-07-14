@@ -35,38 +35,19 @@ import configuration from '../shared/config/configuration';
 import { FingerprintService } from '../shared/services/fingerprint.service';
 
 /**
- * Service that provides Nunjucks template rendering functionality with GOV.UK Frontend integration.
+ * Service that provides Nunjucks template rendering with GOV.UK Frontend as the UI
+ * single source of truth. Controllers should pass data into templates that call official
+ * `govuk*` macros — do not hand-write Design System component markup in `src/views`.
  *
- * This service configures and manages the Nunjucks template engine, providing a bridge between
- * NestJS controllers and the template rendering system. It includes support for:
- * - GOV.UK Frontend component templates
- * - Asset fingerprinting for optimal caching
- * - Environment-specific configuration (development vs production)
- * - Custom template globals and filters
- * - Secure template rendering with auto-escaping
+ * Configures and manages the Nunjucks environment with:
+ * - GOV.UK Frontend component templates (`node_modules/govuk-frontend/dist`)
+ * - Asset fingerprinting for long-lived browser caching
+ * - Environment-specific caching/watching
+ * - Custom globals (`assetPath`) and secure auto-escaping
  *
- * The service is configured to load templates from multiple locations:
- * 1. Application templates (src/views)
- * 2. GOV.UK Frontend component templates (node_modules/govuk-frontend/dist)
+ * Template load order: application templates (`dist/views`) then GOV.UK Frontend.
  *
  * @class ViewEngineService
- * @description Handles template rendering with Nunjucks and GOV.UK Frontend integration
- *
- * @example
- * ```typescript
- * // Basic usage in a controller
- * @Get()
- * @Render('index')
- * getIndex() {
- *   return { title: 'Home Page' };
- * }
- *
- * // Manual rendering
- * const html = this.viewEngine.render('template.njk', {
- *   title: 'Page Title',
- *   data: someData
- * });
- * ```
  */
 @Injectable()
 export class ViewEngineService {

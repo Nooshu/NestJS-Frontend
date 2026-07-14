@@ -1,48 +1,35 @@
 {#
   Navigation macro for journey pages.
-  Renders a breadcrumb navigation component that shows the user's progress through the journey.
-  
-  The navigation adapts based on the journey type:
-  - For 'new-journey': Shows the 4-step journey (Welcome, Start, Details, Confirmation)
-  - For other journeys: Shows a default 3-step navigation
-  
-  @macro journeyNavigation
-  @param {string} journey - The type of journey (e.g., 'new-journey')
-  @param {string} currentPage - The current page in the journey
+  Renders breadcrumb navigation using the official govukBreadcrumbs macro.
 #}
 {% macro journeyNavigation(journey, currentPage) %}
-  {# Define navigation structure based on journey type #}
+  {% from "govuk/components/breadcrumbs/macro.njk" import govukBreadcrumbs %}
+
   {% if journey == 'new-journey' %}
     {% set pages = [
-      { path: "/new-journey", title: "Welcome" },
-      { path: "/new-journey/start", title: "Start" },
-      { path: "/new-journey/details", title: "Details" },
-      { path: "/new-journey/confirmation", title: "Confirmation" }
+      { path: "/new-journey", title: "Welcome", id: "index" },
+      { path: "/new-journey/start", title: "Start", id: "start" },
+      { path: "/new-journey/details", title: "Details", id: "details" },
+      { path: "/new-journey/confirmation", title: "Confirmation", id: "confirmation" }
     ] %}
   {% else %}
-    {# Default navigation for other journey types #}
     {% set pages = [
-      { path: "/", title: "Home" },
-      { path: "/second-page", title: "Second Page" },
-      { path: "/third-page", title: "Third Page" }
+      { path: "/", title: "Home", id: "index" },
+      { path: "/second-page", title: "Second Page", id: "second-page" },
+      { path: "/third-page", title: "Third Page", id: "third-page" }
     ] %}
   {% endif %}
 
-  {# Render the breadcrumb navigation using GOV.UK Frontend components #}
-  <nav class="govuk-breadcrumbs" aria-label="Breadcrumbs">
-    <ol class="govuk-breadcrumbs__list">
-      {% for page in pages %}
-        {# Add active class to current page #}
-        <li class="govuk-breadcrumbs__list-item {% if page.path == currentPagePath %}govuk-breadcrumbs__list-item--active{% endif %}">
-          {% if page.path == currentPagePath %}
-            {# Current page is not a link #}
-            {{ page.title }}
-          {% else %}
-            {# Other pages are links #}
-            <a class="govuk-breadcrumbs__link" href="{{ page.path }}">{{ page.title }}</a>
-          {% endif %}
-        </li>
-      {% endfor %}
-    </ol>
-  </nav>
-{% endmacro %} 
+  {% set breadcrumbItems = [] %}
+  {% for page in pages %}
+    {% if page.id == currentPage %}
+      {% set breadcrumbItems = (breadcrumbItems.push({ text: page.title }), breadcrumbItems) %}
+    {% else %}
+      {% set breadcrumbItems = (breadcrumbItems.push({ text: page.title, href: page.path }), breadcrumbItems) %}
+    {% endif %}
+  {% endfor %}
+
+  {{ govukBreadcrumbs({
+    items: breadcrumbItems
+  }) }}
+{% endmacro %}

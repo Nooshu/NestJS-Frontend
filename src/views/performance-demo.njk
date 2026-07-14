@@ -1,4 +1,6 @@
 {% extends "layout.njk" %}
+{% from "govuk/components/button/macro.njk" import govukButton %}
+{% from "govuk/components/inset-text/macro.njk" import govukInsetText %}
 
 {% block content %}
 <div class="govuk-grid-row">
@@ -10,8 +12,8 @@
       Open your browser's developer console to see the performance metrics being logged.
     </p>
 
-    <div class="govuk-inset-text">
-      <p><strong>Core Web Vitals:</strong></p>
+    {{ govukInsetText({
+      html: '<p><strong>Core Web Vitals:</strong></p>
       <ul class="govuk-list govuk-list--bullet">
         <li>LCP (Largest Contentful Paint) - Time for largest content element to render</li>
         <li>FID (First Input Delay) - Time from first user interaction to browser response</li>
@@ -19,11 +21,11 @@
         <li>CLS (Cumulative Layout Shift) - Visual stability score</li>
         <li>FCP (First Contentful Paint) - Time for first content to render</li>
         <li>TTFB (Time to First Byte) - Server response time</li>
-      </ul>
-    </div>
+      </ul>'
+    }) }}
 
-    <div class="govuk-inset-text">
-      <p><strong>Custom Application Metrics:</strong></p>
+    {{ govukInsetText({
+      html: '<p><strong>Custom Application Metrics:</strong></p>
       <ul class="govuk-list govuk-list--bullet">
         <li>MemoryUsage - JavaScript heap memory usage in MB</li>
         <li>BundleSize - Size of JavaScript bundles in bytes</li>
@@ -31,8 +33,8 @@
         <li>DOMContentLoaded - Time for DOM to be fully parsed</li>
         <li>PageLoad - Complete page load time</li>
         <li>UserInteraction - Custom tracking of user interactions (clicks, scrolls, etc.)</li>
-      </ul>
-    </div>
+      </ul>'
+    }) }}
 
     <h2 class="govuk-heading-l">Interactive Elements</h2>
     
@@ -41,15 +43,26 @@
     </p>
 
     <div class="govuk-button-group">
-      <button class="govuk-button" id="test-button-1" data-module="govuk-button">
-        Test Button 1
-      </button>
-      <button class="govuk-button govuk-button--secondary" id="test-button-2" data-module="govuk-button">
-        Test Button 2
-      </button>
-      <button class="govuk-button govuk-button--warning" id="test-button-3" data-module="govuk-button">
-        Test Button 3
-      </button>
+      {{ govukButton({
+        text: "Test Button 1",
+        attributes: {
+          id: "test-button-1"
+        }
+      }) }}
+      {{ govukButton({
+        text: "Test Button 2",
+        classes: "govuk-button--secondary",
+        attributes: {
+          id: "test-button-2"
+        }
+      }) }}
+      {{ govukButton({
+        text: "Test Button 3",
+        classes: "govuk-button--warning",
+        attributes: {
+          id: "test-button-3"
+        }
+      }) }}
     </div>
 
     <h2 class="govuk-heading-l">Memory Usage</h2>
@@ -58,9 +71,9 @@
       Memory usage is monitored every 5 seconds. Check the console for updates.
     </p>
 
-    <div class="govuk-inset-text">
-      <p><strong>Note:</strong> Memory usage monitoring requires Chrome/Chromium browsers with the <code>--enable-precise-memory-info</code> flag.</p>
-    </div>
+    {{ govukInsetText({
+      html: '<p><strong>Note:</strong> Memory usage monitoring requires Chrome/Chromium browsers with the <code>--enable-precise-memory-info</code> flag.</p>'
+    }) }}
 
     <h2 class="govuk-heading-l">Route Change Testing</h2>
     
@@ -101,7 +114,6 @@ UserInteraction: 5 - Custom tracking of user interactions (clicks, scrolls, etc.
 </div>
 
 <script>
-// Add some interactive elements for testing
 document.addEventListener('DOMContentLoaded', function() {
   const buttons = document.querySelectorAll('[id^="test-button"]');
   
@@ -109,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function() {
     button.addEventListener('click', function() {
       console.log(`Test button ${index + 1} clicked!`);
       
-      // Create some DOM changes to trigger layout shifts
       const testDiv = document.createElement('div');
       testDiv.style.height = '50px';
       testDiv.style.backgroundColor = '#f0f0f0';
@@ -120,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (targetElement) {
         targetElement.appendChild(testDiv);
         
-        // Remove the element after 3 seconds to simulate dynamic content
         setTimeout(() => {
           if (testDiv.parentNode) {
             testDiv.parentNode.removeChild(testDiv);

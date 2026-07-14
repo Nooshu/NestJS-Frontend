@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Param, Body, Render, Res } from '@nestjs/common';
-import { Response } from 'express';
+import type { Response } from 'express';
 import { courtsData } from './dto/courtData';
 
 @Controller('find-a-court-or-tribunal')

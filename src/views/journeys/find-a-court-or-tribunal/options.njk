@@ -13,6 +13,18 @@
   }) }}
 {% endif %}
 
+<div id="client-error-summary" hidden>
+  {{ govukErrorSummary({
+    titleText: "There is a problem",
+    errorList: [
+      {
+        href: "#courtOption",
+        text: "Select whether you know the name of the court or tribunal"
+      }
+    ]
+  }) }}
+</div>
+
 <h2 class="govuk-heading-l govuk-!-margin-top-6" id="court-name-question">Do you know the name of the court or tribunal</h2>
   
 <p class="govuk-body" id="court-name-hint">The name of the court or tribunal can be found on a letter, email or text from us.</p>
@@ -58,60 +70,29 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('DOM loaded, setting up form validation');
-      
       const form = document.getElementById('optionsForm');
       if (!form) {
-        console.error('Form with ID "optionsForm" not found');
         return;
       }
       
-      console.log('Form found, adding event listener');
-      
       form.addEventListener('submit', function(e) {
-        console.log('Form submit event triggered');
-        
         const formData = new FormData(e.target);
         const courtOption = formData.get('courtOption');
+        const clientErrorSummary = document.getElementById('client-error-summary');
         
-        console.log('Court option selected:', courtOption);
-        
-        // Client-side validation - check if radio button is selected
         if (!courtOption) {
-          console.log('No option selected, preventing form submission');
           e.preventDefault();
           e.stopPropagation();
-          
-          // Remove any existing error summary
-          const existingErrorSummary = document.querySelector('.govuk-error-summary');
-          if (existingErrorSummary) {
-            existingErrorSummary.remove();
+
+          if (clientErrorSummary) {
+            clientErrorSummary.hidden = false;
+            const errorSummary = clientErrorSummary.querySelector('.govuk-error-summary');
+            if (errorSummary) {
+              errorSummary.focus();
+              errorSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
           }
           
-          // Create error summary
-          const errorHtml = `
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-              <h2 class="govuk-error-summary__title" id="error-summary-title">
-                There is a problem
-              </h2>
-              <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                  <li><a href="#courtOption">Select whether you know the name of the court or tribunal</a></li>
-                </ul>
-              </div>
-            </div>
-          `;
-          
-          // Insert error summary at the beginning of the content
-          const contentDiv = document.querySelector('[role="main"]') || document.querySelector('.govuk-main-wrapper') || document.querySelector('main');
-          if (contentDiv) {
-            contentDiv.insertAdjacentHTML('afterbegin', errorHtml);
-          } else {
-            // Fallback: insert before the form
-            form.insertAdjacentHTML('beforebegin', errorHtml);
-          }
-          
-          // Add error styling to radio group
           const radioGroup = document.querySelector('[name="courtOption"]');
           if (radioGroup) {
             const formGroup = radioGroup.closest('.govuk-form-group');
@@ -119,7 +100,6 @@
             if (formGroup && !formGroup.classList.contains('govuk-form-group--error')) {
               formGroup.classList.add('govuk-form-group--error');
               
-              // Add error message if it doesn't exist
               if (!formGroup.querySelector('.govuk-error-message')) {
                 const errorMessage = document.createElement('p');
                 errorMessage.className = 'govuk-error-message';
@@ -134,19 +114,9 @@
             }
           }
           
-          // Focus error summary
-          const errorSummary = document.querySelector('.govuk-error-summary');
-          if (errorSummary) {
-            errorSummary.focus();
-            errorSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-          
           return false;
         }
         
-        console.log('Option selected, allowing form submission');
-        
-        // Clear any existing errors if validation passes
         const formGroup = document.querySelector('[name="courtOption"]');
         if (formGroup) {
           const group = formGroup.closest('.govuk-form-group');
@@ -159,11 +129,10 @@
           }
         }
         
-        const errorSummary = document.querySelector('.govuk-error-summary');
-        if (errorSummary) {
-          errorSummary.remove();
+        if (clientErrorSummary) {
+          clientErrorSummary.hidden = true;
         }
       });
     });
   </script>
-{% endblock %} 
+{% endblock %}

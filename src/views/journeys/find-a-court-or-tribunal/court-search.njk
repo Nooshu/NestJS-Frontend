@@ -12,6 +12,30 @@
     }) }}
   {% endif %}
 
+  <div id="client-error-empty" hidden>
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: [
+        {
+          href: "#fullName",
+          text: "Enter a court name, address, town or city"
+        }
+      ]
+    }) }}
+  </div>
+
+  <div id="client-error-invalid" hidden>
+    {{ govukErrorSummary({
+      titleText: "There is a problem",
+      errorList: [
+        {
+          href: "#fullName",
+          text: "Enter a valid court name. Valid options are: Manchester, Birmingham, or London"
+        }
+      ]
+    }) }}
+  </div>
+
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
@@ -88,161 +112,72 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      console.log('Court search page loaded, setting up validation');
-      
       const form = document.getElementById('nameSearchForm');
       if (!form) {
-        console.error('Form with ID "nameSearchForm" not found');
         return;
       }
 
+      const emptyError = document.getElementById('client-error-empty');
+      const invalidError = document.getElementById('client-error-invalid');
+
+      function hideClientErrors() {
+        if (emptyError) emptyError.hidden = true;
+        if (invalidError) invalidError.hidden = true;
+      }
+
+      function showClientError(container) {
+        hideClientErrors();
+        if (!container) return;
+        container.hidden = false;
+        const errorSummary = container.querySelector('.govuk-error-summary');
+        if (errorSummary) {
+          errorSummary.focus();
+          errorSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      function setInputError(searchInput, message) {
+        const formGroup = searchInput.closest('.govuk-form-group');
+        if (!formGroup) return;
+
+        formGroup.classList.add('govuk-form-group--error');
+        searchInput.classList.add('govuk-input--error');
+
+        let errorMessage = formGroup.querySelector('.govuk-error-message');
+        if (!errorMessage) {
+          errorMessage = document.createElement('p');
+          errorMessage.className = 'govuk-error-message';
+          const hint = formGroup.querySelector('.govuk-hint');
+          const insertBefore = hint || searchInput;
+          insertBefore.parentNode.insertBefore(errorMessage, insertBefore);
+        }
+        errorMessage.innerHTML = '<span class="govuk-visually-hidden">Error:</span> ' + message;
+      }
+
       form.addEventListener('submit', function (e) {
-        console.log('Form submit event triggered');
-        
         const searchInput = document.getElementById('fullName');
         const searchValue = searchInput?.value.trim().toLowerCase();
-        
-        console.log('Search value:', searchValue);
-        
-        // Client-side validation
+
         if (!searchValue) {
-          console.log('No search value provided, preventing submission');
           e.preventDefault();
           e.stopPropagation();
-          
-          // Remove any existing error summary
-          const existingErrorSummary = document.querySelector('.govuk-error-summary');
-          if (existingErrorSummary) {
-            existingErrorSummary.remove();
-          }
-          
-          // Create error summary
-          const errorHtml = `
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-              <h2 class="govuk-error-summary__title" id="error-summary-title">
-                There is a problem
-              </h2>
-              <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                  <li><a href="#fullName">Enter a court name, address, town or city</a></li>
-                </ul>
-              </div>
-            </div>
-          `;
-          
-          // Insert error summary at the beginning of the content
-          const contentDiv = document.querySelector('[role="main"]') || document.querySelector('.govuk-main-wrapper') || document.querySelector('main');
-          if (contentDiv) {
-            contentDiv.insertAdjacentHTML('afterbegin', errorHtml);
-          } else {
-            form.insertAdjacentHTML('beforebegin', errorHtml);
-          }
-          
-          // Add error styling to input
-          const formGroup = searchInput.closest('.govuk-form-group');
-          if (formGroup && !formGroup.classList.contains('govuk-form-group--error')) {
-            formGroup.classList.add('govuk-form-group--error');
-            searchInput.classList.add('govuk-input--error');
-            
-            // Add error message if it doesn't exist
-            if (!formGroup.querySelector('.govuk-error-message')) {
-              const errorMessage = document.createElement('p');
-              errorMessage.className = 'govuk-error-message';
-              errorMessage.innerHTML = '<span class="govuk-visually-hidden">Error:</span> Enter a court name, address, town or city';
-              
-              const label = formGroup.querySelector('.govuk-label');
-              const hint = formGroup.querySelector('.govuk-hint');
-              const insertBefore = hint || searchInput;
-              
-              if (label && insertBefore) {
-                insertBefore.parentNode.insertBefore(errorMessage, insertBefore);
-              }
-            }
-          }
-          
-          // Focus error summary
-          const errorSummary = document.querySelector('.govuk-error-summary');
-          if (errorSummary) {
-            errorSummary.focus();
-            errorSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-          
+          showClientError(emptyError);
+          setInputError(searchInput, 'Enter a court name, address, town or city');
           return false;
         }
-        
-        // Validate against allowed courts
+
         const validCourts = ['manchester', 'birmingham', 'london'];
         const isValid = validCourts.some(court => searchValue.includes(court));
-        
+
         if (!isValid) {
-          console.log('Invalid court name, preventing submission');
           e.preventDefault();
           e.stopPropagation();
-          
-          // Remove any existing error summary
-          const existingErrorSummary = document.querySelector('.govuk-error-summary');
-          if (existingErrorSummary) {
-            existingErrorSummary.remove();
-          }
-          
-          // Create error summary
-          const errorHtml = `
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
-              <h2 class="govuk-error-summary__title" id="error-summary-title">
-                There is a problem
-              </h2>
-              <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                  <li><a href="#fullName">Enter a valid court name. Valid options are: Manchester, Birmingham, or London</a></li>
-                </ul>
-              </div>
-            </div>
-          `;
-          
-          // Insert error summary
-          const contentDiv = document.querySelector('[role="main"]') || document.querySelector('.govuk-main-wrapper') || document.querySelector('main');
-          if (contentDiv) {
-            contentDiv.insertAdjacentHTML('afterbegin', errorHtml);
-          } else {
-            form.insertAdjacentHTML('beforebegin', errorHtml);
-          }
-          
-          // Add error styling to input
-          const formGroup = searchInput.closest('.govuk-form-group');
-          if (formGroup && !formGroup.classList.contains('govuk-form-group--error')) {
-            formGroup.classList.add('govuk-form-group--error');
-            searchInput.classList.add('govuk-input--error');
-            
-            // Add error message
-            const existingError = formGroup.querySelector('.govuk-error-message');
-            if (existingError) {
-              existingError.innerHTML = '<span class="govuk-visually-hidden">Error:</span> Enter a valid court name. Valid options are: Manchester, Birmingham, or London';
-            } else {
-              const errorMessage = document.createElement('p');
-              errorMessage.className = 'govuk-error-message';
-              errorMessage.innerHTML = '<span class="govuk-visually-hidden">Error:</span> Enter a valid court name. Valid options are: Manchester, Birmingham, or London';
-              
-              const label = formGroup.querySelector('.govuk-label');
-              const hint = formGroup.querySelector('.govuk-hint');
-              const insertBefore = hint || searchInput;
-              
-              if (label && insertBefore) {
-                insertBefore.parentNode.insertBefore(errorMessage, insertBefore);
-              }
-            }
-          }
-          
-          // Focus error summary
-          const errorSummary = document.querySelector('.govuk-error-summary');
-          if (errorSummary) {
-            errorSummary.focus();
-            errorSummary.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-          
+          showClientError(invalidError);
+          setInputError(searchInput, 'Enter a valid court name. Valid options are: Manchester, Birmingham, or London');
           return false;
         }
-        
-        console.log('Valid search value, allowing form submission');
+
+        hideClientErrors();
       });
     });
   </script>
