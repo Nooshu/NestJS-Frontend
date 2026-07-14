@@ -32,7 +32,14 @@ This project uses Playwright for end-to-end testing, providing reliable and powe
 ## Getting Started
 
 ### Installation
-Playwright is already installed as a development dependency. The browsers are installed automatically during the setup process.
+Playwright is already installed as a development dependency. Download browser binaries once after install or when Playwright is upgraded:
+
+```bash
+npm run test:e2e:install
+# equivalent: npx playwright install
+```
+
+Then run smoke or full E2E.
 
 ### Running Tests
 

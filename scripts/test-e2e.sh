@@ -13,7 +13,7 @@ lsof -ti:3002 | xargs kill -9 2>/dev/null || echo "No processes found on port 30
 
 # Install Playwright browsers if not already installed
 echo "🌐 Installing Playwright browsers..."
-npx playwright install --with-deps
+npx playwright install
 
 # Build the application
 echo "🔨 Building application..."
