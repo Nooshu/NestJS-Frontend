@@ -66,6 +66,7 @@ If the change is **only** version bumps in `package.json` / `package-lock.json` 
 - Theming via **app SCSS/CSS overrides only** (`src/frontend/scss/`); do not fork vendor CSS — see `.cursor/rules/govuk-frontend-theming-overrides.mdc`
 - Reuse Nunjucks partials and GOV.UK macros under `src/views/`; **do not duplicate account or feedback markup** — extract shared partials instead — see `.cursor/rules/reuse-nunjucks-partials.mdc`
 - After GOV.UK Frontend upgrades, re-fingerprint assets, sync docs/version tables, and rely on macros (not hand-patched HTML)
+- After any **GOV.UK Frontend** update, run all GOV.UK component tests and Playwright (smoke/e2e) for visual/page regressions — see `.cursor/rules/govuk-frontend-upgrade-tests.mdc`
 - Run GOV.UK component fixture tests: `npm run test:govuk`
 
 ## Performance and accessibility
@@ -123,6 +124,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 | `.cursor/rules/dependency-pinning.mdc` | Exact pins, 7-day cooldown, single post-update SHA check |
 | `.cursor/rules/prefer-nestjs-prisma-stack.mdc` | Prefer NestJS/TS/Prisma–PostgreSQL over ad-hoc patterns |
 | `.cursor/rules/govuk-frontend-ui.mdc` | GOV.UK Frontend macros as UI source of truth |
+| `.cursor/rules/govuk-frontend-upgrade-tests.mdc` | After GOV.UK bumps: run fixture + Playwright checks |
 | `.cursor/rules/prefer-govuk-over-axe.mdc` | Prefer GOV.UK Frontend over axe when they conflict |
 | `.cursor/rules/govuk-frontend-js-overrides.mdc` | GOV.UK interactivity via app JS overrides only |
 | `.cursor/rules/govuk-frontend-theming-overrides.mdc` | GOV.UK theming via app SCSS/CSS overrides only |

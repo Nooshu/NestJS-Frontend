@@ -1,0 +1,19 @@
+---
+description: After GOV.UK Frontend updates, run component fixtures and Playwright checks
+alwaysApply: true
+---
+
+# Verify GOV.UK Frontend upgrades with tests
+
+When `govuk-frontend` (or closely related Design System assets) is updated, do not finish until regression checks have run.
+
+1. Prefer macros for any HTML/CSS/JS fallout — see `.cursor/rules/govuk-frontend-ui.mdc` and `.cursor/rules/govuk-frontend-theming-overrides.mdc` / `.cursor/rules/govuk-frontend-js-overrides.mdc`
+2. Re-fingerprint / rebuild frontend assets as required (`npm run build:frontend` or the project’s usual prod/dev asset pipeline)
+3. Run **all GOV.UK component / fixture tests**: `npm run test:govuk` (fix failures before merging)
+4. Run **Playwright** to catch page-level / visual regressions:
+   - At minimum: `npm run test:smoke` (or `npm run test:smoke:local` if browsers need installing)
+   - Prefer fuller coverage when the upgrade is large: `npm run test:e2e` or `npm run test:e2e:local`
+5. Manually spot-check critical journeys in the browser if automated suites miss a known layout surface (homepage, forms, feedback, Find a Court)
+6. Sync version tables and docs (README / `docs/readme/govuk-frontend.md`) in the same change
+
+Do not treat Dependabot/Renovate GOV.UK bumps as complete until steps 3–4 pass (or failures are explained with a documented exception).
