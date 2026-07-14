@@ -10,7 +10,11 @@ import type { MaxValue, RateLimitOptions, SecurityConfig } from './security.type
 function isValidRateLimitConfig(config: unknown): config is RateLimitOptions {
   if (!config || typeof config !== 'object') return false;
   const { windowMs, max, enabled } = config as Record<string, unknown>;
-  return typeof windowMs === 'number' && typeof max === 'number' && typeof enabled === 'boolean';
+  return (
+    typeof windowMs === 'number' &&
+    (typeof max === 'number' || typeof max === 'function') &&
+    typeof enabled === 'boolean'
+  );
 }
 
 async function getMaxRequests(max: MaxValue, req: Request, res: Response): Promise<number> {

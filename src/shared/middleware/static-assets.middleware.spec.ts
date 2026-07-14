@@ -5,6 +5,7 @@ import { Request, Response } from 'express';
 import { createReadStream } from 'fs';
 import { stat } from 'fs/promises';
 import { existsSync } from 'fs';
+import { performanceConfig } from '../config/performance.config';
 
 // Mock the fs modules
 jest.mock('fs', () => ({
@@ -337,6 +338,37 @@ describe('StaticAssetsMiddleware', () => {
         'Content-Type',
         'application/octet-stream'
       );
+    });
+
+    it('should use empty extension fallback when path ends with a dot', async () => {
+      mockRequest.path = '/trailing-dot.';
+      (assetFingerprintService.getHashedPath as jest.Mock).mockReturnValue('/trailing-dot.');
+
+      await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Content-Type',
+        'application/octet-stream'
+      );
+    });
+
+    it('should omit etag and lastModified headers when disabled', async () => {
+      const staticAssets = performanceConfig.staticAssets as {
+        etag: boolean;
+        lastModified: boolean;
+      };
+      const originalEtag = staticAssets.etag;
+      const originalLastModified = staticAssets.lastModified;
+      staticAssets.etag = false;
+      staticAssets.lastModified = false;
+
+      await middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('ETag', expect.anything());
+      expect(mockResponse.setHeader).not.toHaveBeenCalledWith('Last-Modified', expect.anything());
+
+      staticAssets.etag = originalEtag;
+      staticAssets.lastModified = originalLastModified;
     });
 
     it('should stream the file using createReadStream', async () => {

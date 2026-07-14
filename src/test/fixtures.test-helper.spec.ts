@@ -286,4 +286,219 @@ describe('FixturesTestHelper', () => {
       });
     });
   });
+
+  describe('resolveClassAttribute and remaining branches', () => {
+    const {
+      resolveClassAttribute,
+      getClassNames,
+    } = require('./fixtures.test-helper');
+
+    it('getClassNames filters empty tokens', () => {
+      expect(getClassNames(' a  b ')).toEqual(['a', 'b']);
+      expect(getClassNames('')).toEqual([]);
+    });
+
+    it('resolveClassAttribute prefers rawAttrs class', () => {
+      expect(
+        resolveClassAttribute({
+          attributes: {},
+          rawAttrs: 'class="from-raw"',
+          classNames: 'from-names',
+          outerHTML: '<div class="from-outer"></div>',
+        }).class
+      ).toBe('from-raw');
+    });
+
+    it('resolveClassAttribute falls back to classNames', () => {
+      expect(
+        resolveClassAttribute({
+          attributes: {},
+          rawAttrs: '',
+          classNames: 'from-names',
+          outerHTML: '<div class="from-outer"></div>',
+        }).class
+      ).toBe('from-names');
+    });
+
+    it('resolveClassAttribute falls back to outerHTML', () => {
+      expect(
+        resolveClassAttribute({
+          attributes: {},
+          rawAttrs: '',
+          classNames: '',
+          outerHTML: '<div class="from-outer"></div>',
+        }).class
+      ).toBe('from-outer');
+    });
+
+    it('resolveClassAttribute leaves class undefined when absent', () => {
+      expect(
+        resolveClassAttribute({
+          attributes: { id: 'x' },
+          rawAttrs: 'id="x"',
+          classNames: '',
+          outerHTML: '<div id="x"></div>',
+        }).class
+      ).toBeUndefined();
+      // attributes omitted → `root.attributes || {}`
+      expect(resolveClassAttribute({}).class).toBeUndefined();
+      expect(resolveClassAttribute({ attributes: undefined }).class).toBeUndefined();
+    });
+
+    it('returns false for class count mismatch via classNames when attrs match', () => {
+      const spyLog = jest.spyOn(console, 'log').mockImplementation();
+      const parseSpy = jest.spyOn(require('node-html-parser'), 'parse');
+
+      parseSpy
+        .mockReturnValueOnce({
+          firstChild: {
+            attributes: { id: 'x' },
+            classNames: 'a b',
+            text: '',
+            childNodes: [],
+          },
+        })
+        .mockReturnValueOnce({
+          firstChild: {
+            attributes: { id: 'x' },
+            classNames: 'a',
+            text: '',
+            childNodes: [],
+          },
+        });
+
+      expect(compareHtml('<div id="x"></div>', '<div id="x"></div>')).toBe(false);
+      expect(spyLog).toHaveBeenCalledWith('Class count mismatch:', expect.any(Object));
+
+      parseSpy.mockRestore();
+      spyLog.mockRestore();
+    });
+
+    it('returns false when recursive child compare fails at child loop', () => {
+      const spyLog = jest.spyOn(console, 'log').mockImplementation();
+      // Parent text must match so comparison reaches the child loop
+      expect(
+        compareHtml('<div><span class="a"></span></div>', '<div><span class="b"></span></div>')
+      ).toBe(false);
+      expect(spyLog).toHaveBeenCalledWith('Child element mismatch at index:', 0);
+      spyLog.mockRestore();
+    });
+
+    it('returns false when a fixture class is missing with equal counts', () => {
+      const spyLog = jest.spyOn(console, 'log').mockImplementation();
+      const parseSpy = jest.spyOn(require('node-html-parser'), 'parse');
+
+      parseSpy
+        .mockReturnValueOnce({
+          firstChild: {
+            attributes: { id: 'x' },
+            classNames: 'a c',
+            text: '',
+            childNodes: [],
+          },
+        })
+        .mockReturnValueOnce({
+          firstChild: {
+            attributes: { id: 'x' },
+            classNames: 'a b',
+            text: '',
+            childNodes: [],
+          },
+        });
+
+      expect(compareHtml('<div id="x"></div>', '<div id="x"></div>')).toBe(false);
+      expect(spyLog).toHaveBeenCalledWith('Missing class:', 'b');
+
+      parseSpy.mockRestore();
+      spyLog.mockRestore();
+    });
+
+    it('verifyComponent skips undefined fixture attrs and type=submit default', () => {
+      const realParse = jest.requireActual('node-html-parser').parse;
+      const parseSpy = jest.spyOn(require('node-html-parser'), 'parse');
+      const html = '<button class="govuk-button">Go</button>';
+      let call = 0;
+
+      parseSpy.mockImplementation((input: string) => {
+        call++;
+        const doc = realParse(input);
+        if (call <= 2 && doc.firstChild) {
+          const el: any = doc.firstChild;
+          if (call === 1) {
+            return {
+              firstChild: {
+                attributes: { class: 'govuk-button', onlyOnRendered: '1' },
+                rawAttrs: 'class="govuk-button"',
+                classNames: 'govuk-button',
+                outerHTML: el.outerHTML,
+                text: el.text,
+                childNodes: el.childNodes,
+              },
+            };
+          }
+          return {
+            firstChild: {
+              attributes: { class: 'govuk-button', type: 'submit' },
+              rawAttrs: 'class="govuk-button" type="submit"',
+              classNames: 'govuk-button',
+              outerHTML: el.outerHTML,
+              text: el.text,
+              childNodes: el.childNodes,
+            },
+          };
+        }
+        return doc;
+      });
+
+      expect(() =>
+        verifyComponent(html, {
+          name: 't',
+          options: {},
+          html,
+          hidden: false,
+        })
+      ).not.toThrow();
+
+      call = 0;
+      parseSpy.mockImplementation((input: string) => {
+        call++;
+        const doc = realParse(input);
+        if (call <= 2 && doc.firstChild) {
+          const el: any = doc.firstChild;
+          return {
+            firstChild: {
+              attributes: { class: 'a', id: call === 1 ? '1' : '2' },
+              rawAttrs: `class="a" id="${call === 1 ? '1' : '2'}"`,
+              classNames: 'a',
+              outerHTML: el.outerHTML,
+              text: el.text,
+              childNodes: el.childNodes,
+            },
+          };
+        }
+        return doc;
+      });
+
+      expect(() =>
+        verifyComponent('<div class="a" id="1">x</div>', {
+          name: 't',
+          options: {},
+          html: '<div class="a" id="1">x</div>',
+          hidden: false,
+        })
+      ).toThrow();
+
+      // Exercise class || '' branches when class attributes are absent
+      expect(() =>
+        verifyComponent('<p>plain</p>', {
+          name: 't',
+          options: {},
+          html: '<p>plain</p>',
+          hidden: false,
+        })
+      ).not.toThrow();
+
+      parseSpy.mockRestore();
+    });
+  });
 });

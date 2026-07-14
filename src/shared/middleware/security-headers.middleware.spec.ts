@@ -407,6 +407,12 @@ describe('SecurityHeadersMiddleware', () => {
           expect((middleware as any).isSensitiveRoute(route)).toBe(false);
         });
       });
+
+      it('should return false for empty or falsy paths', () => {
+        expect((middleware as any).isSensitiveRoute('')).toBe(false);
+        expect((middleware as any).isSensitiveRoute(null)).toBe(false);
+        expect((middleware as any).isSensitiveRoute(undefined)).toBe(false);
+      });
     });
 
     describe('isStaticAsset', () => {
@@ -443,6 +449,10 @@ describe('SecurityHeadersMiddleware', () => {
         nonStaticFiles.forEach((file) => {
           expect((middleware as any).isStaticAsset(file)).toBe(false);
         });
+      });
+
+      it('should return false for empty paths', () => {
+        expect((middleware as any).isStaticAsset('')).toBe(false);
       });
     });
 

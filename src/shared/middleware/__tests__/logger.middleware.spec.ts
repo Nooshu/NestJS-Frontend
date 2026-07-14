@@ -501,4 +501,72 @@ describe('LoggerMiddleware', () => {
       });
     });
   });
+
+  describe('remaining exclusion and finish branches', () => {
+    it('covers return false for non-extension wildcard patterns', () => {
+      expect((middleware as any).matchesExcludePattern('/x', 'prefix/*/suffix')).toBe(false);
+      expect((middleware as any).matchesExcludePattern('/file.js.map', '*.js.map')).toBe(true);
+      expect((middleware as any).matchesExcludePattern('/favicon.ico', '/favicon.ico')).toBe(true);
+      expect((middleware as any).matchesExcludePattern('/other', '/favicon.ico')).toBe(false);
+    });
+
+    it('skips finish logging when path becomes excluded mid-request', () => {
+      mockRequest.originalUrl = '/dynamic-path';
+
+      let finishHandler: (() => void) | undefined;
+      mockResponse.on = jest.fn().mockImplementation((event: string, callback: () => void) => {
+        if (event === 'finish') {
+          finishHandler = callback;
+        }
+      });
+
+      const excludeSpy = jest
+        .spyOn(middleware as any, 'shouldExcludePath')
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(true);
+
+      middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
+      expect(finishHandler).toBeDefined();
+
+      mockLogger.info.mockClear();
+      finishHandler!();
+      expect(mockLogger.info).not.toHaveBeenCalledWith(
+        'Request completed',
+        expect.anything()
+      );
+      excludeSpy.mockRestore();
+    });
+
+    it('skips monitoring and audit logging when disabled', () => {
+      const actual = jest.requireActual('../../config/logging.config') as {
+        loggingConfig: {
+          monitoring: { enabled: boolean; alerting: { enabled: boolean } };
+          audit: { enabled: boolean };
+        };
+      };
+      const originalMonitoring = actual.loggingConfig.monitoring.enabled;
+      const originalAlerting = actual.loggingConfig.monitoring.alerting.enabled;
+      const originalAudit = actual.loggingConfig.audit.enabled;
+      actual.loggingConfig.monitoring.enabled = false;
+      actual.loggingConfig.monitoring.alerting.enabled = false;
+      actual.loggingConfig.audit.enabled = false;
+
+      let finishHandler: (() => void) | undefined;
+      mockResponse.on = jest.fn().mockImplementation((event: string, callback: () => void) => {
+        if (event === 'finish') {
+          finishHandler = callback;
+        }
+      });
+
+      middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
+      finishHandler!();
+
+      expect(mockLogger.warn).not.toHaveBeenCalled();
+      expect(mockLogger.audit).not.toHaveBeenCalled();
+
+      actual.loggingConfig.monitoring.enabled = originalMonitoring;
+      actual.loggingConfig.monitoring.alerting.enabled = originalAlerting;
+      actual.loggingConfig.audit.enabled = originalAudit;
+    });
+  });
 });

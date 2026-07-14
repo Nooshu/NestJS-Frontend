@@ -241,6 +241,15 @@ describe('ViewEngineService', () => {
       expect(mockFingerprintService.getAssetPath).toBeDefined();
       expect(typeof mockFingerprintService.getAssetPath).toBe('function');
     });
+
+    it('should invoke the assetPath Nunjucks global', () => {
+      const env = service.getEnv();
+      const assetPath = env.getGlobal('assetPath') as (path: string) => string;
+
+      expect(typeof assetPath).toBe('function');
+      expect(assetPath('/css/main.css')).toBe('/fingerprinted/css/main.css');
+      expect(mockFingerprintService.getAssetPath).toHaveBeenCalledWith('/css/main.css');
+    });
   });
 
   describe('environment configuration', () => {

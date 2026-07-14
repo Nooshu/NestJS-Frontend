@@ -1,24 +1,20 @@
 /**
  * CSRF (Cross-Site Request Forgery) Protection Middleware
  *
- * This middleware implements a robust CSRF protection mechanism to prevent cross-site request forgery attacks.
- * It uses a double-submit cookie pattern with HMAC-based token generation for enhanced security.
+ * Implements a double-submit cookie pattern with HMAC-SHA256 tokens so HTML
+ * form posts cannot be forged from another origin. Applied in AppModule for
+ * most routes; excluded for `/api/*`, `/health`, and the find-a-court journey
+ * (see AppModule.configure).
  *
- * Key Features:
- * - HMAC-SHA256 based token generation with random salt
- * - Double-submit cookie pattern for stateless CSRF protection
- * - Configurable cookie options (httpOnly, secure, sameSite)
- * - Automatic token generation for GET requests
- * - Token validation for state-changing requests (POST, PUT, DELETE, PATCH)
- * - Comprehensive logging for debugging and security monitoring
- * - Test-friendly design with mock token support
- * - Environment-aware error reporting
+ * Security notes:
+ * - Token secret is random per process restart — cookies become invalid after
+ *   redeploy (expected; users get a fresh token on next GET).
+ * - Cookie flags: httpOnly, secure, sameSite=strict on issuance.
+ * - Validation compares cookie token to form field `_csrf` on unsafe methods.
+ * - Logs truncate token prefixes; avoid logging full tokens in production.
+ * - Requires `cookie-parser` in bootstrap (`main.ts`).
  *
- * Security Considerations:
- * - Uses cryptographically secure random number generation
- * - Implements proper cookie security flags
- * - Provides detailed logging without exposing sensitive data
- * - Graceful error handling with appropriate HTTP status codes
+ * Not a substitute for authn/z or CSP; pairs with Helmet and ValidationPipe.
  *
  * @module CsrfMiddleware
  * @requires @nestjs/common
@@ -27,7 +23,6 @@
  *
  * @example
  * ```typescript
- * // Applied in AppModule middleware configuration
  * consumer.apply(CsrfMiddleware)
  *   .exclude('/api/*', '/health')
  *   .forRoutes({ path: '*', method: RequestMethod.ALL });

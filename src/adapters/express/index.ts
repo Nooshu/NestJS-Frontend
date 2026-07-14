@@ -1,3 +1,18 @@
+/**
+ * Express adapter factory for departments that prefer an Express-shaped bootstrap.
+ *
+ * Why this module exists: NestJS is the primary runtime (`src/main.ts`), but some
+ * HMCTS stacks historically wire Express directly. `createExpressApp` builds a
+ * Nest app on ExpressAdapter and applies Express-native view/static/security
+ * setup so teams can migrate incrementally without forking application modules.
+ *
+ * Prefer `main.ts` for production unless you explicitly need this compatibility
+ * path. Keep security (Helmet, body size limits, autoescape) and compression
+ * filters aligned with the Nest bootstrap when changing either.
+ *
+ * @module adapters/express
+ */
+
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { ExpressAdapter } from '@nestjs/platform-express';
@@ -16,22 +31,15 @@ import { setupRoutes } from './routes';
 
 /**
  * Creates and configures a NestJS application with Express.js adapter.
- * This adapter provides a compatibility layer for government departments using Express.js.
  *
- * Key features:
- * - Express.js compatibility layer
- * - Security middleware configuration
- * - View engine setup with Nunjucks
- * - CORS and compression settings
- * - Error handling middleware
+ * Side effects: mutates the underlying Express instance (view engine, body
+ * parsers, Helmet, compression, static mounts, logger/routes/error handlers).
+ * Does not call `listen` — callers start the server.
  *
- * Security considerations:
- * - Helmet.js for security headers
- * - CORS configuration
- * - Request body parsing limits
- * - View engine security settings
+ * Security: Helmet defaults, 1MB JSON/urlencoded limits, Nunjucks autoescape.
+ * Performance: skips compressing already-compressed binary asset types.
  *
- * @returns {Promise<INestApplication>} Configured NestJS application
+ * @returns {Promise<INestApplication>} Configured Nest app (not yet listening)
  */
 export async function createExpressApp(): Promise<INestApplication> {
   const app = await NestFactory.create(AppModule, new ExpressAdapter(), {

@@ -253,4 +253,107 @@ describe('CsrfMiddleware', () => {
       });
     });
   });
+
+  describe('additional coverage branches', () => {
+    it('should skip CSRF when disabled in config', () => {
+      (middleware as any).securityConfig = {
+        csrf: { enabled: false, cookieName: 'XSRF-TOKEN', cookieOptions: {} },
+      };
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
+      expect(nextFunction).toHaveBeenCalled();
+      expect(mockResponse.cookie).not.toHaveBeenCalled();
+    });
+
+    it('should generate a real HMAC token when csrfToken mock is absent', () => {
+      delete mockRequest.csrfToken;
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
+      expect(mockResponse.locals.csrfToken).toMatch(/^[a-f0-9]+\.[a-f0-9]+$/);
+      expect(nextFunction).toHaveBeenCalled();
+    });
+
+    it('should reject mismatched cookie and form tokens', () => {
+      mockRequest.method = 'POST';
+      mockRequest.cookies = { 'XSRF-TOKEN': 'cookie-token-value' };
+      mockRequest.body = { _csrf: 'form-token-value' };
+
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(403);
+      expect(nextFunction).not.toHaveBeenCalled();
+    });
+
+    it('should allow HEAD and OPTIONS without validation', () => {
+      mockRequest.method = 'HEAD';
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
+      expect(nextFunction).toHaveBeenCalled();
+
+      nextFunction.mockClear();
+      mockRequest.method = 'OPTIONS';
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
+      expect(nextFunction).toHaveBeenCalled();
+    });
+
+    it('should handle unexpected errors inside cookie callback', () => {
+      mockRequest.method = 'GET';
+      mockRequest.csrfToken = () => {
+        throw new Error('token boom');
+      };
+
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(403);
+    });
+
+    it('should handle non-Error throwables inside cookie callback', () => {
+      mockRequest.method = 'GET';
+      mockRequest.csrfToken = () => {
+        throw 'string boom';
+      };
+
+      middleware.use(mockRequest as RequestWithCsrf, mockResponse as Response, nextFunction);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(403);
+    });
+
+    it('verifyToken returns false and logs Unknown error for non-Error throws', () => {
+      const logger = (middleware as any).logger;
+      logger.debug.mockImplementation(() => {
+        throw 'not-an-error';
+      });
+      const result = (middleware as any).verifyToken('aaa', 'bbb');
+      expect(result).toBe(false);
+      expect(logger.error).toHaveBeenCalledWith(
+        'CSRF token validation error',
+        'Unknown error'
+      );
+    });
+
+    it('verifyToken returns false and logs Error.stack for Error throws', () => {
+      const logger = (middleware as any).logger;
+      const error = new Error('token validation boom');
+      logger.debug.mockImplementation(() => {
+        throw error;
+      });
+      const result = (middleware as any).verifyToken('aaa', 'bbb');
+      expect(result).toBe(false);
+      expect(logger.error).toHaveBeenCalledWith('CSRF token validation error', error.stack);
+    });
+
+    it('verifyToken returns false for missing tokens', () => {
+      expect((middleware as any).verifyToken('', 'x')).toBe(false);
+      expect((middleware as any).verifyToken('x', '')).toBe(false);
+    });
+
+    it('handleError includes details in development', () => {
+      const originalEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'development';
+      (middleware as any).handleError(mockResponse as Response, new Error('dev'), { path: '/x' });
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          details: expect.objectContaining({ path: '/x', message: 'dev' }),
+        })
+      );
+      process.env.NODE_ENV = originalEnv;
+    });
+  });
 });

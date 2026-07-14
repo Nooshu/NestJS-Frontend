@@ -15,6 +15,14 @@ import { Request, Response, NextFunction } from 'express';
 import { ConfigService } from '@nestjs/config';
 import compression from 'compression';
 
+/**
+ * Indirection for the compression factory so unit tests can spy without fighting
+ * Jest module-mock restoration for the CommonJS `compression` package.
+ */
+export const compressionFactory = {
+  create: compression,
+};
+
 @Injectable()
 export class CompressionMiddleware implements NestMiddleware {
   constructor(private configService: ConfigService) {}
@@ -107,6 +115,6 @@ export class CompressionMiddleware implements NestMiddleware {
       },
     };
 
-    return compression(compressionOptions)(req, res, next);
+    return compressionFactory.create(compressionOptions)(req, res, next);
   }
 }

@@ -29,6 +29,32 @@ describe('setupLogger', () => {
     expect(app.locals.logger).toBe(loggerMock);
   });
 
+  it('should use info log level in production', () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+
+    setupLogger(app);
+
+    expect(winston.createLogger).toHaveBeenCalledWith(
+      expect.objectContaining({ level: 'info' })
+    );
+
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it('should use debug log level outside production', () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'development';
+
+    setupLogger(app);
+
+    expect(winston.createLogger).toHaveBeenCalledWith(
+      expect.objectContaining({ level: 'debug' })
+    );
+
+    process.env.NODE_ENV = originalEnv;
+  });
+
   it('should add request logging middleware', () => {
     setupLogger(app);
     // The first middleware added is the request logger

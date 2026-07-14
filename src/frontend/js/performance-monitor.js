@@ -1,8 +1,19 @@
 /**
+ * Client-side PerformanceMonitor — Core Web Vitals and navigation/resource observers.
+ *
+ * Loaded via main.js; attaches PerformanceObservers when the Performance API is
+ * available. Side effects: console logging (configurable) and optional observer
+ * callbacks. Prefer sampling/thresholds in `config` before shipping noisy metrics
+ * to production dashboards.
+ *
+ * @module performance-monitor
+ */
+
+/**
  * PerformanceMonitor class for tracking and reporting web performance metrics.
  * Implements various performance observers to collect metrics like navigation timing,
  * resource timing, long tasks, and Core Web Vitals.
- * 
+ *
  * @class PerformanceMonitor
  */
 class PerformanceMonitor {
@@ -590,5 +601,6 @@ class PerformanceMonitor {
   }
 }
 
-// Export the performance monitor
+// Export the performance monitor (class exported for testability)
+export { PerformanceMonitor };
 export const performanceMonitor = new PerformanceMonitor(); 

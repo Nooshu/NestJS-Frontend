@@ -332,4 +332,46 @@ describe('HealthController', () => {
       expect(result.info).toHaveProperty('uptime');
     });
   });
+
+  describe('error and catch branches', () => {
+    it('detailed falls back when database/redis checks reject', async () => {
+      mockDatabaseHealthIndicator.isHealthy.mockRejectedValueOnce(new Error('db down'));
+      mockRedisHealthIndicator.isHealthy.mockRejectedValueOnce(new Error('redis down'));
+
+      const result = await controller.detailed();
+      expect(result).toHaveProperty('status');
+    });
+
+    it('detailed returns partial error result when health.check throws', async () => {
+      const healthService = (controller as any).health;
+      jest.spyOn(healthService, 'check').mockRejectedValueOnce(new Error('check failed'));
+
+      const result = await controller.detailed();
+      expect(result).toEqual(
+        expect.objectContaining({
+          status: 'error',
+          error: { message: 'check failed' },
+        })
+      );
+    });
+
+    it('detailed handles non-Error throw from health.check', async () => {
+      const healthService = (controller as any).health;
+      jest.spyOn(healthService, 'check').mockRejectedValueOnce('boom');
+
+      const result = await controller.detailed();
+      expect(result).toEqual(
+        expect.objectContaining({
+          status: 'error',
+          error: { message: 'Health check failed' },
+        })
+      );
+    });
+
+    it('checkReadiness tolerates database rejection via catch mapper', async () => {
+      mockDatabaseHealthIndicator.isHealthy.mockRejectedValueOnce(new Error('not ready'));
+      await expect(controller.checkReadiness()).rejects.toBeDefined();
+      expect(mockDatabaseHealthIndicator.isHealthy).toHaveBeenCalledWith('database_ready');
+    });
+  });
 });

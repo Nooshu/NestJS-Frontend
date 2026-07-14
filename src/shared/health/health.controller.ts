@@ -1,6 +1,10 @@
 /**
- * Comprehensive health check controller for monitoring application status.
- * Provides multiple endpoints to check various aspects of application health.
+ * HTTP health endpoints for ops, load balancers, and Kubernetes probes.
+ *
+ * Mounted at `/health`. Basic `/health` is cheap (memory/disk). Prefer
+ * `/health/ready` and `/health/live` for orchestration; `/detailed` and
+ * dependency-specific routes are for diagnostics and may hit external systems.
+ * CSRF is excluded for this path in AppModule.
  *
  * @module HealthController
  * @requires @nestjs/common
@@ -20,8 +24,9 @@ import { HttpHealthIndicator } from './indicators/http.health';
 import { ApplicationHealthIndicator } from './indicators/application.health';
 
 /**
- * Controller for comprehensive health check endpoints using @nestjs/terminus.
- * Provides basic, detailed, and specialized health monitoring for the application.
+ * Terminus health controller. Indicators are injected; each handler composes
+ * one or more checks and returns Terminus JSON (or a softened error payload
+ * from `detailed` when a check throws).
  *
  * @class HealthController
  */
@@ -38,8 +43,9 @@ export class HealthController {
   ) {}
 
   /**
-   * Basic health check endpoint that monitors critical system metrics.
-   * @returns {Promise<HealthIndicatorResult>} Health check results
+   * Lightweight liveness-style check: heap, RSS, and root disk usage.
+   *
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get()
   @HealthCheck()
@@ -59,9 +65,11 @@ export class HealthController {
   }
 
   /**
-   * Detailed health check endpoint that provides comprehensive system information.
-   * Includes memory usage, disk health, application version, and environment details.
-   * @returns {Promise<HealthIndicatorResult>} Detailed health check results
+   * Full diagnostic suite (system + app + DB/Redis with soft failures).
+   * Side effect: may call external/network indicators; swallows per-indicator
+   * failures into "down" status rather than failing the whole probe where caught.
+   *
+   * @returns {Promise<object>} Terminus result or partial error-shaped object
    */
   @Get('detailed')
   @HealthCheck()
@@ -111,8 +119,8 @@ export class HealthController {
   }
 
   /**
-   * Database-specific health check endpoint.
-   * @returns {Promise<HealthIndicatorResult>} Database health check results
+   * Database connectivity only.
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('database')
   @HealthCheck()
@@ -121,8 +129,8 @@ export class HealthController {
   }
 
   /**
-   * Redis-specific health check endpoint.
-   * @returns {Promise<HealthIndicatorResult>} Redis health check results
+   * Redis connectivity and memory usage.
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('redis')
   @HealthCheck()
@@ -134,9 +142,11 @@ export class HealthController {
   }
 
   /**
-   * HTTP services health check endpoint.
-   * @param urls - Optional comma-separated list of URLs to check
-   * @returns {Promise<HealthIndicatorResult>} HTTP services health check results
+   * Outbound HTTP reachability. Optional `urls` query overrides the default
+   * public endpoints (comma-separated absolute URLs).
+   *
+   * @param {string} [urls] - Comma-separated URL list
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('http')
   @HealthCheck()
@@ -164,8 +174,8 @@ export class HealthController {
   }
 
   /**
-   * Application-specific health check endpoint.
-   * @returns {Promise<HealthIndicatorResult>} Application health check results
+   * Application process health (uptime, config, performance, dependency stubs).
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('application')
   @HealthCheck()
@@ -179,8 +189,8 @@ export class HealthController {
   }
 
   /**
-   * System resources health check endpoint.
-   * @returns {Promise<HealthIndicatorResult>} System resources health check results
+   * Host resource pressure (memory/disk) plus app performance indicator.
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('system')
   @HealthCheck()
@@ -198,9 +208,8 @@ export class HealthController {
   }
 
   /**
-   * Readiness probe endpoint for Kubernetes/container orchestration.
-   * Checks if the application is ready to receive traffic.
-   * @returns {Promise<HealthIndicatorResult>} Readiness check results
+   * Kubernetes readiness: config/deps and optional DB. Fail ⇒ stop sending traffic.
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('ready')
   @HealthCheck()
@@ -217,9 +226,9 @@ export class HealthController {
   }
 
   /**
-   * Liveness probe endpoint for Kubernetes/container orchestration.
-   * Checks if the application is alive and should not be restarted.
-   * @returns {Promise<HealthIndicatorResult>} Liveness check results
+   * Kubernetes liveness: process still healthy enough not to restart.
+   * Uses a lower heap threshold than readiness-oriented checks.
+   * @returns {Promise<import('@nestjs/terminus').HealthCheckResult>}
    */
   @Get('live')
   @HealthCheck()

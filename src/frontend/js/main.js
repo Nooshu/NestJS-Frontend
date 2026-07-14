@@ -1,4 +1,14 @@
-// Import performance monitoring modules
+/**
+ * Browser entry script loaded by layout.njk after GOV.UK Frontend.
+ *
+ * Purpose: start client performance monitoring and small progressive
+ * enhancements (nav active state, skip-link focus). Component init is owned by
+ * `window.GOVUKFrontend.initAll()` in the layout — do not re-init macros here.
+ *
+ * Side effects: observers log Core Web Vitals / timings to the console when
+ * console output is enabled. Prefer PerformanceMonitor / PerformanceService APIs
+ * for new metrics rather than ad-hoc timers.
+ */
 import { performanceMonitor } from './performance-monitor.js';
 import { performanceService } from './performance-service.js';
 

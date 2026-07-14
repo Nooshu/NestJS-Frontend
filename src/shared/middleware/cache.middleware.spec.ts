@@ -276,4 +276,36 @@ describe('CacheMiddleware', () => {
       expect(nextFunction).toHaveBeenCalled();
     });
   });
+
+  describe('outer error handling', () => {
+    it('should call next without caching when setHeader throws unexpectedly', () => {
+      mockRequest.method = 'GET';
+      mockRequest.path = '/page';
+      (configService.get as jest.Mock).mockReturnValue('development');
+      (mockResponse.setHeader as jest.Mock).mockImplementation(() => {
+        throw new Error('headers sent');
+      });
+
+      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+
+      expect(nextFunction).toHaveBeenCalled();
+    });
+
+    it('should default environment to production when config get returns null', () => {
+      mockRequest.method = 'GET';
+      mockRequest.path = '/page';
+      mockRequest.isAuthenticated = () => false;
+      (configService.get as jest.Mock).mockImplementation((key: string) => {
+        if (key === 'environment') return null;
+        return null;
+      });
+
+      middleware.use(mockRequest as Request, mockResponse as Response, nextFunction);
+
+      expect(mockResponse.setHeader).toHaveBeenCalledWith(
+        'Cache-Control',
+        'public, max-age=3600, stale-while-revalidate=60'
+      );
+    });
+  });
 });

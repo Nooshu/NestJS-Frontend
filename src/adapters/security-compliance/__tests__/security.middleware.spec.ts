@@ -1281,4 +1281,555 @@ describe('Security Middleware', () => {
       }
     });
   });
+
+  describe('applyGovernmentSecurity branch coverage', () => {
+    const getRegisteredHandlers = () =>
+      (app.use as jest.Mock).mock.calls.map((call) => call[0]).filter((h) => typeof h === 'function');
+
+    it('should apply helmet with boolean and object configs', () => {
+      applyGovernmentSecurity(app, { helmet: true });
+      applyGovernmentSecurity(app, {
+        helmet: { contentSecurityPolicy: false } as any,
+      });
+      expect(app.use).toHaveBeenCalled();
+    });
+
+    it('should apply cors middleware when configured', () => {
+      applyGovernmentSecurity(app, {
+        cors: { origin: '*', methods: ['GET'] },
+      });
+      expect(app.use).toHaveBeenCalled();
+    });
+
+    it('should execute custom headers middleware', () => {
+      applyGovernmentSecurity(app, {
+        headers: { 'X-Test': '1' },
+      });
+      const headersMw = getRegisteredHandlers().find((h) => h.length === 3);
+      const res = { setHeader: jest.fn() } as any;
+      const next = jest.fn();
+      headersMw({} as Request, res, next);
+      expect(res.setHeader).toHaveBeenCalledWith('X-Test', '1');
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should enforce rate limits and handle errors in applyGovernmentSecurity', async () => {
+      mockCacheService.get.mockResolvedValue(1);
+      mockCacheService.set.mockResolvedValue();
+
+      applyGovernmentSecurity(app, {
+        rateLimit: { enabled: true, max: 2, windowMs: 1000 },
+      });
+
+      const rateMw = getRegisteredHandlers().find((h) => h.constructor.name === 'AsyncFunction');
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as any;
+      const next = jest.fn();
+
+      await rateMw({ ip: '1.1.1.1' } as Request, res, next);
+      expect(next).toHaveBeenCalled();
+
+      mockCacheService.get.mockResolvedValue(5);
+      await rateMw({ ip: undefined } as Request, res, next);
+      expect(res.status).toHaveBeenCalledWith(429);
+
+      mockCacheService.get.mockRejectedValue(new Error('cache fail'));
+      await rateMw({ ip: '1.1.1.1' } as Request, res, next);
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    it('should support async function max in rateLimitMiddleware', async () => {
+      mockCacheService.get.mockResolvedValue(0);
+      mockCacheService.set.mockResolvedValue();
+
+      const middleware = rateLimitMiddleware({
+        rateLimit: {
+          enabled: true,
+          windowMs: 1000,
+          max: async () => 2,
+        },
+      });
+
+      await middleware({ ip: '9.9.9.9' } as Request, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+
+      const syncMiddleware = rateLimitMiddleware({
+        rateLimit: {
+          enabled: true,
+          windowMs: 1000,
+          max: () => 2,
+        },
+      });
+      mockNext.mockClear();
+      await syncMiddleware({ ip: '9.9.9.9' } as Request, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+    });
+
+    it('should return no-op rateLimitMiddleware for invalid configs', () => {
+      const next = jest.fn();
+      rateLimitMiddleware({} as SecurityConfig)({} as Request, mockResponse as Response, next);
+      expect(next).toHaveBeenCalled();
+
+      next.mockClear();
+      rateLimitMiddleware({ rateLimit: null as any })({} as Request, mockResponse as Response, next);
+      expect(next).toHaveBeenCalled();
+
+      next.mockClear();
+      rateLimitMiddleware({ rateLimit: 'bad' as any })({} as Request, mockResponse as Response, next);
+      expect(next).toHaveBeenCalled();
+
+      next.mockClear();
+      rateLimitMiddleware({ rateLimit: { enabled: true } as any })(
+        {} as Request,
+        mockResponse as Response,
+        next
+      );
+      expect(next).toHaveBeenCalled();
+
+      next.mockClear();
+      rateLimitMiddleware({
+        rateLimit: { enabled: true, max: 'x', windowMs: 1 } as any,
+      })({} as Request, mockResponse as Response, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should validate password policy in applyGovernmentSecurity', () => {
+      applyGovernmentSecurity(app, {
+        passwordPolicy: {
+          minLength: 8,
+          requireUppercase: true,
+          requireLowercase: true,
+          requireNumbers: true,
+          requireSpecialChars: false,
+        },
+      });
+
+      const passwordMw = getRegisteredHandlers().find((h) => h.length === 3);
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      } as any;
+      const next = jest.fn();
+
+      passwordMw(
+        { path: '/register', method: 'POST', body: { password: 'weak' } } as Request,
+        res,
+        next
+      );
+      expect(res.status).toHaveBeenCalledWith(400);
+
+      next.mockClear();
+      passwordMw(
+        { path: '/register', method: 'POST', body: { password: 'ValidPass1' } } as Request,
+        res,
+        next
+      );
+      expect(next).toHaveBeenCalled();
+
+      next.mockClear();
+      passwordMw({ path: '/other', method: 'GET', body: {} } as Request, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should emit audit finish events in applyGovernmentSecurity', () => {
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      applyGovernmentSecurity(app, { audit: { enabled: true } });
+
+      const auditMw = getRegisteredHandlers().find((h) => h.length === 3);
+      const handlers: Record<string, Function> = {};
+      const res = {
+        statusCode: 200,
+        on: (event: string, cb: Function) => {
+          handlers[event] = cb;
+        },
+      } as any;
+
+      auditMw(
+        { method: 'GET', path: '/x', ip: '1.1.1.1', get: () => 'ua' } as Request,
+        res,
+        mockNext
+      );
+      handlers.finish?.();
+      expect(consoleSpy).toHaveBeenCalledWith('Audit:', expect.any(Object));
+      consoleSpy.mockRestore();
+    });
+
+    it('should mask response json fields when data protection masking is enabled', () => {
+      applyGovernmentSecurity(app, {
+        dataProtection: {
+          enabled: true,
+          encryptionKey: 'k',
+          masking: { enabled: true, fields: ['secret'] },
+        },
+      });
+
+      const maskingMw = getRegisteredHandlers().find((h) => h.length === 3);
+      const originalJson = jest.fn(function (this: any, data: any) {
+        return data;
+      });
+      const res = { json: originalJson } as any;
+      const next = jest.fn();
+
+      maskingMw({} as Request, res, next);
+      expect(res.json({ secret: 'value', ok: true })).toEqual({
+        secret: '********',
+        ok: true,
+      });
+      expect(res.json('plain')).toBe('plain');
+      expect(next).toHaveBeenCalled();
+    });
+  });
+
+  describe('securityMiddleware additional branches', () => {
+    it('should reject cached invalid passwords', async () => {
+      mockCacheService.get.mockResolvedValue(false);
+      const middlewares = securityMiddleware({
+        passwordPolicy: {
+          minLength: 8,
+          requireUppercase: false,
+          requireLowercase: false,
+          requireNumbers: false,
+          requireSpecialChars: false,
+        },
+      });
+
+      const passwordMw = middlewares[0];
+      await passwordMw(
+        {
+          path: '/auth/register',
+          method: 'POST',
+          body: { password: 'anything1' },
+          ip: '1.1.1.1',
+        } as Request,
+        mockResponse as Response,
+        mockNext
+      );
+
+      expect(mockNext).toHaveBeenCalledWith(expect.any(SecurityError));
+    });
+
+    it('should apply headers-only middleware without helmet', async () => {
+      mockCacheService.get.mockResolvedValue(null);
+      mockCacheService.set.mockResolvedValue();
+
+      const middlewares = securityMiddleware({
+        headers: { 'X-Only': 'yes' },
+      });
+
+      const headersMw = middlewares[0];
+      const res = { setHeader: jest.fn() } as any;
+      await headersMw({ path: '/a', ip: '1.1.1.1' } as Request, res, mockNext);
+      expect(res.setHeader).toHaveBeenCalledWith('X-Only', 'yes');
+    });
+
+    it('should wrap non-Error header failures', async () => {
+      mockCacheService.get.mockRejectedValue('nope');
+      const middlewares = securityMiddleware({ helmet: true });
+      await middlewares[0](
+        { path: '/a', ip: undefined } as Request,
+        { setHeader: jest.fn() } as any,
+        mockNext
+      );
+      expect(mockNext).toHaveBeenCalledWith(expect.any(SecurityError));
+    });
+
+    it('should wrap non-Error audit failures', async () => {
+      mockCacheService.get.mockRejectedValue('nope');
+      const middlewares = securityMiddleware({ audit: { enabled: true } });
+      await middlewares[0](
+        { method: 'GET', path: '/a', ip: undefined, body: {} } as Request,
+        mockResponse as Response,
+        mockNext
+      );
+      expect(mockNext).toHaveBeenCalledWith(expect.any(SecurityError));
+    });
+
+    it('should audit without excludeFields', async () => {
+      mockCacheService.get.mockResolvedValue(null);
+      mockCacheService.set.mockResolvedValue();
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const middlewares = securityMiddleware({ audit: { enabled: true } });
+      await middlewares[0](
+        { method: 'GET', path: '/a', ip: '1.1.1.1', body: { a: 1 } } as Request,
+        mockResponse as Response,
+        mockNext
+      );
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('dataProtection and audit no-op paths', () => {
+    it('should call next for disabled audit middleware', () => {
+      const next = jest.fn();
+      auditMiddleware({ audit: { enabled: false } })({} as Request, mockResponse as Response, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should call next for disabled data protection middleware', () => {
+      const next = jest.fn();
+      dataProtectionMiddleware({ dataProtection: { enabled: false } as any })(
+        {} as Request,
+        mockResponse as Response,
+        next
+      );
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should pass through body when masking fields are empty', () => {
+      const middleware = dataProtectionMiddleware({
+        dataProtection: {
+          enabled: true,
+          encryptionKey: 'k',
+          masking: { enabled: true, fields: [] },
+        },
+      });
+      const send = jest.fn((body) => body);
+      const res = { send } as any;
+      middleware({} as Request, res, mockNext);
+      expect(res.send({ name: 'a' })).toEqual({ name: 'a' });
+    });
+
+    it('should pass through falsy bodies in data protection middleware', () => {
+      const middleware = dataProtectionMiddleware({
+        dataProtection: {
+          enabled: true,
+          encryptionKey: 'k',
+          masking: { enabled: true, fields: ['password'] },
+        },
+      });
+      const send = jest.fn((body) => body);
+      const res = { send } as any;
+      middleware({} as Request, res, mockNext);
+      expect(res.send(null)).toBeNull();
+    });
+
+    it('should forward errors from data protection setup', () => {
+      const middleware = dataProtectionMiddleware({
+        dataProtection: {
+          enabled: true,
+          encryptionKey: 'k',
+          masking: { enabled: true, fields: ['password'] },
+        },
+      });
+      const res = {};
+      Object.defineProperty(res, 'send', {
+        get() {
+          throw new Error('cannot access send');
+        },
+      });
+      const next = jest.fn();
+      middleware({} as Request, res as Response, next);
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    it('should handle audit middleware without excludeFields', () => {
+      const consoleSpy = jest.spyOn(console, 'log').mockImplementation();
+      const middleware = auditMiddleware({ audit: { enabled: true } });
+      middleware(
+        {
+          method: 'GET',
+          path: '/',
+          query: {},
+          body: { keep: true },
+        } as Request,
+        mockResponse as Response,
+        mockNext
+      );
+      expect(consoleSpy).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe('remaining branch coverage', () => {
+    it('should use empty headers object when headers are cleared after registration', () => {
+      const config: SecurityConfig = {
+        headers: { 'X-Temp': '1' },
+      };
+      applyGovernmentSecurity(app, config);
+      const headersMw = (app.use as jest.Mock).mock.calls
+        .map((c) => c[0])
+        .find((h) => typeof h === 'function' && h.length === 3);
+
+      (config as any).headers = null;
+      const res = { setHeader: jest.fn() } as any;
+      const next = jest.fn();
+      headersMw({} as Request, res, next);
+      expect(next).toHaveBeenCalled();
+    });
+
+    it('should treat null cache counts as zero and unknown ips', async () => {
+      mockCacheService.get.mockResolvedValue(null);
+      mockCacheService.set.mockResolvedValue();
+
+      applyGovernmentSecurity(app, {
+        rateLimit: { enabled: true, max: 5, windowMs: 1000 },
+      });
+      const rateMw = (app.use as jest.Mock).mock.calls
+        .map((c) => c[0])
+        .find((h) => h?.constructor?.name === 'AsyncFunction');
+
+      await rateMw({ ip: undefined } as Request, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+
+      const middleware = rateLimitMiddleware({
+        rateLimit: { enabled: true, max: () => 3, windowMs: 1000 },
+      });
+      mockNext.mockClear();
+      await middleware({ ip: undefined } as Request, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+    });
+
+    it('should mask with empty fields fallback and skip falsy body fields', () => {
+      applyGovernmentSecurity(app, {
+        dataProtection: {
+          enabled: true,
+          encryptionKey: 'k',
+          masking: { enabled: true, fields: undefined as any },
+        },
+      });
+      const maskingMw = (app.use as jest.Mock).mock.calls
+        .map((c) => c[0])
+        .find((h) => typeof h === 'function' && h.length === 3);
+      const originalJson = jest.fn((data) => data);
+      const res = { json: originalJson } as any;
+      maskingMw({} as Request, res, jest.fn());
+      expect(res.json({ a: 1 })).toEqual({ a: 1 });
+
+      const dp = dataProtectionMiddleware({
+        dataProtection: {
+          enabled: true,
+          encryptionKey: 'k',
+          masking: { enabled: true, fields: ['password', 'token'] },
+        },
+      });
+      const send = jest.fn((body) => body);
+      const response = { send } as any;
+      dp({} as Request, response, jest.fn());
+      expect(response.send({ password: '', token: 'secret', ok: true })).toEqual({
+        password: '',
+        token: '********',
+        ok: true,
+      });
+    });
+
+    it('should cover securityMiddleware optional ip and non-register paths', async () => {
+      mockCacheService.get.mockResolvedValue(null);
+      mockCacheService.set.mockResolvedValue();
+
+      const middlewares = securityMiddleware({
+        rateLimit: { enabled: true, max: 10, windowMs: 1000 },
+        passwordPolicy: {
+          minLength: 4,
+          requireUppercase: false,
+          requireLowercase: false,
+          requireNumbers: false,
+          requireSpecialChars: false,
+        },
+        helmet: false,
+        headers: { 'X-A': 'b' },
+        audit: { enabled: true, excludeFields: ['secret'] },
+      });
+
+      for (const mw of middlewares) {
+        await mw(
+          {
+            ip: undefined,
+            path: '/other',
+            method: 'GET',
+            body: { secret: 'x', name: 'n' },
+          } as Request,
+          { setHeader: jest.fn() } as any,
+          jest.fn()
+        );
+      }
+
+      mockCacheService.get.mockResolvedValue(false);
+      const passwordMw = middlewares[1];
+      await passwordMw(
+        {
+          ip: undefined,
+          path: '/auth/register',
+          method: 'POST',
+          body: { password: 'abcd' },
+        } as Request,
+        mockResponse as Response,
+        jest.fn()
+      );
+    });
+
+    it('should build headers with headers-only and no helmet', async () => {
+      mockCacheService.get.mockResolvedValue(null);
+      mockCacheService.set.mockResolvedValue();
+      const middlewares = securityMiddleware({
+        headers: { 'X-Only': '1' },
+      });
+      await middlewares[0](
+        { path: '/p', ip: undefined } as Request,
+        { setHeader: jest.fn() } as any,
+        jest.fn()
+      );
+    });
+
+    it('should cover remaining ?? and headers fallback branches', async () => {
+      mockCacheService.get.mockResolvedValue(5);
+      const rateMiddlewares = securityMiddleware({
+        rateLimit: { enabled: true, max: 5, windowMs: 1000 },
+      });
+      await rateMiddlewares[0](
+        { ip: '8.8.8.8', path: '/r' } as Request,
+        mockResponse as Response,
+        jest.fn()
+      );
+      await rateMiddlewares[0](
+        { ip: undefined, path: '/r' } as Request,
+        mockResponse as Response,
+        jest.fn()
+      );
+
+      mockCacheService.get.mockResolvedValue(null);
+      mockCacheService.set.mockResolvedValue();
+      const passwordMiddlewares = securityMiddleware({
+        passwordPolicy: {
+          minLength: 8,
+          requireUppercase: true,
+          requireLowercase: false,
+          requireNumbers: false,
+          requireSpecialChars: false,
+        },
+      });
+      await passwordMiddlewares[0](
+        {
+          ip: '1.2.3.4',
+          path: '/auth/register',
+          method: 'POST',
+          body: { password: 'weakpass' },
+        } as Request,
+        mockResponse as Response,
+        jest.fn()
+      );
+      await passwordMiddlewares[0](
+        {
+          ip: undefined,
+          path: '/auth/register',
+          method: 'POST',
+          body: { password: 'weakpass' },
+        } as Request,
+        mockResponse as Response,
+        jest.fn()
+      );
+
+      mockCacheService.get.mockResolvedValue(null);
+      const headerMiddlewares = securityMiddleware({
+        helmet: true,
+      });
+      await headerMiddlewares[0](
+        { path: '/headers', ip: '1.1.1.1' } as Request,
+        { setHeader: jest.fn() } as any,
+        jest.fn()
+      );
+    });
+  });
 });

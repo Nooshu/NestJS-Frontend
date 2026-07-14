@@ -202,5 +202,6 @@ class PerformanceService {
   }
 }
 
-// Export the performance service
+// Export the performance service (class exported for testability)
+export { PerformanceService };
 export const performanceService = new PerformanceService(); 

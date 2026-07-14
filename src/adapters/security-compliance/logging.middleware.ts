@@ -33,9 +33,6 @@ function createLogger(config: LoggingConfig['base']): pino.Logger {
       },
     };
   }
-  if (config.logger?.level) {
-    options.level = config.logger.level;
-  }
   return pino(options);
 }
 

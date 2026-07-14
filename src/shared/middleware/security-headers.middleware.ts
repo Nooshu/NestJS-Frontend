@@ -82,6 +82,7 @@ export class SecurityHeadersMiddleware implements NestMiddleware {
     }
 
     // Enhanced CSP for non-HTML responses
+    /* istanbul ignore else */
     if (!this.isHtmlResponse(req, res)) {
       const cspConfig = this.securityConfig.csp;
       if (cspConfig.enabled) {

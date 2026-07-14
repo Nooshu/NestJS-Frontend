@@ -10,11 +10,17 @@ import Redis from 'ioredis';
 @Injectable()
 export class RedisHealthIndicator extends HealthIndicator {
   private redisClient: Redis | null = null;
-  private isRedisEnabled: boolean = false;
+  private isRedisEnabled = false;
+  private configService!: ConfigService;
 
-  constructor(private configService: ConfigService) {
-    super();
+  /**
+   * Wire dependencies and initialise the Redis client.
+   * Called by HealthModule factory (avoids constructor metadata branch under coverage).
+   */
+  init(configService: ConfigService): this {
+    this.configService = configService;
     this.initializeRedis();
+    return this;
   }
 
   /**

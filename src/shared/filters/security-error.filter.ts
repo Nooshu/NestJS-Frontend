@@ -131,15 +131,18 @@ export class SecurityErrorFilter implements ExceptionFilter {
    * @param {string} path - The request path to check
    * @returns {boolean} True if the path should be excluded, false otherwise
    */
-  private shouldExcludePath(path: string): boolean {
-    const excludePaths = [
-      '/.well-known/appspecific/com.chrome.devtools.json',
-      '/favicon.ico',
-      '*.js.map',
-      '*.css.map',
-    ];
+  /**
+   * Paths excluded from error processing. Exposed for tests to cover wildcard edge cases.
+   */
+  private readonly excludePaths = [
+    '/.well-known/appspecific/com.chrome.devtools.json',
+    '/favicon.ico',
+    '*.js.map',
+    '*.css.map',
+  ];
 
-    return excludePaths.some((pattern) => {
+  private shouldExcludePath(path: string): boolean {
+    return this.excludePaths.some((pattern) => {
       // Handle exact matches
       if (!pattern.includes('*')) {
         return path === pattern;

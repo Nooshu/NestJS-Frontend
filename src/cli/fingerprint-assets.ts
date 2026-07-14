@@ -35,10 +35,21 @@ async function main() {
   }
 }
 
-// Only run if this file is being executed directly (not imported)
-if (require.main === module) {
-  main();
+/**
+ * Runs the CLI entrypoint when this file is the process main module.
+ * Extracted for testability so both branches can be covered without
+ * reloading the module as Node's entry script.
+ */
+export function bootstrap(
+  mainModule: NodeModule | undefined = require.main,
+  currentModule: NodeModule = module
+): void | Promise<void> {
+  if (mainModule === currentModule) {
+    return main();
+  }
 }
+
+bootstrap();
 
 // Export for testing
 export { main };

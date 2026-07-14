@@ -258,4 +258,177 @@ describe('RateLimitingMiddleware', () => {
       expect(clearIntervalSpy).toHaveBeenCalled();
     });
   });
+
+  describe('api config and window resets', () => {
+    it('should use /api config for API routes', () => {
+      const apiRequest = { ...mockRequest, path: '/api/users' };
+      const response: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
+        end: jest.fn(),
+        statusCode: 400,
+        getHeaders: jest.fn().mockReturnValue({}),
+      };
+
+      middleware.use(apiRequest as Request, response as Response, mockNext);
+      (response.end as jest.Mock)();
+
+      expect(response.set).toHaveBeenCalledWith(
+        expect.objectContaining({
+          'X-RateLimit-Limit': '100',
+        })
+      );
+    });
+
+    it('should reset blocked entry when window expires in isBlocked', () => {
+      const key = 'default:127.0.0.1:hash';
+      const now = Date.now();
+      (middleware as any).store[key] = {
+        count: 100,
+        resetTime: now - 1000,
+        blocked: true,
+        blockUntil: now - 500,
+      };
+
+      const config = (middleware as any).configs.default;
+      const blocked = (middleware as any).isBlocked(key, config);
+      expect(blocked).toBe(false);
+      expect((middleware as any).store[key].count).toBe(0);
+      expect((middleware as any).store[key].blocked).toBe(false);
+    });
+
+    it('should reset counter when window expires in incrementCounter', () => {
+      const key = 'reset-key';
+      const now = Date.now();
+      (middleware as any).store[key] = {
+        count: 10,
+        resetTime: now - 1000,
+        blocked: true,
+        blockUntil: now - 500,
+      };
+
+      const config = (middleware as any).configs.default;
+      const result = (middleware as any).incrementCounter(key, config);
+      expect(result.count).toBe(1);
+      expect(result.blocked).toBe(false);
+    });
+
+    it('should fall back client identifiers when headers missing', () => {
+      const req = {
+        ...mockRequest,
+        ip: undefined,
+        headers: {},
+        connection: { remoteAddress: undefined },
+      };
+      middleware.use(req as Request, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+    });
+
+    it('should use x-real-ip when forwarded is absent', () => {
+      const req = {
+        ...mockRequest,
+        headers: { 'x-real-ip': '10.0.0.5', 'user-agent': 'ua' },
+      };
+      middleware.use(req as Request, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+    });
+
+    it('cleanup keeps entries still blocked', () => {
+      const key = 'still-blocked';
+      const now = Date.now();
+      (middleware as any).store[key] = {
+        count: 1,
+        resetTime: now - 1000,
+        blocked: true,
+        blockUntil: now + 60_000,
+      };
+      (middleware as any).cleanup();
+      expect((middleware as any).store[key]).toBeDefined();
+    });
+
+    it('blocked request without blockUntil uses default retryAfter', () => {
+      const key = 'default:forced';
+      const config = (middleware as any).configs.default;
+      const forcedKey = config.keyGenerator(mockRequest);
+      (middleware as any).store[forcedKey] = {
+        count: 100,
+        resetTime: Date.now() + 60_000,
+        blocked: true,
+        blockUntil: undefined,
+      };
+      jest.spyOn(middleware as any, 'isBlocked').mockReturnValue(true);
+
+      middleware.use(mockRequest as Request, mockResponse as Response, mockNext);
+
+      expect(mockResponse.status).toHaveBeenCalledWith(429);
+      expect(mockResponse.json).toHaveBeenCalledWith(
+        expect.objectContaining({ retryAfter: 60 })
+      );
+    });
+  });
+
+  describe('shouldCount and destroy branches', () => {
+    it('does not count successful requests when skipSuccessfulRequests is true', () => {
+      const apiRequest = { ...mockRequest, path: '/api/items' };
+      const response: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
+        end: jest.fn(),
+        statusCode: 200,
+        getHeaders: jest.fn().mockReturnValue({}),
+      };
+
+      middleware.use(apiRequest as Request, response as Response, mockNext);
+      (response.end as jest.Mock)();
+
+      // API config skips successful requests — no rate limit headers from increment
+      expect(response.set).not.toHaveBeenCalled();
+    });
+
+    it('does not count failed requests when skipFailedRequests is true', () => {
+      const config = (middleware as any).configs.default;
+      config.skipFailedRequests = true;
+      config.skipSuccessfulRequests = false;
+      const response: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
+        end: jest.fn(),
+        statusCode: 500,
+        getHeaders: jest.fn().mockReturnValue({}),
+      };
+      middleware.use(mockRequest as Request, response as Response, mockNext);
+      (response.end as jest.Mock)();
+      expect(response.set).not.toHaveBeenCalled();
+      config.skipFailedRequests = false;
+      config.skipSuccessfulRequests = true;
+    });
+
+    it('onModuleDestroy is safe when cleanupInterval is cleared', () => {
+      (middleware as any).cleanupInterval = undefined;
+      expect(() => middleware.onModuleDestroy()).not.toThrow();
+    });
+
+    it('ignores subsequent res.end calls after the first interception', () => {
+      const response: Partial<Response> = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn().mockReturnThis(),
+        set: jest.fn().mockReturnThis(),
+        end: jest.fn().mockReturnThis(),
+        statusCode: 200,
+        getHeaders: jest.fn().mockReturnValue({}),
+      };
+      const config = (middleware as any).configs.default;
+      config.skipSuccessfulRequests = false;
+
+      middleware.use(mockRequest as Request, response as Response, mockNext);
+      (response.end as jest.Mock)();
+      (response.end as jest.Mock)();
+
+      expect(response.set).toHaveBeenCalledTimes(1);
+      config.skipSuccessfulRequests = true;
+    });
+  });
 });

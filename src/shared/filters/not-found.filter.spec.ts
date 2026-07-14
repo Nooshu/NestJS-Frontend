@@ -52,6 +52,12 @@ describe('NotFoundExceptionFilter', () => {
       loggingConfig.base.excludePaths = ['/favicon.ico', '*.js.map', '/other-path'];
       expect(filter['shouldExcludePath'](testPath)).toBe(true);
     });
+
+    it('should return false for wildcard patterns that are not extension-based', () => {
+      loggingConfig.base.excludePaths = ['/api/*/test'];
+      expect(filter['shouldExcludePath']('/api/users/test')).toBe(false);
+      expect(filter['shouldExcludePath']('/other')).toBe(false);
+    });
   });
 
   describe('catch', () => {

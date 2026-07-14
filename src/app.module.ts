@@ -1,8 +1,10 @@
 /**
- * Root module of the NestJS application.
- * Configures the application's dependencies and providers.
- * This module serves as the entry point for the application's dependency injection system
- * and defines the application's structure and available components.
+ * Root NestJS module — composition root for DI, feature modules, and middleware order.
+ *
+ * Imports Core/Views/Security/Cache/Logger/Health plus journey modules. Controllers
+ * listed here are app-wide (home, views, CSP reporting); journey controllers live
+ * in their feature modules. Prefer registering new HTTP middleware in
+ * {@link AppModule.configure} so order relative to CSRF and logging stays explicit.
  *
  * @module AppModule
  * @requires @nestjs/common
@@ -29,22 +31,11 @@ import { FindCourtTribunalModule } from './views/journeys/find-a-court-or-tribun
 import { HealthModule } from './shared/health/health.module';
 
 /**
- * Root module class that bootstraps the application.
- * This class is decorated with @Module to define the application's structure:
- * - imports: Other modules that this module depends on
- * - controllers: Controllers that handle HTTP requests
- * - providers: Services and other injectable classes
+ * Application composition root. Instantiated by NestFactory in `main.ts`.
  *
  * @class AppModule
- * @description The root module of the application that ties everything together
- *
  * @example
- * // Usage in main.ts
  * const app = await NestFactory.create(AppModule);
- *
- * @property {Module} imports - Array of modules that this module depends on
- * @property {Module} controllers - Array of controllers that handle HTTP requests
- * @property {Module} providers - Array of services and other injectable classes
  */
 @Module({
   imports: [
@@ -62,52 +53,23 @@ import { HealthModule } from './shared/health/health.module';
 })
 export class AppModule {
   /**
-   * Configure middleware for the application.
-   * This method is called by NestJS during the application bootstrap phase.
-   * It configures the order and scope of middleware application.
+   * Registers Nest middleware in application order (outermost first).
    *
-   * @method configure
-   * @param {MiddlewareConsumer} consumer - The middleware consumer
+   * Order matters: errors/logging wrap the request, then compression and HTML
+   * header optimisations, then CSRF for cookie/HTML form posts. CSRF is excluded
+   * for machine-facing routes (API, health) and the find-a-court journey (API-style
+   * redirects without form tokens). Do not reorder without checking TTFB headers
+   * and CSRF cookie issuance on first GET.
    *
-   * @example
-   * // The middleware is applied in the following order:
-   * // 1. Error handling middleware (all routes)
-   * // 2. Logging middleware (all routes)
-   * // 3. Compression middleware (all routes)
-   * // 4. Cache middleware (all GET routes)
-   * // 5. CSRF protection (all routes except API and health check)
+   * @param {MiddlewareConsumer} consumer - Nest middleware consumer
+   * @returns {void}
    */
   configure(consumer: MiddlewareConsumer) {
-    /**
-     * Error Handling Middleware
-     * Applied to all routes to catch and handle errors consistently
-     */
     consumer.apply(ErrorMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
-
-    /**
-     * Logging Middleware
-     * Applied to all routes to log request/response information
-     */
     consumer.apply(LoggerMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
-
-    /**
-     * Compression Middleware
-     * Applied to all routes to compress response bodies
-     */
     consumer.apply(CompressionMiddleware).forRoutes({ path: '*path', method: RequestMethod.ALL });
-
-    /**
-     * Optimized HTML Headers Middleware
-     * Applied to all routes to set optimized headers for HTML responses
-     * This middleware consolidates all TTFB optimization headers in one place
-     */
+    // Consolidates Cache-Control / Vary / encoding hints for HTML (TTFB-focused)
     consumer.apply(OptimizedHtmlHeadersMiddleware).forRoutes('*');
-
-    /**
-     * CSRF Protection Middleware
-     * Applied to all routes except API routes and health check
-     * to protect against Cross-Site Request Forgery attacks
-     */
     consumer
       .apply(CsrfMiddleware)
       .exclude(

@@ -827,4 +827,49 @@ describe('SecurityAuditMiddleware', () => {
       expect(mockLogger.info).toHaveBeenCalled();
     });
   });
+
+  describe('sanitizeObject and critical log level', () => {
+    it('returns non-object values unchanged from sanitizeObject', () => {
+      expect((middleware as any).sanitizeObject(null)).toBeNull();
+      expect((middleware as any).sanitizeObject('plain')).toBe('plain');
+      expect((middleware as any).sanitizeObject(42)).toBe(42);
+    });
+
+    it('sanitizes arrays recursively', () => {
+      const result = (middleware as any).sanitizeObject([{ password: 'secret', ok: 1 }]);
+      expect(result).toEqual([{ password: '[REDACTED]', ok: 1 }]);
+    });
+
+    it('maps critical severity to error log level', () => {
+      expect((middleware as any).getLogLevel('critical')).toBe('error');
+      expect((middleware as any).getLogLevel('unknown')).toBe('info');
+    });
+  });
+
+  describe('client info fallbacks', () => {
+    it('uses unknown user agent and ip fallbacks', () => {
+      const req = {
+        path: '/api/test',
+        method: 'GET',
+        url: '/api/test',
+        query: {},
+        headers: {},
+        ip: undefined,
+        connection: {},
+      };
+      middleware.use(req as any, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+    });
+
+    it('handles empty user agent for suspicious agent checks', () => {
+      const req = {
+        ...mockRequest,
+        path: '/api/test',
+        url: '/api/../secret',
+        headers: { 'user-agent': '' },
+      };
+      middleware.use(req as Request, mockResponse as Response, mockNext);
+      expect(mockNext).toHaveBeenCalled();
+    });
+  });
 });

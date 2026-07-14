@@ -105,8 +105,42 @@ export function normalizeHtml(html: string): string {
  * @param {string} classList - The class list string
  * @returns {string[]} Array of class names
  */
-function getClassNames(classList: string): string[] {
+export function getClassNames(classList: string): string[] {
   return classList.split(' ').filter(Boolean);
+}
+
+/**
+ * Resolves class attribute value from a parsed HTML element using rawAttrs,
+ * classNames, and outerHTML fallbacks. Exported for unit testing.
+ */
+export function resolveClassAttribute(root: {
+  attributes?: Record<string, string>;
+  rawAttrs?: string;
+  classNames?: string;
+  outerHTML?: string;
+}): Record<string, string> {
+  const attrs = { ...(root.attributes || {}) };
+
+  let classMatch: RegExpMatchArray | null = null;
+  if (root.rawAttrs) {
+    classMatch = root.rawAttrs.match(/class="([^"]+)"/);
+  }
+  if (classMatch) {
+    attrs.class = classMatch[1];
+  }
+
+  if (!attrs.class && root.classNames) {
+    attrs.class = root.classNames;
+  }
+
+  if (!attrs.class && root.outerHTML) {
+    const outerClassMatch = root.outerHTML.match(/class="([^"]+)"/);
+    if (outerClassMatch) {
+      attrs.class = outerClassMatch[1];
+    }
+  }
+
+  return attrs;
 }
 
 /**
@@ -245,49 +279,9 @@ export function verifyComponent(rendered: string, fixture: GovukFixture): void {
   // Compare the HTML structure
   expect(compareHtml(normalizedRendered, normalizedFixture)).toBe(true);
 
-  // Get attributes from the HTML parser
-  const renderedAttrs = { ...renderedRoot.attributes };
-  const fixtureAttrs = { ...fixtureRoot.attributes };
-
-  // Extract class from rawAttrs first
-  let renderedClassMatch = null;
-  let fixtureClassMatch = null;
-
-  if (renderedRoot.rawAttrs) {
-    renderedClassMatch = renderedRoot.rawAttrs.match(/class="([^"]+)"/);
-  }
-  if (fixtureRoot.rawAttrs) {
-    fixtureClassMatch = fixtureRoot.rawAttrs.match(/class="([^"]+)"/);
-  }
-
-  if (renderedClassMatch) {
-    renderedAttrs.class = renderedClassMatch[1];
-  }
-  if (fixtureClassMatch) {
-    fixtureAttrs.class = fixtureClassMatch[1];
-  }
-
-  // If no class in rawAttrs, try classNames property
-  if (!renderedAttrs.class && renderedRoot.classNames) {
-    renderedAttrs.class = renderedRoot.classNames;
-  }
-  if (!fixtureAttrs.class && fixtureRoot.classNames) {
-    fixtureAttrs.class = fixtureRoot.classNames;
-  }
-
-  // If still no class, try to extract from outerHTML
-  if (!renderedAttrs.class && renderedRoot.outerHTML) {
-    const outerClassMatch = renderedRoot.outerHTML.match(/class="([^"]+)"/);
-    if (outerClassMatch) {
-      renderedAttrs.class = outerClassMatch[1];
-    }
-  }
-  if (!fixtureAttrs.class && fixtureRoot.outerHTML) {
-    const outerClassMatch = fixtureRoot.outerHTML.match(/class="([^"]+)"/);
-    if (outerClassMatch) {
-      fixtureAttrs.class = outerClassMatch[1];
-    }
-  }
+  // Get attributes from the HTML parser (with class resolution fallbacks)
+  const renderedAttrs = resolveClassAttribute(renderedRoot);
+  const fixtureAttrs = resolveClassAttribute(fixtureRoot);
 
   // Get all unique attribute keys
   const allAttrKeys = new Set([...Object.keys(renderedAttrs), ...Object.keys(fixtureAttrs)]);

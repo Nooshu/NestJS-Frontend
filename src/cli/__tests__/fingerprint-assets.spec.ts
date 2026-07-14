@@ -1,5 +1,5 @@
 import { FingerprintService } from '../../shared/services/fingerprint.service';
-import { main } from '../fingerprint-assets';
+import { main, bootstrap } from '../fingerprint-assets';
 
 // Mock the FingerprintService
 jest.mock('../../shared/services/fingerprint.service');
@@ -77,5 +77,39 @@ describe('fingerprint-assets.ts CLI script', () => {
     // Assert
     expect(consoleOutput).toContain('ERROR: Asset fingerprinting failed: Fingerprinting failed');
     expect(mockExit).toHaveBeenCalledWith(1);
+    mockExit.mockRestore();
+  });
+
+  it('should handle non-Error throwables from FingerprintService', async () => {
+    const mockFingerprint = jest.fn().mockRejectedValue('string failure');
+    (FingerprintService as jest.Mock).mockImplementation(() => ({
+      fingerprint: mockFingerprint,
+    }));
+    const mockExit = jest.spyOn(process, 'exit').mockImplementation(() => undefined as never);
+
+    await main();
+
+    expect(consoleOutput).toContain('ERROR: Asset fingerprinting failed: string failure');
+    expect(mockExit).toHaveBeenCalledWith(1);
+    mockExit.mockRestore();
+  });
+
+  it('bootstrap runs main when modules match', async () => {
+    const mockFingerprint = jest.fn();
+    (FingerprintService as jest.Mock).mockImplementation(() => ({
+      fingerprint: mockFingerprint,
+    }));
+    const fakeModule = { id: 'cli' } as NodeModule;
+    await bootstrap(fakeModule, fakeModule);
+    expect(mockFingerprint).toHaveBeenCalled();
+  });
+
+  it('bootstrap does not run main when modules differ', async () => {
+    const mockFingerprint = jest.fn();
+    (FingerprintService as jest.Mock).mockImplementation(() => ({
+      fingerprint: mockFingerprint,
+    }));
+    await bootstrap({ id: 'a' } as NodeModule, { id: 'b' } as NodeModule);
+    expect(mockFingerprint).not.toHaveBeenCalled();
   });
 });

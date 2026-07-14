@@ -9,7 +9,6 @@
 
 import { HttpException, HttpStatus, Injectable, type NestMiddleware } from '@nestjs/common';
 import type { NextFunction, Request, Response } from 'express';
-import configuration from '../config/configuration';
 
 /**
  * Error response interface.
@@ -55,7 +54,7 @@ export class ErrorMiddleware implements NestMiddleware {
       };
 
       // Include stack trace in development
-      if (configuration().nodeEnv === 'development') {
+      if (process.env.NODE_ENV === 'development') {
         response.stack =
           (error instanceof Error ? error?.stack : undefined) ?? 'No stack trace available';
       }

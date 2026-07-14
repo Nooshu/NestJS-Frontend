@@ -135,6 +135,13 @@ describe('ViewsController', () => {
     });
   });
 
+  describe('performanceDemo', () => {
+    it('should return the correct view data for the performance demo page', () => {
+      const result = controller.performanceDemo();
+      expect(result).toEqual({ title: 'Performance Metrics Demo' });
+    });
+  });
+
   describe('controller methods', () => {
     it('should have all required methods', () => {
       expect(controller.home).toBeDefined();
@@ -144,6 +151,7 @@ describe('ViewsController', () => {
       expect(controller.layoutComponents).toBeDefined();
       expect(controller.feedbackComponents).toBeDefined();
       expect(controller.missingComponents).toBeDefined();
+      expect(controller.performanceDemo).toBeDefined();
     });
 
     it('should have correct method types', () => {
@@ -154,6 +162,7 @@ describe('ViewsController', () => {
       expect(typeof controller.layoutComponents).toBe('function');
       expect(typeof controller.feedbackComponents).toBe('function');
       expect(typeof controller.missingComponents).toBe('function');
+      expect(typeof controller.performanceDemo).toBe('function');
     });
   });
 
@@ -167,6 +176,7 @@ describe('ViewsController', () => {
       const layoutComponentsResult = controller.layoutComponents();
       const feedbackComponentsResult = controller.feedbackComponents();
       const missingComponentsResult = controller.missingComponents();
+      const performanceDemoResult = controller.performanceDemo();
 
       // Verify all results are objects with title properties
       expect(homeResult).toEqual({ title: 'Home' });
@@ -176,6 +186,7 @@ describe('ViewsController', () => {
       expect(layoutComponentsResult).toEqual({ title: 'Layout Components' });
       expect(feedbackComponentsResult).toEqual({ title: 'Feedback Components' });
       expect(missingComponentsResult).toEqual({ title: 'Missing Components' });
+      expect(performanceDemoResult).toEqual({ title: 'Performance Metrics Demo' });
     });
   });
 });

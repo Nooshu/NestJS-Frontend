@@ -457,6 +457,63 @@ describe('ConfigService', () => {
         logging: false,
       });
     });
+
+    it('should apply database defaults when get returns undefined', () => {
+      mockNestConfigService.get.mockReturnValue(undefined);
+
+      expect(service.database).toEqual({
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'postgres',
+        password: 'postgres',
+        database: 'nestjs_frontend',
+        synchronize: false,
+        logging: false,
+      });
+    });
+
+    it('should apply database defaults when get returns null', () => {
+      mockNestConfigService.get.mockReturnValue(null);
+
+      expect(service.database).toEqual({
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: 'postgres',
+        password: 'postgres',
+        database: 'nestjs_frontend',
+        synchronize: false,
+        logging: false,
+      });
+    });
+
+    it('should return configured database settings', () => {
+      mockNestConfigService.get.mockImplementation((key: DatabaseConfigKeys) => {
+        const values: Record<DatabaseConfigKeys, string | number | boolean> = {
+          'database.type': 'mysql',
+          'database.host': 'db.example.com',
+          'database.port': 3306,
+          'database.username': 'dbuser',
+          'database.password': 'dbpass',
+          'database.database': 'app_db',
+          'database.synchronize': true,
+          'database.logging': true,
+        };
+        return values[key];
+      });
+
+      expect(service.database).toEqual({
+        type: 'mysql',
+        host: 'db.example.com',
+        port: 3306,
+        username: 'dbuser',
+        password: 'dbpass',
+        database: 'app_db',
+        synchronize: true,
+        logging: true,
+      });
+    });
   });
 
   describe('redis', () => {
@@ -478,6 +535,51 @@ describe('ConfigService', () => {
         port: 6379,
         password: '',
         db: 0,
+      });
+    });
+
+    it('should apply redis defaults when get returns undefined', () => {
+      mockNestConfigService.get.mockReturnValue(undefined);
+
+      expect(service.redis).toEqual({
+        enabled: false,
+        host: 'localhost',
+        port: 6379,
+        password: '',
+        db: 0,
+      });
+    });
+
+    it('should apply redis defaults when get returns null', () => {
+      mockNestConfigService.get.mockReturnValue(null);
+
+      expect(service.redis).toEqual({
+        enabled: false,
+        host: 'localhost',
+        port: 6379,
+        password: '',
+        db: 0,
+      });
+    });
+
+    it('should return configured redis settings', () => {
+      mockNestConfigService.get.mockImplementation((key: RedisConfigKeys) => {
+        const values: Record<RedisConfigKeys, string | number | boolean> = {
+          'redis.enabled': true,
+          'redis.host': 'redis.example.com',
+          'redis.port': 6380,
+          'redis.password': 'secret',
+          'redis.db': 2,
+        };
+        return values[key];
+      });
+
+      expect(service.redis).toEqual({
+        enabled: true,
+        host: 'redis.example.com',
+        port: 6380,
+        password: 'secret',
+        db: 2,
       });
     });
   });
@@ -743,6 +845,47 @@ describe('ConfigService', () => {
         samplingRate: 1,
         maxEntries: 100,
         reportOnUnload: true,
+      });
+    });
+
+    it('should apply performance defaults when get returns undefined', () => {
+      mockNestConfigService.get.mockReturnValue(undefined);
+
+      expect(service.performance).toEqual({
+        enabled: true,
+        samplingRate: 1,
+        maxEntries: 100,
+        reportOnUnload: true,
+      });
+    });
+
+    it('should apply performance defaults when get returns null', () => {
+      mockNestConfigService.get.mockReturnValue(null);
+
+      expect(service.performance).toEqual({
+        enabled: true,
+        samplingRate: 1,
+        maxEntries: 100,
+        reportOnUnload: true,
+      });
+    });
+
+    it('should return configured performance settings', () => {
+      mockNestConfigService.get.mockImplementation((key: PerformanceConfigKeys) => {
+        const values: Record<PerformanceConfigKeys, boolean | number> = {
+          'performance.enabled': false,
+          'performance.samplingRate': 0.25,
+          'performance.maxEntries': 50,
+          'performance.reportOnUnload': false,
+        };
+        return values[key];
+      });
+
+      expect(service.performance).toEqual({
+        enabled: false,
+        samplingRate: 0.25,
+        maxEntries: 50,
+        reportOnUnload: false,
       });
     });
   });

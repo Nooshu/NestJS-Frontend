@@ -43,21 +43,25 @@ export class LoggerMiddleware implements NestMiddleware {
   /**
    * Check if a path should be excluded from logging
    */
+  private matchesExcludePattern(path: string, pattern: string): boolean {
+    // Handle exact matches
+    if (!pattern.includes('*')) {
+      return path === pattern;
+    }
+
+    // Handle *.extension patterns
+    if (pattern.startsWith('*.')) {
+      const extension = pattern.slice(1); // Remove the *
+      return path.endsWith(extension);
+    }
+
+    return false;
+  }
+
   private shouldExcludePath(path: string): boolean {
-    return loggingConfig.base.excludePaths.some((pattern) => {
-      // Handle exact matches
-      if (!pattern.includes('*')) {
-        return path === pattern;
-      }
-
-      // Handle *.extension patterns
-      if (pattern.startsWith('*.')) {
-        const extension = pattern.slice(1); // Remove the *
-        return path.endsWith(extension);
-      }
-
-      return false;
-    });
+    return loggingConfig.base.excludePaths.some((pattern) =>
+      this.matchesExcludePattern(path, pattern)
+    );
   }
 
   /**

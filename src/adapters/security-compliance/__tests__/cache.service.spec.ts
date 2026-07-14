@@ -78,6 +78,28 @@ describe('CacheService (memory store)', () => {
     await expect(service.delete(defaultKey)).resolves.toBeUndefined();
     await expect(service.clear()).resolves.toBeUndefined();
   });
+
+  it('should expire memory entries and use default ttl/prefix', async () => {
+    const nowSpy = jest.spyOn(Date, 'now');
+    nowSpy.mockReturnValue(1_000_000);
+
+    const defaultService = new CacheService({ enabled: true, store: 'memory' } as CacheConfig);
+    await defaultService.set(defaultKey, { a: 1 });
+    expect(defaultService['buildKey'](defaultKey)).toBe('gov-security:rate-limit:user-123');
+
+    nowSpy.mockReturnValue(1_000_000 + 3600 * 1000 + 1);
+    await expect(defaultService.get(defaultKey)).resolves.toBeNull();
+
+    nowSpy.mockRestore();
+  });
+
+  it('should short-circuit when store is missing', async () => {
+    (service as any).store = null;
+    await expect(service.get(defaultKey)).resolves.toBeNull();
+    await expect(service.set(defaultKey, 1)).resolves.toBeUndefined();
+    await expect(service.delete(defaultKey)).resolves.toBeUndefined();
+    await expect(service.clear()).resolves.toBeUndefined();
+  });
 });
 
 describe('CacheService (redis store)', () => {
@@ -142,5 +164,17 @@ describe('CacheService (redis store)', () => {
     redisClient.get.mockResolvedValue('not-json');
     const result = await service.get<{ foo: string }>(defaultKey);
     expect(result).toBeNull();
+  });
+
+  it('should initialize redis with default connection options', () => {
+    const Redis = require('ioredis');
+    Redis.mockClear();
+    new CacheService({ enabled: true, store: 'redis' } as CacheConfig);
+    expect(Redis).toHaveBeenCalledWith({
+      host: 'localhost',
+      port: 6379,
+      password: '',
+      db: 0,
+    });
   });
 });

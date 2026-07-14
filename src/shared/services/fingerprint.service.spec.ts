@@ -202,6 +202,352 @@ describe('FingerprintService', () => {
       // Restore original function
       require('glob').sync = originalGlobSync;
     });
+
+    it('should process css, js (including main.*), images, govuk, and create manifest dir', () => {
+      const publicDir = (service as any).publicDir;
+      const assetsDir = (service as any).assetsDir;
+      const govukDir = (service as any).govukDir;
+
+      const cssFile = join(publicDir, 'css', 'main.css');
+      const jsMain = join(publicDir, 'js', 'main.abc123.js');
+      const jsOther = join(publicDir, 'js', 'util.js');
+      const imageFile = join(assetsDir, 'images', 'logo.png');
+      const govukCss = join(govukDir, 'all.css');
+      const govukJs = join(govukDir, 'all.js');
+      const govukFont = join(govukDir, 'assets', 'fonts', 'font.woff2');
+      const govukImg = join(govukDir, 'assets', 'images', 'crest.png');
+
+      const originalGlobSync = require('glob').sync;
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      require('glob').sync = jest.fn((pattern: string) => {
+        if (pattern.includes(`${join(publicDir, 'css')}`)) return [cssFile];
+        if (pattern.includes(`${join(publicDir, 'js')}`)) return [jsMain, jsOther];
+        if (pattern.includes(join(assetsDir, 'images'))) return [imageFile];
+        if (pattern === join(govukDir, '*.css') || pattern.endsWith('*.css')) return [govukCss];
+        if (pattern === join(govukDir, '*.js') || (pattern.endsWith('*.js') && pattern.includes('govuk')))
+          return [govukJs];
+        if (pattern.includes(join(govukDir, 'assets'))) return [govukFont, govukImg];
+        return [];
+      });
+
+      fs.existsSync = jest.fn((p: string) => {
+        // source map for govuk css
+        if (String(p).endsWith('.css.map') || String(p).endsWith('all.css.map')) return true;
+        // output dirs missing to exercise mkdir
+        if (String(p).includes('dist')) return false;
+        return false;
+      });
+      fs.readFileSync = jest.fn((p: string, encoding?: string) => {
+        if (encoding === 'utf8' && String(p).endsWith('.css')) {
+          return 'body{}\n/*# sourceMappingURL=all.css.map */';
+        }
+        return Buffer.from('content');
+      });
+      fs.writeFileSync = jest.fn();
+      fs.mkdirSync = jest.fn();
+
+      service.fingerprint();
+
+      expect(fs.writeFileSync).toHaveBeenCalled();
+      expect(mockLogger.log).toHaveBeenCalledWith(
+        expect.stringContaining('Asset manifest created at')
+      );
+      expect((service as any).manifest['js/main.js']).toBeDefined();
+
+      require('glob').sync = originalGlobSync;
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+  });
+
+  describe('process success paths', () => {
+    it('processFile writes fingerprinted asset and updates manifest', () => {
+      const filePath = join((service as any).assetsDir, 'images', 'icon.png');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(false);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockReturnValue(Buffer.from('img'));
+      fs.writeFileSync = jest.fn();
+
+      const result = (service as any).processFile(filePath);
+      expect(result).toContain('icon.');
+      expect((service as any).manifest['icon.png']).toMatch(/^icon\.[a-f0-9]{8}\.png$/);
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processFile logs non-Error failures', () => {
+      const filePath = join((service as any).assetsDir, 'images', 'icon.png');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalMkdirSync = fs.mkdirSync;
+      const originalReadFileSync = fs.readFileSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(true);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockImplementation(() => {
+        throw 'boom';
+      });
+
+      expect(() => (service as any).processFile(filePath)).toThrow('boom');
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to process file')
+      );
+
+      fs.existsSync = originalExistsSync;
+      fs.mkdirSync = originalMkdirSync;
+      fs.readFileSync = originalReadFileSync;
+    });
+
+    it('processGovukFile writes fingerprinted govuk js', () => {
+      const filePath = join((service as any).govukDir, 'all.js');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(false);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockReturnValue(Buffer.from('js'));
+      fs.writeFileSync = jest.fn();
+
+      (service as any).processGovukFile(filePath);
+      expect(fs.writeFileSync).toHaveBeenCalled();
+      expect((service as any).manifest['govuk/all.js']).toMatch(/govuk\/.*all\.[a-f0-9]{8}\.js/);
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processGovukFile logs non-Error failures', () => {
+      const filePath = join((service as any).govukDir, 'all.js');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalMkdirSync = fs.mkdirSync;
+      const originalReadFileSync = fs.readFileSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(true);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockImplementation(() => {
+        throw 'govuk-fail';
+      });
+
+      (service as any).processGovukFile(filePath);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to process GOV.UK file')
+      );
+
+      fs.existsSync = originalExistsSync;
+      fs.mkdirSync = originalMkdirSync;
+      fs.readFileSync = originalReadFileSync;
+    });
+
+    it('processGovukCssFile without source map', () => {
+      const filePath = join((service as any).govukDir, 'all.css');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn((p: string) => !String(p).endsWith('.map') && false);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockReturnValue('body{}');
+      fs.writeFileSync = jest.fn();
+
+      (service as any).processGovukCssFile(filePath);
+      expect((service as any).manifest['govuk/all.css']).toMatch(/govuk\/all\.[a-f0-9]{8}\.css/);
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processGovukCssFile with source map updates reference', () => {
+      const filePath = join((service as any).govukDir, 'all.css');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(true);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn((p: string, encoding?: string) => {
+        if (encoding === 'utf8') return 'x{}\n/*# sourceMappingURL=all.css.map */';
+        return Buffer.from('map');
+      });
+      fs.writeFileSync = jest.fn();
+
+      (service as any).processGovukCssFile(filePath);
+      expect((service as any).manifest['govuk/all.css.map']).toBeDefined();
+      const cssWrite = (fs.writeFileSync as jest.Mock).mock.calls.find((c: any[]) =>
+        String(c[0]).endsWith('.css')
+      );
+      expect(String(cssWrite[1])).toContain('sourceMappingURL=');
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processGovukCssFile logs non-Error failures', () => {
+      const filePath = join((service as any).govukDir, 'all.css');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalMkdirSync = fs.mkdirSync;
+      const originalReadFileSync = fs.readFileSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(true);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockImplementation(() => {
+        throw 'css-fail';
+      });
+
+      (service as any).processGovukCssFile(filePath);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to process GOV.UK CSS file')
+      );
+
+      fs.existsSync = originalExistsSync;
+      fs.mkdirSync = originalMkdirSync;
+      fs.readFileSync = originalReadFileSync;
+    });
+
+    it('processGovukAssetFile copies woff fonts without fingerprinting', () => {
+      const font = join((service as any).govukDir, 'assets', 'fonts', 'f.woff');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(false);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockReturnValue(Buffer.from('font'));
+      fs.writeFileSync = jest.fn();
+
+      (service as any).processGovukAssetFile(font);
+      expect(fs.writeFileSync).toHaveBeenCalled();
+      expect(Object.keys((service as any).manifest)).toHaveLength(0);
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processGovukAssetFile skips mkdir when font output dir exists', () => {
+      const font = join((service as any).govukDir, 'assets', 'fonts', 'f.woff');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(true);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockReturnValue(Buffer.from('font'));
+      fs.writeFileSync = jest.fn();
+
+      (service as any).processGovukAssetFile(font);
+      expect(fs.mkdirSync).not.toHaveBeenCalled();
+      expect(fs.writeFileSync).toHaveBeenCalled();
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processGovukAssetFile copies woff2 fonts without fingerprinting', () => {
+      const font = join((service as any).govukDir, 'assets', 'fonts', 'f.woff2');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(false);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockReturnValue(Buffer.from('font'));
+      fs.writeFileSync = jest.fn();
+
+      (service as any).processGovukAssetFile(font);
+      expect(fs.writeFileSync).toHaveBeenCalled();
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processGovukAssetFile fingerprints non-font assets', () => {
+      const img = join((service as any).govukDir, 'assets', 'images', 'crest.png');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalReadFileSync = fs.readFileSync;
+      const originalWriteFileSync = fs.writeFileSync;
+      const originalMkdirSync = fs.mkdirSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(true);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockReturnValue(Buffer.from('img'));
+      fs.writeFileSync = jest.fn();
+
+      (service as any).processGovukAssetFile(img);
+      expect((service as any).manifest['assets/images/crest.png']).toMatch(
+        /assets\/images\/crest\.[a-f0-9]{8}\.png/
+      );
+
+      fs.existsSync = originalExistsSync;
+      fs.readFileSync = originalReadFileSync;
+      fs.writeFileSync = originalWriteFileSync;
+      fs.mkdirSync = originalMkdirSync;
+    });
+
+    it('processGovukAssetFile logs non-Error failures', () => {
+      const img = join((service as any).govukDir, 'assets', 'images', 'crest.png');
+      const fs = require('fs');
+      const originalExistsSync = fs.existsSync;
+      const originalMkdirSync = fs.mkdirSync;
+      const originalReadFileSync = fs.readFileSync;
+
+      fs.existsSync = jest.fn().mockReturnValue(true);
+      fs.mkdirSync = jest.fn();
+      fs.readFileSync = jest.fn().mockImplementation(() => {
+        throw 'asset-fail';
+      });
+
+      (service as any).processGovukAssetFile(img);
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Failed to process GOV.UK asset file')
+      );
+
+      fs.existsSync = originalExistsSync;
+      fs.mkdirSync = originalMkdirSync;
+      fs.readFileSync = originalReadFileSync;
+    });
   });
 
   describe('private methods', () => {

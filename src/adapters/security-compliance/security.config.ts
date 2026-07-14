@@ -162,6 +162,7 @@ export const governmentSecurityConfig: SecurityConfig = {
     validate: true,
     passOnStoreError: false,
     ipv6Subnet: 64, // IPv6 subnet mask for rate limiting
+    logger: console,
   },
 
   /**

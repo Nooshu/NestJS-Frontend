@@ -1,8 +1,19 @@
 /**
- * Main entry point for the NestJS application.
- * Configures the application with Nunjucks templating, static assets, and Swagger documentation.
- * This module initialises the NestJS application with necessary middleware,
- * view engine configuration, and static asset serving.
+ * Application bootstrap entry point.
+ *
+ * Creates the NestExpressApplication, wires cross-cutting middleware that must
+ * run before Nest modules (Helmet, compression, cookie-parser, ValidationPipe,
+ * global filters), then configures Nunjucks, fingerprinted static assets, and
+ * Swagger UI. Route-scoped middleware (CSRF, logging, HTML headers) is registered
+ * in {@link AppModule.configure} — keep bootstrap lean and avoid duplicating
+ * those concerns here.
+ *
+ * Side effects: binds HTTP listener (HOST/PORT), replaces Nest's logger with
+ * {@link LoggerService}, and exits the process on bootstrap failure.
+ *
+ * Performance: long-lived Cache-Control on static/GOV.UK assets relies on
+ * fingerprinting (immutable URLs). Security: Helmet + ValidationPipe whitelist
+ * run early; cookie-parser is required so CSRF middleware can read cookies.
  *
  * @module Main
  * @requires @nestjs/core
@@ -14,7 +25,6 @@
  * @requires helmet
  * @requires compression
  * @requires cookie-parser
- * @requires csrf-csrf
  */
 
 import { ValidationPipe } from '@nestjs/common';
@@ -35,28 +45,22 @@ import { ViewEngineService } from './views/view-engine.service';
 import cookieParser from 'cookie-parser';
 
 /**
- * Bootstrap function that creates and configures the NestJS application.
- * This function sets up the application with:
- * - Nunjucks view engine configuration
- * - Static asset directories
- * - GOV.UK Frontend asset serving
- * - Security features (Helmet, CORS)
- * - Performance optimizations (Compression, Caching)
- * - Request validation using class-validator and class-transformer
- * - Winston-based logging system
+ * Creates, configures, and starts the HTTP server.
+ *
+ * Why here (not only AppModule): NestFactory must exist before DI resolves
+ * ViewEngineService / SecurityConfig; Express view engine and static mounts
+ * are platform APIs that belong on the NestExpressApplication instance.
  *
  * @async
  * @function bootstrap
- * @returns {Promise<void>} A promise that resolves when the application is ready
+ * @returns {Promise<void>} Resolves after the server is listening
+ * @throws {Error} Propagates startup failures to the top-level catch handler
  *
  * @example
- * // Start the application
- * bootstrap().catch(err => {
+ * bootstrap().catch((err) => {
  *   console.error('Failed to start application:', err);
  *   process.exit(1);
  * });
- *
- * @throws {Error} If the application fails to start
  */
 async function bootstrap() {
   // Create the NestJS application instance with Express platform
@@ -105,7 +109,7 @@ async function bootstrap() {
     })
   );
 
-  // Add this line to apply the global error filter
+  // Global filters: security errors first, then friendly 404 pages for HTML routes
   app.useGlobalFilters(new SecurityErrorFilter(), new NotFoundExceptionFilter());
 
   /**
@@ -135,7 +139,7 @@ async function bootstrap() {
     })
   );
 
-  // Add cookie-parser middleware, required for csrf token storage
+  // Required so CSRF (and other cookie-backed middleware) can read/write cookies
   app.use(cookieParser());
 
   // Get the view engine service
