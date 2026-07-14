@@ -1,7 +1,5 @@
 # Contributing to NestJS Frontend
 
-**This repository is archived / unmaintained.** We are not accepting contributions.
-
 Thank you for your interest in contributing to the NestJS Frontend application! This document provides guidelines and information for contributors.
 
 ## Table of Contents
