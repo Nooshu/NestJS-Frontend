@@ -30,8 +30,12 @@ export default defineConfig({
   /* Directory where test files are located */
   testDir: './tests',
 
-  /* Disable all tests by ignoring all test files */
-  testIgnore: '**/*.spec.ts',
+  /* Ignore demo / example Playwright files — keep smoke + home specs enabled */
+  testIgnore: [
+    '**/examples/**',
+    '**/example.spec.ts',
+    '**/demo-todo-app.spec.ts',
+  ],
 
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -118,9 +122,5 @@ export default defineConfig({
     
     /* Maximum time to wait for the server to start (5 minutes in CI, 2 minutes locally) */
     timeout: process.env.CI ? 300 * 1000 : 120 * 1000,
-
-    /* Wait for the server to be ready by checking the health endpoint */
-    stdout: 'Application is running on: http://localhost:3002',
-    stderr: 'error',
   },
 });

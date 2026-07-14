@@ -44,6 +44,11 @@ npm run test:e2e:local
 
 #### Standard Commands
 ```bash
+# Quick smoke (chromium): health, homepage GOV.UK chrome, key routes
+npm run test:smoke
+# Or with scripted browser install:
+npm run test:smoke:local
+
 # Run all tests
 npx playwright test
 

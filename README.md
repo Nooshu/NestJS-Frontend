@@ -190,6 +190,8 @@ For detailed information about testing:
 - `npm run test:govuk:watch` - Run GOV.UK component tests in watch mode
 - `npm run test:govuk:debug` - Run GOV.UK component tests in debug mode
 - `npm run test:e2e` - Run all end-to-end tests
+- `npm run test:smoke` - Basic Playwright smoke (chromium): `/health`, homepage GOV.UK chrome, key pages
+- `npm run test:smoke:local` - Smoke with Playwright chromium install helper
 - `npm run test:e2e:ui` - Run end-to-end tests with UI mode
 - `npm run test:e2e:debug` - Run end-to-end tests in debug mode
 - `npm run test:e2e:browsers` - Run end-to-end tests in all browsers

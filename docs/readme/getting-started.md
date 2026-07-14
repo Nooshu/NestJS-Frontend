@@ -66,6 +66,7 @@ npm run start:prod
 # Tests (Jest coverage thresholds are 100%)
 npm test
 npm run test:govuk
+npm run test:smoke
 npm run type-check
 
 # Frontend assets only

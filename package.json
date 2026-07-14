@@ -43,6 +43,8 @@
     "test:e2e:chromium": "playwright test --project=chromium",
     "test:e2e:firefox": "playwright test --project=firefox",
     "test:e2e:webkit": "playwright test --project=webkit",
+    "test:smoke": "playwright test tests/smoke.spec.ts --project=chromium",
+    "test:smoke:local": "./scripts/test-smoke.sh",
     "test:cov": "jest --coverage --coverageReporters='text-summary' --coverageReporters='html'",
     "test:cov:unit": "npm run test:unit -- --coverage --coverageThreshold='{}'",
     "test:cov:integration": "npm run test:integration -- --coverage --coverageThreshold='{}'",
