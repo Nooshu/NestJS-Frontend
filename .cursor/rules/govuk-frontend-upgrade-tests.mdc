@@ -12,6 +12,7 @@ When `govuk-frontend` (or closely related Design System assets) is updated, do n
 3. Run **all GOV.UK component / fixture tests**: `npm run test:govuk` (fix failures before merging)
 4. Run **Playwright** to catch page-level / visual regressions:
    - At minimum: `npm run test:smoke` (or `npm run test:smoke:local` if browsers need installing)
+   - Smoke includes asserting served CSS contains `--govuk-frontend-version:` matching `package.json`
    - Prefer fuller coverage when the upgrade is large: `npm run test:e2e` or `npm run test:e2e:local`
 5. Manually spot-check critical journeys in the browser if automated suites miss a known layout surface (homepage, forms, feedback, Find a Court)
 6. Sync version tables and docs (README / `docs/readme/govuk-frontend.md`) in the same change

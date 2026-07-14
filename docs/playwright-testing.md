@@ -51,7 +51,8 @@ npm run test:e2e:local
 
 #### Standard Commands
 ```bash
-# Quick smoke (chromium): health, homepage GOV.UK chrome, key routes
+# Quick smoke (chromium): health, homepage GOV.UK chrome, CSS
+# `--govuk-frontend-version` vs package.json, and key routes
 npm run test:smoke
 # Or with scripted browser install:
 npm run test:smoke:local
@@ -75,6 +76,11 @@ npm run test:e2e:webkit
 Tests are located in the `tests` directory. Each test file follows the `.`.spec.ts` naming convention.
 
 **Current Test Suite:**
+- `tests/smoke.spec.ts` - Fast chromium smoke for CI/local confidence
+  - `/health` JSON and `robots.txt`
+  - Homepage GOV.UK layout chrome
+  - Served CSS `--govuk-frontend-version` matches `package.json`
+  - Key journey / demo routes
 - `tests/home.spec.ts` - Homepage and navigation tests
   - Homepage loading verification
   - Health check endpoint testing

@@ -101,7 +101,7 @@ See `.cursor/rules/docs-and-comments.mdc`.
 - Useful commands:
   - `npm test` — Jest with coverage
   - `npm run test:govuk` — GOV.UK fixture tests
-  - `npm run test:smoke` — Playwright chromium smoke (health + key pages)
+  - `npm run test:smoke` — Playwright chromium smoke (health, GOV.UK chrome, CSS version, key pages)
   - `npm run type-check` — TypeScript
   - `npm run build` — Nest compile (when relevant)
   - `npm run test:e2e` — Playwright (when needed)
