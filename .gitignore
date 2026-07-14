@@ -1,66 +1,96 @@
 # Dependencies
-node_modules
-dist
+node_modules/
+jspm_packages/
 
-# OS
-.DS_store
-.DS_Store
-Thumbs.db
-*.swp
-*.swo
-*~
+# Build / compile output
+dist/
+build/
+out/
+.next/
+.nest/
+*.tsbuildinfo
+.tsbuildinfo
 
-# Environment variables
+# Environment and secrets (keep .env.example)
 .env
-.env.local
-.env.*.local
-.env.production
-.env.staging
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+id_rsa
+id_rsa.*
+*.secret
+secrets/
 
-# Logs
-logs/*
+# Logs and debug
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+.pnpm-debug.log*
 test-results.json
 
-# Playwright
-/test-results/
-/playwright-report/
-/blob-report/
-/playwright/.cache/
-
-# Coverage
+# Test runners and reports
 /coverage/
 /temp-coverage/
 .nyc_output/
 *.lcov
 coverage-final.json
 coverage-summary.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/test-output/
+/tests-examples/
+junit.xml
+*.junit.xml
 
-# IDE
+# Caches
+.cache/
+.eslintcache
+.stylelintcache
+.sass-cache/
+.parcel-cache/
+.turbo/
+*.pid
+*.seed
+*.pid.lock
+
+# OS
+.DS_Store
+.DS_store
+.AppleDouble
+.LSOverride
+Icon?
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.swp
+*.swo
+*~
+*.bak
+
+# IDE / editors (local)
 .idea/
 .vscode/
 *.sublime-project
 *.sublime-workspace
 *.code-workspace
+*.iml
 
-# Build artifacts
-.tsbuildinfo
-*.tsbuildinfo
-build/
-.next/
-out/
+# Cursor local state (keep committed project rules)
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
 
-# Temporary files
-tmp/
-temp/
-*.tmp
-
-# Package manager
-.pnpm-debug.log*
+# Package managers (local yarn state; keep package-lock.json)
 .yarn/
 .yarn/cache
 .yarn/unplugged
@@ -68,8 +98,28 @@ temp/
 .yarn/install-state.gz
 .pnp.*
 
-# Misc
-*.pem
-*.key
-*.cert
-.cache/
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+
+# Databases (local / Prisma)
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+prisma/*.db
+prisma/*.db-journal
+
+# Optional local Docker / override files
+docker-compose.override.yml
+*.local.yml
+
+# Misc generated / local
+*.tgz
+.tern-port
+.serverless/
+.fusebox/
+.dynamodb/
+.claude/
