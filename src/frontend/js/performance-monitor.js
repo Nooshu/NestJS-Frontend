@@ -325,7 +325,7 @@ class PerformanceMonitor {
   // Observe bundle size
   observeBundleSize() {
     window.addEventListener('load', () => {
-      const resources = performance.getEntriesByType('resource');
+      const resources = performance.getEntriesByType('resource') || [];
       let totalBundleSize = 0;
       const bundleFiles = [];
 

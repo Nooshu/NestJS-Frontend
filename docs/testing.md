@@ -8,36 +8,23 @@ The application implements a comprehensive testing strategy that includes unit t
 
 ## Test Directory Structure
 
-The application uses a clear separation of test types with dedicated directories:
+Jest specs are **colocated under `src/`** (and a few under `test/views`). Playwright owns E2E:
 
 ```
-├── test/                  # Jest tests (unit and integration)
-│   ├── unit/             # Unit tests
-│   └── integration/      # Integration tests
-├── tests/                # Playwright E2E tests
-│   ├── examples/         # Example E2E tests
-│   └── ...              # Other E2E test suites
-└── tests-examples/       # Example tests (legacy, being migrated)
+├── src/**/*.spec.ts              # Colocated Jest unit / integration specs
+├── src/test/govuk-components.*   # GOV.UK fixture / component parity tests
+├── test/views/                   # A few view-extension integration specs
+├── tests/                        # Playwright E2E tests
+└── tests-examples/               # Legacy examples (optional)
 ```
 
-### Directory Purposes
+### Suite purposes
 
-1. **`test/` Directory**
-   - Contains all Jest-based tests
-   - Unit tests for individual components
-   - Integration tests for component interactions
-   - Files must end with `.spec.ts`
-
-2. **`tests/` Directory**
-   - Contains all Playwright-based E2E tests
-   - End-to-end test suites
-   - Current tests: `tests/home.spec.ts` (homepage and navigation tests)
-   - Files typically end with `.spec.ts`
-
-3. **`tests-examples/` Directory**
-   - Legacy directory for example tests
-   - Being migrated to `tests/`
-   - Will be removed in future versions
+1. **`npm run test:unit`** — colocated Jest specs under `src/`, excluding GOV.UK fixture suite and controller/routes integration specs
+2. **`npm run test:integration`** — `*.controller.spec.ts`, `routes.spec.ts`, and `test/views/**`
+3. **`npm run test:govuk`** — GOV.UK Frontend component fixture tests (`govuk-components`)
+4. **`npm test` / `test:cov`** — full Jest suite with **100%** coverage thresholds
+5. **`tests/`** — Playwright E2E (`npm run test:e2e`)
 
 ### Test File Naming
 
@@ -171,7 +158,7 @@ npm run test:e2e:chromium
    - Playwright tests should not use Jest APIs
 
 2. **File Location**
-   - Place new Jest tests in `test/unit/` or `test/integration/`
+   - Place new Jest tests next to the code under `src/` (`*.spec.ts`); use controller/routes naming for integration-style specs
    - Place new Playwright tests in `tests/`
    - Example tests should go in `tests/examples/`
 

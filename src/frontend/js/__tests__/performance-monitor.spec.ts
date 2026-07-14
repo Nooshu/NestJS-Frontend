@@ -1,5 +1,5 @@
 /**
- * @jest-environment jsdom
+ * @jest-environment @happy-dom/jest-environment
  */
 
 type ObserverCallback = (list: { getEntries: () => any[] }) => void;

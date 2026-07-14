@@ -36,16 +36,16 @@ global.console = {
   debug: jest.fn(),
 };
 
-// Mock performance API
-global.performance = {
+// Mock performance API (happy-dom / jsdom may expose a read-only Window.performance)
+const performanceMock = {
   ...performance,
   mark: jest.fn(),
   measure: jest.fn(),
   clearMarks: jest.fn(),
   clearMeasures: jest.fn(),
-  getEntriesByType: jest.fn(),
-  getEntriesByName: jest.fn(),
-  now: jest.fn(),
+  getEntriesByType: jest.fn().mockReturnValue([]),
+  getEntriesByName: jest.fn().mockReturnValue([]),
+  now: jest.fn(() => 0),
   eventCounts: new Map() as any,
   navigation: {},
   onresourcetimingbufferfull: null,
@@ -55,6 +55,26 @@ global.performance = {
   removeEventListener: jest.fn(),
   dispatchEvent: jest.fn(),
 } as unknown as Performance;
+try {
+  global.performance = performanceMock;
+} catch {
+  Object.defineProperty(globalThis, 'performance', {
+    value: performanceMock,
+    configurable: true,
+    writable: true,
+  });
+}
+if (typeof globalAny.window !== 'undefined') {
+  try {
+    Object.defineProperty(globalAny.window, 'performance', {
+      value: performanceMock,
+      configurable: true,
+      writable: true,
+    });
+  } catch {
+    // happy-dom may already define performance; tests set their own mocks in beforeEach
+  }
+}
 
 // Global test utilities
 export const createTestingApp = async (): Promise<INestApplication> => {

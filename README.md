@@ -144,10 +144,11 @@ Validate without a long build:
 
 The application uses a clear separation of test types:
 
-- **Unit and Integration Tests** (`test/` directory)
+- **Unit and Integration Tests** (colocated `src/**/*.spec.ts`, plus `test/views`)
   - Jest-based tests for individual components and their interactions
   - Files must end with `.spec.ts`
   - Run with `npm run test:unit` or `npm run test:integration`
+  - Full suite with 100% coverage: `npm test`
 
 - **End-to-End Tests** (`tests/` directory)
   - Playwright-based tests for complete user journeys
