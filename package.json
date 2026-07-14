@@ -154,7 +154,7 @@
     "jest": "30.3.0",
     "jest-environment-jsdom": "30.3.0",
     "jsdom": "29.0.2",
-    "node-html-parser": "7.1.0",
+    "node-html-parser": "9.0.0",
     "npm-run-all2": "8.0.4",
     "onchange": "7.1.0",
     "patch-package": "8.0.1",
