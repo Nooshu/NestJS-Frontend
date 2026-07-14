@@ -20,10 +20,10 @@ npm ci --legacy-peer-deps
 if [ $? -eq 0 ]; then
     echo "✅ Package dependencies are in sync"
     echo ""
-    echo "🚀 Ready for Docker build!"
-    echo "Run: docker-compose build"
+echo "🚀 Ready for Docker build!"
+echo "Run: docker compose build frontend"
 else
     echo "❌ Package dependencies are not in sync"
     echo "Please run: npm install"
     exit 1
-fi 
+fi

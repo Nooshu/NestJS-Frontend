@@ -1,21 +1,29 @@
-
-
 services:
+  # Default compose service — built app served on host port 3100
   frontend:
     build:
       context: .
       dockerfile: Dockerfile
       target: development
+      # Override if Docker Hub is unreachable, e.g.:
+      # NODE_IMAGE=public.ecr.aws/docker/library/node:26-alpine
       args:
-        - NODE_ENV=development
+        NODE_IMAGE: ${NODE_IMAGE:-node:26-alpine}
     ports:
       - "3100:3100"
     environment:
       - NODE_ENV=development
+      - HOST=0.0.0.0
       - PORT=3100
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3100/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3100/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })",
+        ]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -23,16 +31,19 @@ services:
     networks:
       - nestjs-network
 
-  # Development service (optional)
+  # Optional bind-mount workflow (source synced into the container)
   frontend-dev:
     build:
       context: .
       dockerfile: Dockerfile
       target: development
+      args:
+        NODE_IMAGE: ${NODE_IMAGE:-node:26-alpine}
     ports:
       - "3101:3100"
     environment:
       - NODE_ENV=development
+      - HOST=0.0.0.0
       - PORT=3100
     volumes:
       - .:/app
@@ -45,4 +56,4 @@ services:
 
 networks:
   nestjs-network:
-    driver: bridge 
+    driver: bridge

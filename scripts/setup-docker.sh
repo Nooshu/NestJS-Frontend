@@ -61,7 +61,7 @@ if [ $? -eq 0 ]; then
     echo "   $COMPOSE_CMD up"
     echo ""
     echo "🌐 The application will be available at:"
-    echo "   https://localhost:3100"
+    echo "   http://localhost:3100"
     echo ""
     echo "📋 Other useful commands:"
     echo "   $COMPOSE_CMD up -d          # Run in background"

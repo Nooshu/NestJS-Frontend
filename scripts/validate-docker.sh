@@ -27,18 +27,15 @@ else
     echo "✅ .dockerignore found"
 fi
 
-# Validate Dockerfile syntax
+# Validate Dockerfile expectations (avoid `docker build --check` — it can hang
+# waiting on registry metadata when Hub is slow or unreachable).
 echo ""
-echo "🔍 Validating Dockerfile syntax..."
-if command -v docker &> /dev/null; then
-    if docker build --dry-run -f Dockerfile . &> /dev/null; then
-        echo "✅ Dockerfile syntax is valid"
-    else
-        echo "❌ Dockerfile syntax validation failed"
-        exit 1
-    fi
+echo "🔍 Validating Dockerfile..."
+if grep -qE 'node:26(-[a-z0-9.+]+)?' Dockerfile && grep -q 'EXPOSE 3100' Dockerfile; then
+    echo "✅ Dockerfile uses Node 26 base and exposes 3100"
 else
-    echo "⚠️  Docker not available - skipping syntax validation"
+    echo "❌ Dockerfile missing expected Node 26 base or EXPOSE 3100"
+    exit 1
 fi
 
 # Check docker-compose.yml syntax
@@ -65,10 +62,10 @@ fi
 # Check port configuration in main.ts
 echo ""
 echo "🔍 Checking port configuration..."
-if grep -q "process.env.PORT || 3100" src/main.ts; then
-    echo "✅ Port 3100 configured correctly in main.ts"
+if grep -qE "process\.env\.PORT \|\| 3002" src/main.ts; then
+    echo "✅ main.ts defaults to 3002 and honours PORT (Docker/Compose set PORT=3100)"
 else
-    echo "❌ Port 3100 not configured correctly in main.ts"
+    echo "❌ main.ts port configuration unexpected"
     exit 1
 fi
 
@@ -77,6 +74,6 @@ echo "✅ All Docker configuration files are valid!"
 echo ""
 echo "📋 Next steps:"
 echo "1. Install Docker Desktop if not already installed"
-echo "2. Run: ./scripts/setup-docker.sh"
-echo "3. Run: docker-compose up (or docker compose up)"
-echo "4. Visit: https://localhost:3100" 
+echo "2. Run: ./scripts/prepare-docker.sh"
+echo "3. Run: docker compose up --build frontend"
+echo "4. Visit: http://localhost:3100" 
